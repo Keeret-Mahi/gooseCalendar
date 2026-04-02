@@ -1,0 +1,5692 @@
+[
+  {
+    "fileName": "Fall 2025_ Computer Networks.html",
+    "courseCode": "CS 456/CS 656",
+    "courseName": "Computer Networks",
+    "term": "Fall 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "qpdw8l",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2035",
+        "instructorName": "Mina Tahmasbi Arashloo",
+        "instructorEmail": "mina.arashloo@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      },
+      {
+        "id": "pvf35o",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "MC 2017",
+        "instructorName": "Mina Tahmasbi Arashloo",
+        "instructorEmail": "mina.arashloo@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "1kn4hvb",
+        "label": "Midterm",
+        "title": "CS 456/CS 656 Midterm @ EXP 1689",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "EXP 1689",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Midterm Exam: Thu Oct 23, 7:00PM to 8:50PM, EXP 1689"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-23",
+          "startTime": "19:00",
+          "endTime": "20:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Midterm Exam: Thu Oct 23, 7:00PM to 8:50PM, EXP 1689"
+          }
+        ]
+      },
+      {
+        "id": "ncv1w3",
+        "label": "Lecture LEC 001",
+        "title": "CS 456/CS 656 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2035",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 656 001 [LEC] Monday, Wednesday - Mon, Wed Sep 3 - Dec 2 02:30PM - 03:50PM MC 2035 Mina Tahmasbi Arashloo mina.arashloo@uwaterloo.ca Uzma Maroof uzma.maroof@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "fsxwol",
+        "label": "Lecture LEC 002",
+        "title": "CS 456/CS 656 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2017",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 656 002 [LEC] Monday, Wednesday - Mon, Wed Sep 3 - Dec 2 10:00AM - 11:20AM MC 2017 Mina Tahmasbi Arashloo mina.arashloo@uwaterloo.ca Uzma Maroof uzma.maroof@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Fall 2025_ Introduction to Machine Learning.html",
+    "courseCode": "CS 480/CS 680",
+    "courseName": "Introduction to Machine Learning",
+    "term": "Fall 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1wt4jaz",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DC 1302",
+        "instructorName": "Gautam C. Kamath",
+        "instructorEmail": "gautam.c.kamath@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "24 scheduled dates · 2 scheduled dates"
+      },
+      {
+        "id": "1x344zy",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "DC 1302",
+        "instructorName": "Gautam C. Kamath",
+        "instructorEmail": "gautam.c.kamath@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "24 scheduled dates · 2 scheduled dates"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 8
+    },
+    "events": [
+      {
+        "id": "jmduc3",
+        "label": "Midterm",
+        "title": "CS 480/CS 680 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 30%",
+          "Weight: 25%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | 30"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | 25"
+          }
+        ]
+      },
+      {
+        "id": "y1hgqt",
+        "label": "Lecture LEC 001",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 1302",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-04",
+          "endDate": "2025-11-27",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2025-09-04": [],
+            "2025-09-11": [],
+            "2025-09-18": [],
+            "2025-09-25": [],
+            "2025-10-02": [],
+            "2025-10-09": [],
+            "2025-10-16": [],
+            "2025-10-23": [],
+            "2025-10-30": [],
+            "2025-11-06": [],
+            "2025-11-13": [],
+            "2025-11-20": [],
+            "2025-11-27": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 480 001 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 02:30PM - 03:50PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          },
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 680 001 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 02:30PM - 03:50PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "159x3qy",
+        "label": "Lecture LEC 001",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 1302",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-09",
+          "endDate": "2025-12-02",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [
+            "2025-10-28",
+            "2025-11-25"
+          ],
+          "occurrenceNotes": {
+            "2025-09-09": [],
+            "2025-09-16": [],
+            "2025-09-23": [],
+            "2025-09-30": [],
+            "2025-10-07": [],
+            "2025-10-14": [],
+            "2025-10-21": [],
+            "2025-11-04": [],
+            "2025-11-11": [],
+            "2025-11-18": [],
+            "2025-12-02": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 480 001 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 02:30PM - 03:50PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          },
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 680 001 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 02:30PM - 03:50PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "tkzwc6",
+        "label": "Lecture LEC 001",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 4020",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-28",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Tuesdays - Tuesdays Oct 28, Nov 25 02:30PM - 03:50PM MC 4020"
+          }
+        ]
+      },
+      {
+        "id": "k32yto",
+        "label": "Lecture LEC 001",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 4020",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-25",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Tuesdays - Tuesdays Oct 28, Nov 25 02:30PM - 03:50PM MC 4020"
+          }
+        ]
+      },
+      {
+        "id": "vi2c9u",
+        "label": "Lecture LEC 002",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 1302",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-04",
+          "endDate": "2025-11-27",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2025-09-04": [],
+            "2025-09-11": [],
+            "2025-09-18": [],
+            "2025-09-25": [],
+            "2025-10-02": [],
+            "2025-10-09": [],
+            "2025-10-16": [],
+            "2025-10-23": [],
+            "2025-10-30": [],
+            "2025-11-06": [],
+            "2025-11-13": [],
+            "2025-11-20": [],
+            "2025-11-27": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 480 002 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 01:00PM - 02:20PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          },
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 680 002 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 01:00PM - 02:20PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "16supxt",
+        "label": "Lecture LEC 002",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 1302",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-09",
+          "endDate": "2025-12-02",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [
+            "2025-10-28",
+            "2025-11-25"
+          ],
+          "occurrenceNotes": {
+            "2025-09-09": [],
+            "2025-09-16": [],
+            "2025-09-23": [],
+            "2025-09-30": [],
+            "2025-10-07": [],
+            "2025-10-14": [],
+            "2025-10-21": [],
+            "2025-11-04": [],
+            "2025-11-11": [],
+            "2025-11-18": [],
+            "2025-12-02": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 480 002 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 01:00PM - 02:20PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          },
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 680 002 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Oct 23, Oct 30 - Nov 20, Nov 27 - Dec 2 01:00PM - 02:20PM DC 1302 Gautam C. Kamath gautam.c.kamath@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1jh9gmf",
+        "label": "Lecture LEC 002",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 307",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-28",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Tuesdays - Tuesdays Oct 28, Nov 25 01:00PM - 02:20PM RCH 307"
+          }
+        ]
+      },
+      {
+        "id": "eco351",
+        "label": "Lecture LEC 002",
+        "title": "CS 480/CS 680 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 307",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-25",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Tuesdays - Tuesdays Oct 28, Nov 25 01:00PM - 02:20PM RCH 307"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Fall 2025_ Topics in Coding Theory.html",
+    "courseCode": "CS 860",
+    "courseName": "Topics in Coding Theory",
+    "term": "Fall 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "nnpt2t",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "DC 2568",
+        "instructorName": "Elena Grigorescu",
+        "instructorEmail": "elena.grigorescu@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 12:30-13:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "133812j",
+        "label": "Oct 30: Submit a 1-2 Paragraph Proposal",
+        "title": "CS 860 Oct 30: Submit a 1-2 Paragraph Proposal",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Oct 30: submit a 1-2 paragraph proposal"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Oct 30: submit a 1-2 paragraph proposal"
+          }
+        ]
+      },
+      {
+        "id": "1q33fnp",
+        "label": "Lecture SEM 001",
+        "title": "CS 860 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2568",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "12:30",
+          "endTime": "13:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 860 001 [SEM] Tuesday, Thursday - Tue, Thu Sep 3 - Dec 2 12:30PM - 01:50PM DC 2568 Elena Grigorescu elena.grigorescu@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Fall 2025_ Trustworthy Machine Learning_ A systems-security approach.html",
+    "courseCode": "CS 858",
+    "courseName": "Trustworthy Machine Learning: A Systems-security Approach",
+    "term": "Fall 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1yc8dua",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "DC 2568",
+        "instructorName": "N Asokan",
+        "instructorEmail": "n.asokan@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 5,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "1adw34f",
+        "label": "Project",
+        "title": "CS 858 Project @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 50%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-12-09",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project | Before noon, Dec 9 | CrowdMark | 50%"
+          }
+        ]
+      },
+      {
+        "id": "1n79g58",
+        "label": "Project Presentation",
+        "title": "CS 858 Project Presentation @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Near the end of term, the groups will get the chance present their work to the class in a brief conference-style presentation (likely on Nov 27 and Dec 2 )."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-27",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "course_description",
+            "sectionTitle": "Course Description",
+            "sourceKind": "prose",
+            "snippet": "Near the end of term, the groups will get the chance present their work to the class in a brief conference-style presentation (likely on Nov 27 and Dec 2 )."
+          }
+        ]
+      },
+      {
+        "id": "boz0h1",
+        "label": "Project Presentation",
+        "title": "CS 858 Project Presentation @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Near the end of term, the groups will get the chance present their work to the class in a brief conference-style presentation (likely on Nov 27 and Dec 2 )."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-12-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "course_description",
+            "sectionTitle": "Course Description",
+            "sourceKind": "prose",
+            "snippet": "Near the end of term, the groups will get the chance present their work to the class in a brief conference-style presentation (likely on Nov 27 and Dec 2 )."
+          }
+        ]
+      },
+      {
+        "id": "evmvfx",
+        "label": "Project Presentation Materials",
+        "title": "CS 858 Project Presentation Materials @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "The slides for the presentations must be submitted (on CrowdMark ) by noon on Wednesday, Nov 26."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "course_description",
+            "sectionTitle": "Course Description",
+            "sourceKind": "prose",
+            "snippet": "The slides for the presentations must be submitted (on CrowdMark ) by noon on Wednesday, Nov 26."
+          }
+        ]
+      },
+      {
+        "id": "klj0gn",
+        "label": "Project Proposal",
+        "title": "CS 858 Project Proposal @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Each group will submit a proposal and the optional team charter (on CrowdMark ) no later than Thursday, Oct 1 at noon."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "course_description",
+            "sectionTitle": "Course Description",
+            "sourceKind": "prose",
+            "snippet": "Each group will submit a proposal and the optional team charter (on CrowdMark ) no later than Thursday, Oct 1 at noon."
+          }
+        ]
+      },
+      {
+        "id": "1vxnaie",
+        "label": "Lecture SEM 001",
+        "title": "CS 858 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2568",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 858 001 [SEM] Tuesday, Thursday - Tue, Thu Sep 3 - Dec 2 10:00AM - 11:20AM DC 2568 N Asokan n.asokan@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2024_ Seminar in Cognitive Science.html",
+    "courseCode": "COGSCI 600",
+    "courseName": "Seminar in Cognitive Science",
+    "term": "Winter 2024",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "g8guuv",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "HH 124",
+        "instructorName": "Stephanie Denison",
+        "instructorEmail": "stephanie.denison@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO 11:30-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 2,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "xlho4q",
+        "label": "Student Presentation",
+        "title": "COGSCI 600 Student Presentation @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "March 25: Student presentations and discussion (proposing your research paper topics and workshopping, discussing how topics can be broadened for interdisciplinary audiences"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2024-03-25",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_course_schedule",
+            "sectionTitle": "Tentative Course Schedule",
+            "sourceKind": "prose",
+            "snippet": "March 25: Student presentations and discussion (proposing your research paper topics and workshopping, discussing how topics can be broadened for interdisciplinary audiences"
+          }
+        ]
+      },
+      {
+        "id": "ex5qw3",
+        "label": "Student Presentation",
+        "title": "COGSCI 600 Student Presentation @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "April 1: Student presentations and discussion cont'd"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2024-04-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_course_schedule",
+            "sectionTitle": "Tentative Course Schedule",
+            "sourceKind": "prose",
+            "snippet": "April 1: Student presentations and discussion cont'd"
+          }
+        ]
+      },
+      {
+        "id": "42jspb",
+        "label": "Lecture SEM 001",
+        "title": "COGSCI 600 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "HH 124",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2024-01-08",
+          "endDate": "2024-04-08",
+          "startTime": "11:30",
+          "endTime": "14:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "COGSCI 600 001 [SEM] Mondays - Mondays Jan 8 - Apr 8 11:30AM - 02:20PM HH 124 Stephanie Denison stephanie.denison@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2025_ Networks and Distributed Computer Systems.html",
+    "courseCode": "CS 436/CS 636",
+    "courseName": "Networks and Distributed Computer Systems",
+    "term": "Winter 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "j5dl75",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 1056",
+        "instructorName": "Mohammad Abuyaghi",
+        "instructorEmail": "mohammad.abuyaghi@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "yi4b9j",
+        "label": "Midterm",
+        "title": "CS 436/CS 636 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "The Midterm Exam is tentatively scheduled on Monday , Feb 24, 2025, Time: 2:30 - 3:50 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-02-24",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "student_assessment",
+            "sectionTitle": "Student Assessment",
+            "sourceKind": "prose",
+            "snippet": "The Midterm Exam is tentatively scheduled on Monday , Feb 24, 2025, Time: 2:30 - 3:50 PM"
+          }
+        ]
+      },
+      {
+        "id": "55be39",
+        "label": "Lecture LEC 001",
+        "title": "CS 436/CS 636 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 1056",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 436 / CS 636 001 [LEC] Monday, Wednesday - Mon, Wed Jan 6 - Apr 4 02:30PM - 03:50PM MC 1056 Mohammad Abuyaghi mohammad.abuyaghi@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Advanced Topics in Human-Computer Interaction.html",
+    "courseCode": "CS 889",
+    "courseName": "Advanced Topics in Human-Computer Interaction",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "k8v45s",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "DC 2568",
+        "instructorName": "Matthew Brehmer",
+        "instructorEmail": "matthew.brehmer@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TH 13:00-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 6,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "umih2h",
+        "label": "Final Project Final Deliverable",
+        "title": "CS 889 Final Project Final Deliverable @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable total across 4 final project",
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-09",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final project | Pitch: Tue Feb 3 13:00 Proposal: Tue Feb 24 13:00 Presentation: Tue Mar 31 13:00 Final Deliverable: Thu Apr 9 13:00 | In-person (pitch and presentation) Piazza (pitch) Microsoft Forms (Proposal and Fin..."
+          }
+        ]
+      },
+      {
+        "id": "m8aorw",
+        "label": "Project Pitch",
+        "title": "CS 889 Project Pitch @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable total across 4 final project",
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-03",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final project | Pitch: Tue Feb 3 13:00 Proposal: Tue Feb 24 13:00 Presentation: Tue Mar 31 13:00 Final Deliverable: Thu Apr 9 13:00 | In-person (pitch and presentation) Piazza (pitch) Microsoft Forms (Proposal and Fin..."
+          }
+        ]
+      },
+      {
+        "id": "6quviw",
+        "label": "Project Pitch",
+        "title": "CS 889 Project Pitch @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "By Feb at 13:00 (48 hours before the Feb 5 meeting), students will submit at least one project pitch (150 - 200 words and up to one image, such as a sketch, a slide, or a wireframe) to a dedicated Piazza discussion thread , outlining a rough idea of what you want to do, or what { data + task / communicative intent } you have in mind."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "By Feb at 13:00 (48 hours before the Feb 5 meeting), students will submit at least one project pitch (150 - 200 words and up to one image, such as a sketch, a slide, or a wireframe) to a dedicated Piazza discussion th..."
+          }
+        ]
+      },
+      {
+        "id": "my8et0",
+        "label": "Project Presentation",
+        "title": "CS 889 Project Presentation @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable total across 4 final project",
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-31",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final project | Pitch: Tue Feb 3 13:00 Proposal: Tue Feb 24 13:00 Presentation: Tue Mar 31 13:00 Final Deliverable: Thu Apr 9 13:00 | In-person (pitch and presentation) Piazza (pitch) Microsoft Forms (Proposal and Fin..."
+          }
+        ]
+      },
+      {
+        "id": "1ea0fft",
+        "label": "Project Proposal",
+        "title": "CS 889 Project Proposal @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Students must submit their project proposal via Microsoft Forms by 1pm on Feb 24 (48 hours before the Feb 26 meeting), submitted via this form .",
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable total across 4 final project",
+          "Weight: 50%\n--> 3% pitch (pass/fail)\n--> 7% proposal (pass/fail)\n--> 15% final presentation\n--> 25% final deliverable"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-24",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Students must submit their project proposal via Microsoft Forms by 1pm on Feb 24 (48 hours before the Feb 26 meeting), submitted via this form ."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final project | Pitch: Tue Feb 3 13:00 Proposal: Tue Feb 24 13:00 Presentation: Tue Mar 31 13:00 Final Deliverable: Thu Apr 9 13:00 | In-person (pitch and presentation) Piazza (pitch) Microsoft Forms (Proposal and Fin..."
+          }
+        ]
+      },
+      {
+        "id": "1cue174",
+        "label": "Project Proposal",
+        "title": "CS 889 Project Proposal @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Students must submit their project proposal via Microsoft Forms by 1pm on Feb 24 (48 hours before the Feb 26 meeting), submitted via this form ."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Students must submit their project proposal via Microsoft Forms by 1pm on Feb 24 (48 hours before the Feb 26 meeting), submitted via this form ."
+          }
+        ]
+      },
+      {
+        "id": "1mrscge",
+        "label": "Lecture SEM 001",
+        "title": "CS 889 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2568",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "15:50",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 889 001 [SEM] Thursdays - Thursdays Jan 5 - Apr 6 01:00PM - 03:50PM DC 2568 Matthew Brehmer matthew.brehmer@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Advanced Topics in Software Engineering.html",
+    "courseCode": "CS 846",
+    "courseName": "Advanced Topics in Software Engineering",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1xpuhfl",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "DC 2585",
+        "instructorName": "Chengnian Sun",
+        "instructorEmail": "chengnian.sun@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO 12:00-14:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "lscfvg",
+        "label": "Lecture SEM 001",
+        "title": "CS 846 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2585",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:00",
+          "endTime": "14:50",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 846 001 [SEM] Mondays - Mondays Jan 5 - Apr 6 12:00PM - 02:50PM DC 2585 Chengnian Sun chengnian.sun@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Compiler Construction.html",
+    "courseCode": "CS 444/CS 644",
+    "courseName": "Compiler Construction",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1488qob",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "RCH 112",
+        "instructorName": "Ondrej Lhotak",
+        "instructorEmail": "olhotak@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 7,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "pn4x4c",
+        "label": "Course Project, Marmoset Tests #1",
+        "title": "CS 444/CS 644 Course Project, Marmoset Tests #1",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 60% total across 5 course project, marmoset tests"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-09",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Course Project, Marmoset tests | 5 parts due Feb. 9, Feb. 27, Mar. 6, Mar. 13, Apr. 6 | Marmoset | 60"
+          }
+        ]
+      },
+      {
+        "id": "1jrnx4l",
+        "label": "Course Project, Marmoset Tests #5",
+        "title": "CS 444/CS 644 Course Project, Marmoset Tests #5",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 60% total across 5 course project, marmoset tests"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Course Project, Marmoset tests | 5 parts due Feb. 9, Feb. 27, Mar. 6, Mar. 13, Apr. 6 | Marmoset | 60"
+          }
+        ]
+      },
+      {
+        "id": "1ab7bl7",
+        "label": "Literature Survey",
+        "title": "CS 444/CS 644 Literature Survey @ CS 644",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "CS 644",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "For students in CS 644, the above marking scheme is scaled by 80%. The remaining 20% is for a Literature Survey due Apr. 6.",
+          "Weight: 80%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "For students in CS 644, the above marking scheme is scaled by 80%. The remaining 20% is for a Literature Survey due Apr. 6."
+          }
+        ]
+      },
+      {
+        "id": "bccj",
+        "label": "Weekly Course Project, Marmoset Tests #2-4",
+        "title": "CS 444/CS 644 Weekly Course Project, Marmoset Tests #2-4",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring weekly assignment series covering course project, marmoset tests 2-4."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-02-27",
+          "endDate": "2026-03-13",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-02-27": [
+              "Assignments: Course Project, Marmoset Test #2",
+              "Weight: 60% total across 5 course project, marmoset tests"
+            ],
+            "2026-03-06": [
+              "Assignments: Course Project, Marmoset Test #3",
+              "Weight: 60% total across 5 course project, marmoset tests"
+            ],
+            "2026-03-13": [
+              "Assignments: Course Project, Marmoset Test #4",
+              "Weight: 60% total across 5 course project, marmoset tests"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Course Project, Marmoset tests | 5 parts due Feb. 9, Feb. 27, Mar. 6, Mar. 13, Apr. 6 | Marmoset | 60"
+          }
+        ]
+      },
+      {
+        "id": "1j5pjl0",
+        "label": "Written Report",
+        "title": "CS 444/CS 644 Written Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 3 course project, written reports"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-09",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Course Project, written reports | 3 reports due Feb. 9, Mar. 13, Apr. 6 | Marmoset | 15"
+          }
+        ]
+      },
+      {
+        "id": "1jzcx7b",
+        "label": "Written Report",
+        "title": "CS 444/CS 644 Written Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 3 course project, written reports"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Course Project, written reports | 3 reports due Feb. 9, Mar. 13, Apr. 6 | Marmoset | 15"
+          }
+        ]
+      },
+      {
+        "id": "1y23nf7",
+        "label": "Written Report",
+        "title": "CS 444/CS 644 Written Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 3 course project, written reports"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Course Project, written reports | 3 reports due Feb. 9, Mar. 13, Apr. 6 | Marmoset | 15"
+          }
+        ]
+      },
+      {
+        "id": "g5brzj",
+        "label": "Lecture LEC 001",
+        "title": "CS 444/CS 644 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 112",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 444 / CS 644 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 10:00AM - 11:20AM RCH 112 Ondrej Lhotak olhotak@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Computational Complexity.html",
+    "courseCode": "CS 764",
+    "courseName": "Computational Complexity",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "u0rgn",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DC 2568",
+        "instructorName": "Eric Blais",
+        "instructorEmail": "eric.blais@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "l5wdc1",
+        "label": "Lecture LEC 001",
+        "title": "CS 764 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2568",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 764 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 01:00PM - 02:20PM DC 2568 Eric Blais eric.blais@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Computational Techniques in Biological Sequence Analysis.html",
+    "courseCode": "CS 682",
+    "courseName": "Computational Techniques in Biological Sequence Analysis",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1oya7wk",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 1056",
+        "instructorName": "Bin Ma",
+        "instructorEmail": "bin.ma@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 16:00-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1,
+      "Office Hours": 1
+    },
+    "events": [
+      {
+        "id": "1r4jfdt",
+        "label": "Lecture LEC 001",
+        "title": "CS 682 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 1056",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 682 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 04:00PM - 05:20PM MC 1056 Bin Ma bin.ma@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1f7eyw3",
+        "label": "Office Hours with Bin Ma",
+        "title": "CS 682 Office Hours @ MC1056",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC1056",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Bin Ma (binma), Office hour: Wednesday 10-11am. MC1056."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Computational Vision.html",
+    "courseCode": "CS 484/CS 684",
+    "courseName": "Computational Vision",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1jt22pv",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2038",
+        "instructorName": "Yuri Boykov",
+        "instructorEmail": "yboykov@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 10:00-11:20"
+      },
+      {
+        "id": "1k31oeu",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "MC 1056",
+        "instructorName": "Yuri Boykov",
+        "instructorEmail": "yboykov@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 16:00-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "lkdzz5",
+        "label": "Quiz",
+        "title": "CS 484/CS 684 Quiz",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Date unresolved in outline: You will be given 30 to 60 minutes for each quiz that you can take from 10am to 10pm on a given date to be announced via email."
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "You will be given 30 to 60 minutes for each quiz that you can take from 10am to 10pm on a given date to be announced via email."
+          }
+        ]
+      },
+      {
+        "id": "sb4g20",
+        "label": "Lecture LEC 001",
+        "title": "CS 484/CS 684 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 684 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 10:00AM - 11:20AM MC 2038 Yuri Boykov yboykov@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "11d64d9",
+        "label": "Lecture LEC 002",
+        "title": "CS 484/CS 684 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 1056",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 684 002 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 04:00PM - 05:20PM MC 1056 Yuri Boykov yboykov@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Computer Architecture.html",
+    "courseCode": "CS 450/CS 650",
+    "courseName": "Computer Architecture",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "11g2vk9",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2065",
+        "instructorName": "Sihang Liu",
+        "instructorEmail": "sihangliu@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1,
+      "Office Hours": 2
+    },
+    "events": [
+      {
+        "id": "1oh2g2d",
+        "label": "Midterm Exam",
+        "title": "CS 450/CS 650 Midterm Exam",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm Exam | In-person | 20"
+          }
+        ]
+      },
+      {
+        "id": "uw2jwr",
+        "label": "Lecture LEC 001",
+        "title": "CS 450/CS 650 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2065",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 450 / CS 650 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM MC 2065 Sihang Liu sihangliu@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "10oae9p",
+        "label": "Office Hours with Sihang Liu",
+        "title": "CS 450/CS 650 Office Hours @ DC 3528",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "DC 3528",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:20",
+          "endTime": "14:20",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office Hours: Thursday 1:20 – 2:20 PM"
+          }
+        ]
+      },
+      {
+        "id": "n1tp9s",
+        "label": "Office Hours with Sihang Liu",
+        "title": "CS 450/CS 650 Office Hours @ DC 3528",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "DC 3528",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office Hours: Tuesday 1-2 PM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Data Engineering for Data Science.html",
+    "courseCode": "CS 738",
+    "courseName": "Data Engineering for Data Science",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "z1h9mi",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2034",
+        "instructorName": "Tamer Ozsu",
+        "instructorEmail": "tamer.ozsu@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "a9a84z",
+        "label": "Lecture LEC 001",
+        "title": "CS 738 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2034",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [
+            "2026-02-18",
+            "2026-02-23"
+          ],
+          "occurrenceNotes": {
+            "2026-01-05": [
+              "Course introduction; Introduction to Database Systems"
+            ],
+            "2026-01-12": [
+              "Relational model of data, Relational calculus & algebra"
+            ],
+            "2026-01-19": [
+              "Database workloads (OLTP, OLAP and HTAP systems)"
+            ],
+            "2026-01-26": [
+              "Big data: Dealing with volume"
+            ],
+            "2026-02-02": [
+              "Big data: Dealing with variety"
+            ],
+            "2026-02-09": [
+              "Big data: Dealing with velocity"
+            ],
+            "2026-03-02": [
+              "Data preparation pipeline"
+            ],
+            "2026-03-09": [
+              "Data acquisition"
+            ],
+            "2026-03-16": [
+              "Data quality & data cleaning"
+            ],
+            "2026-03-23": [
+              "Data provenance"
+            ],
+            "2026-03-30": [
+              "LLMs and data management"
+            ],
+            "2026-02-18": [
+              "Excluded: Reading week – no classes"
+            ],
+            "2026-02-23": [
+              "Excluded: Reading week – no classes"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 738 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 02:30PM - 03:50PM MC 2034 Tamer Ozsu tamer.ozsu@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Jan 5 | 1 | Course introduction; Introduction to Database Systems"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Jan 12 | 1 | Relational model of data, Relational calculus & algebra"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Jan 19 | 1 | Database workloads (OLTP, OLAP and HTAP systems)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Jan 26 | 1 | Big data: Dealing with volume"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Feb 2 | 1 | Big data: Dealing with variety"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Feb 9 | 1 | Big data: Dealing with velocity"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "8 | Feb 22 | 1 | Data integration: Data warehouses"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Mar 2 | 1 | Data preparation pipeline"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Mar 9 | 1 | Data acquisition"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Mar 16 | 1 | Data quality & data cleaning"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Mar 23 | 1 | Data provenance"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Mar 30 | 1 | LLMs and data management"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "7 | Feb 17 | | Reading week – no classes"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Data Structures and Standards in Health Informatics.html",
+    "courseCode": "CS 792/HLTH 612",
+    "courseName": "Data Structures and Standards in Health Informatics",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1iyhe0o",
+        "kind": "LEC",
+        "number": "081",
+        "label": "LEC 081",
+        "location": "Online",
+        "instructorName": "Helen Chen",
+        "instructorEmail": "helen.chen@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "Online"
+      },
+      {
+        "id": "1ejf6io",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DC 2568",
+        "instructorName": "Helen Chen",
+        "instructorEmail": "helen.chen@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO 16:30-19:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "1p445w8",
+        "label": "Online Quiz 1",
+        "title": "CS 792/HLTH 612 Online Quiz 1",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 5%",
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Online Quiz 1 | 5%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Online Quiz 2 | 5%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Online Quiz 3 | 10%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Online Quiz 4 | 10%"
+          }
+        ]
+      },
+      {
+        "id": "2jlwij",
+        "label": "Lecture LEC 001",
+        "title": "CS 792/HLTH 612 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2568",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:30",
+          "endTime": "19:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 792 001 [LEC] Mondays - Mondays Jan 5 - Apr 6 04:30PM - 07:20PM DC 2568 Helen Chen helen.chen@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Data-Intensive Distributed Computing.html",
+    "courseCode": "CS 451/CS 651",
+    "courseName": "Data-Intensive Distributed Computing",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "17v34wf",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2034",
+        "instructorName": "Dan Holtby",
+        "instructorEmail": "djholtby@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 13:00-14:20"
+      },
+      {
+        "id": "1852qle",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "MC 2034",
+        "instructorName": "Dan Holtby",
+        "instructorEmail": "djholtby@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 11:30-12:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "69ldjc",
+        "label": "Lecture LEC 001",
+        "title": "CS 451/CS 651 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2034",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 651 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM MC 2034 Dan Holtby djholtby@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "xgxqhr",
+        "label": "Lecture LEC 002",
+        "title": "CS 451/CS 651 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2034",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 651 002 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 11:30AM - 12:50PM MC 2034 Dan Holtby djholtby@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Distributed Systems.html",
+    "courseCode": "CS 454/CS 654",
+    "courseName": "Distributed Systems",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "tzvttt",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 4059",
+        "instructorName": "Samer Al Kiswany",
+        "instructorEmail": "alkiswany@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 13:00-14:20"
+      },
+      {
+        "id": "t5x0qw",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "E2 1732",
+        "instructorName": "Samer Al Kiswany",
+        "instructorEmail": "alkiswany@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 10:00-11:20"
+      },
+      {
+        "id": "tfwmfv",
+        "kind": "LEC",
+        "number": "003",
+        "label": "LEC 003",
+        "location": "MC 2017",
+        "instructorName": "Samer Al Kiswany",
+        "instructorEmail": "alkiswany@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 2,
+      "Lecture": 3
+    },
+    "events": [
+      {
+        "id": "109hrbg",
+        "label": "Proposal",
+        "title": "CS 454/CS 654 Proposal @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Proposal by 23 January 2026 (11:59 pm)."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Proposal by 23 January 2026 (11:59 pm)."
+          }
+        ]
+      },
+      {
+        "id": "1y2dyxq",
+        "label": "The Course Project Report is",
+        "title": "CS 454/CS 654 The Course Project Report is @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "The course project report is due by April 5, 2026 (11:59 pm)."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "The course project report is due by April 5, 2026 (11:59 pm)."
+          }
+        ]
+      },
+      {
+        "id": "ztrxp1",
+        "label": "Lecture LEC 001",
+        "title": "CS 454/CS 654 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 4059",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 654 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 01:00PM - 02:20PM MC 4059 Samer Al Kiswany alkiswany@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "12d7znn",
+        "label": "Lecture LEC 002",
+        "title": "CS 454/CS 654 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E2 1732",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 654 002 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 10:00AM - 11:20AM E2 1732 Samer Al Kiswany alkiswany@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "qdb5ar",
+        "label": "Lecture LEC 003",
+        "title": "CS 454/CS 654 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2017",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 654 003 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 02:30PM - 03:50PM MC 2017 Samer Al Kiswany alkiswany@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Formal Reasoning with Proof Assistants.html",
+    "courseCode": "CS 747",
+    "courseName": "Formal Reasoning with Proof Assistants",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "eefmzo",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DC 2585",
+        "instructorName": "Yizhou Zhang",
+        "instructorEmail": "yizhou.zhang@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 12:30-15:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 5,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "6iju62",
+        "label": "Assignments #1-3",
+        "title": "CS 747 Assignments #1-3",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 1-3 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-23",
+          "endDate": "2026-02-27",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-30",
+            "2026-02-13",
+            "2026-02-20"
+          ],
+          "occurrenceNotes": {
+            "2026-01-23": [
+              "Assignments: Assignment 1",
+              "Assignment 1 due Jan 23"
+            ],
+            "2026-02-06": [
+              "Assignments: Assignment 2",
+              "Assignment 2 due Feb 6"
+            ],
+            "2026-02-27": [
+              "Assignments: Assignment 3",
+              "Assignment 3 due Feb 27"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Assignment 1 due Jan 23"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Assignment 2 due Feb 6"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Assignment 3 due Feb 27"
+          }
+        ]
+      },
+      {
+        "id": "18a16hj",
+        "label": "Final Project code and Report",
+        "title": "CS 747 Final Project code and Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Final project code and report due Apr 23"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Final project code and report due Apr 23"
+          }
+        ]
+      },
+      {
+        "id": "1ym4ktn",
+        "label": "Project Presentation Materials",
+        "title": "CS 747 Project Presentation Materials",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Presentation slides due Mar 26 (noon)"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Presentation slides due Mar 26 (noon)"
+          }
+        ]
+      },
+      {
+        "id": "1fl5ubj",
+        "label": "Project Presentation Materials",
+        "title": "CS 747 Project Presentation Materials",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Presentation slides due Apr 1 (noon)"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Presentation slides due Apr 1 (noon)"
+          }
+        ]
+      },
+      {
+        "id": "c62ozc",
+        "label": "Project Proposal",
+        "title": "CS 747 Project Proposal",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Project proposal due Feb 13"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Project proposal due Feb 13"
+          }
+        ]
+      },
+      {
+        "id": "yvlw73",
+        "label": "Lecture LEC 001",
+        "title": "CS 747 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2585",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:30",
+          "endTime": "15:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 747 001 [LEC] Wednesdays - Wednesdays Jan 5 - Apr 6 12:30PM - 03:20PM DC 2585 Yizhou Zhang yizhou.zhang@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Introduction to Artificial Intelligence.html",
+    "courseCode": "CS 486/CS 686",
+    "courseName": "Introduction to Artificial Intelligence",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "175jw5z",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2035",
+        "instructorName": "Pascal Poupart",
+        "instructorEmail": "ppoupart@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 08:30-09:50"
+      },
+      {
+        "id": "17fjhuy",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "MC 2035",
+        "instructorName": "Pascal Poupart",
+        "instructorEmail": "ppoupart@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 1,
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "1mikmyu",
+        "label": "Midterm",
+        "title": "CS 486/CS 686 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Date: February 12, 7:30-8:50 pm",
+          "Weight: 30%",
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-12",
+          "startTime": "19:30",
+          "endTime": "20:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | 30%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | 20%"
+          }
+        ]
+      },
+      {
+        "id": "18m0uuo",
+        "label": "Assignments #1-4",
+        "title": "CS 486/CS 686 Assignments #1-4",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 1-4 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-23",
+          "endDate": "2026-03-20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-30",
+            "2026-02-13",
+            "2026-02-20",
+            "2026-02-27",
+            "2026-03-13"
+          ],
+          "occurrenceNotes": {
+            "2026-01-23": [
+              "Assignments: Assignment #1",
+              "A1: out Jan 12, due Jan 23 (11:59 pm)"
+            ],
+            "2026-02-06": [
+              "Assignments: Assignment #2",
+              "A2: out Jan 26, due Feb 6 (11:59 pm)"
+            ],
+            "2026-03-06": [
+              "Assignments: Assignment #3",
+              "A3: out Feb 23, due Mar 6 (11:59 pm)"
+            ],
+            "2026-03-20": [
+              "Assignments: Assignment #4",
+              "A4: out Mar 9, due Mar 20 (11:59 pm)"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "A1: out Jan 12, due Jan 23 (11:59 pm)"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "A2: out Jan 26, due Feb 6 (11:59 pm)"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "A3: out Feb 23, due Mar 6 (11:59 pm)"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "A4: out Mar 9, due Mar 20 (11:59 pm)"
+          }
+        ]
+      },
+      {
+        "id": "jmu141",
+        "label": "Lecture LEC 001",
+        "title": "CS 486/CS 686 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2035",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 686 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 08:30AM - 09:50AM MC 2035 Pascal Poupart ppoupart@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "wj3i5v",
+        "label": "Lecture LEC 002",
+        "title": "CS 486/CS 686 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2035",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 686 002 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM MC 2035 Pascal Poupart ppoupart@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Introduction to Computer Graphics.html",
+    "courseCode": "CS 488/CS 688",
+    "courseName": "Introduction to Computer Graphics",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "16lwgln",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2038",
+        "instructorName": "Gladimir Baranoski",
+        "instructorEmail": "gvgbaranoski@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 16:00-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 7,
+      "Lecture": 1,
+      "Office Hours": 2
+    },
+    "events": [
+      {
+        "id": "1qa7jyo",
+        "label": "Midterm",
+        "title": "CS 488/CS 688 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "If a period of cancellation of in-person activities overlaps with the scheduled date for the midterm (February 12), the midterm will be replaced by quizzes, with instructions to be provided on the course Lessons website and also via Learn ."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "course_description",
+            "sectionTitle": "Course Description",
+            "sourceKind": "prose",
+            "snippet": "If a period of cancellation of in-person activities overlaps with the scheduled date for the midterm (February 12), the midterm will be replaced by quizzes, with instructions to be provided on the course Lessons websi..."
+          }
+        ]
+      },
+      {
+        "id": "1pt3y96",
+        "label": "Assignment A0",
+        "title": "CS 488/CS 688 Assignment A0 @ MC2038",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "MC2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Assignment A0"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-15",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | January 15, Thursday | Assignment A0"
+          }
+        ]
+      },
+      {
+        "id": "1db1rs7",
+        "label": "Assignment A1",
+        "title": "CS 488/CS 688 Assignment A1 @ MC2038",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "MC2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Assignment A1"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-22",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | January 22, Thursday | Assignment A1"
+          }
+        ]
+      },
+      {
+        "id": "1s1b8im",
+        "label": "Assignment A2",
+        "title": "CS 488/CS 688 Assignment A2 @ MC2038",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "MC2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Assignment A2"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | February 5, Thursday | Assignment A2"
+          }
+        ]
+      },
+      {
+        "id": "9084cc",
+        "label": "Assignment A3",
+        "title": "CS 488/CS 688 Assignment A3 @ MC2038",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "MC2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Assignment A3"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "8 | February 26, Thursday | Assignment A3"
+          }
+        ]
+      },
+      {
+        "id": "1f3zhsr",
+        "label": "Assignment A4",
+        "title": "CS 488/CS 688 Assignment A4 @ MC2038",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "MC2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Assignment A4"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | March 12, Thursday | Assignment A4"
+          }
+        ]
+      },
+      {
+        "id": "rf3neq",
+        "label": "Project Awards",
+        "title": "CS 488/CS 688 Project Awards @ MC2038",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "MC2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Project Awards"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | April 2, Thursday | Project Awards"
+          }
+        ]
+      },
+      {
+        "id": "1ghhm1u",
+        "label": "Project Files",
+        "title": "CS 488/CS 688 Project Files @ MC2038",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "MC2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Project Files"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-31",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | March 31, Monday | Project Files"
+          }
+        ]
+      },
+      {
+        "id": "v3mjf",
+        "label": "Lecture LEC 001",
+        "title": "CS 488/CS 688 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [
+            "2026-02-17",
+            "2026-02-19"
+          ],
+          "occurrenceNotes": {
+            "2026-02-17": [
+              "Excluded: 7 | February 16-20 | Reading Week"
+            ],
+            "2026-02-19": [
+              "Excluded: 7 | February 16-20 | Reading Week"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 488 / CS 688 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 04:00PM - 05:20PM MC 2038 Gladimir Baranoski gvgbaranoski@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "7 | February 16-20 | Reading Week"
+          }
+        ]
+      },
+      {
+        "id": "1gdcyew",
+        "label": "Office Hours with Frank Fan",
+        "title": "CS 488/CS 688 Office Hours @ DC3520",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "DC3520",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:30",
+          "endTime": "14:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Frank Fan ( yuheng.fan@uwaterloo.ca ), office hours: Wednesday, 1:30-2:30pm."
+          }
+        ]
+      },
+      {
+        "id": "ctpm2t",
+        "label": "Office Hours with Matthew Avolio",
+        "title": "CS 488/CS 688 Office Hours @ DC3520",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "DC3520",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Matthew Avolio ( mavolio@uwaterloo.ca ), office hours: Tuesday, 1-2PM."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Introduction to Symbolic Computation.html",
+    "courseCode": "CS 687",
+    "courseName": "Introduction to Symbolic Computation",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1j82jxr",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2038",
+        "instructorName": "Armin Jamshidpey",
+        "instructorEmail": "armin.jamshidpey@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 08:30-09:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1,
+      "Office Hours": 1
+    },
+    "events": [
+      {
+        "id": "1wz9bs1",
+        "label": "Midterm",
+        "title": "CS 687 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Weight: 35%",
+          "Weight: 25%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-03",
+          "startTime": "08:30",
+          "endTime": "10:00",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm Exam (March 3, 8:30-10:00 am) | 35%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm Exam (March 3, 8:30-10:00 am) | 25%"
+          }
+        ]
+      },
+      {
+        "id": "pgx257",
+        "label": "Lecture LEC 001",
+        "title": "CS 687 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 687 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 08:30AM - 09:50AM MC 2038 Armin Jamshidpey armin.jamshidpey@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1lxk347",
+        "label": "Office Hours with Armin Jamshidpey",
+        "title": "CS 687 Office Hours @ Online",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:00",
+          "endTime": "12:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office Hours: Wednesday 11:00 am- 12:00 pm (On MS Teams)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Multicore Programming.html",
+    "courseCode": "CS 798",
+    "courseName": "Multicore Programming",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1fp0rww",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DC 2585",
+        "instructorName": "Trevor Brown",
+        "instructorEmail": "trevor.brown@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "2b63i3",
+        "label": "Lecture LEC 001",
+        "title": "CS 798 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DC 2585",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 798 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM DC 2585 Trevor Brown trevor.brown@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Neural Networks.html",
+    "courseCode": "CS 479/AMATH 449/CS 679",
+    "courseName": "Neural Networks",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1u8db80",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "QNC 2502",
+        "instructorName": "Jeff Orchard",
+        "instructorEmail": "jorchard@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 08:30-09:50"
+      },
+      {
+        "id": "1v2c4ax",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "QNC 2502",
+        "instructorName": "Jeff Orchard",
+        "instructorEmail": "jorchard@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      },
+      {
+        "id": "1uscily",
+        "kind": "LEC",
+        "number": "003",
+        "label": "LEC 003",
+        "location": "QNC 2502",
+        "instructorName": "Jeff Orchard",
+        "instructorEmail": "jorchard@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 16:00-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 2,
+      "Assignments": 3,
+      "Lecture": 3
+    },
+    "events": [
+      {
+        "id": "igwjk6",
+        "label": "In-Person Quiz (Vevox)",
+        "title": "CS 479/AMATH 449/CS 679 In-Person Quiz (Vevox) @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-person quiz (Vevox) | Every class | In-person quiz during each lecture (drop the lowest 5 quizzes) | 10%"
+          }
+        ]
+      },
+      {
+        "id": "eizp6l",
+        "label": "Midterm",
+        "title": "CS 479/AMATH 449/CS 679 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Weight: 20%",
+          "There will be a midterm exam from 7:00-8:50 pm on February 11, 2026. You will be allowed to bring your own crib sheet"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-11",
+          "startTime": "19:00",
+          "endTime": "20:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | Feb 11, 7:00pm - 8:50pm | 20%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "There will be a midterm exam from 7:00-8:50 pm on February 11, 2026. You will be allowed to bring your own crib sheet"
+          }
+        ]
+      },
+      {
+        "id": "16iezh1",
+        "label": "Assignment #1",
+        "title": "CS 479/AMATH 449/CS 679 Assignment #1 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "For example, suppose assignment 1 (A1) is due at 5:00pm on Jan 22, and is worth 6% of your total grade, and you declare a 2-day absence that overlaps that deadline.",
+          "Weight: 6%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-22",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "For example, suppose assignment 1 (A1) is due at 5:00pm on Jan 22, and is worth 6% of your total grade, and you declare a 2-day absence that overlaps that deadline."
+          }
+        ]
+      },
+      {
+        "id": "1b50xek",
+        "label": "Project Proposal",
+        "title": "CS 479/AMATH 449/CS 679 Project Proposal @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Your group must submit a project proposal by February 27."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-27",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Your group must submit a project proposal by February 27."
+          }
+        ]
+      },
+      {
+        "id": "b2hdkl",
+        "label": "Your group must also Submit a final Report and Github Repository",
+        "title": "CS 479/AMATH 449/CS 679 Your group must also Submit a final Report and Github Repository @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Your group must also submit a final report and GitHub repository by April 6."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Your group must also submit a final report and GitHub repository by April 6."
+          }
+        ]
+      },
+      {
+        "id": "1tth5md",
+        "label": "Lecture LEC 001",
+        "title": "CS 479/AMATH 449/CS 679 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "QNC 2502",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 479 / AMATH 449 / CS 679 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 08:30AM - 09:50AM QNC 2502 Jeff Orchard jorchard@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1weo2en",
+        "label": "Lecture LEC 002",
+        "title": "CS 479/AMATH 449/CS 679 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "QNC 2502",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 479 / AMATH 449 / CS 679 002 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 02:30PM - 03:50PM QNC 2502 Jeff Orchard jorchard@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1b9dksf",
+        "label": "Lecture LEC 003",
+        "title": "CS 479/AMATH 449/CS 679 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "QNC 2502",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 479 / AMATH 449 / CS 679 003 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 04:00PM - 05:20PM QNC 2502 Jeff Orchard jorchard@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Numerical Computation for Financial Modelling.html",
+    "courseCode": "ACTSC 447/CS 476/CS 676",
+    "courseName": "Numerical Computation for Financial Modelling",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1o5klbp",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 4020",
+        "instructorName": "Erik Hintz",
+        "instructorEmail": "erik.hintz@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 1,
+      "Lecture": 1,
+      "Office Hours": 3
+    },
+    "events": [
+      {
+        "id": "1o3tif7",
+        "label": "Midterm",
+        "title": "ACTSC 447/CS 476/CS 676 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Weight: 30%",
+          "Weight: 28%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-05",
+          "startTime": "19:00",
+          "endTime": "20:30",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | March 5, 7:00pm - 8:30pm | in-person; see Odyssey for room/seat | 30%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | March 5, 7:00pm - 8:30pm | in-person; see Odyssey for room/seat | 28%"
+          }
+        ]
+      },
+      {
+        "id": "7jtugi",
+        "label": "Assignments (5% each) #1-4",
+        "title": "ACTSC 447/CS 476/CS 676 Assignments (5% each) #1-4 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments (5% each) 1-4 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-02-02",
+          "endDate": "2026-04-06",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-02-09",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-09",
+            "2026-03-16",
+            "2026-03-30"
+          ],
+          "occurrenceNotes": {
+            "2026-02-02": [
+              "Assignments: Assignment (5% each) #1",
+              "Weight: 20% total across 4 assignments (5% each)",
+              "Weight: 16% total across 4 assignments (4% each)"
+            ],
+            "2026-03-02": [
+              "Assignments: Assignment (5% each) #2",
+              "Weight: 20% total across 4 assignments (5% each)",
+              "Weight: 16% total across 4 assignments (4% each)"
+            ],
+            "2026-03-23": [
+              "Assignments: Assignment (5% each) #3",
+              "Weight: 20% total across 4 assignments (5% each)",
+              "Weight: 16% total across 4 assignments (4% each)"
+            ],
+            "2026-04-06": [
+              "Assignments: Assignment (5% each) #4",
+              "Weight: 20% total across 4 assignments (5% each)",
+              "Weight: 16% total across 4 assignments (4% each)"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "4 Assignments (5% each) | Feb 2, March 2, March 23, April 6 at 11:59pm | Crowdmark | 20%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "4 Assignments (4% each) | Feb 2, March 2, March 23, April 6 at 11:59pm | Crowdmark | 16%"
+          }
+        ]
+      },
+      {
+        "id": "1d5u91j",
+        "label": "Lecture LEC 001",
+        "title": "ACTSC 447/CS 476/CS 676 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 4020",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ACTSC 447 / CS 476 / CS 676 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 02:30PM - 03:50PM MC 4020 Erik Hintz erik.hintz@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "kci8gu",
+        "label": "Office Hours with Erik Hintz",
+        "title": "ACTSC 447/CS 476/CS 676 Office Hours @ M3-2106",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "M3-2106",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "16:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "- Tue, 2:30pm - 4:00pm"
+          }
+        ]
+      },
+      {
+        "id": "1wjk5v2",
+        "label": "Office Hours with Erik Hintz",
+        "title": "ACTSC 447/CS 476/CS 676 Office Hours @ M3-2106",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "M3-2106",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "09:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "- Wed, 8:30am - 9:30am"
+          }
+        ]
+      },
+      {
+        "id": "1y1dsjs",
+        "label": "Office Hours with Erik Hintz",
+        "title": "ACTSC 447/CS 476/CS 676 Office Hours @ M3-2106",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "M3-2106",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "09:00",
+          "endTime": "11:00",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "- Fri, 9:00am - 11:00am"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Numerical Solution of Partial Differential Equations.html",
+    "courseCode": "AMATH 741/CM 750/CS 778",
+    "courseName": "Numerical Solution of Partial Differential Equations",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "vpkuxh",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "RCH 204",
+        "instructorName": "Lilia Krivodonova",
+        "instructorEmail": "lgk@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "1tcdp1p",
+        "label": "Midterm",
+        "title": "AMATH 741/CM 750/CS 778 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | 30"
+          }
+        ]
+      },
+      {
+        "id": "1fp2enu",
+        "label": "Lecture LEC 001",
+        "title": "AMATH 741/CM 750/CS 778 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 204",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "AMATH 741 / CM 750 / CS 778 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 10:00AM - 11:20AM RCH 204 Lilia Krivodonova lgk@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Principles of Programming Languages.html",
+    "courseCode": "CS 442/CS 642",
+    "courseName": "Principles of Programming Languages",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1kk481r",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 2017",
+        "instructorName": "Brad Lushman",
+        "instructorEmail": "brad.lushman@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 16:00-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "w0uksp",
+        "label": "Midterm",
+        "title": "CS 442/CS 642 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Weight: 20%",
+          "Weight: 16%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-27",
+          "startTime": "18:30",
+          "endTime": "20:00",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | Feb 27, 6:30-8:00pm | In-person | 20%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | Feb 27, 6:30-8:00pm | In-person | 16%"
+          }
+        ]
+      },
+      {
+        "id": "1otaezi",
+        "label": "Lecture LEC 001",
+        "title": "CS 442/CS 642 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2017",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 442 / CS 642 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 04:00PM - 05:20PM MC 2017 Brad Lushman brad.lushman@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Real-Time Programming.html",
+    "courseCode": "CS 452/CS 652",
+    "courseName": "Real-Time Programming",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1mqkrpx",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 4060",
+        "instructorName": "Martin Karsten",
+        "instructorEmail": "mkarsten@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "k2yruk",
+        "label": "Lecture LEC 001",
+        "title": "CS 452/CS 652 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 4060",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 452 / CS 652 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 10:00AM - 11:20AM MC 4060 Martin Karsten mkarsten@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Software Design and Architectures.html",
+    "courseCode": "CS 446/CS 646/ECE 452",
+    "courseName": "Software Design and Architectures",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "yfk0p8",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "MC 4021",
+        "instructorName": "Pengyu Nie",
+        "instructorEmail": "pynie@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 10:00-11:20"
+      },
+      {
+        "id": "z9its5",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "MC 2065",
+        "instructorName": "Pengyu Nie",
+        "instructorEmail": "pynie@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 16:00-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 10,
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "1g3cnx8",
+        "label": "Assignments #1-4",
+        "title": "CS 446/CS 646/ECE 452 Assignments #1-4",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 1-4 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-23",
+          "endDate": "2026-03-20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-30",
+            "2026-02-13",
+            "2026-02-20",
+            "2026-03-06",
+            "2026-03-13"
+          ],
+          "occurrenceNotes": {
+            "2026-01-23": [
+              "Assignments: Assignment #1",
+              "A1 UML Practice",
+              "Weight: 25%"
+            ],
+            "2026-02-06": [
+              "Assignments: Assignment #2",
+              "A2 Decomposition Practice",
+              "Weight: 25%"
+            ],
+            "2026-02-27": [
+              "Assignments: Assignment #3",
+              "A3 Architectural Style Example",
+              "Weight: 25%"
+            ],
+            "2026-03-20": [
+              "Assignments: Assignment #4",
+              "A4 Design Pattern Example",
+              "Weight: 25%"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Jan 23 Fri | A1 UML Practice"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "A1: UML Practice | Jan 23 | 25%"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Feb 06 Fri | A2 Decomposition Practice"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "A2: Decomposition Practice | Feb 06 | 25%"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Feb 27 Fri | A3 Architectural Style Example"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "A3: Architectural Style Example | Feb 27 | 25%"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Mar 20 Fri | A4 Design Pattern Example"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "A4: Design Pattern Example | Mar 20 | 25%"
+          }
+        ]
+      },
+      {
+        "id": "1htco10",
+        "label": "Grad Project Report",
+        "title": "CS 446/CS 646/ECE 452 Grad Project Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Grad Project Report"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Apr 06 Mon | Grad Project Report"
+          }
+        ]
+      },
+      {
+        "id": "bx1c24",
+        "label": "P1 Project Setup",
+        "title": "CS 446/CS 646/ECE 452 P1 Project Setup",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "P1 Project Setup"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Jan 23 Fri | P1 Project Setup"
+          }
+        ]
+      },
+      {
+        "id": "1o3915v",
+        "label": "P4 Prototype Presentation Days #1",
+        "title": "CS 446/CS 646/ECE 452 P4 Prototype Presentation Days #1",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "P4 Prototype Presentation Day 1"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "8 | Feb 23 Mon | P4 Prototype Presentation Day 1"
+          }
+        ]
+      },
+      {
+        "id": "ghl69d",
+        "label": "P4 Prototype Presentation Days #2",
+        "title": "CS 446/CS 646/ECE 452 P4 Prototype Presentation Days #2",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "P4 Prototype Presentation Day 2"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-25",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Feb 25 Wed | P4 Prototype Presentation Day 2"
+          }
+        ]
+      },
+      {
+        "id": "1knpm85",
+        "label": "P5 Final Presentation Days #1",
+        "title": "CS 446/CS 646/ECE 452 P5 Final Presentation Days #1",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "P5 Final Presentation Day 1"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Mar 30 Mon | P5 Final Presentation Day 1"
+          }
+        ]
+      },
+      {
+        "id": "jo88y8",
+        "label": "P5 Final Presentation Days #2",
+        "title": "CS 446/CS 646/ECE 452 P5 Final Presentation Days #2",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "P5 Final Presentation Day 2"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Apr 01 Wed | P5 Final Presentation Day 2"
+          }
+        ]
+      },
+      {
+        "id": "1rxj9wp",
+        "label": "P6 Final Report",
+        "title": "CS 446/CS 646/ECE 452 P6 Final Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "P6 Final Report"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Apr 06 Mon | P6 Final Report"
+          }
+        ]
+      },
+      {
+        "id": "10a0gz9",
+        "label": "Project Proposal",
+        "title": "CS 446/CS 646/ECE 452 Project Proposal",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Grad Project Proposal",
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "| Feb 01 Sun | Grad Project Proposal"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project Proposal | Feb 01 | 20%"
+          }
+        ]
+      },
+      {
+        "id": "m3jgnq",
+        "label": "Project Report",
+        "title": "CS 446/CS 646/ECE 452 Project Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 80%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project Report | Apr 06 | 80%"
+          }
+        ]
+      },
+      {
+        "id": "2pl4dw",
+        "label": "Lecture LEC 001",
+        "title": "CS 446/CS 646/ECE 452 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 4021",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 452 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 10:00AM - 11:20AM MC 4021 Pengyu Nie pynie@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1t62qyo",
+        "label": "Lecture LEC 002",
+        "title": "CS 446/CS 646/ECE 452 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "MC 2065",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 452 002 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 04:00PM - 05:20PM MC 2065 Pengyu Nie pynie@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Software Requirements Specification and Analysis.html",
+    "courseCode": "CS 445/CS 645/ECE 451",
+    "courseName": "Software Requirements Specification and Analysis",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1dpuh4f",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DWE 3522",
+        "instructorName": "Byron Weber Becker",
+        "instructorEmail": "byron.weber.becker@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 14:30-16:20"
+      },
+      {
+        "id": "x3i551",
+        "kind": "TUT",
+        "number": "101",
+        "label": "TUT 101",
+        "location": "MC 2038",
+        "instructorName": "Byron Weber Becker",
+        "instructorEmail": "byron.weber.becker@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "FR 12:30-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1,
+      "Tutorial": 1
+    },
+    "events": [
+      {
+        "id": "fhqavy",
+        "label": "Quizzes #1-3",
+        "title": "CS 445/CS 645/ECE 451 Quizzes #1-3 @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assessment series covering quizzes 1-3 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-30",
+          "endDate": "2026-03-20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-02-06",
+            "2026-02-13",
+            "2026-02-20",
+            "2026-03-06",
+            "2026-03-13"
+          ],
+          "occurrenceNotes": {
+            "2026-01-30": [
+              "Quiz #1"
+            ],
+            "2026-02-27": [
+              "Quiz #2"
+            ],
+            "2026-03-20": [
+              "Quiz #3"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Quizzes | Jan 30, Feb 27, Mar 20 | in-person in scheduled tutorial time slot | 15"
+          }
+        ]
+      },
+      {
+        "id": "df4ppj",
+        "label": "Lecture LEC 001",
+        "title": "CS 445/CS 645/ECE 451 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DWE 3522",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "16:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 451 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 04:20PM DWE 3522 Byron Weber Becker byron.weber.becker@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1m63rba",
+        "label": "Tutorial TUT 101",
+        "title": "CS 445/CS 645/ECE 451 (TUT)",
+        "eventType": "Tutorial",
+        "eventGroup": "Tutorial",
+        "location": "MC 2038",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:30",
+          "endTime": "14:20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 451 101 [TUT] Fridays - Fridays Jan 5 - Apr 6 12:30PM - 02:20PM MC 2038"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Software and Systems Security.html",
+    "courseCode": "CS 453/CS 698",
+    "courseName": "Software and Systems Security",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "16h43ge",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "RCH 309",
+        "instructorName": "Adam Caulfield",
+        "instructorEmail": "acaulfield@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 08:30-09:50"
+      },
+      {
+        "id": "17v23x9",
+        "kind": "LEC",
+        "number": "004",
+        "label": "LEC 004",
+        "location": "RCH 309",
+        "instructorName": "Adam Caulfield",
+        "instructorEmail": "acaulfield@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 08:30-09:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 6,
+      "Assignments": 9,
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "t78tm9",
+        "label": "Midterm",
+        "title": "CS 453/CS 698 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Midterm report due",
+          "11 | Mar. 16\nTopic: TEEs and Intel SGX | Mar. 17 | Mar. 18\nTopic: TrustZone & Android | Mar. 19 | Mar. 20\nMidterm report due"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-16",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Mar. 16 Topic: TEEs and Intel SGX | Mar. 17 | Mar. 18 Topic: TrustZone & Android | Mar. 19 | Mar. 20 Midterm report due"
+          }
+        ]
+      },
+      {
+        "id": "170oe07",
+        "label": "Quiz",
+        "title": "CS 453/CS 698 Quiz @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Feb. 23\nQuiz 2\nTopic: OS Security & Malware",
+          "8 | Feb. 23\nQuiz 2\nTopic: OS Security & Malware | Feb. 24 | Feb. 25\nTopic: Compartmentalization | Feb. 26 | Feb. 27",
+          "Weight: 13.3%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-23",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "8 | Feb. 23 Quiz 2 Topic: OS Security & Malware | Feb. 24 | Feb. 25 Topic: Compartmentalization | Feb. 26 | Feb. 27"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Quiz 2 | February 23, 2026 | in-person | 13.3%"
+          }
+        ]
+      },
+      {
+        "id": "1ehncew",
+        "label": "Quiz",
+        "title": "CS 453/CS 698 Quiz",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "9 | Mar. 2\nTopic: Access Control | Mar. 3 | Mar. 4\nQuiz 3\nTopic: Authentication & Attestation | Mar. 5 | Mar. 6\nAssignment 2 Due"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Mar. 2 Topic: Access Control | Mar. 3 | Mar. 4 Quiz 3 Topic: Authentication & Attestation | Mar. 5 | Mar. 6 Assignment 2 Due"
+          }
+        ]
+      },
+      {
+        "id": "smgxlw",
+        "label": "Quiz",
+        "title": "CS 453/CS 698 Quiz @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Mar. 23\nQuiz 4\nTopic: Side channel attacks",
+          "12 | Mar. 23\nQuiz 4\nTopic: Side channel attacks | Mar. 24 | Mar. 25\nTopic: Ethics & Law | Mar. 26 | Mar. 27\nAssignment 3 Due",
+          "Weight: 13.3%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-23",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Mar. 23 Quiz 4 Topic: Side channel attacks | Mar. 24 | Mar. 25 Topic: Ethics & Law | Mar. 26 | Mar. 27 Assignment 3 Due"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Quiz 4 | March 23, 2026 | in-person | 13.3%"
+          }
+        ]
+      },
+      {
+        "id": "1t13w0k",
+        "label": "Quiz 1",
+        "title": "CS 453/CS 698 Quiz 1 @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 13.3%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-21",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Quiz 1 | January 21, 2026 | in-person | 13.3%"
+          }
+        ]
+      },
+      {
+        "id": "akv7gp",
+        "label": "Quiz 3",
+        "title": "CS 453/CS 698 Quiz 3 @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 13.3%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-04",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Quiz 3 | March 4, 2026 | in-person | 13.3%"
+          }
+        ]
+      },
+      {
+        "id": "tvnqgz",
+        "label": "Assignments #1-3",
+        "title": "CS 453/CS 698 Assignments #1-3 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 1-3 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-30",
+          "endDate": "2026-03-27",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-02-06",
+            "2026-02-13",
+            "2026-02-20",
+            "2026-02-27",
+            "2026-03-13",
+            "2026-03-20"
+          ],
+          "occurrenceNotes": {
+            "2026-01-30": [
+              "Assignments: Assignment 1",
+              "Weight: 10%"
+            ],
+            "2026-03-06": [
+              "Assignments: Assignment 2",
+              "Weight: 10%"
+            ],
+            "2026-03-27": [
+              "Assignments: Assignment 3",
+              "Weight: 10%"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignment 1 | January 30, 2026 | Submitted via LEARN | 10%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignment 2 | March 6, 2026 | Submitted via LEARN | 10%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignment 3 | March 27, 2026 | Submitted via LEARN | 10%"
+          }
+        ]
+      },
+      {
+        "id": "1jy062e",
+        "label": "Assignments #2-3",
+        "title": "CS 453/CS 698 Assignments #2-3",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 2-3 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-03-02",
+          "endDate": "2026-03-23",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-03-09",
+            "2026-03-16"
+          ],
+          "occurrenceNotes": {
+            "2026-03-02": [
+              "Assignments: Assignment 2",
+              "Assignment 2 Due"
+            ],
+            "2026-03-23": [
+              "Assignments: Assignment 3",
+              "Assignment 3 Due"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Mar. 2 Topic: Access Control | Mar. 3 | Mar. 4 Quiz 3 Topic: Authentication & Attestation | Mar. 5 | Mar. 6 Assignment 2 Due"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Mar. 23 Quiz 4 Topic: Side channel attacks | Mar. 24 | Mar. 25 Topic: Ethics & Law | Mar. 26 | Mar. 27 Assignment 3 Due"
+          }
+        ]
+      },
+      {
+        "id": "smc30a",
+        "label": "Final Project Report",
+        "title": "CS 453/CS 698 Final Project Report",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Final Project Report Due"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "15 | Apr. 13 | Apr. 14 | Apr. 15 | Apr. 16 | Apr. 17 Final Project Report Due"
+          }
+        ]
+      },
+      {
+        "id": "mqwkn8",
+        "label": "Midterm Progress (Report)",
+        "title": "CS 453/CS 698 Midterm Progress (Report) @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-20",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm progress (report) | March 20, 2026 | Submitted via LEARN | 10%"
+          },
+          {
+            "sectionId": "course_description",
+            "sectionTitle": "Course Description",
+            "sourceKind": "table",
+            "snippet": "Midterm progress report | 1 | 10%"
+          }
+        ]
+      },
+      {
+        "id": "1m9971f",
+        "label": "Presentation",
+        "title": "CS 453/CS 698 Presentation @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 5% total across 2 project proposal (presentation + report)",
+          "Weight: 5%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-11",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project Proposal (presentation + report) | Presentation: February 11, 2026 Report: February 13, 2026 | Presentation: in-person Report: submitted via LEARN | 5%"
+          }
+        ]
+      },
+      {
+        "id": "1ly8p7f",
+        "label": "Presentation",
+        "title": "CS 453/CS 698 Presentation @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 3 final project (presentation + report)",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final Project (presentation + report) | Presentation: March 30 and April 1, 2026 Report: April 17, 2026 | Presentation: in-person Report: submitted via LEARN | 15%"
+          }
+        ]
+      },
+      {
+        "id": "2tb22k",
+        "label": "Presentation",
+        "title": "CS 453/CS 698 Presentation @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 3 final project (presentation + report)",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final Project (presentation + report) | Presentation: March 30 and April 1, 2026 Report: April 17, 2026 | Presentation: in-person Report: submitted via LEARN | 15%"
+          }
+        ]
+      },
+      {
+        "id": "1g96mqj",
+        "label": "Report",
+        "title": "CS 453/CS 698 Report @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 5% total across 2 project proposal (presentation + report)",
+          "Weight: 5%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project Proposal (presentation + report) | Presentation: February 11, 2026 Report: February 13, 2026 | Presentation: in-person Report: submitted via LEARN | 5%"
+          }
+        ]
+      },
+      {
+        "id": "z1vycx",
+        "label": "Report",
+        "title": "CS 453/CS 698 Report @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 3 final project (presentation + report)",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-17",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final Project (presentation + report) | Presentation: March 30 and April 1, 2026 Report: April 17, 2026 | Presentation: in-person Report: submitted via LEARN | 15%"
+          }
+        ]
+      },
+      {
+        "id": "1ssi2oo",
+        "label": "Lecture LEC 001",
+        "title": "CS 453/CS 698 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 309",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [
+            "2026-02-23",
+            "2026-03-16",
+            "2026-03-23"
+          ],
+          "occurrenceNotes": {
+            "2026-03-02": [
+              "Mar. 2\nTopic: Access Control"
+            ],
+            "2026-03-09": [
+              "Mar. 9\nTopic: Supply-chain security"
+            ],
+            "2026-03-16": [
+              "Mar. 16\nTopic: TEEs and Intel SGX"
+            ],
+            "2026-03-30": [
+              "Mar. 30\nTopic: Project Presentations"
+            ],
+            "2026-04-06": [
+              "Apr. 6\nMake up day\nFollows Friday Schedule"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 453 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 08:30AM - 09:50AM RCH 309 Adam Caulfield acaulfield@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Mar. 2 Topic: Access Control | Mar. 3 | Mar. 4 Quiz 3 Topic: Authentication & Attestation | Mar. 5 | Mar. 6 Assignment 2 Due"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Mar. 9 Topic: Supply-chain security | Mar. 10 | Mar. 11 Topic: TPMs | Mar. 12 | Mar. 13"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Mar. 16 Topic: TEEs and Intel SGX | Mar. 17 | Mar. 18 Topic: TrustZone & Android | Mar. 19 | Mar. 20 Midterm report due"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Mar. 30 Topic: Project Presentations | Mar. 31 | Apr. 1 Last lecture Topic: Project Presentations | Apr. 2 | Apr. 3 Good Friday ."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Apr. 6 Make up day Follows Friday Schedule | Apr. 7 | Apr. 8 | Apr. 9 Final exams begin . | Apr. 10"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "15 | Apr. 13 | Apr. 14 | Apr. 15 | Apr. 16 | Apr. 17 Final Project Report Due"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "16 | Apr. 20 | Apr. 21 | Apr. 22 | Apr. 23 Final exams end | Apr. 24"
+          }
+        ]
+      },
+      {
+        "id": "1p9pugi",
+        "label": "Lecture LEC 004",
+        "title": "CS 453/CS 698 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 309",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-03-02": [
+              "Mar. 2\nTopic: Access Control"
+            ],
+            "2026-03-09": [
+              "Mar. 9\nTopic: Supply-chain security"
+            ],
+            "2026-03-16": [
+              "Mar. 16\nTopic: TEEs and Intel SGX"
+            ],
+            "2026-03-30": [
+              "Mar. 30\nTopic: Project Presentations"
+            ],
+            "2026-04-06": [
+              "Apr. 6\nMake up day\nFollows Friday Schedule"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "CS 698 004 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 08:30AM - 09:50AM RCH 309 Adam Caulfield acaulfield@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Mar. 2 Topic: Access Control | Mar. 3 | Mar. 4 Quiz 3 Topic: Authentication & Attestation | Mar. 5 | Mar. 6 Assignment 2 Due"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Mar. 9 Topic: Supply-chain security | Mar. 10 | Mar. 11 Topic: TPMs | Mar. 12 | Mar. 13"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Mar. 16 Topic: TEEs and Intel SGX | Mar. 17 | Mar. 18 Topic: TrustZone & Android | Mar. 19 | Mar. 20 Midterm report due"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Mar. 30 Topic: Project Presentations | Mar. 31 | Apr. 1 Last lecture Topic: Project Presentations | Apr. 2 | Apr. 3 Good Friday ."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Apr. 6 Make up day Follows Friday Schedule | Apr. 7 | Apr. 8 | Apr. 9 Final exams begin . | Apr. 10"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "15 | Apr. 13 | Apr. 14 | Apr. 15 | Apr. 16 | Apr. 17 Final Project Report Due"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "16 | Apr. 20 | Apr. 21 | Apr. 22 | Apr. 23 Final exams end | Apr. 24"
+          }
+        ]
+      }
+    ]
+  }
+]

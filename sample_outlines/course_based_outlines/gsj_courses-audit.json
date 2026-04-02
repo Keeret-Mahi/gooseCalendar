@@ -1,0 +1,1597 @@
+[
+  {
+    "fileName": "Winter 2023_ The Discourse of Dissent.html",
+    "courseCode": "ENGL 309G/GSJ 309/HIST 309/SPCOM 434",
+    "courseName": "The Discourse of Dissent",
+    "term": "Winter 2023",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "156bhg7",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "PAS 1241",
+        "instructorName": "Stacy Denton",
+        "instructorEmail": "stacy.denton@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "3dtopn",
+        "label": "Lecture LEC 001",
+        "title": "ENGL 309G/GSJ 309/HIST 309/SPCOM 434 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "PAS 1241",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2023-01-09",
+          "endDate": "2023-04-10",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ENGL 309G / GSJ 309 / HIST 309 / SPCOM 434 001 [LEC] Monday, Wednesday - Mon, Wed Jan 9 - Apr 10 01:00PM - 02:20PM PAS 1241 Stacy Denton stacy.denton@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2024_ Introduction to Gender and Social Justice_ The Global South.html",
+    "courseCode": "GSJ 102",
+    "courseName": "Introduction to Gender and Social Justice: The Global South",
+    "term": "Winter 2024",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "3tp4tp",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "RCH 105",
+        "instructorName": "Arany Sivasubramaniam",
+        "instructorEmail": "arany.siva@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 3,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "hogohm",
+        "label": "Amplify an Activist Project",
+        "title": "GSJ 102 Amplify an Activist Project @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Amplify an Activist Project due Wednesday, April 3 at 11:59 p.m. through Learn."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2024-04-03",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_course_schedule",
+            "sectionTitle": "Tentative Course Schedule",
+            "sourceKind": "prose",
+            "snippet": "Amplify an Activist Project due Wednesday, April 3 at 11:59 p.m. through Learn."
+          }
+        ]
+      },
+      {
+        "id": "bzysoi",
+        "label": "Defining Transnational Feminism(s) Brief",
+        "title": "GSJ 102 Defining Transnational Feminism(s) Brief @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Defining Transnational Feminism(s) Brief due Friday, February 2 at 11:59 p.m. through Learn."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2024-02-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_course_schedule",
+            "sectionTitle": "Tentative Course Schedule",
+            "sourceKind": "prose",
+            "snippet": "Defining Transnational Feminism(s) Brief due Friday, February 2 at 11:59 p.m. through Learn."
+          }
+        ]
+      },
+      {
+        "id": "1umtm1t",
+        "label": "Historical Archive Project",
+        "title": "GSJ 102 Historical Archive Project @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Historical Archive Project due Friday, March 1 at 11:59 p.m. through Learn."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2024-03-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_course_schedule",
+            "sectionTitle": "Tentative Course Schedule",
+            "sourceKind": "prose",
+            "snippet": "Historical Archive Project due Friday, March 1 at 11:59 p.m. through Learn."
+          }
+        ]
+      },
+      {
+        "id": "18mps8o",
+        "label": "Lecture LEC 001",
+        "title": "GSJ 102 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 105",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2024-01-08",
+          "endDate": "2024-04-08",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "GSJ 102 001 [LEC] Monday, Wednesday - Mon, Wed Jan 8 - Apr 8 02:30PM - 03:50PM RCH 105 Arany Sivasubramaniam arany.siva@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2025_ Social Determinants of Health.html",
+    "courseCode": "HLTH 260",
+    "courseName": "Social Determinants of Health",
+    "term": "Winter 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "j5oyy",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "STC 0060",
+        "instructorName": "Kelly Anthony",
+        "instructorEmail": "kelly.anthony@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 11:30-12:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "16rzdy0",
+        "label": "Lecture LEC 001",
+        "title": "HLTH 260 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "STC 0060",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "11:30",
+          "endTime": "12:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [
+            "2025-02-17",
+            "2025-02-19"
+          ],
+          "occurrenceNotes": {
+            "2025-02-17": [
+              "Excluded: -------------- Feb 13-23 Reading week ---------------------------------"
+            ],
+            "2025-02-19": [
+              "Excluded: -------------- Feb 13-23 Reading week ---------------------------------"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "HLTH 260 001 [LEC] Monday, Wednesday - Mon, Wed Jan 6 - Apr 4 11:30AM - 12:50PM STC 0060 Kelly Anthony kelly.anthony@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_course_schedule",
+            "sectionTitle": "Tentative Course Schedule",
+            "sourceKind": "prose",
+            "snippet": "-------------- Feb 13-23 Reading week ---------------------------------"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Feminisms for Social Justice.html",
+    "courseCode": "PHIL 302/GSJ 304/GSJ 302",
+    "courseName": "Feminisms for Social Justice",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1pnaefy",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EV3 4412",
+        "instructorName": "Carla Fehr",
+        "instructorEmail": "carla.fehr@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 2,
+      "Assignments": 2,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "u5cswp",
+        "label": "Test 1",
+        "title": "PHIL 302/GSJ 304/GSJ 302 Test 1",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Test 1 | February 26 | in class | 20"
+          }
+        ]
+      },
+      {
+        "id": "k896wg",
+        "label": "Test 2",
+        "title": "PHIL 302/GSJ 304/GSJ 302 Test 2",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Test 2 | April 2 | in class | 20"
+          }
+        ]
+      },
+      {
+        "id": "1cvpk4o",
+        "label": "Group Discussion Assignment #1",
+        "title": "PHIL 302/GSJ 304/GSJ 302 Group Discussion Assignment #1 @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 5%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-15",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Group Discussion Assignment 1 | January 15 | in class | 5"
+          }
+        ]
+      },
+      {
+        "id": "4nmiyh",
+        "label": "Group Discussion Assignments #2-5",
+        "title": "PHIL 302/GSJ 304/GSJ 302 Group Discussion Assignments #2-5 @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering group discussion assignments 2-5 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-27",
+          "endDate": "2026-03-24",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [
+            "2026-02-03",
+            "2026-02-17",
+            "2026-02-24",
+            "2026-03-03",
+            "2026-03-17"
+          ],
+          "occurrenceNotes": {
+            "2026-01-27": [
+              "Assignments: Group Discussion Assignment 2",
+              "Weight: 5%"
+            ],
+            "2026-02-10": [
+              "Assignments: Group Discussion Assignment 3",
+              "Weight: 5%"
+            ],
+            "2026-03-10": [
+              "Assignments: Group Discussion Assignment 4",
+              "Weight: 5%"
+            ],
+            "2026-03-24": [
+              "Assignments: Group Discussion Assignment 5",
+              "Weight: 5%"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Group Discussion Assignment 2 | January 27 | in class | 5"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Group Discussion Assignment 3 | February 10 | in class | 5"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Group Discussion Assignment 4 | March 10 | in class | 5"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Group Discussion Assignment 5 | March 24 | in class | 5"
+          }
+        ]
+      },
+      {
+        "id": "w1yfvh",
+        "label": "Lecture LEC 001",
+        "title": "PHIL 302/GSJ 304/GSJ 302 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EV3 4412",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "PHIL 302 / GSJ 304 / GSJ 302 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 10:00AM - 11:20AM EV3 4412 Carla Fehr carla.fehr@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Gender Issues.html",
+    "courseCode": "GSJ 222/PHIL 202",
+    "courseName": "Gender Issues",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "18ow6zc",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DWE 2527",
+        "instructorName": "Katy Fulfer",
+        "instructorEmail": "kfulfer@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 10,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "m5auq8",
+        "label": "A Proposal Outlining your plan for the Project will be",
+        "title": "GSJ 222/PHIL 202 A Proposal Outlining your plan for the Project will be @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "A proposal outlining your plan for the project will be due on Friday, March 20 by 11:59 p.m. through the Learn drop box."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-20",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "A proposal outlining your plan for the project will be due on Friday, March 20 by 11:59 p.m. through the Learn drop box."
+          }
+        ]
+      },
+      {
+        "id": "1o1wfnq",
+        "label": "Five Critical Concepts Project",
+        "title": "GSJ 222/PHIL 202 Five Critical Concepts Project @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: Required to pass the course.",
+          "The Five Critical Concepts Project will be due on Monday, April 6 by 11:59 p.m. through the Learn drop box."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Five Critical Concepts Project + revisions (usually due a week after receiving comments) | M April 6 | LEARN dropbox | Required to pass the course."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "The Five Critical Concepts Project will be due on Monday, April 6 by 11:59 p.m. through the Learn drop box."
+          }
+        ]
+      },
+      {
+        "id": "1wbmmg8",
+        "label": "Five Critical Concepts Project",
+        "title": "GSJ 222/PHIL 202 Five Critical Concepts Project @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Complete the Five Critical Concepts Project by April 24."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-24",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Complete the Five Critical Concepts Project by April 24."
+          }
+        ]
+      },
+      {
+        "id": "atoo9u",
+        "label": "Passage Analysis",
+        "title": "GSJ 222/PHIL 202 Passage Analysis @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: Required to pass the course."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-11",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Passage Analysis + revisions (usually due a week after receiving comments) | W Feb. 11 | In-person, in class (Make-up days: Feb. 13 or 27) | Required to pass the course."
+          }
+        ]
+      },
+      {
+        "id": "19lwb2t",
+        "label": "Passage Analysis",
+        "title": "GSJ 222/PHIL 202 Passage Analysis @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Make-up days for the Passage Analysis: Fridays, February 13, 27"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Make-up days for the Passage Analysis: Fridays, February 13, 27"
+          }
+        ]
+      },
+      {
+        "id": "11d2gc9",
+        "label": "Passage Analysis",
+        "title": "GSJ 222/PHIL 202 Passage Analysis @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Make-up days for the Passage Analysis: Fridays, February 13, 27"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-27",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Make-up days for the Passage Analysis: Fridays, February 13, 27"
+          }
+        ]
+      },
+      {
+        "id": "qsbl3l",
+        "label": "Project Peer Review",
+        "title": "GSJ 222/PHIL 202 Project Peer Review @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "On Wednesday, April 1 class will be devoted to a peer review workshop. Bring an outline or draft of your project to class in a format that can be shared."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "On Wednesday, April 1 class will be devoted to a peer review workshop. Bring an outline or draft of your project to class in a format that can be shared."
+          }
+        ]
+      },
+      {
+        "id": "142fxcb",
+        "label": "Project Proposal",
+        "title": "GSJ 222/PHIL 202 Project Proposal @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: Required to earn at least 80% in the course."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-20",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Proposal for the Five Critical Concepts Project | F March 20 | LEARN dropbox | Required to earn at least 80% in the course."
+          }
+        ]
+      },
+      {
+        "id": "158uz2k",
+        "label": "Self-Assessment",
+        "title": "GSJ 222/PHIL 202 Self-Assessment @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: Required to pass the course.",
+          "The self-assessment will be due on Monday April 13 by 11:59 p.m. through the LEARN drop box."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Self-Assessment | M April 13 | LEARN dropbox | Required to pass the course."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "The self-assessment will be due on Monday April 13 by 11:59 p.m. through the LEARN drop box."
+          }
+        ]
+      },
+      {
+        "id": "18zku12",
+        "label": "Self-Assessment",
+        "title": "GSJ 222/PHIL 202 Self-Assessment @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Complete the Self-Assessment by April 24."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-24",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Complete the Self-Assessment by April 24."
+          }
+        ]
+      },
+      {
+        "id": "46u6b0",
+        "label": "Lecture LEC 001",
+        "title": "GSJ 222/PHIL 202 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DWE 2527",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "GSJ 222 / PHIL 202 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 02:30PM - 03:50PM DWE 2527 Katy Fulfer kfulfer@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Global Health.html",
+    "courseCode": "HLTH 401/GSJ 401",
+    "courseName": "Global Health",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1qzbjwh",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "STC 0010",
+        "instructorName": "Shannon Majowicz",
+        "instructorEmail": "smajowic@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 2,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "1jfpj0i",
+        "label": "Midterm #1",
+        "title": "HLTH 401/GSJ 401 Midterm #1",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-12",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm examination #1 | Thursday, Feb. 12, 2026 | In class | 30%"
+          }
+        ]
+      },
+      {
+        "id": "64lqzn",
+        "label": "Midterm #2",
+        "title": "HLTH 401/GSJ 401 Midterm #2",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-19",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm examination #2 | Thursday, Mar. 19, 2026 | In class | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1ajivk1",
+        "label": "Lecture LEC 001",
+        "title": "HLTH 401/GSJ 401 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "STC 0010",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [
+            "2026-02-12",
+            "2026-03-19"
+          ],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "HLTH 401 / GSJ 401 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM STC 0010 Shannon Majowicz smajowic@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Science Fiction.html",
+    "courseCode": "ENGL 208B",
+    "courseName": "Science Fiction",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1osqhp5",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "RCH 206",
+        "instructorName": "Michael Hancock",
+        "instructorEmail": "michael.hancock@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 14:30-15:50"
+      },
+      {
+        "id": "1nyrom8",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "HH 150",
+        "instructorName": "Michael Hancock",
+        "instructorEmail": "michael.hancock@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 2,
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "1eqmt40",
+        "label": "April 13 Reflection Paper",
+        "title": "ENGL 208B April 13 Reflection Paper",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "April 13 Reflection Paper due"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "April 13 Reflection Paper due"
+          }
+        ]
+      },
+      {
+        "id": "1mr4lck",
+        "label": "Second Essay / Project",
+        "title": "ENGL 208B Second Essay / Project",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Second Essay / Project (Apr 6)"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Second Essay / Project (Apr 6)"
+          }
+        ]
+      },
+      {
+        "id": "1dn9cns",
+        "label": "Lecture LEC 001",
+        "title": "ENGL 208B (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "HH 150",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ENGL 208B 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 02:30PM - 03:50PM HH 150 Michael Hancock michael.hancock@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "qc89tp",
+        "label": "Lecture LEC 002",
+        "title": "ENGL 208B (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 206",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ENGL 208B 002 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM RCH 206 Michael Hancock michael.hancock@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Sexuality and the Law.html",
+    "courseCode": "GSJ 326/LS 325/SOC 325",
+    "courseName": "Sexuality and the Law",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "jt65w5",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "DWE 3518",
+        "instructorName": "Allison Chenier",
+        "instructorEmail": "achenier@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO 11:30-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 2,
+      "Lecture": 1,
+      "Office Hours": 1
+    },
+    "events": [
+      {
+        "id": "qwi2i4",
+        "label": "Midterm",
+        "title": "GSJ 326/LS 325/SOC 325 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "MIDTERM",
+          "9 | March 2 | MIDTERM | No readings",
+          "Weight: 25%",
+          "The midterm will take place in class on March 2."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-02",
+          "startTime": "11:30",
+          "endTime": "14:20",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | March 2 | MIDTERM | No readings"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | March 2 | In class | 25%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "The midterm will take place in class on March 2."
+          }
+        ]
+      },
+      {
+        "id": "jfhcz7",
+        "label": "Critical Reflection",
+        "title": "GSJ 326/LS 325/SOC 325 Critical Reflection @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "*CRITICAL REFLECTION DUE by 11:59pm *",
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Feb 2 | Cycle of sexual offending Types and typologies Victims *CRITICAL REFLECTION DUE by 11:59pm * | · Ch. 4 · Ch. 5 · Ch. 9"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Critical reflection | February 2 by 11:59 pm | LEARN drop box | 10%"
+          }
+        ]
+      },
+      {
+        "id": "wp9mjd",
+        "label": "Workshop Assignment",
+        "title": "GSJ 326/LS 325/SOC 325 Workshop Assignment @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "*Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8",
+          "*Workshop assignment due Sunday March 29th at 11:59 pm*",
+          "Weight: 25%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-29",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | March 23 | Sexual offending in institutional settings *Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8 · Colpitts (2022)"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Workshop assignment | March 29th by 11:59 pm | LEARN drop box | 25%"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "*Workshop assignment due Sunday March 29th at 11:59 pm*"
+          }
+        ]
+      },
+      {
+        "id": "plovz1",
+        "label": "Lecture LEC 001",
+        "title": "GSJ 326/LS 325/SOC 325 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "DWE 3518",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "14:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-02-16",
+            "2026-03-02"
+          ],
+          "occurrenceNotes": {
+            "2026-01-05": [
+              "Intro and syllabus | · No readings"
+            ],
+            "2026-01-12": [
+              "Social construction of sexuality and sex behaviours | · Scherrer (2008)\n· Seidman (2006)"
+            ],
+            "2026-01-19": [
+              "Sexual offences and offenders\nHistorical perspectives | · Ch. 1\n· Ch. 2\n· DeBlock et al. (2013)\n· Young (2008)"
+            ],
+            "2026-01-26": [
+              "Theories of sexual offending | · Ch. 3 (pp. 55-69)\n· Federoff et al. (1997)"
+            ],
+            "2026-02-02": [
+              "Cycle of sexual offending\nTypes and typologies\nVictims\n*CRITICAL REFLECTION DUE by 11:59pm * | · Ch. 4\n· Ch. 5\n· Ch. 9"
+            ],
+            "2026-02-09": [
+              "Nuisance sex behaviours\nDangerous sex crimes | · Ch. 3 (pp. 45-53)\n· Burgess et al. (1986)\n· Joyal and Carpentier (2017)"
+            ],
+            "2026-02-23": [
+              "Prostitution\nSex work | · Davies (2015)\n· Jeffrey and MacDonald (2006)\n· Sterling and van der Meulen (2008)"
+            ],
+            "2026-03-09": [
+              "Commercial sexual exploitation of children\nPedophilia | · Ch. 6\n· Ch. 7\n· Paquette et al. (2020)\n· Seto (2012)"
+            ],
+            "2026-03-16": [
+              "Sexual assault | · Dekeseredy & Schwartz (1993)\n· Lopes-Baker et al. (2017)"
+            ],
+            "2026-03-23": [
+              "Sexual offending in institutional settings\n*Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8\n· Colpitts (2022)"
+            ],
+            "2026-03-30": [
+              "Pornography\nAssessment and Treatment\nGUEST LECTURE: COMMUNITY JUSTICE INITIATIVES | · Bridges et al. (2016)\n· Goldsmith et al. (2017)\n· Lussier and Mathesius (2019)\n· Murphy et al. (2009)\n· Rye et al. (2018)"
+            ],
+            "2026-02-16": [
+              "Excluded: NO CLASS READING WEEK :) | No readings :)"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "GSJ 326 / LS 325 / SOC 325 001 [LEC] Mondays - Mondays Jan 5 - Apr 6 11:30AM - 02:20PM DWE 3518 Allison Chenier achenier@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Jan 5 | Intro and syllabus | · No readings"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Jan 12 | Social construction of sexuality and sex behaviours | · Scherrer (2008) · Seidman (2006)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Jan 19 | Sexual offences and offenders Historical perspectives | · Ch. 1 · Ch. 2 · DeBlock et al. (2013) · Young (2008)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Jan 26 | Theories of sexual offending | · Ch. 3 (pp. 55-69) · Federoff et al. (1997)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Feb 2 | Cycle of sexual offending Types and typologies Victims *CRITICAL REFLECTION DUE by 11:59pm * | · Ch. 4 · Ch. 5 · Ch. 9"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Feb 9 | Nuisance sex behaviours Dangerous sex crimes | · Ch. 3 (pp. 45-53) · Burgess et al. (1986) · Joyal and Carpentier (2017)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "8 | Feb 23 | Prostitution Sex work | · Davies (2015) · Jeffrey and MacDonald (2006) · Sterling and van der Meulen (2008)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | March 9 | Commercial sexual exploitation of children Pedophilia | · Ch. 6 · Ch. 7 · Paquette et al. (2020) · Seto (2012)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | March 16 | Sexual assault | · Dekeseredy & Schwartz (1993) · Lopes-Baker et al. (2017)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | March 23 | Sexual offending in institutional settings *Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8 · Colpitts (2022)"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | March 30 | Pornography Assessment and Treatment GUEST LECTURE: COMMUNITY JUSTICE INITIATIVES | · Bridges et al. (2016) · Goldsmith et al. (2017) · Lussier and Mathesius (2019) · Murphy et al. (2009) · Rye et al. ..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "7 | Feb 16 | NO CLASS READING WEEK :) | No readings :)"
+          }
+        ]
+      },
+      {
+        "id": "7ja1bn",
+        "label": "Office Hours with Allison Chenier",
+        "title": "GSJ 326/LS 325/SOC 325 Office Hours @ PAS 2040",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "PAS 2040",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "15:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours: Wednesday, 2:00-3:00 pm"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Studies in Children's Literature.html",
+    "courseCode": "ENGL 208C",
+    "courseName": "Studies in Children's Literature",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1dacz9r",
+        "kind": "LEC",
+        "number": "081",
+        "label": "LEC 081",
+        "location": "Online",
+        "instructorName": "Atefa Abdallah",
+        "instructorEmail": "a24abdallah@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "Online"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 4
+    },
+    "events": [
+      {
+        "id": "4zi0jg",
+        "label": "Introduce Yourself",
+        "title": "ENGL 208C Introduce Yourself",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: ungraded"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-11",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Introduce Yourself | Sunday, January 11, 2026 at 9:00 PM | LEARN Discussions | ungraded"
+          }
+        ]
+      },
+      {
+        "id": "8th0cq",
+        "label": "Comparative Reflection",
+        "title": "ENGL 208C Comparative Reflection @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-08",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Comparative Reflection | Sunday, February 8, 2026 at 11:55 PM | LEARN Dropbox | 20%"
+          }
+        ]
+      },
+      {
+        "id": "zyaf5j",
+        "label": "Peer Review",
+        "title": "ENGL 208C Peer Review @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 3 research essay (16%) and peer review (14%)",
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-15",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Research Essay (16%) and Peer Review (14%) | Peer Review: Sunday, March 15, 2026 at 11:55 PM and Sunday, March 22, 2026 at 11:55 PM Research Essay: Sunday, April 6, 2026 at 11:55 PM | Bongo: Video Assignment and LEARN..."
+          }
+        ]
+      },
+      {
+        "id": "7bcslh",
+        "label": "Peer Review",
+        "title": "ENGL 208C Peer Review @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 3 research essay (16%) and peer review (14%)",
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-22",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Research Essay (16%) and Peer Review (14%) | Peer Review: Sunday, March 15, 2026 at 11:55 PM and Sunday, March 22, 2026 at 11:55 PM Research Essay: Sunday, April 6, 2026 at 11:55 PM | Bongo: Video Assignment and LEARN..."
+          }
+        ]
+      },
+      {
+        "id": "10p7jna",
+        "label": "Research Essay",
+        "title": "ENGL 208C Research Essay @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 3 research essay (16%) and peer review (14%)",
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Research Essay (16%) and Peer Review (14%) | Peer Review: Sunday, March 15, 2026 at 11:55 PM and Sunday, March 22, 2026 at 11:55 PM Research Essay: Sunday, April 6, 2026 at 11:55 PM | Bongo: Video Assignment and LEARN..."
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans:wght@400;700&display=swap');
+
+html {
+  font-synthesis-weight: none;
+}
+
+/* Normalize Figma Make font aliases like "Inter:Bold" back to the real web fonts. */
+[class*="font-['Inter:Regular',sans-serif]"],
+[class*="font-['Inter:Medium',sans-serif]"],
+[class*="font-['Inter:Semi_Bold',sans-serif]"],
+[class*="font-['Inter:Bold',sans-serif]"] {
+  font-family: 'Inter', sans-serif !important;
+}
+
+[class*="font-['Lexend:Regular',sans-serif]"],
+[class*="font-['Lexend:Medium',sans-serif]"],
+[class*="font-['Lexend:SemiBold',sans-serif]"],
+[class*="font-['Lexend:Bold',sans-serif]"],
+[class*="font-['Lexend:Black',sans-serif]"] {
+  font-family: 'Lexend', sans-serif !important;
+}
+
+[class*="font-['Lexend:Bold','Noto_Sans:Bold',sans-serif]"],
+[class*="font-['Lexend:Regular','Noto_Sans_Symbols:Regular',sans-serif]"],
+[class*="font-['Lexend:Bold','Noto_Sans_Symbols:Bold',sans-serif]"] {
+  font-family: 'Lexend', 'Noto Sans', sans-serif !important;
+}

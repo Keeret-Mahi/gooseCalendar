@@ -1,0 +1,1980 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        Winter 2026:
+        
+        Advanced Topics in Human-Computer Interaction
+        
+    </title>
+    
+<style>
+:root{
+    --border-default: rgba(24, 26, 42, 0.3);
+}
+
+.dynamic-component{
+    font-family:  ui-sans-serf, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    color: rgb(24, 26, 42);
+    text-size-adjust: 100%;
+    line-height: 24px;
+}
+
+
+.dynamic-component .sr-only{
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+.schedule-info table{
+    border: 1px solid var(--border-default);
+    border-collapse: collapse;
+    width: 100%;
+}
+.schedule-info th, .schedule-info td{
+    border: 1px solid var(--border-default);
+    padding: 0.25rem 0.5rem;
+}
+.schedule-info th{
+    font-weight: bold;
+    text-align: start;
+    vertical-align: top;
+}
+.schedule-info .days-visual{
+    display: inline-flex;
+    gap: 0.1rem;
+}
+.schedule-info .days-visual span{
+    color: #bbb;
+    font-weight: bold;
+}
+.schedule-info .days-visual span.present{
+    color: black;
+}
+.schedule-info .day{
+    margin-left: 0.25rem;
+}
+
+.schedule-info .date-range{
+    font-size: smaller;
+    font-style: italic;
+}
+.schedule-info .section{
+    font-weight: normal;
+}
+.schedule-info .class-type{
+    font-size: smaller;
+}
+.schedule-info a{
+    text-decoration: revert;
+    color: revert;
+}
+.schedule-info .instructor-info{
+    margin: 0.5rem 0;
+    display:flex;
+    flex-direction: column;
+}
+.schedule-info .instructor-info a{
+    font-style: italic;
+    white-space: nowrap;
+    opacity: 0.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.schedule-info figcaption{
+    font-size: smaller;
+    text-align: end;
+}
+
+.course-descriptions .description{
+    padding: 0.5rem;
+    border: 1px solid var(--border-default);
+    margin-bottom: 1rem;
+}
+
+.course-descriptions .cd-title{
+    font-size: larger;
+    margin-bottom: 0.5rem;
+}
+
+.course-descriptions .cd-reqs{
+    margin-top: 0.5rem;
+}
+
+</style>
+<style>.UW-header {
+  background-color: black;
+  width: 100%;
+  z-index: 1000;
+  position: relative;
+}
+
+.UW-header>.header-main {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  align-items: center;
+}
+
+.UW-header>.header-main>a {
+  color: white;
+  text-decoration: none;
+}
+
+.UW-header>.header-bar {
+  display: flex;
+}
+
+.UW-header-print {
+  display: none;
+}
+
+.UW-header>.header-bar>div {
+  height: .625rem;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.UW-header .uw-c1 {
+  background-color: #f2eda8;
+}
+
+.UW-header .uw-c2 {
+  background-color: #fae100;
+}
+
+.UW-header .uw-c3 {
+  background-color: #fed34c;
+}
+
+.UW-header .uw-c4 {
+  background-color: #eaab00;
+}
+
+.outline-title h1 {
+  margin-top: 1em;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1ch;
+  align-items: baseline;
+}
+
+
+.outline-title-full{
+  font-size: 60%;
+  width: 100%;
+}
+
+.outline-term{
+  opacity: 0.6;
+  font-size: 80%;
+}
+.outline-sections{
+  opacity: 0.6;
+  font-size: 40%;
+}
+
+#is-student-message {
+  background-color: #f7f7f7;
+  padding: 24px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+details>summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+
+.UW-footer {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: black;
+  color: white;
+  font-size: small;
+  margin-top: 4rem;
+}
+
+.multitable-blank,
+.no-public-access {
+  font-style: italic;
+  margin-bottom: 2rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background-color: #dddee3dd;
+}
+
+.multitable-header{
+  font-weight: bold;
+  font-size: 110%;
+  margin-bottom: 0.3rem;
+}
+
+
+main,
+#revisions,
+.clamp-width {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+  max-width: 72rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+#revisions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+
+#revision-history {
+  position: relative;
+  z-index: 100;
+}
+
+#revision-history>details {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 34ch;
+}
+/* Phones */
+@media (max-width: 600px) {
+  #revisions{
+    grid-template-columns: 1fr;
+  }
+  #revision-history>details {
+    width: 100%;
+    position: relative !important;
+  }
+}
+
+#revision-history>details>summary {
+  cursor: pointer;
+}
+
+#revision-history>details .revision-active {
+  font-weight: bold;
+}
+
+#revision-history>details .revision-active::after {
+  content: "*";
+}
+
+#revision-history ul {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  padding-left: 2rem;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+}
+
+#revision-warning {
+  grid-column: span 2;
+  background-color: #f3efc5;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 1rem;
+}
+
+#revision-warning>p {
+  margin: 0;
+}
+
+.outline-toc {
+  padding-left: 0;
+}
+
+
+
+/* Optional: Add indentation for nested lists */
+.outline-toc ul {
+  padding-left: 2rem;
+  /* list-style: decimal; */
+}
+
+.outline-toc li {
+  margin-bottom: 0.1rem;
+}
+
+/* .outline-toc ul ul{
+  list-style: lower-alpha;
+}
+
+.outline-toc ul ul ul{
+  list-style: lower-roman;
+}
+.outline-toc ul ul ul ul{
+  list-style: disc;
+} */
+.outline-toc a {
+  color: inherit;
+}
+
+.outline-references-links {
+  display: none;
+}
+
+.outline-toc h2 {
+  margin-top: 0;
+}
+
+
+body {
+  margin: 0;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  line-height: 1.4285;
+  font-weight: 400;
+  font-size: 12pt;
+  color: #000000;
+  background-color: #ffffff;
+}
+
+hr {
+  margin: 1rem 0;
+  color: inherit;
+  opacity: 0.25;
+}
+
+h6,
+.h6,
+h5,
+.h5,
+h4,
+.h4,
+h3,
+.h3,
+h2,
+.h2,
+h1,
+.h1 {
+  margin-top: 1.4em;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--bs-heading-color);
+  margin-left: -8px;
+}
+
+h1,
+.h1 {
+  font-size: calc(1.475rem + 1.5vw);
+}
+
+@media (min-width: 1200px) {
+
+  h1,
+  .h1 {
+    font-size: 2.4rem;
+  }
+}
+
+h2,
+.h2 {
+  font-size: calc(1.1rem + 0.3vw);
+  font-weight: bold;
+}
+
+@media (min-width: 1200px) {
+
+  h2,
+  .h2 {
+    font-size: 1.6rem;
+  }
+}
+
+h3,
+.h3 {
+  font-size: calc(1rem + 0.2vw);
+}
+
+@media (min-width: 1200px) {
+
+  h3,
+  .h3 {
+    font-size: 1.4rem;
+  }
+}
+
+h4,
+.h4 {
+  font-size: calc(0.875rem + 0.15vw);
+}
+
+@media (min-width: 1200px) {
+
+  h4,
+  .h4 {
+    font-size: 1.2rem;
+  }
+}
+
+h5,
+.h5 {
+  font-size: calc(0.75rem + 0.1vw);
+}
+
+@media (min-width: 1200px) {
+
+  h5,
+  .h5 {
+    font-size: 1rem;
+  }
+}
+
+h6,
+.h6 {
+  font-size: calc(0.625rem + 0.05vw);
+}
+
+@media (min-width: 1200px) {
+
+  h6,
+  .h6 {
+    font-size: 0.875rem;
+  }
+}
+
+/* h3, .h3 {
+font-size: calc(1.3rem + 0.6vw);
+}
+@media (min-width: 1200px) {
+h3, .h3 {
+  font-size: 1.75rem;
+}
+}
+
+h4, .h4 {
+font-size: calc(1.275rem + 0.3vw);
+}
+@media (min-width: 1200px) {
+h4, .h4 {
+  font-size: 1.5rem;
+}
+}
+
+h5, .h5 {
+font-size: 1.25rem;
+}
+
+h6, .h6 {
+font-size: 1rem;
+}
+.html-block {
+    overflow-wrap: break-word;
+} */
+
+.html-block .table,
+.html-block table {
+  height: unset !important;
+  width: 100% !important;
+}
+
+.html-block table td,
+.html-block table th,
+.html-block table tr {
+  height: unset !important;
+  width: unset !important;
+  padding: 0.25rem 0.5rem !important;
+}
+
+figure, .multitable-container{
+  overflow-x: auto;
+  max-width: 100%;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+
+.schedule-info table {
+  margin-bottom: 0;
+}
+
+.dynamic-component {
+  font-family: inherit;
+  line-height: inherit;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+abbr[title] {
+  -webkit-text-decoration: underline dotted;
+  text-decoration: underline dotted;
+  cursor: help;
+  -webkit-text-decoration-skip-ink: none;
+  text-decoration-skip-ink: none;
+}
+
+address {
+  margin-bottom: 1rem;
+  font-style: normal;
+  line-height: inherit;
+}
+
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+ol,
+ul,
+dl {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+ol ol,
+ul ul,
+ol ul,
+ul ol {
+  margin-bottom: 0;
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin-bottom: 0.5rem;
+  margin-left: 0;
+}
+
+blockquote {
+  margin: 0 0 1rem;
+}
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+small,
+.small {
+  font-size: 0.875em;
+}
+
+mark,
+.mark {
+  padding: 0.1875em;
+  color: var(--bs-highlight-color);
+  background-color: var(--bs-highlight-bg);
+}
+
+sub,
+sup {
+  position: relative;
+  font-size: 0.75em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+
+
+pre,
+code,
+kbd,
+samp {
+  font-family: var(--bs-font-monospace);
+  font-size: 1em;
+}
+
+
+pre:has(code) {
+  font-family: monospace;
+  color: white;
+  background-color: #181a2a;
+  overflow-x: auto;
+
+  font-weight: 400;
+  font-size: 0.8em;
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+  border-radius: 0.375rem;
+  padding-top: 0.8571429em;
+  padding-right: 1.1428571em;
+  padding-bottom: 0.8571429em;
+  padding-left: 1.1428571em;
+}
+
+a>code {
+  color: inherit;
+}
+
+/* The last paragraph in any td or th should have no margin-bottom */
+th>p:last-child,
+td>p:last-child {
+  margin-bottom: 0;
+}
+
+/* TH needs a bg color (slightly transparent grey */
+th {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+table {
+  caption-side: bottom;
+  border-collapse: collapse;
+  border: 1px solid var(--border-default);
+  margin-bottom: 1rem;
+  width: 100%;
+  min-width: 360px;
+}
+
+td, th{
+  min-width: 12ch;
+}
+th {
+  text-align: inherit;
+  text-align: -webkit-match-parent;
+}
+
+thead,
+tbody,
+tfoot,
+tr,
+td,
+th {
+  border-color: inherit;
+  border-style: solid;
+  border: 1px solid var(--border-default);
+  padding: 0.25rem 0.5rem;
+}
+
+
+
+.table {
+  --bs-table-color-type: initial;
+  --bs-table-bg-type: initial;
+  --bs-table-color-state: initial;
+  --bs-table-bg-state: initial;
+  --bs-table-color: var(--bs-emphasis-color);
+  --bs-table-bg: var(--bs-body-bg);
+  --bs-table-border-color: var(--bs-border-color);
+  --bs-table-accent-bg: transparent;
+  --bs-table-striped-color: var(--bs-emphasis-color);
+  --bs-table-striped-bg: rgba(var(--bs-emphasis-color-rgb), 0.05);
+  --bs-table-active-color: var(--bs-emphasis-color);
+  --bs-table-active-bg: rgba(var(--bs-emphasis-color-rgb), 0.1);
+  --bs-table-hover-color: var(--bs-emphasis-color);
+  --bs-table-hover-bg: rgba(var(--bs-emphasis-color-rgb), 0.075);
+  width: 100%;
+  margin-bottom: 1rem;
+  vertical-align: top;
+  border-color: var(--bs-table-border-color);
+}
+
+.table> :not(caption)>*>* {
+  padding: 0.5rem 0.5rem;
+  color: var(--bs-table-color-state, var(--bs-table-color-type, var(--bs-table-color)));
+  background-color: var(--bs-table-bg);
+  /*
+border-bottom-width: var(--bs-border-width);
+box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state, var(--bs-table-bg-type, var(--bs-table-accent-bg)));
+*/
+}
+
+.table>tbody {
+  vertical-align: inherit;
+}
+
+.table>thead {
+  vertical-align: bottom;
+}
+
+.table-group-divider {
+  border-top: calc(var(--bs-border-width) * 2) solid currentcolor;
+}
+
+.caption-top {
+  caption-side: top;
+}
+
+.table-sm> :not(caption)>*>* {
+  padding: 0.25rem 0.25rem;
+}
+
+.table-bordered> :not(caption)>* {
+  border-width: var(--bs-border-width) 0;
+}
+
+.table-bordered> :not(caption)>*>* {
+  border-width: 0 var(--bs-border-width);
+}
+
+.table-borderless> :not(caption)>*>* {
+  border-bottom-width: 0;
+}
+
+.table-borderless> :not(:first-child) {
+  border-top-width: 0;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+  --bs-table-color-type: var(--bs-table-striped-color);
+  --bs-table-bg-type: var(--bs-table-striped-bg);
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+@media (max-width: 575.98px) {
+  .table-responsive-sm {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .table-responsive-md {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .table-responsive-lg {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .table-responsive-xl {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 1399.98px) {
+  .table-responsive-xxl {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media print {
+  body{
+    font-size: 10pt;
+  }
+  @page {
+    margin: 10mm 10mm 10mm 10mm;
+  }
+
+  /* All your print styles go here */
+  .UW-footer {
+    color: black;
+    background-color: white;
+  }
+
+  .UW-header {
+    display: none;
+  }
+
+  .UW-header-print {
+    display: block;
+  }
+
+  .outline-toc {
+    display: none;
+  }
+
+  .outline-body {
+    padding: 0;
+    margin: 0;
+  }
+
+  figure, .multitable-container{
+    overflow-x: visible;
+    overflow-y: visible;
+  }
+
+  td, th{
+    min-width: initial;
+  }
+
+  h6,
+  .h6,
+  h5,
+  .h5,
+  h4,
+  .h4,
+  h3,
+  .h3,
+  h2,
+  .h2,
+  h1,
+  .h1 {
+    margin-left: 0;
+  }
+
+  a:not(.mailto):after {
+    content: attr(data-link-index);
+    font-weight: normal;
+    vertical-align: super;
+    font-size: small;
+  }
+
+  .outline-references-links {
+    display: block
+  }
+
+  main {
+    margin-left: 8px;
+    margin-right: 0;
+    margin-top: 0;
+    max-width: unset;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-after: avoid;
+  }
+
+  .no-print,
+  .no-download,
+  #revision-history {
+    display: none;
+  }
+}
+
+/* Some patches for nice styling */
+
+/* Make empty last-child paragraphs disappear */
+div p:last-child:empty {
+  display: none;
+}</style>
+<style>@font-face{font-family:KaTeX_AMS;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_AMS-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_AMS-Regular.woff) format("woff"),url(fonts/KaTeX_AMS-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Caligraphic;font-style:normal;font-weight:700;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Caligraphic-Bold.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Caligraphic-Bold.woff) format("woff"),url(fonts/KaTeX_Caligraphic-Bold.ttf) format("truetype")}@font-face{font-family:KaTeX_Caligraphic;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Caligraphic-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Caligraphic-Regular.woff) format("woff"),url(fonts/KaTeX_Caligraphic-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Fraktur;font-style:normal;font-weight:700;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Fraktur-Bold.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Fraktur-Bold.woff) format("woff"),url(fonts/KaTeX_Fraktur-Bold.ttf) format("truetype")}@font-face{font-family:KaTeX_Fraktur;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Fraktur-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Fraktur-Regular.woff) format("woff"),url(fonts/KaTeX_Fraktur-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Main;font-style:normal;font-weight:700;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-Bold.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-Bold.woff) format("woff"),url(fonts/KaTeX_Main-Bold.ttf) format("truetype")}@font-face{font-family:KaTeX_Main;font-style:italic;font-weight:700;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-BoldItalic.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-BoldItalic.woff) format("woff"),url(fonts/KaTeX_Main-BoldItalic.ttf) format("truetype")}@font-face{font-family:KaTeX_Main;font-style:italic;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-Italic.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-Italic.woff) format("woff"),url(fonts/KaTeX_Main-Italic.ttf) format("truetype")}@font-face{font-family:KaTeX_Main;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Main-Regular.woff) format("woff"),url(fonts/KaTeX_Main-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Math;font-style:italic;font-weight:700;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Math-BoldItalic.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Math-BoldItalic.woff) format("woff"),url(fonts/KaTeX_Math-BoldItalic.ttf) format("truetype")}@font-face{font-family:KaTeX_Math;font-style:italic;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Math-Italic.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Math-Italic.woff) format("woff"),url(fonts/KaTeX_Math-Italic.ttf) format("truetype")}@font-face{font-family:"KaTeX_SansSerif";font-style:normal;font-weight:700;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_SansSerif-Bold.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_SansSerif-Bold.woff) format("woff"),url(fonts/KaTeX_SansSerif-Bold.ttf) format("truetype")}@font-face{font-family:"KaTeX_SansSerif";font-style:italic;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_SansSerif-Italic.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_SansSerif-Italic.woff) format("woff"),url(fonts/KaTeX_SansSerif-Italic.ttf) format("truetype")}@font-face{font-family:"KaTeX_SansSerif";font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_SansSerif-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_SansSerif-Regular.woff) format("woff"),url(fonts/KaTeX_SansSerif-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Script;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Script-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Script-Regular.woff) format("woff"),url(fonts/KaTeX_Script-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Size1;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size1-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size1-Regular.woff) format("woff"),url(fonts/KaTeX_Size1-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Size2;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size2-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size2-Regular.woff) format("woff"),url(fonts/KaTeX_Size2-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Size3;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size3-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size3-Regular.woff) format("woff"),url(fonts/KaTeX_Size3-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Size4;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size4-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Size4-Regular.woff) format("woff"),url(fonts/KaTeX_Size4-Regular.ttf) format("truetype")}@font-face{font-family:KaTeX_Typewriter;font-style:normal;font-weight:400;src:url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Typewriter-Regular.woff2) format("woff2"),url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/fonts/fonts/KaTeX_Typewriter-Regular.woff) format("woff"),url(fonts/KaTeX_Typewriter-Regular.ttf) format("truetype")}.katex{font:normal 1.21em KaTeX_Main,Times New Roman,serif;line-height:1.2;text-indent:0;text-rendering:auto}.katex *{-ms-high-contrast-adjust:none!important;border-color:currentColor}.katex .katex-version:after{content:"0.16.11"}.katex .katex-mathml{clip:rect(1px,1px,1px,1px);border:0;height:1px;overflow:hidden;padding:0;position:absolute;width:1px}.katex .katex-html>.newline{display:block}.katex .base{position:relative;white-space:nowrap;width:-webkit-min-content;width:-moz-min-content;width:min-content}.katex .base,.katex .strut{display:inline-block}.katex .textbf{font-weight:700}.katex .textit{font-style:italic}.katex .textrm{font-family:KaTeX_Main}.katex .textsf{font-family:KaTeX_SansSerif}.katex .texttt{font-family:KaTeX_Typewriter}.katex .mathnormal{font-family:KaTeX_Math;font-style:italic}.katex .mathit{font-family:KaTeX_Main;font-style:italic}.katex .mathrm{font-style:normal}.katex .mathbf{font-family:KaTeX_Main;font-weight:700}.katex .boldsymbol{font-family:KaTeX_Math;font-style:italic;font-weight:700}.katex .amsrm,.katex .mathbb,.katex .textbb{font-family:KaTeX_AMS}.katex .mathcal{font-family:KaTeX_Caligraphic}.katex .mathfrak,.katex .textfrak{font-family:KaTeX_Fraktur}.katex .mathboldfrak,.katex .textboldfrak{font-family:KaTeX_Fraktur;font-weight:700}.katex .mathtt{font-family:KaTeX_Typewriter}.katex .mathscr,.katex .textscr{font-family:KaTeX_Script}.katex .mathsf,.katex .textsf{font-family:KaTeX_SansSerif}.katex .mathboldsf,.katex .textboldsf{font-family:KaTeX_SansSerif;font-weight:700}.katex .mathitsf,.katex .textitsf{font-family:KaTeX_SansSerif;font-style:italic}.katex .mainrm{font-family:KaTeX_Main;font-style:normal}.katex .vlist-t{border-collapse:collapse;display:inline-table;table-layout:fixed}.katex .vlist-r{display:table-row}.katex .vlist{display:table-cell;position:relative;vertical-align:bottom}.katex .vlist>span{display:block;height:0;position:relative}.katex .vlist>span>span{display:inline-block}.katex .vlist>span>.pstrut{overflow:hidden;width:0}.katex .vlist-t2{margin-right:-2px}.katex .vlist-s{display:table-cell;font-size:1px;min-width:2px;vertical-align:bottom;width:2px}.katex .vbox{align-items:baseline;display:inline-flex;flex-direction:column}.katex .hbox{width:100%}.katex .hbox,.katex .thinbox{display:inline-flex;flex-direction:row}.katex .thinbox{max-width:0;width:0}.katex .msupsub{text-align:left}.katex .mfrac>span>span{text-align:center}.katex .mfrac .frac-line{border-bottom-style:solid;display:inline-block;width:100%}.katex .hdashline,.katex .hline,.katex .mfrac .frac-line,.katex .overline .overline-line,.katex .rule,.katex .underline .underline-line{min-height:1px}.katex .mspace{display:inline-block}.katex .clap,.katex .llap,.katex .rlap{position:relative;width:0}.katex .clap>.inner,.katex .llap>.inner,.katex .rlap>.inner{position:absolute}.katex .clap>.fix,.katex .llap>.fix,.katex .rlap>.fix{display:inline-block}.katex .llap>.inner{right:0}.katex .clap>.inner,.katex .rlap>.inner{left:0}.katex .clap>.inner>span{margin-left:-50%;margin-right:50%}.katex .rule{border:0 solid;display:inline-block;position:relative}.katex .hline,.katex .overline .overline-line,.katex .underline .underline-line{border-bottom-style:solid;display:inline-block;width:100%}.katex .hdashline{border-bottom-style:dashed;display:inline-block;width:100%}.katex .sqrt>.root{margin-left:.2777777778em;margin-right:-.5555555556em}.katex .fontsize-ensurer.reset-size1.size1,.katex .sizing.reset-size1.size1{font-size:1em}.katex .fontsize-ensurer.reset-size1.size2,.katex .sizing.reset-size1.size2{font-size:1.2em}.katex .fontsize-ensurer.reset-size1.size3,.katex .sizing.reset-size1.size3{font-size:1.4em}.katex .fontsize-ensurer.reset-size1.size4,.katex .sizing.reset-size1.size4{font-size:1.6em}.katex .fontsize-ensurer.reset-size1.size5,.katex .sizing.reset-size1.size5{font-size:1.8em}.katex .fontsize-ensurer.reset-size1.size6,.katex .sizing.reset-size1.size6{font-size:2em}.katex .fontsize-ensurer.reset-size1.size7,.katex .sizing.reset-size1.size7{font-size:2.4em}.katex .fontsize-ensurer.reset-size1.size8,.katex .sizing.reset-size1.size8{font-size:2.88em}.katex .fontsize-ensurer.reset-size1.size9,.katex .sizing.reset-size1.size9{font-size:3.456em}.katex .fontsize-ensurer.reset-size1.size10,.katex .sizing.reset-size1.size10{font-size:4.148em}.katex .fontsize-ensurer.reset-size1.size11,.katex .sizing.reset-size1.size11{font-size:4.976em}.katex .fontsize-ensurer.reset-size2.size1,.katex .sizing.reset-size2.size1{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size2.size2,.katex .sizing.reset-size2.size2{font-size:1em}.katex .fontsize-ensurer.reset-size2.size3,.katex .sizing.reset-size2.size3{font-size:1.1666666667em}.katex .fontsize-ensurer.reset-size2.size4,.katex .sizing.reset-size2.size4{font-size:1.3333333333em}.katex .fontsize-ensurer.reset-size2.size5,.katex .sizing.reset-size2.size5{font-size:1.5em}.katex .fontsize-ensurer.reset-size2.size6,.katex .sizing.reset-size2.size6{font-size:1.6666666667em}.katex .fontsize-ensurer.reset-size2.size7,.katex .sizing.reset-size2.size7{font-size:2em}.katex .fontsize-ensurer.reset-size2.size8,.katex .sizing.reset-size2.size8{font-size:2.4em}.katex .fontsize-ensurer.reset-size2.size9,.katex .sizing.reset-size2.size9{font-size:2.88em}.katex .fontsize-ensurer.reset-size2.size10,.katex .sizing.reset-size2.size10{font-size:3.4566666667em}.katex .fontsize-ensurer.reset-size2.size11,.katex .sizing.reset-size2.size11{font-size:4.1466666667em}.katex .fontsize-ensurer.reset-size3.size1,.katex .sizing.reset-size3.size1{font-size:.7142857143em}.katex .fontsize-ensurer.reset-size3.size2,.katex .sizing.reset-size3.size2{font-size:.8571428571em}.katex .fontsize-ensurer.reset-size3.size3,.katex .sizing.reset-size3.size3{font-size:1em}.katex .fontsize-ensurer.reset-size3.size4,.katex .sizing.reset-size3.size4{font-size:1.1428571429em}.katex .fontsize-ensurer.reset-size3.size5,.katex .sizing.reset-size3.size5{font-size:1.2857142857em}.katex .fontsize-ensurer.reset-size3.size6,.katex .sizing.reset-size3.size6{font-size:1.4285714286em}.katex .fontsize-ensurer.reset-size3.size7,.katex .sizing.reset-size3.size7{font-size:1.7142857143em}.katex .fontsize-ensurer.reset-size3.size8,.katex .sizing.reset-size3.size8{font-size:2.0571428571em}.katex .fontsize-ensurer.reset-size3.size9,.katex .sizing.reset-size3.size9{font-size:2.4685714286em}.katex .fontsize-ensurer.reset-size3.size10,.katex .sizing.reset-size3.size10{font-size:2.9628571429em}.katex .fontsize-ensurer.reset-size3.size11,.katex .sizing.reset-size3.size11{font-size:3.5542857143em}.katex .fontsize-ensurer.reset-size4.size1,.katex .sizing.reset-size4.size1{font-size:.625em}.katex .fontsize-ensurer.reset-size4.size2,.katex .sizing.reset-size4.size2{font-size:.75em}.katex .fontsize-ensurer.reset-size4.size3,.katex .sizing.reset-size4.size3{font-size:.875em}.katex .fontsize-ensurer.reset-size4.size4,.katex .sizing.reset-size4.size4{font-size:1em}.katex .fontsize-ensurer.reset-size4.size5,.katex .sizing.reset-size4.size5{font-size:1.125em}.katex .fontsize-ensurer.reset-size4.size6,.katex .sizing.reset-size4.size6{font-size:1.25em}.katex .fontsize-ensurer.reset-size4.size7,.katex .sizing.reset-size4.size7{font-size:1.5em}.katex .fontsize-ensurer.reset-size4.size8,.katex .sizing.reset-size4.size8{font-size:1.8em}.katex .fontsize-ensurer.reset-size4.size9,.katex .sizing.reset-size4.size9{font-size:2.16em}.katex .fontsize-ensurer.reset-size4.size10,.katex .sizing.reset-size4.size10{font-size:2.5925em}.katex .fontsize-ensurer.reset-size4.size11,.katex .sizing.reset-size4.size11{font-size:3.11em}.katex .fontsize-ensurer.reset-size5.size1,.katex .sizing.reset-size5.size1{font-size:.5555555556em}.katex .fontsize-ensurer.reset-size5.size2,.katex .sizing.reset-size5.size2{font-size:.6666666667em}.katex .fontsize-ensurer.reset-size5.size3,.katex .sizing.reset-size5.size3{font-size:.7777777778em}.katex .fontsize-ensurer.reset-size5.size4,.katex .sizing.reset-size5.size4{font-size:.8888888889em}.katex .fontsize-ensurer.reset-size5.size5,.katex .sizing.reset-size5.size5{font-size:1em}.katex .fontsize-ensurer.reset-size5.size6,.katex .sizing.reset-size5.size6{font-size:1.1111111111em}.katex .fontsize-ensurer.reset-size5.size7,.katex .sizing.reset-size5.size7{font-size:1.3333333333em}.katex .fontsize-ensurer.reset-size5.size8,.katex .sizing.reset-size5.size8{font-size:1.6em}.katex .fontsize-ensurer.reset-size5.size9,.katex .sizing.reset-size5.size9{font-size:1.92em}.katex .fontsize-ensurer.reset-size5.size10,.katex .sizing.reset-size5.size10{font-size:2.3044444444em}.katex .fontsize-ensurer.reset-size5.size11,.katex .sizing.reset-size5.size11{font-size:2.7644444444em}.katex .fontsize-ensurer.reset-size6.size1,.katex .sizing.reset-size6.size1{font-size:.5em}.katex .fontsize-ensurer.reset-size6.size2,.katex .sizing.reset-size6.size2{font-size:.6em}.katex .fontsize-ensurer.reset-size6.size3,.katex .sizing.reset-size6.size3{font-size:.7em}.katex .fontsize-ensurer.reset-size6.size4,.katex .sizing.reset-size6.size4{font-size:.8em}.katex .fontsize-ensurer.reset-size6.size5,.katex .sizing.reset-size6.size5{font-size:.9em}.katex .fontsize-ensurer.reset-size6.size6,.katex .sizing.reset-size6.size6{font-size:1em}.katex .fontsize-ensurer.reset-size6.size7,.katex .sizing.reset-size6.size7{font-size:1.2em}.katex .fontsize-ensurer.reset-size6.size8,.katex .sizing.reset-size6.size8{font-size:1.44em}.katex .fontsize-ensurer.reset-size6.size9,.katex .sizing.reset-size6.size9{font-size:1.728em}.katex .fontsize-ensurer.reset-size6.size10,.katex .sizing.reset-size6.size10{font-size:2.074em}.katex .fontsize-ensurer.reset-size6.size11,.katex .sizing.reset-size6.size11{font-size:2.488em}.katex .fontsize-ensurer.reset-size7.size1,.katex .sizing.reset-size7.size1{font-size:.4166666667em}.katex .fontsize-ensurer.reset-size7.size2,.katex .sizing.reset-size7.size2{font-size:.5em}.katex .fontsize-ensurer.reset-size7.size3,.katex .sizing.reset-size7.size3{font-size:.5833333333em}.katex .fontsize-ensurer.reset-size7.size4,.katex .sizing.reset-size7.size4{font-size:.6666666667em}.katex .fontsize-ensurer.reset-size7.size5,.katex .sizing.reset-size7.size5{font-size:.75em}.katex .fontsize-ensurer.reset-size7.size6,.katex .sizing.reset-size7.size6{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size7.size7,.katex .sizing.reset-size7.size7{font-size:1em}.katex .fontsize-ensurer.reset-size7.size8,.katex .sizing.reset-size7.size8{font-size:1.2em}.katex .fontsize-ensurer.reset-size7.size9,.katex .sizing.reset-size7.size9{font-size:1.44em}.katex .fontsize-ensurer.reset-size7.size10,.katex .sizing.reset-size7.size10{font-size:1.7283333333em}.katex .fontsize-ensurer.reset-size7.size11,.katex .sizing.reset-size7.size11{font-size:2.0733333333em}.katex .fontsize-ensurer.reset-size8.size1,.katex .sizing.reset-size8.size1{font-size:.3472222222em}.katex .fontsize-ensurer.reset-size8.size2,.katex .sizing.reset-size8.size2{font-size:.4166666667em}.katex .fontsize-ensurer.reset-size8.size3,.katex .sizing.reset-size8.size3{font-size:.4861111111em}.katex .fontsize-ensurer.reset-size8.size4,.katex .sizing.reset-size8.size4{font-size:.5555555556em}.katex .fontsize-ensurer.reset-size8.size5,.katex .sizing.reset-size8.size5{font-size:.625em}.katex .fontsize-ensurer.reset-size8.size6,.katex .sizing.reset-size8.size6{font-size:.6944444444em}.katex .fontsize-ensurer.reset-size8.size7,.katex .sizing.reset-size8.size7{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size8.size8,.katex .sizing.reset-size8.size8{font-size:1em}.katex .fontsize-ensurer.reset-size8.size9,.katex .sizing.reset-size8.size9{font-size:1.2em}.katex .fontsize-ensurer.reset-size8.size10,.katex .sizing.reset-size8.size10{font-size:1.4402777778em}.katex .fontsize-ensurer.reset-size8.size11,.katex .sizing.reset-size8.size11{font-size:1.7277777778em}.katex .fontsize-ensurer.reset-size9.size1,.katex .sizing.reset-size9.size1{font-size:.2893518519em}.katex .fontsize-ensurer.reset-size9.size2,.katex .sizing.reset-size9.size2{font-size:.3472222222em}.katex .fontsize-ensurer.reset-size9.size3,.katex .sizing.reset-size9.size3{font-size:.4050925926em}.katex .fontsize-ensurer.reset-size9.size4,.katex .sizing.reset-size9.size4{font-size:.462962963em}.katex .fontsize-ensurer.reset-size9.size5,.katex .sizing.reset-size9.size5{font-size:.5208333333em}.katex .fontsize-ensurer.reset-size9.size6,.katex .sizing.reset-size9.size6{font-size:.5787037037em}.katex .fontsize-ensurer.reset-size9.size7,.katex .sizing.reset-size9.size7{font-size:.6944444444em}.katex .fontsize-ensurer.reset-size9.size8,.katex .sizing.reset-size9.size8{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size9.size9,.katex .sizing.reset-size9.size9{font-size:1em}.katex .fontsize-ensurer.reset-size9.size10,.katex .sizing.reset-size9.size10{font-size:1.2002314815em}.katex .fontsize-ensurer.reset-size9.size11,.katex .sizing.reset-size9.size11{font-size:1.4398148148em}.katex .fontsize-ensurer.reset-size10.size1,.katex .sizing.reset-size10.size1{font-size:.2410800386em}.katex .fontsize-ensurer.reset-size10.size2,.katex .sizing.reset-size10.size2{font-size:.2892960463em}.katex .fontsize-ensurer.reset-size10.size3,.katex .sizing.reset-size10.size3{font-size:.337512054em}.katex .fontsize-ensurer.reset-size10.size4,.katex .sizing.reset-size10.size4{font-size:.3857280617em}.katex .fontsize-ensurer.reset-size10.size5,.katex .sizing.reset-size10.size5{font-size:.4339440694em}.katex .fontsize-ensurer.reset-size10.size6,.katex .sizing.reset-size10.size6{font-size:.4821600771em}.katex .fontsize-ensurer.reset-size10.size7,.katex .sizing.reset-size10.size7{font-size:.5785920926em}.katex .fontsize-ensurer.reset-size10.size8,.katex .sizing.reset-size10.size8{font-size:.6943105111em}.katex .fontsize-ensurer.reset-size10.size9,.katex .sizing.reset-size10.size9{font-size:.8331726133em}.katex .fontsize-ensurer.reset-size10.size10,.katex .sizing.reset-size10.size10{font-size:1em}.katex .fontsize-ensurer.reset-size10.size11,.katex .sizing.reset-size10.size11{font-size:1.1996142719em}.katex .fontsize-ensurer.reset-size11.size1,.katex .sizing.reset-size11.size1{font-size:.2009646302em}.katex .fontsize-ensurer.reset-size11.size2,.katex .sizing.reset-size11.size2{font-size:.2411575563em}.katex .fontsize-ensurer.reset-size11.size3,.katex .sizing.reset-size11.size3{font-size:.2813504823em}.katex .fontsize-ensurer.reset-size11.size4,.katex .sizing.reset-size11.size4{font-size:.3215434084em}.katex .fontsize-ensurer.reset-size11.size5,.katex .sizing.reset-size11.size5{font-size:.3617363344em}.katex .fontsize-ensurer.reset-size11.size6,.katex .sizing.reset-size11.size6{font-size:.4019292605em}.katex .fontsize-ensurer.reset-size11.size7,.katex .sizing.reset-size11.size7{font-size:.4823151125em}.katex .fontsize-ensurer.reset-size11.size8,.katex .sizing.reset-size11.size8{font-size:.578778135em}.katex .fontsize-ensurer.reset-size11.size9,.katex .sizing.reset-size11.size9{font-size:.6945337621em}.katex .fontsize-ensurer.reset-size11.size10,.katex .sizing.reset-size11.size10{font-size:.8336012862em}.katex .fontsize-ensurer.reset-size11.size11,.katex .sizing.reset-size11.size11{font-size:1em}.katex .delimsizing.size1{font-family:KaTeX_Size1}.katex .delimsizing.size2{font-family:KaTeX_Size2}.katex .delimsizing.size3{font-family:KaTeX_Size3}.katex .delimsizing.size4{font-family:KaTeX_Size4}.katex .delimsizing.mult .delim-size1>span{font-family:KaTeX_Size1}.katex .delimsizing.mult .delim-size4>span{font-family:KaTeX_Size4}.katex .nulldelimiter{display:inline-block;width:.12em}.katex .delimcenter,.katex .op-symbol{position:relative}.katex .op-symbol.small-op{font-family:KaTeX_Size1}.katex .op-symbol.large-op{font-family:KaTeX_Size2}.katex .accent>.vlist-t,.katex .op-limits>.vlist-t{text-align:center}.katex .accent .accent-body{position:relative}.katex .accent .accent-body:not(.accent-full){width:0}.katex .overlay{display:block}.katex .mtable .vertical-separator{display:inline-block;min-width:1px}.katex .mtable .arraycolsep{display:inline-block}.katex .mtable .col-align-c>.vlist-t{text-align:center}.katex .mtable .col-align-l>.vlist-t{text-align:left}.katex .mtable .col-align-r>.vlist-t{text-align:right}.katex .svg-align{text-align:left}.katex svg{fill:currentColor;stroke:currentColor;fill-rule:nonzero;fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:block;height:inherit;position:absolute;width:100%}.katex svg path{stroke:none}.katex img{border-style:none;max-height:none;max-width:none;min-height:0;min-width:0}.katex .stretchy{display:block;overflow:hidden;position:relative;width:100%}.katex .stretchy:after,.katex .stretchy:before{content:""}.katex .hide-tail{overflow:hidden;position:relative;width:100%}.katex .halfarrow-left{left:0;overflow:hidden;position:absolute;width:50.2%}.katex .halfarrow-right{overflow:hidden;position:absolute;right:0;width:50.2%}.katex .brace-left{left:0;overflow:hidden;position:absolute;width:25.1%}.katex .brace-center{left:25%;overflow:hidden;position:absolute;width:50%}.katex .brace-right{overflow:hidden;position:absolute;right:0;width:25.1%}.katex .x-arrow-pad{padding:0 .5em}.katex .cd-arrow-pad{padding:0 .55556em 0 .27778em}.katex .mover,.katex .munder,.katex .x-arrow{text-align:center}.katex .boxpad{padding:0 .3em}.katex .fbox,.katex .fcolorbox{border:.04em solid;box-sizing:border-box}.katex .cancel-pad{padding:0 .2em}.katex .cancel-lap{margin-left:-.2em;margin-right:-.2em}.katex .sout{border-bottom-style:solid;border-bottom-width:.08em}.katex .angl{border-right:.049em solid;border-top:.049em solid;box-sizing:border-box;margin-right:.03889em}.katex .anglpad{padding:0 .03889em}.katex .eqn-num:before{content:"(" counter(katexEqnNo) ")";counter-increment:katexEqnNo}.katex .mml-eqn-num:before{content:"(" counter(mmlEqnNo) ")";counter-increment:mmlEqnNo}.katex .mtr-glue{width:50%}.katex .cd-vert-arrow{display:inline-block;position:relative}.katex .cd-label-left{display:inline-block;position:absolute;right:calc(50% + .3em);text-align:left}.katex .cd-label-right{display:inline-block;left:calc(50% + .3em);position:absolute;text-align:right}.katex-display{display:block;margin:1em 0;text-align:center}.katex-display>.katex{display:block;text-align:center;white-space:nowrap}.katex-display>.katex>.katex-html{display:block;position:relative}.katex-display>.katex>.katex-html>.tag{position:absolute;right:0}.katex-display.leqno>.katex>.katex-html>.tag{left:0;right:auto}.katex-display.fleqn>.katex{padding-left:2em;text-align:left}body{counter-reset:katexEqnNo mmlEqnNo}
+</style>
+</head>
+
+<body>
+    
+    <div class="UW-header">
+    <div class="header-main">
+        <div class="header-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="198.414" height="47.335"><path fill="#FFF" d="m20.498 47.335-.487-.226c-5.406-2.502-9.772-6.139-12.623-10.513C.552 26.107.326 15.271.088 3.8L.03 1.185 0 0h40.973l-.028 1.186c-.022.88-.04 1.756-.058 2.633-.242 11.464-.468 22.293-7.302 32.778-2.845 4.368-7.2 8.001-12.6 10.513l-.487.225zM46.126 16.332h4.27l3.746 12.255 4.062-12.308h3.411l4.06 12.308 3.75-12.255h4.164l-6.184 18.227h-3.461l-4.082-11.838-4.089 11.838h-3.465zM84.084 26.982l-2.402-5.869-2.403 5.869h4.805zm-4.191-10.654h3.676l7.753 18.23h-4.16l-1.654-4.062h-7.654l-1.656 4.062h-4.062l7.757-18.23zM95.662 20.131h-5.506V16.46h15v3.671h-5.505v14.428h-3.989zM108.185 16.46h13.652v3.536h-9.695v3.675h8.535v3.546h-8.535v3.801h9.824v3.541h-13.781zM134.265 25.252c1.943 0 3.055-1.035 3.055-2.56v-.054c0-1.706-1.193-2.588-3.133-2.588h-3.953v5.201h4.031zm-8.015-8.792h8.277c2.299 0 4.084.644 5.275 1.837 1.008 1.006 1.551 2.424 1.551 4.131v.053c0 2.926-1.574 4.762-3.879 5.616l4.42 6.462h-4.656l-3.877-5.791h-3.127v5.791h-3.984V16.46zM145.746 16.46h3.98v14.481h8.477v3.618h-12.457zM173.892 25.561v-.054c0-3.099-2.273-5.688-5.48-5.688s-5.432 2.534-5.432 5.638v.05c0 3.104 2.275 5.694 5.484 5.694 3.203 0 5.428-2.533 5.428-5.64m-15.078 0v-.054c0-5.142 4.061-9.36 9.65-9.36 5.582 0 9.594 4.164 9.594 9.311v.05c0 5.15-4.062 9.364-9.646 9.364s-9.598-4.165-9.598-9.311M194.253 25.561v-.054c0-3.099-2.277-5.688-5.486-5.688-3.203 0-5.43 2.534-5.43 5.638v.05c0 3.104 2.277 5.694 5.48 5.694 3.208 0 5.436-2.533 5.436-5.64m-15.078 0v-.054c0-5.142 4.059-9.36 9.643-9.36 5.588 0 9.596 4.164 9.596 9.311v.05c0 5.15-4.061 9.364-9.646 9.364-5.585-.001-9.593-4.165-9.593-9.311"></path><g fill="#FFF"><path d="M56.23 7.301V2.533h1.837v4.719c0 1.357.677 2.059 1.797 2.059 1.119 0 1.8-.68 1.8-1.998v-4.78H63.5v4.706c0 2.526-1.421 3.764-3.659 3.764-2.241 0-3.611-1.249-3.611-3.702zM68.378 2.533h1.691l3.909 5.136V2.533h1.811v8.342h-1.562l-4.039-5.303v5.303h-1.811V2.533zM81.007 2.533h1.835v8.342h-1.835V2.533zM87.346 2.533h2.023l2.182 5.875 2.18-5.875h1.978l-3.37 8.398h-1.622l-3.371-8.398zM100.128 2.533h6.291v1.633h-4.469v1.691h3.932V7.49h-3.932v1.753h4.527v1.632h-6.35V2.533zM111.246 2.533h3.812c1.061 0 1.881.297 2.43.848.465.464.715 1.119.715 1.904v.025c0 1.344-.727 2.191-1.787 2.586l2.037 2.979h-2.145l-1.785-2.672h-1.443v2.672h-1.834V2.533zm3.693 4.053c.893 0 1.404-.479 1.404-1.182V5.38c0-.784-.547-1.19-1.439-1.19h-1.824v2.396h1.859zM122.421 9.658l1.084-1.297c.75.619 1.537 1.013 2.488 1.013.752 0 1.205-.298 1.205-.788v-.024c0-.463-.287-.701-1.682-1.06-1.678-.428-2.764-.895-2.764-2.55V4.93c0-1.514 1.217-2.516 2.92-2.516 1.215 0 2.252.381 3.098 1.061l-.953 1.383c-.738-.513-1.465-.822-2.17-.822-.701 0-1.072.32-1.072.727v.023c0 .549.359.729 1.801 1.096 1.691.44 2.645 1.05 2.645 2.502v.025c0 1.655-1.264 2.585-3.062 2.585a5.308 5.308 0 0 1-3.538-1.336zM133.833 2.533h1.834v8.342h-1.834V2.533zM142.83 4.225h-2.539V2.533h6.91v1.691h-2.539v6.65h-1.832V4.225zM154.087 7.585l-3.203-5.052h2.143l1.99 3.348 2.025-3.348h2.084l-3.203 5.016v3.326h-1.836v-3.29zM169.552 6.728v-.021c0-2.375 1.873-4.316 4.447-4.316 2.57 0 4.418 1.918 4.418 4.289v.027c0 2.369-1.871 4.31-4.445 4.31-2.572 0-4.42-1.916-4.42-4.289zm6.946 0v-.021c0-1.432-1.049-2.624-2.525-2.624s-2.502 1.169-2.502 2.597v.027c0 1.428 1.051 2.618 2.529 2.618 1.474 0 2.498-1.167 2.498-2.597zM182.359 2.533h6.35v1.668h-4.518v1.775h3.98v1.669h-3.98v3.229h-1.832V2.533z"></path></g><path fill="#FFD74F" d="m36.349 27.186-15.854-11.97L4.772 27.607c-2.92-8.296-2.808-16.933-3.023-25.795h37.476c-.213 8.712-.108 17.206-2.876 25.374z"></path><path fill="#FFD74F" d="M34.178 32.316a37.772 37.772 0 0 1-1.915 3.289c-2.856 4.387-7.102 7.631-11.766 9.8-4.687-2.169-8.929-5.413-11.785-9.8a36.183 36.183 0 0 1-1.676-2.831L20.495 21.43l13.683 10.886z"></path><path fill="none" stroke="#231F20" stroke-width="1.152" d="M20.497 45.405c-4.687-2.169-8.929-5.413-11.785-9.8C1.746 24.918 2.035 13.564 1.749 1.812h37.476c-.287 11.752.003 23.105-6.962 33.793-2.857 4.387-7.102 7.631-11.766 9.8z"></path><path fill="#CD1543" d="M9.534 8.232c-1.899-.403-3.59-1.812-3.18-3.605.004-.018-.074-.464-.236-.524-.014-.006-.041-.054-.07-.063a.553.553 0 0 1-.193-.095c-.021-.013-.109-.045-.109-.076-.035.073-.026.143-.075.207-.021.025-.048.063-.075.076-.034.016-.037.049-.063.073-.143.143-.066.36-.044.523.007.042.024.094-.027.104-.061.009-.012-.019-.082-.062-.016-.011-.041-.037-.058-.045-.031-.015-.148-.031-.17-.061-.02-.03-.01-.039-.039-.064-.066-.059-.072-.178-.12-.3a.818.818 0 0 1-.028-.152c0-.119-.31-.314-.189-.215.042.033-.006-.049-.173-.09a.876.876 0 0 0-.343-.004c-.024.002-.047.02-.064.032-.119.095-.233.209-.39.215.026-.019.04.014.053.03.075.094.02.215.064.32s.121.184.208.256c.087.066.238-.023.306.095 0 0 .14.034.001.173-.254.259-.539.051-.751.528.32-.138.357.35.492.369.612.082 1.078.189 1.413.811.205.378-.367.396.15.484a.84.84 0 0 1 .571.364c.141.194.159.459.311.642.107.131.148.156.279.266.059.048.246.096.319.114.07.02.112.056.178.081.071.025.146.051.207.1.052.043.182.088.211.146.054.104.01.209.067.315.018.027.1.003.131.014a.317.317 0 0 0 .125.013c.125-.029.154-.039.247-.049.142-.016.125.029.308.02.04 0 .054.029.107.029.034 0 .097.037.107.005.056-.173.148-.343.248-.512.104-.169.094-.187.224-.364-.015.005.169-.122.152-.124M4.797 8.453c.557.299.482 1.038.98 1.277.894.425 1.957.716 2.905.25-.212.658.021 1.211-.07 1.287-.296.236-1.201-.047-1.781-.277-.399-.158-.723.436-1.163.385.021-.055.072-.205.043-.301-.07-.215-.127-.274-.482-.232-.23.024-.134.212-.479.383-.137-.08-.428-.171-.471.087-.021.121-.263-.418-.213-.51.227-.407.271-.501.256-.587-.027-.135-.516-.312-.578-.199-.156.265-.604-.863.722-.789-.356-.23-.315-.27-.233-.541.01-.039-.124-.177-.213-.082-.03-.106.04-.218.122-.229.22-.032.433-.042.655.078"></path><path fill="#CD1543" d="M7.432 5.725c.804.186 2.006-.851 2.702.371-.514-.188-2.036.628-2.702-.371M14.153 7.502c-.015 1.047-1.101 2.177-.22 3.176-.361-.006-.787-.131-1.037-.332-.14-.112-.108.498-.089.625.016.106-.668-.646-.925-.465-.727.523-1.042.738-2.12.778-.299.011-.455.253-.54.514-.244-.5-.064-1.637.077-2.141.382-1.386 1.773-1.796 2.889-2.46.799-.474 1.142-1.405 1.102-2.313.568.714.877 1.727.863 2.618"></path><path fill="#CD1543" d="M9.047 19.293c.136.031.034.143-.02.179a.881.881 0 0 0-.256.274c-.053.084-.091.171-.069.274.012.075.037.139.065.211.019.041.057.064.087.1a.447.447 0 0 1 .065.08c-.029-.105.118-.212.152-.193.69.402.731-.411 1.146-.687.175-.119.572.019.471.378.412-.222.533-.775.855-1.123.709-.77 1.706-1.284 2.651-1.701-.343-.361-.846-.669-1.101-1.084-.126-.207-.277-.611.002-.536 1.163.302 1.814-.405 1.941-1.321 1.722.225 2.171-1.403 2.402-2.632.112-.598.439-.651.083-1.665-.149-.426.762-.565.606-1.3-.043-.203-.293-.405-.44-.428.14.396-.522.493-.596.656-.111.255-.275.457-.296.72-.56-.774-.107-1.709.42-2.436.767-1.058 2.36-.503 3.031.179.013-.342-.254-.775-.471-.986.627-.081 1.307.302 2.163-.15.493-.265.991-.489 1.222-1.072-1.049.144-2.473-.664-3.419-.83-1.763-.307-2.946.897-3.578 2.332-.629 1.434-.228 2.503.456 3.575.173.271-.605.094-.912.252-.298.154-.42.521-.352.848.375-.403 1.373-.155 1.463.537.122.93-.818 2.289-1.727 1.883-.972-.437-1.523-1.463-1.846-2.615-.833.715-2.367.124-3.082.822-.679.665 1.059 1.115 1.733 1.43.249.118.498.371.458.686-1.059-.62-2.335.083-2.274 1.215.049.846 1.085 1.371 1.945 1.443.36.03.576.428.139.701-.764.479-1.618 1.014-2.443.147-.138-.145-.631-.052-.73.21a1.089 1.089 0 0 0-.043.451c.046-.076.098-.188.167-.18.081.012.181.099.17.158-.071.423-.629.15-.802.479-.003.007-.012.015-.018.023-.01.026-.024.049-.038.074-.112.223-.267.366.01.539-.006-.041.138.179.136.218.013-.206.226-.2.226-.2l.124.014.124.051z"></path><path fill="#CD1543" d="M5.462 15.31c-.108-.033-.223.007-.331.057-.069.028-.152-.003-.194.066-.023.044-.041.091-.026.138.006.027.018.074.04.091-.146-.013-.281-.11-.394-.21-.035-.031-.059-.07-.094-.104-.021-.024-.02-.067-.032-.098-.017-.037-.011-.074-.011-.109a.604.604 0 0 1 .039-.295c.021-.043.04-.085.072-.123.023-.03.048-.053.075-.079a.598.598 0 0 1 .256-.155.63.63 0 0 1 .434.029c.108.048.241.042.354.073.061.017.175-.158.094-.181-.362-.086-.36-.183-.496-.551-.062-.07-.146.013-.181.049-.002-.7.83-.747 1.178-.469.514.413.128 1.225.76 1.447.329.115.678.205 1.017.062.612-.26.002-.875.199-1.392.399-1.05 1.282-1.104 2.333-.095-.941.312-1.38 1.558-.866 2.379-.829-.328-1.876.223-2.459.594.543-.542-.218-.98-.411-.885l-.229.161c-.11.142-.121.284-.257.421a.4.4 0 0 1-.221.111.365.365 0 0 1-.346-.052c-.022-.015-.094.017-.11.034-.067.083-.002.123-.004.152a4.761 4.761 0 0 1-.111-.088c-.08-.059-.169-.111-.217-.192-.049-.077-.083-.281-.028-.395.057-.108.165-.144.239-.22.069-.068-.013-.177-.098-.19M25.655 6.061c.077.05-.005.184-.091.207-.102.031-.243-.013-.331.021-.395.146-.396 1.119-.342 1.006.06-.126.353-.043.54-.008.305.064.536-.559.737-.541.476.045.92.637 1.102 1.023.031.072-.199.074-.218.312.649-.062 1.197.359 1.663.744.229-.396.458-.642.718-.898-.972-.949-2.907-1.24-2.61-2.969.039-.221-.211-.416-.321-.525-.125-.119-.414-.127-.589-.17.185.383-.149.42-.102 1.029 0 .02-.056.006-.075-.002-.115-.051-.216-.123-.325-.192-.102-.062-.195-.043-.307-.03a.433.433 0 0 0-.185.082c-.092.065-.139.152-.204.243-.012.017-.024.037-.039.053a.298.298 0 0 0-.065.12c.052-.004.208.008.235.049.045.07.047.15.102.219.065.086.12.088.219.13a.93.93 0 0 0 .452.079M28.172 5.366c.608-.044 1.211-.511 1.884.277-.124-.06-.27-.079-.345-.021-.743.6-1.646.396-2.122-.346.193-.028.428.103.583.09M30.803 7.571c.998-.505 2.009-.91 2.419-2.15.079-.241.266.361.278.396.527 1.512-.525 3.014-.308 4.557-.353-.215-.75-.363-1.135-.375-1.371-.039-1.696.794-1.772.717-.377-.382-1.456-.705-1.377-.635-.641-.594 1.207-2.158 1.895-2.51M28.073 17.635c.137.211-.045-.12.109.238.726-.303 1.473-.646 2.271-.325-.353-1.624.835-2.019.929-2.263.15-.391-.643-1.166-1.241-.95-.762.272-.445 1.235-.59 1.909-.078.375-.54.645-.923.514-.631-.219-.886-.806-1.039-1.467-.105-.437-.96-.49-1.146-.131-.526 1.02.313-.119.258.655-.009.132-.613.036-.748.492-.093.312.205.523.577.631.07.022-.072-.153.022-.192.068-.023.343.121.31.139-.36.22-.452.729.19.952.005.001-.047-.185 0-.22.505-.375 1.029.029 1.029.018M17.199 27.916c.602.278.794-.021 1.587-.148.108-.02.554.272.685.419-.793.125-1.758.813-2.272-.271M16.879 28.549c-.038-.04-.091-.059-.14-.077a.655.655 0 0 0-.159-.048c-.012-.004-.112-.025-.128-.031-.003.037.042.129.016.15-.062.06-.084.045-.137.121-.018.029-.038.06-.044.092-.014.071-.046.148-.055.229-.002.04.016.135.023.172.005.02.049.103.06.126 0 0 .096.104.09.099.113.113.022.049.159.183.069.067-.032.185-.101.162-.465-.134-.53-.673-.953-.839-.307-.117-.752.122-.799.591.104-.03.213.012.232.098.114.472.807.19.823.522.013.217-.519-.036-.729.101-.276.187-.315.718-.07 1.03.253-.241.566.109.812-.065.172-.122.232-.296.408-.372.533-.235.69.255.572.747.286-.134.964-.271 1.117-.317.281-.073.295-.722.639-.96-.487-.003-1.09-.214-1.227-.689-.012-.051.022-.11.027-.167a1.158 1.158 0 0 0-.073-.523c-.006-.018-.024-.037-.038-.059-.021-.027-.035-.055-.055-.084-.049-.066-.12-.096-.189-.142-.029-.018-.068-.023-.092-.056M13.299 31.903c.212.415-.837-.247-1.231.364-.126.197-.059.642-.059.89.242-.218.482.197.933-.2.05.045.104.072.034.143-.166.168-.259.376-.171.578.055.133.43.396.432.377.039-.273.5 0 .573-.533.03-.221.095-.582.412-.451.289.119.349.448.281.771.462-.152 1.271-.623 1.757-.273.65.47 1.719.662 2.48.898-.506-.35-.666-1.264-.581-1.86-1.198.234-2.459.195-3.569-.32-.305-.14-.263-.493-.354-.781-.103-.325-.514-.624-.886-.599-.201.016-.681.438-.588.457-.031-.008-.03.062-.046.09.089-.056.203 0 .244.099.029.066.059.142.115.196.068.068.187.083.224.154M16.174 38.455c.23-.286.424-.134.525-.131.242.008.227.352.202.569.954-.46 1.862-1.118 2.98-.878-.652-.682-.421-2.146.499-2.324.003 0-.593-.098-.656-.137-.801-.507-1.779-.992-2.317.071-.267.527.224.954.592 1.393.066.08-.042.124-.127.148-.877.224-2.489.356-2.562-.954-.007-.131-.345-.242-.562-.235-.649.021-.64.847-.566.79.143-.109.576-.072.524.263-.049.309-.654-.165-.894.146-.203.259-.197.687-.055.975-.025-.107.095-.185.161-.196.672-.111.71.121.511.775-.015.049.197.458.341.496-.013-.005-.011-.094.009-.124a.16.16 0 0 1 .087-.065c.072-.027.147-.021.222-.039.034-.014.06-.034.094-.057.052-.031.089-.078.128-.125.156-.197.293-.451.557-.475.123-.012.201.043.304.109"></path><path fill="#CD1543" d="M23.127 41.494c.613-.611 1.06-1.425 1.717-2.021-.721-.425-1.613-.868-1.709-1.819-.008-.064.102-.136.125-.124 1.002.563 2.354.606 3.076-.417.583-.826.835-2.171 1.974-2.244-.378-.73.048-1.568.67-1.951-.21-.08-.48-.253-.716-.209-.288.049-.411.438-.739.5.516-1.734-.479-4.157-2.391-4.117-.357.006-.821.295-.939.688-.11.368-.167.833.1 1.149.626.748 1.077 1.564.88 2.556.447-.386.857-.952.843-1.555-.003-.153.27-.044.312-.104.523-.768-.331-1.241-.783-1.724-.126-.131.193-.332.235-.316 1.637.486 1.792 2.506 1.09 3.818-.187-.234-.881-.156-1.115-.236.768.387.568.441.534.569-.055.23-.744.129-.877.3-.23.293-.403.424-.421 1.398.318-.342.734-.864 1.186-.633.965.498-.048 2.166-.958 2.442-.777.233-1.496-.011-1.977-.69-.697-.979-.192-2.165-.685-3.157-.413.1-.319.64-.534.544-.758-.352-1.188-1.162-1.737-1.842-.228.083-.327.293-.547.284-.325-.015-.937-.118-1.067.049-.15.188-.261 1.564 1.079 2.064.91.339 1.628.641 2.201 1.352-.384.03-.518-.155-.83-.169-.311-.011-.505.111-.738.23-.224.117-.484.553-.439.902.208 1.668 2.166 1.686 3.066 2.744.155.178-.236.9-.604 1.195-.314.251-1.067-.377-.946-.91.1-.425-.929-.709-1.287-.225.142-.014.179.08.165.148-.064.391.423.405.407.605-.021.273-.259-.119-.449-.15a1.038 1.038 0 0 0-1.068.393c-.071.1-.235.261-.164.43.317-.154.482.338.777.188.182-.094.327-.252.545-.197.086.023.174.14.096.193-.576.368-1.039.887-.622 1.479a.31.31 0 0 1 .209-.26c.168-.046.392.067.556.015.268-.091.13-.359.233-.548.159-.301.704-.801 1.013-.437.057.064.012.307-.152.313.168-.007.32.16.464.127.041-.004.084-.004.121-.022.031-.017.068-.024.094-.05.067-.069.145-.141.156-.249.124.011.281.021.362-.083.078-.105.176-.188.264-.268"></path><path fill="#CD1543" d="M20.336 29.44c1.073-.3 2.266-.858 2.523-2.051.325.196.428.642.43.915.024 1.492-.628 2.783-.311 4.35.034.178.357.731.211.666-.179-.078-.558-.436-.764-.271-.259.202-.243.526-.369.45-.472-.285-.97-.711-1.198-1.256-.088-.207-.052-.648-.11-.588-.358.392-1.093.475-1.636.557.123-.11.235-.554.215-.646-.428-.215-1.043.518-1.031.424.021-.234.047-.311.07-.375.32-.935.919-1.886 1.97-2.175M12.359 3.989c.278-.008.483-.179.661-.367-.014.156.216.378.131.546-.105.209-.377.337-.427.531-.112.396.21.787-.024 1.182-.69 1.168-2.194.782-3.222 1.037.072-.123-.017-.311-.095-.362.455.058 1.064-.04 1.187-.386.147-.424.223-.739.023-1.089-.327-.579-1.012-.31-1.526-.107-.08-.358.257-.577.45-.626.544-.144 1.036-.379 1.545-.569.443-.166.844.221 1.297.21m-.761.58c.046-.021.068-.052.063-.057-.389-.546-.857-.49-1.056-.005-.135.329.647.223.993.062M32.216 6.188c-.147.126-.394.12-.56.237-.102.072-.194.144-.3.209a2.138 2.138 0 0 1-.25.111c-.151.037-.119.019-.257.037a1.161 1.161 0 0 1-.204.016c-.082 0-.337.008-.417.006-.195-.004-.229.01-.426-.021a1.96 1.96 0 0 1-.326-.087.78.78 0 0 0-.222-.035c.008-.081.018-.163.08-.218.082-.068.099-.006.216-.017l.176.013.091-.004a.556.556 0 0 0 .139-.041c.061-.029.123-.046.177-.087.017-.019.039-.03.059-.052.039-.035.092-.053.128-.098.111-.138.195-.27.205-.443a1.606 1.606 0 0 0 0-.398.267.267 0 0 1-.01-.062c-.008-.104-.06-.198-.11-.295-.298-.568-1.013-.014-1.504-.038 0-.106-.011-.308.045-.378.35-.452.89-.229 1.172-.437.942-.7 1.193-.196 2.181.077.295.082.719-.104.997-.224.07-.028.068.417.034.506-.117.313-.442.298-.555.577-.166.413-.192.993-.627 1.198m-.614-1.879c.043-.023-.034.034 0-.002-.425-.212-.979-.49-1.173.074-.143.419.804.129 1.173-.072"></path><path fill="#CD1543" d="M21.692 26.396c.436.104.912.115 1.193-.267.14.593-.403.667-.502.955-.153.44-.144.88-.569 1.109-.849.453-1.912.997-2.886 1.073.008-.118-.074-.337.082-.346a.807.807 0 0 0 .684-.47c.105-.282-.015-.962-.27-1.095-.294-.156-.551.082-.82.201-.113-.3.353-.793 1.083-.752-.02-.001.361-.414.343-.402.479-.326 1.001-.162 1.662-.006m-1.297.763c.168.062.669-.214.851-.315.043-.023.075-.068.109-.104.003-.003-.003-.013-.011-.013-.144-.031-.272-.043-.414-.061-.104-.011-.184-.08-.29-.102a.14.14 0 0 0-.08.008c-.04.017-.056.045-.087.061-.051.022-.122.022-.17.062-.046.044-.087.084-.1.146a.272.272 0 0 0 .045.229.296.296 0 0 0 .147.089M34.933 22.259c-.014-.143.347-.571.354-.887.033-1.067.679-1.572.698-2.714.004-.299-1.23-.577-1.283-1.221-.025-.318-.133-.778.188-.773.409.008.81-.063 1.101-.319 1.29-1.138.2-2.69.044-4.06-.035-.301.522-.947.506-1.16-.089-1.162-.305-2.225.11-3.367-.324.291-.423.77-.695 1.017-.132.12-.196-.147-.188-.192.164-1.006.563-1.886 1.029-2.838.551-1.135.273-2.055-.746-2.391-.932-.311-1.834.557-1.936 1.453-.092.816.162 1.799.357 2.471.054.195.021.418.062.588.168-.676.187-1.383.175-2.1-.002-.176.138-.409.316-.463.605-.175.921.264.88.605-.133 1.074-.351 1.895-.606 2.959-.292 1.221.144 2.426.271 3.606-.466-.272-.974-.286-1.153.44-.099.388.25.795.357 1.135.011-.463.449-1.098.875-.813.523.347.542 2.015.428 2.238-.255.482-.672.829-1.252.656-.326-.095-.193-.579-.39-.782-1.041-1.077-1.516-2.363-1.604-3.853-.013-.216.102-.788.069-.798-1.362-.562-1.988-.003-2.555.798-.097-.243-.614-.582-.657-.506-.257.48-.183 1.349.203 1.683 1.049.911 2.091 1.52 2.681 2.817-.631.081-1.246.263-1.487.921-.253.689-.166 1.643.559 1.922.593.228 1.608-.025 1.831.004.629.082 1.332.622 1.233 1.217-.005.028-.269 1.418-.87 1.074-.326-.186-.143-.949-.639-1.064-.667-.165-.831.768-.748.688.214-.201.361.131.773.362-1.397-.305-.962.976-.913.836.073-.202.326.006.827-.025.019 0-.109.104-.115.111-.079.131-.117.193-.174.332a.38.38 0 0 0-.017.201.468.468 0 0 0 .067.188c.007.013.02.021.035.03.007.002.026.035.03.035.029.002-.027-.099.054-.105.021-.002.078-.012.094-.006.037.014.086.04.123.048a.59.59 0 0 0 .114.023.368.368 0 0 0 .212-.013c.071-.027.142-.04.207-.087-.088.06.1-.093.094-.074.085-.185.139-.132.159-.165.148-.283.277-.311.604-.271.033.005.093.073.113.101.023.035.09.213.079.146.024.134.105.218.116.342M24.851 9.388c-.084-.056-.114-.185-.174-.238a1.137 1.137 0 0 0-.05-.062.238.238 0 0 1-.054-.113c-.059-.2-.029-.438.151-.568.009-.006.006-.016.009-.023.01-.02.037-.027.042-.044.006-.017.034-.017.025-.04.012.007.013-.012.018-.016.036-.045.038-.129-.031-.152.057.005.115.001.174.017.022.005.048.011.068.014.221.028.499.128.558.353l.077.084c.23.537.152 1.85 1.432 2.165.667.164 1.337.372 2.02.36-.164.665-.162 1.51.364 1.993-.767-.419-1.277-.332-1.947-.963-.296-.281-.99-.669-1.326-.612-.139.026.191-.442-.115-.533-.203-.061-.742-.047-.835.091-.442.666-.908.663-1.064.796.182-.153-.724-.891.399-1.289.106-.039.146-.285.014-.345-.22-.104-.402.048-.619.174-.249.15-.306-.392-.696-.19-.081-1.155.948-1.256 1.562-.533.043.053.215-.013.144-.076l-.146-.25z"></path><path fill="#231F20" d="M4.551 26.738 20.495 14.06l15.968 12.331-.655 1.973L20.495 16.68 5.327 28.835z"></path><path fill="#231F20" d="m6.589 31.951 13.906-11.382 13.978 10.792-.954 1.916-13.024-10.006L7.564 33.773z"></path></svg>
+        </div>
+        
+    </div>
+    <div class="header-bar">
+        <div class="uw-c1"></div>
+        <div class="uw-c2"></div>
+        <div class="uw-c3"></div>
+        <div class="uw-c4"></div>
+    </div>
+</div>
+<div class="UW-header-print">
+    <div class="header-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" version="1.2" viewBox="0 0 789 212"><g id="master signature"><g id="&lt;Group&gt;"><path id="&lt;Path&gt;" d="M194.2 85.2h15.7l13.9 45.1L238.7 85h12.6l15 45.3 13.8-45.1h15.3l-22.8 67.1h-12.7l-15.1-43.6-15 43.6H217z" class="s0"></path><path id="&lt;Compound Path&gt;" fill-rule="evenodd" d="M318.7 85.1h13.5l28.6 67.2h-15.3l-6.1-14.9h-28.2l-6.1 14.9h-15zm15.4 39.3-8.8-21.6-8.9 21.6z" class="s0"></path><path d="M376.8 99.2h-20.3V85.6h55.3v13.6h-20.3v53.1h-14.7zM423 85.6h50.3v13.1h-35.8v13.5H469v13.1h-31.5v14h36.3v13H423z" class="s0"></path><path fill-rule="evenodd" d="M489.6 85.6h30.5c8.4 0 15 2.4 19.4 6.8 3.7 3.7 5.7 8.9 5.7 15.2v.2c0 10.8-5.8 17.6-14.3 20.7l16.3 23.8h-17.1L515.8 131h-11.6v21.3h-14.6zm29.5 32.5c7.2 0 11.3-3.9 11.3-9.5v-.2c0-6.3-4.4-9.5-11.6-9.5h-14.6v19.2z" class="s0"></path><path d="M561.4 85.6h14.7V139h31.2v13.3h-45.9z" class="s0"></path><path fill-rule="evenodd" d="M609.6 119.2v-.2c0-19 15-34.5 35.6-34.5 20.5 0 35.3 15.3 35.3 34.3v.2c0 19-14.9 34.5-35.5 34.5s-35.4-15.4-35.4-34.3zm55.6 0v-.2c0-11.4-8.4-21-20.2-21-11.9 0-20.1 9.4-20.1 20.8v.2c0 11.4 8.4 21 20.3 21 11.8 0 20-9.4 20-20.8zM684.6 119.2v-.2c0-19 15-34.5 35.6-34.5s35.4 15.3 35.4 34.3v.2c0 19-15 34.5-35.6 34.5s-35.4-15.4-35.4-34.3zm55.6 0v-.2c0-11.4-8.4-21-20.2-21-11.8 0-20 9.4-20 20.8v.2c0 11.4 8.4 21 20.2 21 11.8 0 20-9.4 20-20.8z" class="s0"></path><path d="M231.5 51.9V34.3h6.7v17.4c0 5 2.5 7.6 6.6 7.6 4.2 0 6.7-2.5 6.7-7.4V34.3h6.7v17.3c0 9.4-5.2 13.9-13.4 13.9-8.3 0-13.3-4.6-13.3-13.6zM276.2 34.3h6.3l14.4 18.9V34.3h6.6V65h-5.7l-14.9-19.5V65h-6.7zM322.8 34.3h6.7V65h-6.7zM346.1 34.3h7.5l8 21.6 8.1-21.6h7.3l-12.5 31h-5.9zM393.3 34.3h23.2v6H400v6.2h14.5v6.1H400V59h16.7v6h-23.4z" class="s0"></path><path fill-rule="evenodd" d="M434.2 34.3h14.1c3.9 0 6.9 1.1 9 3.1 1.7 1.7 2.6 4.1 2.6 7v.1c0 5-2.7 8.1-6.6 9.6l7.5 10.9h-7.9l-6.6-9.8H441V65h-6.8zm13.7 15c3.3 0 5.1-1.8 5.1-4.4v-.1c0-2.9-2-4.4-5.3-4.4H441v8.9z" class="s0"></path><path d="m475.4 60.6 4-4.8c2.8 2.3 5.7 3.7 9.2 3.7 2.8 0 4.4-1.1 4.4-2.9v-.1c0-1.7-1-2.6-6.1-3.9-6.2-1.6-10.2-3.3-10.2-9.4v-.1c0-5.6 4.5-9.2 10.7-9.2 4.5 0 8.3 1.4 11.4 3.9l-3.5 5.1c-2.7-1.9-5.4-3.1-8-3.1-2.5 0-3.9 1.2-3.9 2.7v.1c0 2 1.3 2.7 6.6 4 6.3 1.7 9.8 3.9 9.8 9.3 0 6.1-4.7 9.6-11.3 9.6-4.7 0-9.4-1.7-13.1-4.9zM517.5 34.3h6.8V65h-6.8zM550.7 40.5h-9.4v-6.2h25.5v6.2h-9.4V65h-6.7zM592.2 52.9l-11.8-18.6h7.9l7.3 12.3 7.5-12.3h7.6l-11.8 18.5V65h-6.7z" class="s0"></path><path fill-rule="evenodd" d="M649.2 49.8v-.1c0-8.8 6.9-15.9 16.4-15.9 9.4 0 16.3 7 16.3 15.8v.1c0 8.7-6.9 15.9-16.4 15.9-9.5 0-16.3-7.1-16.3-15.8zm25.6 0v-.1c0-5.3-3.9-9.7-9.3-9.7-5.5 0-9.3 4.3-9.3 9.6v.1c0 5.2 3.9 9.6 9.4 9.6 5.4 0 9.2-4.3 9.2-9.5z" class="s0"></path><path d="M696.4 34.3h23.4v6.1h-16.7V47h14.7v6.1h-14.7V65h-6.7zM41.6 43.5l-.1-.1.1.1zM127.9 94.3c.1.1 0 0 0 0zM109.6 182.1q0 .1-.1.2zM140.5 45c0 .1.2-.1 0 0z" class="s0"></path><path fill-rule="evenodd" d="m170.4 34.2-.1 1.4-.2 9.4c-.8 40.8-1.6 79.3-25.7 116.3-10 15.2-25.2 27.9-44.1 36.7l-.6.3-.5-.3c-19-8.8-34.2-21.5-44.2-36.7-24.1-37-24.9-75.5-25.7-116.3q-.1-4.7-.3-9.4v-1.4zM73 69.6c-3.1 2.6-8.8.4-11.4 3-2.5 2.5 3.9 4.1 6.4 5.3.9.4 1.8 1.4 1.7 2.5-3.9-2.3-8.7.4-8.4 4.5.1 3.2 4 5.1 7.2 5.4 1.3.1 2.1 1.6.5 2.6-2.9 1.7-6 3.7-9.1.5-.5-.5-2.3-.2-2.7.8-.1.5-.2 1.2-.1 1.7.1-.3.3-.7.6-.7s.7.4.6.6c-.2 1.5-2.3.5-2.9 1.7l-.1.1q-.1.2-.1.3c-.5.8-1 1.4 0 2 0-.1.5.7.5.8 0-.7.8-.7.8-.7h.5l.4.2c.5.1.2.5 0 .7-.4.2-.7.6-1 1-.2.3-.3.6-.3 1q.1.4.3.8l.3.3.3.3c-.2-.3.4-.7.5-.7 2.6 1.5 2.7-1.5 4.3-2.5.6-.4 2.1.1 1.7 1.4 1.5-.8 2-2.9 3.2-4.2 2.6-2.8 6.3-4.7 9.8-6.3-1.3-1.3-3.2-2.4-4.1-4-.5-.7-1-2.2 0-1.9 4.3 1.1 6.7-1.5 7.2-4.9 6.4.8 8-5.2 8.9-9.8.4-2.2 1.6-2.4.3-6.1-.6-1.6 2.8-2.1 2.2-4.8-.1-.8-1.1-1.5-1.6-1.6.5 1.4-1.9 1.8-2.2 2.4-.4.9-1 1.7-1.1 2.7-2.1-2.9-.4-6.3 1.5-9 2.9-3.9 8.8-1.9 11.3.6 0-1.2-1-2.8-1.8-3.6 2.3-.3 4.9 1.1 8-.6 1.8-.9 3.7-1.8 4.5-3.9-3.8.5-9.1-2.5-12.6-3.1-6.5-1.1-10.9 3.3-13.2 8.6-2.4 5.3-.9 9.3 1.6 13.2.7 1-2.2.4-3.3 1-1.1.5-1.6 1.9-1.3 3.1 1.4-1.5 5.1-.6 5.4 2 .4 3.4-3 8.5-6.4 7-3.6-1.7-5.6-5.5-6.8-9.7zm74.9-19.2c-.1-.2-.8-2.4-1.1-1.5-1.5 4.6-5.2 6.1-8.9 8-2.6 1.3-9.4 7.1-7 9.2-.3-.2 3.7 1 5.1 2.4.3.3 1.5-2.8 6.5-2.7 1.5.1 2.9.6 4.2 1.4-.8-5.7 3.1-11.2 1.2-16.8zm-17 15.7zm0-19c1.8.1 4.4-2 5.5.1.2.4.4.7.4 1.1q0 .1.1.2V50c-.1.6-.4 1.1-.8 1.6-.1.2-.3.3-.5.4l-.2.2-.6.3-.6.2h-.3l-.6-.1c-.5.1-.5-.2-.8.1-.3.2-.3.5-.3.8q.4 0 .8.1.6.2 1.2.3c.7.2.8.1 1.6.1h1.5c.3 0 .5 0 .8-.1.5 0 .4 0 .9-.1.2 0 .8-.3.9-.4.4-.2.8-.5 1.1-.8.6-.4 1.5-.4 2-.8l-.1.1c1.6-.7 1.7-2.9 2.3-4.4.4-1 1.6-1 2-2.1.2-.3.2-2-.1-1.9-1 .5-2.6 1.1-3.7.8-3.6-1-4.6-2.8-8.1-.3-1 .8-3 0-4.3 1.7-.2.2-.1 1-.1 1.4zm-4.9 1.3c1.8 2.7 5.1 3.5 7.9 1.3.2-.3.8-.2 1.2 0-2.5-2.9-4.7-1.2-6.9-1-.6.1-1.5-.4-2.2-.3zm-11 1.1c.2-.1.8 0 .9.1.1.3.1.6.3.8.3.4.5.4.8.5.6.3 1.1.4 1.7.3l.2.1c.2.2-.1.7-.4.8-.4.1-.9-.1-1.2 0-1.5.6-1.5 4.2-1.3 3.7.2-.4 1.3-.1 2 0 1.2.2 2-2 2.7-2 1.8.2 3.5 2.4 4.1 3.8.1.3-.7.3-.8 1.2 2.4-.3 4.4 1.3 6.2 2.7.8-1.5 1.7-2.4 2.6-3.3-3.6-3.5-10.7-4.6-9.6-11 .1-.8-.8-1.5-1.2-1.9-.5-.5-1.5-.5-2.2-.7.7 1.5-.5 1.6-.4 3.8 0 .1-.2.1-.2 0-.5-.2-.8-.4-1.3-.7-.3-.2-.7-.1-1.1-.1q-.4.1-.7.3c-.3.3-.5.6-.7.9l-.2.2c0 .1-.2.3-.2.5zm-4.9 17.3c1.4-.8 1.7 1.2 2.6.7.8-.5 1.5-1.1 2.3-.7.5.2.3 1.1-.1 1.3-4.1 1.5-.8 4.2-1.5 4.8.6-.5 2.3-.5 4-3 .3-.5 2.3-.5 3.1-.3 1.1.3-.1 2.1.4 2 1.2-.2 3.8 1.2 4.9 2.2 2.5 2.4 4.4 2 7.2 3.6-2-1.8-2-4.9-1.4-7.4-2.5 0-5-.7-7.4-1.3-4.8-1.2-4.5-6.1-5.3-8l-.3-.4c-.2-.8-1.2-1.1-2.1-1.3h-.2c-.2-.1-.4 0-.7-.1.3.1.3.4.2.6-.1 0-.1.1-.1.1s-.1 0-.1.1-.1.1-.2.2v.1c-.7.4-.8 1.3-.6 2.1l.2.4.2.2c.3.2.4.7.7.9l.5.9c.3.2-.4.5-.5.3-2.3-2.7-6.1-2.3-5.8 2zm3.3 6.1zm44.7 53.2L99.9 79.9l-58.5 46.3q1.3 4.1 2.9 8.1l55.6-44.1 55.3 44q1.6-4.1 2.9-8.1zM57.5 47.3c1.9-.8 4.4-1.8 5.7.4.7 1.3.4 2.4-.1 4-.5 1.3-2.7 1.6-4.4 1.4.3.2.6.9.3 1.4 3.8-1 9.4.4 11.9-3.9.9-1.4-.3-2.9.1-4.4.2-.7 1.2-1.1 1.6-1.9.3-.6-.5-1.5-.5-2-.6.7-1.4 1.3-2.4 1.3-1.7.1-3.2-1.4-4.8-.8-1.9.7-3.7 1.6-5.7 2.1-.8.2-2 1-1.7 2.4zm15.6-.4c.2 3.4-1.1 6.8-4.1 8.6-4.1 2.4-9.2 4-10.6 9.1-.6 1.8-1.2 6.1-.3 7.9.3-1 .9-1.9 2-1.9 4-.1 5.1-.9 7.8-2.9 1-.7 3.5 2.1 3.4 1.7 0-.4-.2-2.7.4-2.3.9.8 2.5 1.2 3.8 1.3-3.3-3.7.8-7.9.8-11.8.1-3.3-1.1-7-3.2-9.7zm-9.9-1.4c.7-1.8 2.5-2 3.9.1l-.2.2c-1.3.6-4.2 1-3.7-.3zM51.5 50c2.4 3.7 8 .7 10 1.4-2.6-4.5-7.1-.7-10-1.4zm-11.1-2.7c-1 .9-2 .2-2.8 1.9 1.2-.5 1.3 1.3 1.8 1.4 2.3.3 4 .7 5.3 3 .7 1.4-1.4 1.5.5 1.8 1 .2 1.6.6 2.1 1.3.5.8.6 1.7 1.2 2.4.4.5.5.6 1 1 .2.2.9.4 1.2.4l.6.3c.3.1.6.2.8.4.2.1.7.3.8.5.2.4 0 .8.2 1.2.1.1.4 0 .5 0 .1.1.4.1.5.1.4-.1.5-.2.9-.2.5-.1.5.1 1.1.1.2 0 .2.1.4.1s.4.1.4 0c.2-.6.6-1.3.9-1.9.4-.6.4-.7.9-1.3-.1 0 .6-.5.5-.5-7-1.5-13.2-6.7-11.7-13.3 0-.1-.3-1.7-.9-2-.1 0-.2-.2-.3-.2q-.3-.1-.7-.3c-.1-.1-.4-.2-.4-.3-.1.3-.1.5-.3.7 0 .1-.1.3-.2.3-.2.1-.2.2-.3.3-.5.5-.2 1.3-.1 1.9 0 .2.1.4-.1.4-.3 0-.1-.1-.3-.2-.1-.1-.2-.2-.3-.2-.1 0-.5-.1-.6-.2 0-.1 0-.2-.1-.3-.3-.2-.3-.6-.5-1.1 0 0-.1-.4-.1-.5 0-.4-.7-.9-.8-.9q-.1-.1-.5-.2c-.4-.1-.8-.1-1.3-.1-.1 0-.1.1-.2.2-.4.3-.8.7-1.4.7.1 0 .1.1.1.2.3.3.1.8.3 1.1.1.4.4.7.7 1 .4.2.9-.1 1.2.3 0 0 .5.2 0 .7zm1.1 23.1c1.3-.6 1-1.4 1.8-1.4 1.3-.2 1.5 0 1.8.8.1.4-.1.9-.2 1.1 1.7.2 2.9-2 4.3-1.4 2.2.9 5.5 1.9 6.6 1 .4-.2-.5-2.3.3-4.7-3.5 1.7-7.5.6-10.8-1-1.8-.8-1.5-3.6-3.6-4.7-.8-.4-1.6-.4-2.4-.3-.3.1-.6.5-.5.9.4-.4.9.1.8.3-.3 1-.4 1.1.9 2-4.9-.3-3.3 3.9-2.7 2.9.2-.4 2.1.2 2.1.7.1.4-.1.7-.9 2.2-.2.3.7 2.3.8 1.9.2-1 1.2-.6 1.7-.3zM40.8 86c.4.4.9.7 1.5.8-.1-.1-.1-.3-.2-.3 0-.2 0-.4.1-.6.2-.2.5-.1.7-.2.4-.2.9-.3 1.3-.2l-.1-.1c.3.1.6.5.3.7-.2.3-.6.4-.8.8-.3.5-.1 1.2 0 1.5.2.3.6.5.9.7 0 0 .3.3.4.3 0-.1-.3-.2 0-.5 0-.1.3-.2.4-.2.4.3.8.4 1.3.2.3 0 .5-.1.8-.4.5-.5.5-1 .9-1.5l.9-.6c.7-.4 3.5 1.2 1.5 3.2 2.2-1.3 6-3.4 9.1-2.2-1.9-3-.3-7.6 3.2-8.7-3.9-3.8-7.2-3.6-8.6.3-.8 1.9 1.5 4.2-.8 5.2-1.2.5-2.5.2-3.7-.3-2.4-.8-.9-3.8-2.8-5.3-1.3-1.1-4.4-.9-4.4 1.7.1-.1.4-.4.7-.2.5 1.4.5 1.7 1.8 2.1.3 0-.1.7-.3.6-.5-.1-.9-.1-1.3-.2-.5-.3-1.1-.3-1.7-.2q-.5.2-.9.6-.1.2-.3.3-.1.2-.2.5c-.2.3-.2.7-.2 1.1 0 .1 0 .2.1.4 0 .1 0 .2.1.3.1.2.2.3.3.4zM75 152.8c.2-.8.4-2.1 1.6-1.6 1 .4 1.3 1.6 1 2.8 1.7-.5 4.7-2.3 6.5-1 2.4 1.7 6.4 2.5 9.2 3.3-1.9-1.3-2.5-4.6-2.2-6.8-4.4.8-9.1.7-13.2-1.2-1.1-.6-.9-1.8-1.3-2.9-.4-1.2-1.9-2.3-3.3-2.2-.7 0-2.5 1.6-2.1 1.7-.2-.1-.1.2-.2.3.3-.2.8 0 .9.3.1.3.2.6.4.8.3.2.7.3.9.6.7 1.5-3.1-1-4.6 1.3-.5.7-.2 2.4-.2 3.3.9-.8 1.8.7 3.4-.7.2.1.4.2.2.5-.7.6-1 1.4-.7 2.1.2.5 1.6 1.5 1.6 1.4.2-1 1.9 0 2.1-2zm75.5-7.8-50.6-40.2L49 145.1q1.8 3.7 3.8 7.3l47.1-37.3 46.8 37.2q2.1-3.6 3.8-7.3zm-40.4-11.5c0-1-.4-2.6-1.6-3.3-.9 4.4-5.4 6.4-9.3 7.5-3.9 1.1-6.1 4.6-7.3 8.1-.1.2-.2.5-.3 1.4 0 .3 2.3-2.4 3.8-1.6.1.4-.3 2-.7 2.4 2-.3 4.7-.6 6-2.1.2-.2.1 1.4.4 2.2.9 2 2.7 3.6 4.4 4.7.5.2.4-1 1.4-1.7.8-.6 2.2.7 2.8 1 .6.2-.6-1.8-.8-2.5-1.1-5.8 1.3-10.5 1.2-16.1zm-1.5-8c-1 1.4-2.8 1.4-4.4 1-2.5-.6-4.4-1.2-6.1 0 0 0-1.4 1.5-1.3 1.5-2.7-.1-4.4 1.7-4 2.8 1-.5 1.9-1.3 3-.8.9.5 1.4 3.1 1 4.1-.3.7-1.3 1.7-2.5 1.7-.6.1-.3.9-.3 1.3 3.6-.3 7.5-2.3 10.6-4 1.6-.8 1.6-2.4 2.1-4.1.4-1 2.4-1.3 1.9-3.5zm-10.5 1zm-10.5 5.6c1.9 4 5.4 1.5 8.4 1-.5-.5-2.1-1.6-2.6-1.5-2.9.4-3.6 1.5-5.8.5zm-1.1 40.6c3.5-1.7 6.9-4.1 11-3.2-2.4-2.6-1.6-8 1.8-8.6.1 0-2.2-.4-2.4-.5-2.9-1.9-6.6-3.7-8.6.2-.9 2 .9 3.6 2.2 5.2.3.3-.1.4-.4.5-3.3.9-9.2 1.3-9.5-3.5 0-.5-1.3-.9-2.1-.9-2.4.1-2.4 3.1-2.1 2.9.5-.4 2.1-.2 2 1-.2 1.2-2.5-.6-3.4.6-.7.9-.7 2.5-.1 3.6-.2-.4.3-.7.5-.8 2.5-.4 2.7.5 1.9 2.9 0 .2.8 1.7 1.3 1.8-.1 0 0-.3 0-.4q.1-.2.3-.3c.3-.1.6 0 .9-.1.1-.1.2-.1.3-.2.2-.1.3-.3.5-.5.6-.7 1.1-1.6 2-1.7.5-.1.8.1 1.2.4.8-1.1 1.6-.5 1.9-.5.9 0 .9 1.3.8 2.1zm44.6-22.1c-.7-.3-1.7-.9-2.6-.8-1.1.2-1.5 1.7-2.7 1.9 1.9-6.4-1.8-15.4-8.9-15.2-1.3 0-3 1-3.5 2.5-.4 1.4-.6 3.1.4 4.3 2.3 2.7 4 5.7 3.3 9.4 1.6-1.4 3.1-3.5 3.1-5.8 0-.5 1-.1 1.1-.3 2-2.9-1.2-4.6-2.9-6.4-.4-.5.8-1.2.9-1.2 6.1 1.8 6.6 9.3 4 14.2-.6-.9-3.2-.6-4.1-.9 2.9 1.4 2.1 1.6 2 2.1-.2.8-2.8.5-3.2 1.1-.9 1.1-1.5 1.6-1.6 5.2 1.2-1.3 2.7-3.2 4.4-2.4 3.5 1.9-.2 8-3.6 9.1-2.8.8-5.5-.1-7.3-2.6-2.6-3.6-.7-8-2.5-11.7-1.5.4-1.2 2.4-2 2-2.8-1.3-4.4-4.3-6.4-6.8-.8.3-1.2 1.1-2 1.1-1.2-.1-3.5-.5-4 .1-.5.8-.9 5.8 4 7.7 3.4 1.2 6 2.4 8.2 5-1.5.1-2-.6-3.1-.6-1.2-.1-1.9.4-2.7.8-.9.4-1.8 2.1-1.7 3.4.8 6.1 8 6.2 11.4 10.1.5.7-.9 3.3-2.3 4.4-1.1.9-3.9-1.4-3.5-3.3.4-1.6-3.4-2.7-4.7-.9.5 0 .6.3.6.6-.2 1.4 1.6 1.5 1.5 2.2-.1 1-1-.4-1.7-.6-1.5-.3-3 .3-3.9 1.5-.3.4-.9 1-.6 1.6 1.1-.6 1.8 1.3 2.9.7.6-.4 1.2-.9 2-.7.3 0 .6.5.3.7-2.1 1.3-3.8 3.3-2.3 5.4.1-.5.5-.8.8-.9.6-.2 1.4.2 2 0 1-.3.5-1.3.9-2 .6-1.1 2.6-2.9 3.8-1.6.2.2 0 1.1-.6 1.2.6-.1 1.2.5 1.7.4.2 0 .3 0 .5-.1.1 0 .2 0 .3-.1.3-.3.5-.6.6-1 .4.1 1 .1 1.3-.3.3-.3.6-.6.9-.8h-.1l.2-.2q-.1.1-.1.2c2.2-2.3 3.8-5.3 6.2-7.4-2.6-1.6-5.9-3.3-6.3-6.8 0-.2.4-.5.5-.4 3.7 2 8.7 2.2 11.4-1.6 2.1-3 3.1-8 7.3-8.3-1.4-2.7.1-5.8 2.4-7.2zm-46.2-11.8c-1.8-.5-2-2.5-3.6-3.1-1.1-.4-2.7.4-2.9 2.2.4-.1.8 0 .8.3.5 1.8 3 .7 3.1 2 0 .8-1.9-.2-2.7.4-1 .6-1.2 2.6-.3 3.7 1-.8 2.1.5 3-.2.7-.4.9-1.1 1.5-1.4 2-.8 2.6 1 2.2 2.8 1-.5 3.5-1 4.1-1.2 1-.3 1.1-2.6 2.3-3.5-1.8 0-4-.8-4.5-2.6 0-.2.1-.4.1-.6.1-.7 0-1.3-.3-1.9 0-.1-.1-.2-.1-.2q-.1-.2-.2-.3c-.2-.3-.4-.4-.7-.6-.1 0-.3-.1-.3-.2-.1-.1-.3-.2-.5-.2q-.3-.2-.6-.2c-.1 0-.4-.1-.5-.1 0 .1.2.4.1.5-.3.2-.3.2-.5.5q-.1.1-.2.3c-.1.3-.2.6-.2.9 0 .1.1.5.1.6 0 .1.2.4.2.5 0 0 .4.3.3.3.5.5.1.2.6.7.3.3-.1.7-.3.6zM140 85.4c.6-1.5-2.4-4.3-4.6-3.5-2.8 1-1.6 4.6-2.1 7-.3 1.4-2 2.4-3.5 1.9-2.3-.8-3.2-2.9-3.8-5.4-.4-1.6-3.6-1.8-4.2-.5-2 3.8 1.1-.4.9 2.5 0 .4-2.2.1-2.7 1.8-.4 1.1.7 1.9 2.1 2.3.2.1-.3-.6.1-.7.2-.1 1.2.4 1.1.5-1.3.8-1.7 2.7.7 3.5 0 0-.2-.6 0-.8 1.8-1.3 3.7 0 3.8.1q.1.2.2.2c0 .1 0 .2.2.7 2.7-1.2 5.4-2.4 8.4-1.2-1.3-6 3.1-7.5 3.4-8.4zm17.3-44.1c-3.5-1.2-6.8 2-7.2 5.3-.3 3.1.6 6.7 1.4 9.2.2.7 0 1.5.2 2.2.6-2.5.7-5.2.6-7.8 0-.7.5-1.5 1.2-1.7 2.2-.7 3.4 1 3.3 2.2-.5 4-1.3 7-2.3 11-1.1 4.5.5 8.9 1 13.3-1.7-1-3.6-1.1-4.3 1.6-.3 1.5 1 3 1.4 4.2 0-1.7 1.6-4 3.2-3 1.9 1.3 2 7.5 1.6 8.3-1 1.8-2.5 3.1-4.6 2.4-1.2-.3-.8-2.1-1.5-2.9-3.8-4-5.6-8.7-5.9-14.2-.1-.8.4-2.9.2-3-5-2.1-7.3 0-9.4 3-.4-.9-2.3-2.2-2.4-1.9-1 1.8-.7 5 .7 6.2 3.9 3.4 7.7 5.6 9.9 10.4-2.3.4-4.6 1-5.5 3.5-.9 2.5-.6 6 2.1 7.1 2.2.8 5.9-.1 6.8 0 2.3.3 4.9 2.3 4.5 4.5 0 .1-1 5.2-3.2 3.9-1.2-.6-.5-3.5-2.4-3.9-2.4-.6-3 2.9-2.7 2.6.8-.8 1.3.4 2.8 1.3-5.1-1.1-3.5 3.6-3.3 3.1.2-.7 1.2 0 3-.1.1 0-.4.4-.4.4-.3.5-.4.7-.6 1.2-.2.3-.1.5-.1.8q0 .3.2.7.1 0 .2.1l.1.1c.1 0-.1-.4.2-.4h.3c.2.1.3.2.5.2q.2 0 .4.1c.4 0 .5 0 .8-.1.2-.1.5-.1.7-.3q-.1.1.1 0h-.1c.1 0 .4-.3.4-.3.3-.7.5-.5.6-.6.5-1 1-1.1 2.2-1 .1 0 .4.3.4.4.1.1.4.8.3.5.1.5.4.8.5 1.3-.1-.5 1.2-2.1 1.3-3.3.1-3.9 2.5-5.8 2.6-10 0-1.1-4.6-2.2-4.8-4.5-.1-1.2-.5-2.9.7-2.9 1.5 0 3-.2 4.1-1.2 4.7-4.2.7-9.9.1-15-.1-1.1 2-3.5 1.9-4.3-.3-4.3-1.1-8.2.4-12.4-1.2 1-1.5 2.8-2.6 3.7-.4.5-.7-.5-.7-.7.6-3.7 2.1-7 3.9-10.5 2-4.2 1-7.6-2.8-8.8zm-4.1 69.9zM140.6 45zm0 0zm-38.1 83.1c-.6.4-2.5 1.4-3.1 1.2-.2-.1-.4-.2-.5-.3-.2-.2-.3-.6-.2-.9 0-.2.2-.4.4-.5.1-.2.4-.2.6-.3.1 0 .2-.1.3-.2h.3c.4.1.7.3 1.1.4.5 0 1 .1 1.5.2h.1c-.2.2-.3.3-.5.4z" class="s0"></path><path d="M148.8 110.9h-.1q0 .1.1 0zM140.5 45c-1.5-.8-3.6-1.8-4.3.3-.5 1.5 3 .4 4.3-.3 0 .1.2-.1 0 0" class="s0"></path></g></g></svg>
+    </div>
+</div>
+    
+    <div id="local-copy-info" class="no-print">
+<p style="font-style: italic; text-align: center; margin: 2rem 0">
+  This is an offline copy which can be shared, archived, or embedded. <br><a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q">view original document online</a><br>
+If you require a PDF version for any reason please use your browser's <button onclick="print()">print</button> function.
+</p>
+        </div>
+    
+    
+<div id="revisions">
+    
+    <div id="revision-current">
+        Published March 3, 2026 (latest)
+    </div>
+    
+    <div id="revision-history">
+        <details>
+            <summary>Revision History</summary>
+            <ul>
+                
+                <li>
+                    
+                        <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q" class="revision-active"> 
+                            March 3, 2026 (latest)
+                        </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25521" class=""> 
+                        February 25, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25468" class=""> 
+                        February 18, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25467" class=""> 
+                        February 18, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25466" class=""> 
+                        February 18, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25462" class=""> 
+                        February 17, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25415" class=""> 
+                        February 12, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25408" class=""> 
+                        February 11, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25397" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25395" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25394" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25393" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25392" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25388" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25387" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25386" class=""> 
+                        February 10, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25368" class=""> 
+                        February 9, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25363" class=""> 
+                        February 9, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25313" class=""> 
+                        February 4, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25233" class=""> 
+                        January 29, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25232" class=""> 
+                        January 29, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25120" class=""> 
+                        January 23, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25119" class=""> 
+                        January 23, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25101" class=""> 
+                        January 22, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-25092" class=""> 
+                        January 22, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24996" class=""> 
+                        January 19, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24981" class=""> 
+                        January 19, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24929" class=""> 
+                        January 16, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24928" class=""> 
+                        January 16, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24899" class=""> 
+                        January 15, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24877" class=""> 
+                        January 15, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24859" class=""> 
+                        January 14, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24832" class=""> 
+                        January 13, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24831" class=""> 
+                        January 13, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24815" class=""> 
+                        January 13, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24814" class=""> 
+                        January 13, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24784" class=""> 
+                        January 12, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24782" class=""> 
+                        January 12, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24781" class=""> 
+                        January 12, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24780" class=""> 
+                        January 12, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24524" class=""> 
+                        January 8, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24459" class=""> 
+                        January 8, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24370" class=""> 
+                        January 7, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-24356" class=""> 
+                        January 7, 2026
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22828" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22827" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22826" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22825" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22824" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22823" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22822" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22821" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22820" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22819" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22816" class=""> 
+                        December 26, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22651" class=""> 
+                        December 22, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22636" class=""> 
+                        December 22, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22635" class=""> 
+                        December 22, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22612" class=""> 
+                        December 19, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22574" class=""> 
+                        December 19, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-22573" class=""> 
+                        December 19, 2025
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://outline.uwaterloo.ca/viewer/view/n5bc8q-21896" class=""> 
+                        November 7, 2025
+                    </a>
+                    
+                </li>
+                
+            </ul>
+        </details>
+    </div>
+    
+</div>
+
+    <div class="clamp-width no-print">
+        
+    </div>
+      <main class="outline-body">
+    <header class="outline-title">
+      <h1>
+                
+          <span class="outline-courses">CS 889</span>
+          <span class="outline-term">Winter 2026</span>
+          <span class="outline-title-full">
+            
+            Advanced Topics in Human-Computer Interaction
+            
+          </span>
+          
+          <span class="outline-sections">
+            Section 001
+          </span>
+          
+        
+      </h1>
+      <hr>
+    </header>
+    
+    <aside class="outline-toc">
+      <h2>Table of Contents</h2>
+      <ul><li><a href="#class_schedule">
+  Class Schedule
+</a></li><li><a href="#instructional_team">
+  Instructional Team
+</a></li><li><a href="#course_description">
+  Course Description
+</a></li><li><a href="#learning_outcomes">
+  Learning Outcomes
+</a></li><li><a href="#tentative_class_plan">
+  Tentative Class Plan
+</a></li><li><a href="#required_materials_amp_technologies">
+  Required Materials &amp; Technologies
+</a></li><ul><li><a href="#readings">
+  Readings
+</a></li></ul><li><a href="#assessments_amp_activities">
+  Assessments &amp; Activities
+</a></li><ul><li><a href="#late_missed_content">
+  Late / Missed Content
+</a></li><li><a href="#assignment_screening">
+  Assignment Screening
+</a></li><li><a href="#generative_ai">
+  Generative AI
+</a></li></ul><li><a href="#administrative_policy">
+  Administrative Policy
+</a></li><ul><li><a href="#university_policy">
+  University Policy
+</a></li></ul></ul>
+    </aside>
+    
+    <article class="outline-content">
+      
+
+<h2 id="class_schedule" class="header">
+  Class Schedule
+</h2>
+
+
+
+
+<div class="dynamic-component">
+  <figure class="schedule-info">
+    <table>
+      <thead>
+        <tr>
+          <th>Course</th>
+          <th style="width:10rem;">Meet Days</th>
+          <th>Meet Time</th>
+          <th>Location</th>
+          <th>Instructor(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+        <tr>
+          
+          <th rowspan="1">
+            CS 889
+            <span class="section">001 <span class="class-type">[SEM]</span></span>
+          </th>
+          
+
+          
+          <td class="meet-days">
+            <div class="days-accessible sr-only">
+              Thursdays -
+            </div>
+            <div class="days-visual" title="Thursdays" aria-hidden="true">
+              
+              <span class="present">Thursdays</span>
+              
+            </div>
+            <div class="date-range">
+              
+               <span style="white-space: nowrap;">Jan 5 - Apr 6</span>
+              
+            </div>
+          </td>
+          <td>01:00PM - 03:50PM</td>
+          <td>DC 2568</td>
+          
+          
+          <td rowspan="1">
+            
+            <div class="instructor-info">
+              <span>Matthew Brehmer</span>
+              <small><a title="Matthew Brehmer (matthew.brehmer@uwaterloo.ca)" href="mailto:matthew.brehmer@uwaterloo.ca">matthew.brehmer@uwaterloo.ca</a></small>
+            </div>
+            
+          </td>
+          
+        </tr>
+        
+        
+        
+      </tbody>
+
+    </table>
+    <figcaption>schedule data automatically refreshed daily</figcaption>
+  </figure>
+</div>
+
+
+
+<h2 id="instructional_team" class="header">
+  Instructional Team
+</h2>
+
+
+
+<div class="html-block">
+  
+  <h2><strong>CS 889 Adv. Topics in HCI: Information Visualization</strong></h2><h3>Instructor:</h3><p>Matt Brehmer (<a target="_blank" rel="noopener noreferrer nofollow" href="mailto:mbrehmer@uwaterloo.ca"><u>mbrehmer@uwaterloo.ca</u></a>) | DC 1310</p><h3>Meeting Time and Location:</h3><p>In person, DC 2568<br>Thursdays 13:00 – 15:50</p><h3>Office hours*</h3><p>In-person / hybrid (DC 1310 / Teams): 12:30 - 14:45 Monday and Tuesday: <a target="_blank" rel="noopener noreferrer nofollow" href="https://outlook.office.com/bookwithme/user/9472dce8f95d406187f7c421ed3cfb42@uwaterloo.ca/meetingtype/bsBTEg10uEOH_vTmy937Gw2?bookingcode=33a00ea0-9316-446b-ada4-d28e5dce9562&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mlink" data-link-index=" (1)">book here</a>.</p><p>Virtual (Teams): 12:30 - 14:45 Wednesday: <a target="_blank" rel="noopener noreferrer nofollow" href="https://outlook.office.com/bookwithme/user/9472dce8f95d406187f7c421ed3cfb42@uwaterloo.ca/meetingtype/kcQqeTt7NE2pbX1X1aU7Cg2?bookingcode=48178362-df3a-48d9-acc0-6dc4c76399da&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mlink" data-link-index=" (2)">book here</a></p><p>* Advanced office hour bookings have 4-hour lead time. Message me on Teams for drop-in / ad-hoc availability during these times.</p><h3>Communication</h3><p>We will use the <a target="_blank" rel="noopener noreferrer nofollow" href="https://piazza.com/uwaterloo.ca/winter2026/cs889" data-link-index=" (3)"><u>course Piazza</u></a> as a general way to communicate. Access code: 6xnl1cv7va3</p><p>Seminar slides, project proposals, and final project deliverables will be submitted via Forms (links to appear throughout the term)</p>
+</div>
+
+
+
+<h2 id="course_description" class="header">
+  Course Description
+</h2>
+
+
+
+<div class="dynamic-component">
+    <div class="course-descriptions">
+        
+            <div class="description">
+                <div class="cd-title">Calendar Description for CS 889</div>
+                <p class="cd-content"></p>
+                <div class="cd-reqs">
+                    
+                        <p style="margin-bottom: 0;"><a target="_blank" href="https://acal.fast.uwaterloo.ca/course/1261/CS/889" data-link-index=" (4)">View requirements for CS 889</a></p>
+                    
+                </div>
+            </div>
+        
+    </div>
+</div>
+<div class="html-block">
+  
+  <p>This seminar-based course will be an examination of <strong>information visualization</strong> in scenarios of communication and collaboration between people: using visualization to inform, explain, persuade, entertain, reach a consensus, or some combination of these intents. Weekly student-led research seminars, and collaborative design exercises will prepare students with the necessary skills to undertake a substantial final project.</p><h3>Audience</h3><p>This course has no prerequisites. Given visualization’s multidisciplinary underpinnings (information design, human-computer interaction, computer graphics, statistics, databases, cognitive and organizational psychology), a variety of backgrounds and research interests are welcome. With respect to aptitudes that will be useful for this course:</p><ul><li><p>Strong English communication skills (reading, speaking, and writing) are important for success in this course: there are substantial reading, writing, discussion, and presentation components in the required work.&nbsp;</p></li><li><p>Prior coursework in human-computer interaction (e.g., CS 449/649) and user interfaces (e.g., CS 349) and / or prior industry experience with respect to information design and / or user interface {design | development | evaluation} will be helpful but not required.&nbsp;</p></li><li><p>Students with expertise in a particular application domain ( e.g., bioinformatics, privacy, computer systems, etc) are welcome especially if they plan to incorporate information visualization into their thesis projects.&nbsp;</p></li></ul><p><br>This is predominantly a seminar-based course that does not teach visualization libraries / toolkits. Students are expected to learn and use appropriate libraries / toolkits as needed for their projects.</p>
+</div>
+
+
+
+<h2 id="learning_outcomes" class="header">
+  Learning Outcomes
+</h2>
+
+
+
+
+
+<div class="multitable-blank">No explicit learning outcomes defined for this course.</div>
+
+
+<div class="html-block">
+  
+  <p>By the end of this course students should be able to...</p><ul><li><p>Claim a foundational understanding of information visualization’s multidisciplinary underpinnings along with its theories and processes.</p></li><li><p>Be conversant in the topics, approaches, and methods of communication- and collaboration-themed visualization research.</p></li><li><p>Identify and reason about conventions in contemporary visualization practice, including deceptive and unethical visualization design choices.</p></li><li><p>Demonstrate a capacity to design, develop, and use visualization applications.</p></li><li><p>Articulate a critical position on visualization research papers and practitioner projects: summarize, interpolate between, and extrapolate from them.&nbsp;</p></li></ul>
+</div>
+
+
+
+<h2 id="tentative_class_plan" class="header">
+  Tentative Class Plan
+</h2>
+
+
+
+<div class="html-block">
+  
+  <p>Assigned (i.e., required) and optional materials will typically be added to the table below at least a couple of weeks prior to the associated meeting date. Check back often.</p><table class="tec-table" style="min-width: 98px"><colgroup><col style="width: 73px"><col></colgroup><tbody><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Date</strong></p></td><td colspan="1" rowspan="1"><p><strong>Topic &amp; Assigned Materials</strong></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 1</strong><br>Jan 8</p></td><td colspan="1" rowspan="1"><p><strong>InfoVis Foundations I</strong>:<br><strong><em>Marks &amp; Channels</em></strong> (<a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/1iuGpDG5JrShDmkWb5d_R15J6JbDq6nzyGq-bpQKJbp8/edit?slide=id.g3b322e50cba_2_511#slide=id.g3b322e50cba_2_511" data-link-index=" (5)">slides</a>) – (<strong>Instructor)</strong></p><p></p><p><strong>Read</strong>: Franconeri, S. L., Padilla, L. M., Shah, P., Zacks, J. M., &amp; Hullman, J. (2021). The science of visual data communication: What works. <em>Psychological Science in the Public Interest</em>, 22(3), 110-161. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1177/15291006211051956" data-link-index=" (6)">https://doi.org/10.1177/15291006211051956</a></p><p></p><p><strong>Read</strong><em> (optional)</em>: Bremer, N. (2025). Don’t think in chart types. In <em>Chart: Designing Creative Data Visualizations from Charts to Art</em>. CRC Press (ebook available via <a target="_blank" rel="noopener noreferrer nofollow" href="https://lib.uwaterloo.ca/" data-link-index=" (7)">https://lib.uwaterloo.ca/</a>) (p. 116 –129).</p><p></p><p><strong>Read</strong><em> (optional)</em>: Munzner, T. (2014). Marks &amp; Channels. In <em>Visualization Analysis &amp; Design</em> (ch 3). AK Peters / CRC Press (ebook available via <a target="_blank" rel="noopener noreferrer nofollow" href="https://lib.uwaterloo.ca/" data-link-index=" (8)"><u> </u></a><u><a href="https://lib.uwaterloo.ca/" target="_blank" data-link-index=" (9)">https://lib.uwaterloo.ca/</a></u>)</p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>InfoVis Foundations II</strong>:<br><strong><em>Interaction Design &amp; View Coordination </em></strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/1iuGpDG5JrShDmkWb5d_R15J6JbDq6nzyGq-bpQKJbp8/edit?slide=id.g3b322e50cba_2_519#slide=id.g3b322e50cba_2_519" data-link-index=" (10)">slides</a>)<strong> – (Instructor)</strong></p><p></p><p><strong>Read</strong>: Dimara, E., &amp; Perin, C. (2020). What is interaction for data visualization?. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 26(1), 119-129. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2019.2934283" data-link-index=" (11)"><u> </u></a><u><a href="https://doi.org/10.1109/TVCG.2019.2934283" target="_blank" data-link-index=" (12)">https://doi.org/10.1109/TVCG.2...</a></u></p><p></p><p><strong>Watch</strong>: Aisch, G. (2016). Data Visualization and the News. Information Plus Conference. <a target="_blank" rel="noopener noreferrer nofollow" href="https://vimeo.com/182590214" data-link-index=" (13)">https://vimeo.com/182590214</a></p><p></p><p><strong>Read</strong><em> (optional)</em>: Qu, Z., &amp; Hullman, J. (2018). Keeping multiple views consistent: Constraints, validations, and exceptions in visualization authoring. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 24(1), 468-477. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2017.2744198" data-link-index=" (14)">https://doi.org/10.1109/TVCG.2017.2744198</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p>Jan 15</p></td><td colspan="1" rowspan="1"><p><strong>SESSION CANCELLED - UNIVERSITY SNOW CLOSURE</strong></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 2</strong><br>Jan 22</p></td><td colspan="1" rowspan="1"><p><strong>InfoVis Foundations III</strong>:<br><strong><em>Visualization Design Process: Data &amp; Task Abstraction </em>(</strong><a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/1EkKgv1V2QSnwaRg7IYn66406f7jHwnvyASZWCb1s8LE/edit?slide=id.g3b322e50cba_2_511#slide=id.g3b322e50cba_2_511" data-link-index=" (15)"><strong>slides</strong></a><strong>)<em>&nbsp;</em></strong> – (<strong>Instructor)</strong></p><p></p><p><strong>Read</strong>: Thorp, J. (2013). Visualization as process, not output. Harvard Business Review. <a target="_blank" rel="noopener noreferrer nofollow" href="https://hbr.org/2013/04/visualization-as-process" data-link-index=" (16)">https://hbr.org/2013/04/visualization-as-process</a></p><p></p><p><strong>Read</strong>: Meyer, M. &amp; Fisher, D. (2018). Data Counseling, Exploration, and Prototyping. In <em>Making Data Visual</em>. O’Reilly Press (ch. 3)</p><p></p><p><strong>Listen</strong>: Nussbaumer Knaflic, C. (2025). What is Data Visualization. <em>Storytelling with Data</em> Podcast. <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.storytellingwithdata.com/podcast/what-is-dataviz" data-link-index=" (17)">https://www.storytellingwithdata.com/podcast/what-is-dataviz</a> | <a target="_blank" rel="noopener noreferrer nofollow" href="https://youtu.be/je12xZghNdg?si=jAHwyZsbEdPSneEX" data-link-index=" (18)"><u> </u></a><u><a href="https://youtu.be/je12xZghNdg" target="_blank" data-link-index=" (19)">https://youtu.be/je12xZghNdg</a></u></p><p></p><p><strong>Read</strong><em> (optional)</em>: Meyer, M. &amp; Fisher, D. (2018). From Questions to Tasks. In <em>Making Data Visual. </em>O’Reilly Press (ch. 2).<br><br><strong>Read</strong><em> (optional)</em>: Munzner, T. (2014). Data Abstraction. In <em>Visualization Analysis &amp; Design </em>(ch 2)<em>. </em>AK Peters / CRC Press (ebook available via <a target="_blank" rel="noopener noreferrer nofollow" href="https://lib.uwaterloo.ca/" data-link-index=" (20)"><u> </u></a><u><a href="https://lib.uwaterloo.ca/" target="_blank" data-link-index=" (21)">https://lib.uwaterloo.ca/</a></u>)</p><p></p><p><strong>Read</strong><em> (optional)</em>: Munzner, T. (2014). Task Abstraction. In <em>Visualization Analysis &amp; Design </em>(ch 3). AK Peters / CRC Press (ebook available via <a target="_blank" rel="noopener noreferrer nofollow" href="https://lib.uwaterloo.ca/" data-link-index=" (22)"><u> </u></a><u><a href="https://lib.uwaterloo.ca/" target="_blank" data-link-index=" (23)">https://lib.uwaterloo.ca/</a></u>)</p><p></p><p><strong>Read</strong> <em>(optional)</em>: Bertini, E., Correll, M., &amp; Franconeri, S. (2020). Why shouldn’t all charts be scatter plots? beyond precision-driven visualizations. In <em>Short Paper Proceeding of the IEEE Visualization Conference (VIS)</em> (pp. 206-210). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/VIS47514.2020.00048" data-link-index=" (24)">https://doi.org/10.1109/VIS47514.2020.00048</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>InfoVis Foundations IV</strong>:<br><strong><em>InfoVis Research Contributions&nbsp;&amp; Evaluation</em></strong> (<a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/1EkKgv1V2QSnwaRg7IYn66406f7jHwnvyASZWCb1s8LE/edit?slide=id.g3b6e716d0f2_0_30#slide=id.g3b6e716d0f2_0_30" data-link-index=" (25)">slides</a>) – (<strong>Instructor)</strong></p><p></p><p><strong>Read: </strong>Meyer, M., &amp; Dykes, J. (2020). Criteria for rigor in visualization design study. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 26(1), 87-97. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2019.2934539" data-link-index=" (26)"><u> </u></a><u><a href="https://doi.org/10.1109/TVCG.2019.2934539" target="_blank" data-link-index=" (27)">https://doi.org/10.1109/TVCG.2...</a></u></p><p></p><p><strong>Watch</strong>: Offenhuber, D. (2025). Theories of Change in Visualization. Information Plus Conference. <a target="_blank" rel="noopener noreferrer nofollow" href="https://vimeo.com/1139123334?fl=pl&amp;fe=sh#t=1m5s&amp;end=12m34s" data-link-index=" (28)">https://vimeo.com/1139123334?fl=pl&amp;fe=sh#t=1m5s&amp;end=12m34s</a></p><p></p><p><strong>Read</strong><em> (optional)</em>: Lee-Robbins, E., &amp; Adar, E. (2023). Affective learning objectives for communicative visualizations. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 29(1), 1-11. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2022.3209500" data-link-index=" (29)">https://doi.org/10.1109/TVCG.2022.3209500</a></p><p></p><p><strong>Read</strong><em> (optional)</em>: Lam, H., Bertini, E., Isenberg, P., Plaisant, C., &amp; Carpendale, S. (2011). Empirical studies in information visualization: Seven scenarios. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 18(9), 1520-1536. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2011.279" data-link-index=" (30)"><u> </u></a><u><a href="https://doi.org/10.1109/TVCG.2011.279" target="_blank" data-link-index=" (31)">https://doi.org/10.1109/TVCG.2...</a></u></p><p></p><p><strong>Read</strong><em> (optional): </em>Isenberg, T., Isenberg, P., Chen, J., Sedlmair, M., &amp; Möller, T. (2013). A systematic review on the practice of evaluating visualization. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 19(12), 2818-2827. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2013.126" data-link-index=" (32)"><u> </u></a><u><a href="https://doi.org/10.1109/TVCG.2013.126" target="_blank" data-link-index=" (33)">https://doi.org/10.1109/TVCG.2...</a></u></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 3</strong><br>Jan 29</p></td><td colspan="1" rowspan="1"><p><strong>Communicative InfoVis Design Space I</strong>: (<a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/1j_37mAjcN2ISK60c1tzDb3CF48kepb5vPhj3dRtQ8EY/edit?usp=sharing" data-link-index=" (34)">slides</a>) - instructor<br><strong><em>Annotation &amp; Typography</em></strong></p><p><strong>SEMINAR LEADER: Tamer </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBt8S-NyZQkR49wOfl9LVf7AbX06QI4LXIxkU4af0s5ZUI?e=9KqtnH" data-link-index=" (35)">slides</a>)<strong> | NOTE-TAKER: Omar</strong></p><p></p><p><strong>Read</strong>: Brath, R. (2020). Characterizing Text. In Visualizing with Text (ch 3, p. 43 - 78). CRC Press (ebook available via <a target="_blank" rel="noopener noreferrer nofollow" href="https://lib.uwaterloo.ca/" data-link-index=" (36)">https://lib.uwaterloo.ca/</a>).</p><p></p><p><strong>Listen </strong><em>(optional)</em>: Schwabish, J. (2022). Richard Brath talks about his book <em>Visualizing with Text</em>. PolicyViz Podcast. <a target="_blank" rel="noopener noreferrer nofollow" href="https://policyviz.com/podcast/episode-222-richard-brath" data-link-index=" (37)">https://policyviz.com/podcast/episode-222-richard-brath</a> | <a target="_blank" rel="noopener noreferrer nofollow" href="https://youtu.be/YNtQK4d5sUY?si=fDGbaeCHohkhHdUihttps://youtu.be/YNtQK4d5sUY" data-link-index=" (38)">https://youtu.be/YNtQK4d5sUY</a></p><p></p><p><strong>Seminar</strong>: Rahman, M. D., Quadri, G. J., Doppalapudi, B., Szafir, D. A., &amp; Rosen, P. (2025). A qualitative analysis of common practices in annotations. I<em>EEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 31(1). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2024.3456359" data-link-index=" (39)">https://doi.org/10.1109/TVCG.2024.3456359</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Communicative InfoVis Design Space II</strong>:<br><strong><em>Figurative Elements &amp; Glyphs</em></strong></p><p><strong>SEMINAR LEADER: Yang </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBzE0mPsb75S5Ct8SAEc9eaAZTNldsmvHA7Sn6NRzGfw7c?e=iS60Wj" data-link-index=" (40)">slides</a>)<strong> | NOTE-TAKER: Xiangrui</strong></p><p></p><p><strong>Read</strong>: Byrne, L., Angus, D., &amp; Wiles, J. (2019). Figurative frames: A critical vocabulary for images in information visualization. <em>Information Visualization</em>, 18(1), 45-67. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1177/1473871617724212" data-link-index=" (41)">https://doi.org/10.1177/1473871617724212</a></p><p></p><p><strong>Watch</strong> <em>(optional)</em><strong>: </strong>Holmes, N. (2021). Otto and Gerd in the Chauvet Caves. Outlier Conference. <a target="_blank" rel="noopener noreferrer nofollow" href="https://youtu.be/UBgPWLYBi9Q" data-link-index=" (42)">https://youtu.be/UBgPWLYBi9Q</a></p><p></p><p><strong>Seminar</strong>: Ying, L., Shu, X., Deng, D., Yang, Y., Tang, T., Yu, L., &amp; Wu, Y. (2023). MetaGlyph: Automatic generation of metaphoric glyph-based visualization. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 29(1), 331-341. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2022.3209447" data-link-index=" (43)">https://doi.org/10.1109/TVCG.2022.3209447</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 4</strong><br>Feb 5</p></td><td colspan="1" rowspan="1"><p><strong>Project Pitches</strong></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Communicative InfoVis Design Space III</strong>: (<a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/181U1iKL8vxQyxTVhFmGgSN7KspZrclC_L0kPWdNPRfw/edit?usp=sharing" data-link-index=" (44)">slides</a>) - instructor<br><strong><em>Animation</em></strong></p><p><strong>SEMINAR LEADER: Haoyuan </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQBMAWAY4wnsQZM__RMIcGtVAWYrLgv1Vr6Sq_CjRWRmK50?e=8RPETc" data-link-index=" (45)">slides</a>)<strong> | NOTE-TAKER: Tamila</strong></p><p></p><p><strong>Read</strong>: Thompson, J., Liu, Z., Li, W., &amp; Stasko, J. (2020). Understanding the design space and authoring paradigms for animated data graphics. In <em>Computer Graphics Forum</em> (Vol. 39, No. 3, pp. 207-218). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1111/cgf.13974" data-link-index=" (46)">https://doi.org/10.1111/cgf.13974</a></p><p></p><p><strong>Interact / Watch</strong>: Clark, D., Houston, R., Schaumeierm, J., &amp; Smith, T. (2015). Shipmap. <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.shipmap.org/" data-link-index=" (47)">https://www.shipmap.org/</a></p><p></p><p><strong>Seminar</strong>: Lan, X., Shi, Y., Wu, Y., Jiao, X., &amp; Cao, N. (2022). Kineticharts: Augmenting affective expressiveness of charts in data stories with animation design. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 28(1), 933-943. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2021.3114775" data-link-index=" (48)">https://doi.org/10.1109/TVCG.2021.3114775</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Communicative InfoVis Design Space IV</strong>:<br><strong><em>Narrative</em></strong></p><p><strong>SEMINAR LEADER: Kimiya </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQBGEQBwUqtZQIQrQtSHbcH2AcMOSnInpyNiMRW62v8VrTI?e=tVPyuo" data-link-index=" (49)">slides</a>)<strong> | NOTE-TAKER: Yang</strong></p><p></p><p><strong>Read</strong>: Bach, B., Stefaner, M., Boy, J., Drucker, S., Bartram, L., Wood, J., Ciuccarelli, P, Engelhardt, Y, Köppen, U. &amp; Tversky, B. (2018). Narrative design patterns for data-driven storytelling. In <em>Data-Driven Storytelling</em> (ed. Riche, N. H. et al, ch. 5, pp. 107-133). AK Peters/CRC Press. (ebook available via <a target="_blank" rel="noopener noreferrer nofollow" href="https://lib.uwaterloo.ca/" data-link-index=" (50)">https://lib.uwaterloo.ca/</a>)</p><p></p><p><strong>Read</strong> (optional): Segel, E., &amp; Heer, J. (2010). Narrative visualization: Telling stories with data. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 16(6), 1139-1148. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2010.179" data-link-index=" (51)">https://doi.org/10.1109/TVCG.2010.179</a></p><p></p><p><strong>Seminar</strong>: McKenna, S., Riche, N. H., Lee, B., Boy, J., &amp; Meyer, M. (2017). Visual narrative flow: Exploring factors shaping data visualization story reading experiences. In <em>Computer Graphics Forum</em> (Vol. 36, No. 3, pp. 377-387). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1111/cgf.13195" data-link-index=" (52)"><u> </u></a><u><a href="https://doi.org/10.1111/cgf.13195" target="_blank" data-link-index=" (53)">https://doi.org/10.1111/cgf.13...</a></u></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 5</strong><br>Feb 12</p></td><td colspan="1" rowspan="1"><p><strong>Communicative InfoVis Design Space V</strong>: (<a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/1-wXDLeweqva2LYYdOHiC-bS9hJqkJSZ1y7-LsC__e1w/edit?usp=sharing" data-link-index=" (54)">slides</a>) - instructor<br><strong><em>Ethics &amp; Deception</em></strong></p><p><strong>SEMINAR LEADER: Zahra </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBVvlLEYm-0Q5kakWaPUxo0AZGGaO3tzNEgpsKXz-dT3Go" data-link-index=" (55)">slides</a>)<strong> | NOTE-TAKER: Nate</strong></p><p></p><p><strong>Read</strong>: Correll, M. (2019). Ethical dimensions of visualization research. In <em>Proceedings of the ACM Conference on Human Factors in Computing Systems (CHI)</em>. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/3290605.3300418" data-link-index=" (56)">https://doi.org/10.1145/3290605.3300418</a></p><p></p><p><strong>Read</strong> (optional): Pandey, A. V., Rall, K., Satterthwaite, M. L., Nov, O., &amp; Bertini, E. (2015). How deceptive are deceptive visualizations? An empirical analysis of common distortion techniques. In <em>Proceedings of the ACM Conference on Human Factors in Computing Systems (CHI)</em> (pp. 1469-1478). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/2702123.2702608" data-link-index=" (57)">https://doi.org/10.1145/2702123.2702608</a></p><p></p><p><strong>Seminar</strong>: Lisnic, M., Polychronis, C., Lex, A., &amp; Kogan, M. (2023). Misleading beyond visual tricks: How people actually lie with charts. In <em>Proceedings of the ACM Conference on Human Factors in Computing Systems (CHI)</em>. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/3544548.3580910" data-link-index=" (58)">https://doi.org/10.1145/3544548.3580910</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Communicative InfoVis Design Space VI</strong>:<br><strong><em>Critical Visualization &amp; Visualization Criticism</em></strong></p><p><strong>SEMINAR LEADER: Omar </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQAi-hRMjZ-nRoO6l7e_BOSfAf80dU9HOa7XweNZIJIQEMg" data-link-index=" (59)">slides</a>)<strong> | NOTE-TAKER: Jacie</strong></p><p></p><p><strong>Read</strong>: DiSalvo, C. (2012). Revealing hegemony: Agonistic information design. In <em>Adversarial Design</em> (ch. 2, pp. 27 - 55). MIT Press. (ebook available via <a target="_blank" rel="noopener noreferrer nofollow" href="https://lib.uwaterloo.ca/" data-link-index=" (60)">https://lib.uwaterloo.ca/</a>)</p><p></p><p><strong>Read</strong>: Viégas, F. &amp; Wattenberg, M. (2015). Design and Redesign in Data Visualization. In <em>Malofiej 22</em>, adapted for Medium: <a target="_blank" rel="noopener noreferrer nofollow" href="https://medium.com/@hint_fm/design-and-redesign-4ab77206cf9" data-link-index=" (61)">https://medium.com/@hint_fm/design-and-redesign-4ab77206cf9</a></p><p></p><p><strong>Seminar</strong>: Morini, F., Garretón, M., Pomerance, J., Zeissig, N., De Guenther, S., Thomet, F., Freybur, L., Kyriazis, I., Scholz, A., &amp; Dörk, M. (2025). Critical Interactivity: Exploration and Narration in Data Visualization. <em>IEEE Computer Graphics and Applications (CG&amp;A)</em>. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/MCG.2025.3544684" data-link-index=" (62)">https://doi.org/10.1109/MCG.2025.3544684</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Reading<br>Week</strong></p></td><td colspan="1" rowspan="1"><p></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p>Feb 24</p></td><td colspan="1" rowspan="1"><p><strong>Project Proposal</strong></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 6</strong><br>Feb 26</p></td><td colspan="1" rowspan="1"><p><strong>Communication Modalities I</strong>:<br><strong><em>Dashboards</em></strong></p><p><strong>SEMINAR LEADER: Ashu </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/presentation/d/1aF0O-GfxgzVFbUrQXS9VIUCQIpoSEC5tKGruRGV8nqE/edit?usp=sharing" data-link-index=" (63)">slides</a>)<strong> | NOTE-TAKER: Albert</strong></p><p></p><p><strong>Watch</strong>: Meeks, E. Third Wave Data Visualization. 2018 Tapestry Conference keynote. <a target="_blank" rel="noopener noreferrer nofollow" href="https://youtu.be/itChfcTx7ao?si=NYqk_V46b8qdRgcZ" data-link-index=" (64)">https://youtu.be/itChfcTx7ao?si=NYqk_V46b8qdRgcZ</a></p><p></p><p><strong>Seminar</strong>: Tory, M., Bartram, L., Fiore-Gartland, B., &amp; Crisan, A. (2021). Finding their data voice: Practices and challenges of dashboard users. <em>IEEE Computer Graphics and Applications (CG&amp;A)</em>, 43(1), 22-36. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/MCG.2021.3136545" data-link-index=" (65)">https://doi.org/10.1109/MCG.2021.3136545</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Communication Modalities II</strong>: <br><strong><em>Explorable Explanations</em></strong></p><p><strong>SEMINAR LEADER: Marlon </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQB7Z75QMwEdT5XpCwXBCYWgAap-OQy__CE5IRWiuAa01FM?e=huuqGH" data-link-index=" (66)">slides</a>) <strong>| NOTE-TAKER: Kate</strong></p><p></p><p><strong>Watch</strong>: Case, N. (2016). How to Simulate the Universe, in 134 Easy Steps. OpenVisConf. <a target="_blank" rel="noopener noreferrer nofollow" href="https://youtu.be/uc5rfTkLzlY?si=Y3Xm9rofMzRvkXln" data-link-index=" (67)">https://youtu.be/uc5rfTkLzlY?si=Y3Xm9rofMzRvkXln</a></p><p></p><p><strong>Read</strong>: Victor, B. (2011, revised 2024). Explorable Explanations. <a target="_blank" rel="noopener noreferrer nofollow" href="https://worrydream.com/ExplorableExplanations/" data-link-index=" (68)">https://worrydream.com/ExplorableExplanations/</a></p><p></p><p><strong>Read / Interact</strong> (optional): Yee, S. and Chu, T. A visual introduction to machine learning. Part 1 (<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.r2d3.us/visual-intro-to-machine-learning-part-1/" data-link-index=" (69)">http://www.r2d3.us/visual-intro-to-machine-learning-part-1/</a>) + Part 2 (<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.r2d3.us/visual-intro-to-machine-learning-part-2/" data-link-index=" (70)">http://www.r2d3.us/visual-intro-to-machine-learning-part-2/</a>)</p><p></p><p><strong>Seminar</strong>: Boy, J., Detienne, F., &amp; Fekete, J. D. (2015). Storytelling in information visualizations: Does it engage users to explore data?. In <em>Proceedings of the ACM Conference on Human Factors in Computing Systems (CHI)</em> (pp. 1449-1458). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/2702123.2702452" data-link-index=" (71)">https://doi.org/10.1145/2702123.2702452</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Communication Modalities III</strong>: <br><strong><em>Interactive Research Papers</em></strong></p><p><strong>SEMINAR LEADER: Zhiyuan </strong>(<a target="_blank" rel="noopener noreferrer nofollow" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQDv6Hxm3Z6kRKd0Ov9Oi32GARrVAA72yRTfUGmSRpEGzX4?e=2VF89y" data-link-index=" (72)">slides</a>) | <strong>NOTE-TAKER</strong>: <strong>Sofiia</strong></p><p></p><p><strong>Read</strong>: Hohman, F., Conlen, M., Heer, J., &amp; Chau, D. H. (2020). Communicating with Interactive Articles. <em>Distill</em>. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.23915/distill.00028" data-link-index=" (73)">https://doi.org/10.23915/distill.00028</a></p><p></p><p><strong>Seminar</strong>: Heer, J., Conlen, M., Devireddy, V., Nguyen, T., &amp; Horowitz, J. (2023). Living papers: A language toolkit for augmented scholarly communication. In <em>Proceedings of the ACM Symposium on User Interface Software and Technology (UIST)</em> (pp. 1-13). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/3586183.3606791" data-link-index=" (74)">https://doi.org/10.1145/3586183.3606791</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 7</strong><br>Mar 5</p></td><td colspan="1" rowspan="1"><p><strong>Communication Modalities IV</strong>: <strong><em>Video</em></strong></p><p><strong><em>S</em>EMINAR LEADER: Nate | NOTE-TAKER: Ashu</strong></p><p></p><p><strong>Watch</strong>: Halloran, N. (2016). The Fallen of World War II. <a target="_blank" rel="noopener noreferrer nofollow" href="https://youtu.be/DwKPFT-RioU?si=Owtd2ErSUGf44c1S" data-link-index=" (75)">https://youtu.be/DwKPFT-RioU?si=Owtd2ErSUGf44c1S</a></p><p></p><p><strong>Seminar</strong>: Shen, L., Li, H., Wang, Y., Luo, T., Luo, Y., &amp; Qu, H. (2025). Data playwright: Authoring data videos with annotated narration. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2024.3477926" data-link-index=" (76)">https://doi.org/10.1109/TVCG.2024.3477926</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Communication Modalities V</strong>:<br><strong><em>Live Presentations</em></strong></p><p><strong>SEMINAR LEADER: Jacie | NOTE-TAKER: Tamer</strong></p><p></p><p><strong>Watch</strong>: Rosling, H. (2006) The best stats you've ever seen. TED Conference. <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen" data-link-index=" (77)">https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen</a></p><p></p><p><strong>Seminar</strong>: Shin, M., Kim, J., Han, Y., Xie, L., Whitelaw, M., Kwon, B. C., Ko, S., &amp; Elmqvist, N. (2023). Roslingifier: Semi-automated storytelling for animated scatterplots. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 29(6), 2980-2995. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2022.3146329" data-link-index=" (78)">https://doi.org/10.1109/TVCG.2022.3146329</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Guest seminar: </strong>Kentaro Takahira, PhD Candidate, Hong Kong University of Science &amp; Technology</p><p></p><p><strong>Read</strong><em> (optional)</em>: Takahira, K., Kam-Kwai, W., Yang, L., Xu, X., Fujiwara, T., &amp; Qu, H. (2025). TangibleNet: Synchronous Network Data Storytelling through Tangible Interactions in Augmented Reality. In Proceedings of the <em>ACM Conference on Human Factors in Computing Systems</em> (pp. 1-18). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/3706598.3714265" data-link-index=" (79)">https://doi.org/10.1145/3706598.3714265</a></p><p></p><p><strong>Read</strong><em> (optional)</em>: Takahira, K., Yu, Y., Fujiwara, T., Suzuki, R., &amp; Qu, H. (2025). InSituTale: Enhancing augmented data storytelling with physical objects. In <em>Proceedings of the ACM Symposium on User Interface Software and Technology (UIST)</em> (pp. 1-15). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/3746059.3747678" data-link-index=" (80)">https://doi.org/10.1145/3746059.3747678</a></p><p></p><p><strong>Read</strong><em> (optional)</em>: Takahira, K., &amp; Yuki, U. (2025) VisAider: AI-Assisted Context-Aware Visualization Support for Data Presentations. In <em>Proceedings of the 2nd MERCADO workshop at IEEE VIS</em>. <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.arxiv.org/abs/2510.14247" data-link-index=" (81)">https://www.arxiv.org/abs/2510.14247</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 8</strong><br>Mar 12</p></td><td colspan="1" rowspan="1"><p><strong>Collaborative Visualization I</strong>:<br><strong><em>Synchronous &amp; Co-located</em></strong></p><p><strong>SEMINAR LEADER: TamIla | NOTE-TAKER: Ray</strong></p><p></p><p><strong>Read</strong>: Mahyar, N., &amp; Tory, M. (2014). Supporting communication and coordination in collaborative sensemaking. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, <em>20</em>(12), 1633-1642. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2014.2346573" data-link-index=" (82)">https://doi.org/10.1109/TVCG.2014.2346573</a></p><p></p><p><strong>Seminar</strong>: Langner, R., Kister, U., &amp; Dachselt, R. (2019). Multiple coordinated views at large displays for multiple users: Empirical findings on user behavior, movements, and distances. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 25(1), 608-618. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2018.2865235" data-link-index=" (83)"><u> </u></a><u><a href="https://doi.org/10.1109/TVCG.2018.2865235" target="_blank" data-link-index=" (84)">https://doi.org/10.1109/TVCG.2...</a></u></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Collaborative Visualization II:</strong><br><strong><em>Synchronous &amp; Remote / Hybrid</em></strong></p><p><strong>SEMINAR LEADER: Kate | NOTE-TAKER: Shirley</strong></p><p></p><p><strong>Read</strong>: Schwab, M., Saffo, D., Zhang, Y., Sinha, S., Nita-Rotaru, C., Tompkin, J., .Dunne, C. &amp; Borkin, M. A. (2021). VisConnect: Distributed event synchronization for collaborative visualization. <em>IEEE Transactions on Visualization and Computer Graphics (TVCG)</em>, 27(2), 347-357. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2020.3030366" data-link-index=" (85)"><u> </u></a><u><a href="https://doi.org/10.1109/TVCG.2020.3030366" target="_blank" data-link-index=" (86)">https://doi.org/10.1109/TVCG.2...</a></u></p><p></p><p><strong>Seminar</strong>: Borowski, M., Butcher, P. W., Kristensen, J. B., Petersen, J. O., Ritsos, P. D., Klokmose, C. N., &amp; Elmqvist, N. (2025). DashSpace: A live collaborative platform for immersive and ubiquitous analytics.&nbsp;<em>IEEE Transactions on Visualization and Computer Graphics (TVCG),</em>&nbsp;<em>31</em>(10), 7034-7047. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1109/TVCG.2025.3537679" data-link-index=" (87)">https://doi.org/10.1109/TVCG.2025.3537679</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 9</strong><br>Mar 19</p></td><td colspan="1" rowspan="1"><p><strong>Collaborative Visualization III</strong>:<br><strong><em>Asynchronous</em></strong></p><p><strong>SEMINAR LEADER: Xiangrui | NOTE-TAKER: Brigitte</strong></p><p></p><p><strong>Read</strong>: Willett, W., Heer, J., Hellerstein, J., &amp; Agrawala, M. (2011). CommentSpace: structured support for collaborative visual analysis. In Proceedings of the SIGCHI conference on Human Factors in Computing Systems (pp. 3131-3140). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/1978942.1979407" data-link-index=" (88)">https://doi.org/10.1145/1978942.1979407</a></p><p></p><p><strong>Seminar</strong>: Kauer, T., Dörk, M., &amp; Bach, B. (2025). Towards collective storytelling: Investigating audience annotations in data visualizations. IEEE Computer Graphics and Applications. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.ieeecomputersociety.org/10.1109/MCG.2025.3547944" data-link-index=" (89)">https://doi.ieeecomputersociety.org/10.1109/MCG.2025.3547944</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Collaborative Visualization IV:</strong><br><strong><em>Longitudinal / Input Visualization</em></strong></p><p><strong>SEMINAR LEADER: Ray | NOTE-TAKER: Zhiyuan</strong></p><p></p><p><strong>Read</strong>: Loukissas, Y. A., &amp; Ntabathia, J. M. (2021). Open data settings: A conceptual framework explored through the map room project. Proceedings of the ACM on Human-Computer Interaction, 5(CSCW2), 1-24. <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/3479501" data-link-index=" (90)">https://doi.org/10.1145/3479501</a></p><p></p><p><strong>Seminar</strong>: Bressa, N., Louis, J., Willett, W., &amp; Huron, S. (2024). Input visualization: Collecting and modifying data with visual representations. In Proceedings of the ACM Conference on Human Factors in Computing Systems (CHI) (pp. 1-18). <a target="_blank" rel="noopener noreferrer nofollow" href="https://doi.org/10.1145/3613904.3642808" data-link-index=" (91)">https://doi.org/10.1145/3613904.3642808</a></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 10</strong><br>Mar 26</p></td><td colspan="1" rowspan="1"><p><strong>Immersive Experiences I</strong>:<br><strong><em>Situated / Mobile</em></strong></p><p><strong>SEMINAR LEADER: Brigitte | NOTE-TAKER: Kimiya</strong></p><p></p><p><strong>Read</strong>: TBA</p><p></p><p><strong>Seminar</strong>: TBA</p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Immersive Experiences II:</strong><br><strong><em>Physicalization</em></strong></p><p><strong>SEMINAR LEADER: Albert | NOTE-TAKER: Zahra</strong></p><p></p><p><strong>Read</strong>: TBA</p><p></p><p><strong>Seminar</strong>: TBA</p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Immersive Experiences III</strong>:<br><strong><em>Augmented Reality</em></strong></p><p><strong><em>S</em>EMINAR LEADER: Sofiia | NOTE-TAKER: Haoyuan</strong></p><p></p><p><strong>Read</strong>: TBA</p><p></p><p><strong>Seminar</strong>: TBA</p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p></p></td><td colspan="1" rowspan="1"><p><strong>Immersive Experiences IV</strong>:<br><strong><em>Virtual Reality</em></strong></p><p><strong>SEMINAR LEADER: Shirley | NOTE-TAKER: Marlon</strong></p><p></p><p><strong>Read</strong>: TBA</p><p></p><p><strong>Seminar</strong>: TBA</p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p><strong>Class 11</strong><br>Apr 2</p></td><td colspan="1" rowspan="1"><p><strong>Final Project Presentations &amp; Critique</strong></p></td></tr><tr><td colspan="1" rowspan="1" colwidth="73"><p>Apr 9</p></td><td colspan="1" rowspan="1"><p><strong>Final Project Deliverables</strong></p></td></tr></tbody></table><h3>Course Organization</h3><p>The course is organized around 5 topics, with roughly two weeks devoted to each topic. The first two weeks will cover foundations in information visualization (InfoVis) and will alternate between instructor-delivered lecture, in-class group design activities, and discussion / critique. The remaining four topics include a traversal of the Communicative InfoVis design space, selected approaches for different communication modalities, selected approaches in collaborative visualization, and a foray into recent advances in immersive visualization. For each of these four topics, a typical meeting will begin with a brief instructor-led topic primer presentation that references optional readings, followed by an alternation between seminar presentations delivered by students, a discussion of the assigned content, brief group design and / or critique activities, and full-class discussions.</p><p>Each week, students are expected to complete the required preparation before each meeting. A typical week will involve reading and commenting on two-three academic articles (depending on the number of students enrolled, with one paper for each student seminar). Additionally, each assigned article will be paired with an artifact reflecting contemporary visualization practice, such as a web-based interactive article, a blog post, or a video, and students will be expected to interact with, read, or watch these artifacts. The academic articles will be a mix of foundational and recent papers, while the artifacts will be predominantly those produced within the last decade.</p><p>The course will culminate in a final project with several deliverables.&nbsp;</p><p>The course will not provide instructions on how to use visualization applications or development toolkits / libraries in any great detail, but several recommendations appear on the resources page.</p><hr><h3>Class Participation</h3><p>Attendance and participation during class and on Piazza are compulsory.&nbsp;</p><h4><u>Responses to Assigned Content</u></h4><p>Each meeting of the class has assigned content. Beginning with the second meeting, students are expected to write a response to the assigned content, posting to the appropriate folder on the class’s <a target="_blank" rel="noopener noreferrer nofollow" href="https://piazza.com/uwaterloo.ca/winter2026/cs889" data-link-index=" (92)"><u>Piazza instance</u></a> (access code: 6xnl1cv7va3).</p><p>A response should be about as long as a typical HCI paper abstract (150 - 200 words). Responses <em>are not summaries, </em>as everyone is expected to have completed the assigned preparation. Since the assigned content includes both papers and other artifacts (e.g., interactive article, blog post, short video), a response should include the following:</p><ul><li><p><strong><em>Reflect</em></strong>: Comment on the contribution(s) of the assigned materials and their <em>practical significance</em> (1 - 2 sentences)</p></li><li><p><strong><em>Interpolate</em></strong>: Associate or contrast the assigned materials assigned that week (1 - 2 sentences)</p></li><li><p><strong><em>Extrapolate</em></strong>: Associate or contrast the assigned materials with the previously discussed course content and / or to works / papers beyond those in the syllabus (1 - 2 sentences… 3 - 4 sentences if extrapolating beyond the syllabus and links are expected to external content)</p></li><li><p>(Optional) <strong><em>Critique</em></strong>: Comment on perceived weaknesses or limitations in the assigned materials.&nbsp;</p></li></ul><p>The deadline for posting a response to the assigned content is 48 hours prior to each meeting. Overall, the responses are worth 20% of the total grade, with each (2%) marked on a pass / fail basis. Responses are informal (academic writing is not expected, but correct grammar and spelling is). Ultimately, student responses should be thoughtful, a demonstration that the assigned content was read and reflected on. Responses will be pass / fail graded, at least initially, if a large variation in quality is observed, quality based grading (2% for high quality, 1% for low quality) will be introduced.</p><p>In the 48 hours between the deadline and the meeting, students are expected to react and comment on others' responses (4% of total grade, pass / fail).&nbsp;</p><p>The use of GenAI beyond typographical / grammatical correctness to write responses and comments is not permitted.</p><h4><u>Student-Led Seminars</u></h4><p>There will be at least two student-led seminars each week, assigned randomly by week 2. Each seminar will begin with a twelve-minute presentation of an assigned research paper*, following the format of IEEE VIS and similar conferences. These presentations should also be similar to the expected content of a conference presentation, including a summary of contributions, key takeaway details, methodological details, and implications for design; 12 minutes is not enough time to go into great detail with respect to prior literature and technical implementation details. Immediately after the presentation, there will be at most five minutes allotted so that classmates can ask the presenter clarifying questions about the assigned research paper.</p><p>Next, the seminar leader will coordinate a 20-minute discussion that draws from their classmates’ responses and replies to the assigned material posted 48 hours earlier on <a target="_blank" rel="noopener noreferrer nofollow" href="https://piazza.com/uwaterloo.ca/winter2026/cs889" data-link-index=" (93)"><u>Piazza</u></a>, split into the same three phases as the responses themselves: <em>reflect</em>, <em>interpolate</em>, and <em>extrapolate</em>. Seminar leaders must submit their presentation materials (e.g., slides, including discussion slides, if used) to the instructor within 48 hours following their seminar.</p><p>Aside from the seminar leader, another student will be the designated note-taker / scribe for each seminar, following a rotating schedule, randomly assigned by week 2. While the note-taker is welcome to engage in the discussion, their primary task will be to record contributions to the discussion (with speaker attribution). These notes can be typed or sketched, as long as they are added to the <a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/document/d/1okW5BVJbjvKyqzXAXkiJ8V9SgMSqRxd69a3vXcpCud4/edit?usp=sharing" data-link-index=" (94)">accumulated discussion notes</a> for the course.&nbsp;</p><p>Beyond the seminar leader and note taker, all other students are expected to contribute to the seminar discussion.&nbsp;</p><p>Seminar leaders are not required to write responses on the week of their seminar.&nbsp;</p><p>(*) Only the seminar leader has read this research paper, which is related thematically to the weekly topic and the assigned material that all students are expected to read. It will be therefore useful for seminar leaders to frame this paper as being <em>in conversation with</em> the assigned material.</p><h4><u>Group Design / Critique Activities</u></h4><p>Following the instructor’s primer and a student’s seminar (presentation + discussion), the remainder of each meeting, time-permitting, will be spent in small group activities, with group assignment following a permutation posted on the Schedule. No additional advance preparation is required for these activities. In the group activity of the week, the instructor will take a few minutes to outline the exercise or case study for critique that groups will undertake. At the end of the activity, each group will take a few minutes to share back their results / critique with the full class.</p><hr><h3>Course Project</h3><p>Students are required to propose and present one research project.&nbsp;</p><p>The general expectation is that this project will be conducted individually. Pairs of students are welcome to submit proposals, however, expectations for a project completed by a pair will be commensurately higher, and students will need to justify their choice to work as a pair in a project proposal, with a clear indication of students’ division of labour and expertise.&nbsp;</p><p>Projects that align with those underway in other graduate seminar courses or with thesis / dissertation projects are also welcome. However, like in a project proposed by a pair, a proposal for a project aligned with other courses / thesis projects will need to clearly indicate prior or concurrent project work and how the course project will extend it.</p><p>Another general expectation is that students will undertake an implementation project involving visualization design and development, culminating in a { web | mobile | immersive } application, an interactive explorable explanation (in the style of <a target="_blank" rel="noopener noreferrer nofollow" href="http://distill.pub" data-link-index=" (95)"><u>distill.pub</u></a>&nbsp; or <a target="_blank" rel="noopener noreferrer nofollow" href="http://visxai.io" data-link-index=" (96)"><u>visxai.io</u></a>), or a short “data video” documentary film. With instructor permission, students may instead opt to perform a literature review or tool comparison project.&nbsp;</p><p>See <strong>Assessments &amp; Activities </strong>below (Pitch, Proposal, Presentation, and Final Deliverables).</p>
+</div>
+
+
+
+<h2 id="required_materials_amp_technologies" class="header">
+  Required Materials &amp; Technologies
+</h2>
+
+
+
+<div class="html-block">
+  
+  
+  <p><i>Note: Any prices provided in course outlines are best estimates based on recent online prices and do not include shipping or taxes. Prices may vary between retailers.</i></p>
+  
+</div>
+
+
+<div class="choice-content">
+    <p style="background-color: #f6f7fe; border: 1px solid #2430c2; border-radius: 8px; padding: 0.5rem 1rem;">This course has <b>no additional costs</b> for students.</p>
+</div>
+
+
+
+<h3 id="readings" class="header">
+  Readings
+</h3>
+
+
+
+
+
+
+<div class="html-block">
+  
+  <h3>Required Readings</h3><p>This course has no additional costs for students. There are no textbooks required for this course. Students are required, however, to read the assigned research papers and other articles. The instructor will attempt, within reason, to direct students to open access versions or pre-prints of assigned readings. Otherwise, students are expected to retrieve official archival versions of assigned research papers and book chapters from digital libraries accessible through the U. Waterloo library network (VPN connection required when off campus).</p><h3>Recommended Readings</h3><p>While there is no required textbook for the course, the following two books are recommended and accessible through the U Waterloo library:</p><ul><li><p>Tamara Munzner. Visualization Analysis and Design. AK Peters Visualization Series. CRC Press, 2014.&nbsp; <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.cs.ubc.ca/~tmm/vadbook/" data-link-index=" (97)"><u> </u></a><u><a href="http://www.cs.ubc.ca/~tmm/vadbook/" target="_blank" data-link-index=" (98)">http://www.cs.ubc.ca/~tmm/vadb...</a></u>&nbsp;</p><ul><li><p>Print book available on 3-hour course reserve via the U Waterloo CS Library</p></li></ul></li><li><p>Isabelle Meirelles. Design for Information: An introduction to the histories, theories, and best practices behind effective information visualizations. Rockport press, 2013.&nbsp; <a target="_blank" rel="noopener noreferrer nofollow" href="https://isabelmeirelles.com/book-design-for-information/" data-link-index=" (99)"><u> </u></a><u><a href="https://isabelmeirelles.com/book-design-for-information/" target="_blank" data-link-index=" (100)">https://isabelmeirelles.com/bo...</a></u>&nbsp;</p><ul><li><p>Ebook available via the U. Waterloo Library</p></li></ul></li></ul><h3>Intellectual Property</h3><p>Students should be aware that this course contains the <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policies/policy-73-intellectual-property-rights" data-link-index=" (101)"><u>intellectual property of their instructor</u></a> and/or the University of Waterloo. Intellectual property includes items such as:</p><ul><li><p>Lecture content, spoken and written (and any audio/video recording thereof)</p></li><li><p>Lecture handouts, presentations, and other materials prepared for the course (e.g., slides)</p></li><li><p>Work protected by copyright (e.g., any work authored by the instructor or used by the instructor with permission of the copyright owner).</p></li></ul><p>Course materials and the intellectual property contained therein, are used to enhance a student’s educational experience. However, sharing this intellectual property without the intellectual property owner’s permission is a violation of intellectual property rights. For this reason, it is necessary to ask the instructor and/or the University of Waterloo for permission before uploading and sharing the intellectual property of others online (e.g., to an online repository). Permission from an instructor or the University is also necessary before sharing the intellectual property of others from completed courses with students taking the same/similar courses in subsequent terms/years. In many cases, instructors might be happy to allow distribution of certain materials. However, doing so without expressed permission is considered a violation of intellectual property rights.</p>
+</div>
+
+
+
+
+
+
+<div class="html-block">
+  
+  
+</div>
+
+
+
+
+
+
+<div class="html-block">
+  
+  
+</div>
+
+
+
+<h2 id="assessments_amp_activities" class="header">
+  Assessments &amp; Activities
+</h2>
+
+
+
+
+
+
+<div class="multitable-container">
+  
+  
+  <table class="multitable">
+    
+    <thead>
+      
+      
+      <tr><th>
+        Component / Activity
+      </th>
+      
+      
+      
+      <th>
+        Date or Due Date
+      </th>
+      
+      
+      
+      <th>
+        Location / Submission Method
+      </th>
+      
+      
+      
+      <th>
+        Weight (%)
+      </th>
+      
+      
+    </tr></thead>
+    
+    <tbody>
+      
+      <tr>
+        
+        <td>
+          
+          In-class participation
+          
+        </td>
+        
+        <td>
+          
+          Weekly Thu 13:00 - 15:50
+          
+        </td>
+        
+        <td>
+          
+          In-person
+          
+        </td>
+        
+        <td>
+          
+          13% <br>--&gt; 10% - discussion and group activity engagement (1% per week x 10 weeks)<br>--&gt; 3% - rotating note-taking duty (pass/fail)
+          
+        </td>
+        
+      </tr>
+      
+      <tr>
+        
+        <td>
+          
+          Responses to assigned content and replies
+          
+        </td>
+        
+        <td>
+          
+          Responses: Weekly Tue 13:00<br>Replies: Weekly Thu 13:00
+          
+        </td>
+        
+        <td>
+          
+          Piazza
+          
+        </td>
+        
+        <td>
+          
+          24%<br>--&gt; 20% responses (2% per response, one response per week x 10 weeks - class 2 to 11)*<br>--&gt; 4% - replies to classmates' posts (pass fail)
+          
+        </td>
+        
+      </tr>
+      
+      <tr>
+        
+        <td>
+          
+          Seminars
+          
+        </td>
+        
+        <td>
+          
+          Scheduled individually
+          
+        </td>
+        
+        <td>
+          
+          In-person
+          
+        </td>
+        
+        <td>
+          
+          13%<br>--&gt; 7% presentation(s)<br>--&gt; 6% discussion(s) (pass/fail)
+          
+        </td>
+        
+      </tr>
+      
+      <tr>
+        
+        <td>
+          
+          Final project
+          
+        </td>
+        
+        <td>
+          
+          Pitch: Tue Feb 3 13:00<br>Proposal: Tue Feb 24 13:00<br>Presentation: Tue Mar 31 13:00<br>Final Deliverable: Thu Apr 9 13:00
+          
+        </td>
+        
+        <td>
+          
+          In-person (pitch and presentation) <br>Piazza (pitch) <br>Microsoft Forms (Proposal and Final Deliverable)
+          
+        </td>
+        
+        <td>
+          
+          50%<br>--&gt; 3% pitch (pass/fail)<br>--&gt; 7% proposal (pass/fail)<br>--&gt; 15% final presentation<br>--&gt; 25% final deliverable
+          
+        </td>
+        
+      </tr>
+      
+    </tbody>
+  </table>
+  
+  
+  <p class="multitable-footer" role="note">* responses will be pass / fail graded, at least initially, if a large variation in quality is observed, quality based grading (2% for high quality, 1% for low quality) will be introduced.</p>
+  
+</div>
+
+<div class="html-block">
+  
+  <h3>Seminar Presentations (7% graded for the delivery + 6% pass / fail for moderating the discussion)</h3><p>Seminar leaders must submit their presentation materials (e.g., slides, including discussion slides, if used) via Microsoft Forms to the instructor within 48 hours of their seminar. Here is the <a target="_blank" rel="noopener noreferrer nofollow" href="https://forms.office.com/r/pLbC47P4Ji" data-link-index=" (102)">submission link</a>.</p><h3>Project Pitch (3% - pass / fail)</h3><p>By Feb at 13:00 (48 hours before the Feb 5 meeting), students will submit at least one project pitch (150 - 200 words and up to one image, such as a sketch, a slide, or a wireframe) to a <a target="_blank" rel="noopener noreferrer nofollow" href="https://piazza.com/uwaterloo.ca/winter2026/cs889" data-link-index=" (103)"><u>dedicated Piazza discussion thread</u></a>, outlining a rough idea of what you want to do, or what { data + task / communicative intent } you have in mind. The deadline will be 48 hours before the meeting. Between the deadline and the meeting, students are expected to react and comment on others' pitches.&nbsp;</p><p>In the Feb 5 meeting, the instructor will collate the pitches into a randomly-ordered slide deck, and each student will be given ~4 minutes to elaborate on their pitch and invite feedback on it. This will also be an opportunity for those seeking to recruit project partners.&nbsp;</p><h3>Project Proposal (7% - pass / fail)</h3><p>Students will refine their pitch into a proposal (between 500 and 1000 words + references)* and submit it on Tuesday Feb 24 by 13:00 (i.e., the return from Reading Week, 48 hours before the Feb 26 meeting).</p><p>In February, students will meet with the instructor by 15-minute appointment to discuss their proposal.</p><p>A proposal must include the following information and sections:</p><ul><li><p><strong>Student name</strong>(s)</p></li><li><p><strong>Overview</strong> (1 paragraph)</p><ul><li><p>The big picture context / domain for the project.</p></li><li><p>The project elevator pitch: one memorable sentence describing what the project will be.</p></li><li><p>The type of project (implementation, literature review, tool comparison)</p></li><li><p>Implementation projects must include the following:</p><ul><li><p>(1) confirm availability (and appropriate abundance) of data;</p></li><li><p>(2) describe a domain situation or identify a known combination of task abstraction + data abstraction;</p></li><li><p>(3) a description of the intended audience / stakeholders for the project</p></li></ul></li><li><p>(if applicable) relationship to other course projects / thesis / dissertation projects, and make sure to cite any already-published work</p></li><li><p>(if applicable) how the work will be divided</p></li></ul></li><li><p><strong>Related work</strong></p><ul><li><p>Aim for at least 10 references to properly contextualize your proposed approach and differentiate it from what has already been done</p></li></ul></li><li><p><strong>Proposed approach / method</strong></p><ul><li><p>This will vary by project type, but for implementation projects, it is expected that students will discuss your anticipated design and development process</p></li></ul></li><li><p><strong>Weekly milestones and outcomes</strong></p><ul><li><p>List the anticipated milestones and outcomes for each week until the end of term.</p></li><li><p>The only expected milestone and outcome after our final meeting are the final project deliverables</p></li><li><p>Expected outcomes are stated, including possible publication venues for the project</p></li></ul></li><li><p><strong>Bibliography</strong></p><ul><li><p>Use either ACM or IEEE citation style, but be consistent.</p></li><li><p>For each journal article entry, include title, full author list, journal name (and abbreviation, if applicable), volume #, issue #, DOI (or similarly stable link), and publication year*</p></li><li><p>For each conference paper entry, include title, full author list, conference name, (and abbreviation, if applicable), DOI (or similarly stable link), and conference year*</p></li><li><p>For pre-prints (e.g., arxiv), include title, full author list, year posted, and stable link</p></li><li><p>For books, include title, full author list, year published, and publisher</p></li><li><p>For book chapters, include full author list, chapter title, full book editor list, book title, year published, and publisher</p></li><li><p>For websites / miscellaneous, include name, URL, and date accessed</p></li><li><p>*… other bibliographic information is unnecessary (e.g., publisher, editor, page numbers, etc)&nbsp;</p></li></ul></li></ul><p>Students must submit their project proposal via Microsoft Forms by 1pm on Feb 24 (48 hours before the Feb 26 meeting), submitted via <a target="_blank" rel="noopener noreferrer nofollow" href="https://forms.office.com/r/UL9zmptrMh" data-link-index=" (104)">this form</a>.</p><p>(*) this previously indicated a max of 500 words, but I expect this to be insufficient for the details requested. Also note that I will permit project proposals submitted by a team to be ~25% longer.</p><h3>Final Project Presentation (15%)</h3><p>Students will present their project in our final meeting. On account of the Jan 15 university snow closure, we may schedule this meeting on an ad hoc basis in early April. Slides / videos must be submitted to the instructor 48 hours before our final meeting, who will collate the presentations into a slide deck. The order of presenters will be announced 24 hours before the final meeting. Each project will get a ten-minute slot for a presentation and questions / comments from classmates. The recommended timing is six minutes of presentation followed by three minutes of Q+A.&nbsp;</p><p>Students must submit their presentation materials (e.g., slides, video, if used) via Microsoft Forms 48 hours before the final meeting: Link to appear here about one week prior.</p><h3>Final Project Deliverables (25%)</h3><p>The deliverables for an implementation project will include: (1a) a short paper (four two-column pages in the <a target="_blank" rel="noopener noreferrer nofollow" href="https://tc.computer.org/vgtc/publications/conference/" data-link-index=" (105)"><u>VGTC Conference Paper format</u></a> + up to one page of references); (1b) a pictorial (a two-page summary + a pictorial in the <a target="_blank" rel="noopener noreferrer nofollow" href="https://visap.net/2025/submission.html" data-link-index=" (106)"><u>VISAP format</u></a>, up to sixteen pages); or (1c) an interactive explainable in the <a target="_blank" rel="noopener noreferrer nofollow" href="https://visxai.io/" data-link-index=" (107)"><u>VISxAI format</u></a>; (2) a video with voiceover narration (three to five minutes)*; (3) access to the source code with a readme for running the project.</p><p>A final report for an implementation project in the paper format must include the following sections:</p><ul><li><p><strong>Abstract</strong> (~150 words)</p></li><li><p><strong>Introduction</strong></p><ul><li><p>Big picture context for the project</p></li><li><p>Specific scope of the project</p></li><li><p>Problem statement</p></li><li><p>Summary of contribution</p></li></ul></li><li><p><strong>Background &amp; Related Work</strong></p><ul><li><p>(if applicable) application domain primer</p></li><li><p>Each area of related work should be represented as a subsection</p></li></ul></li><li><p><strong>Design</strong>:&nbsp;</p><ul><li><p>Data Abstraction + Task / Intent Abstraction</p></li><li><p>Modality</p></li><li><p>Audience and Usage Scenario</p></li><li><p>Visual Encoding Design</p></li><li><p>Interaction Design</p></li><li><p>(if applicable) Animation Design</p></li></ul></li><li><p><strong>Implementation</strong></p></li><li><p><strong>Proposed Evaluation</strong></p><ul><li><p>How could the project be evaluated?</p></li></ul></li><li><p><strong>Discussion &amp; Future Work</strong></p><ul><li><p>Lessons learned</p></li><li><p>Broader design implications</p></li><li><p>Limitations</p></li><li><p>Future work / tie-in with other projects / publication plan</p></li></ul></li><li><p><strong>Conclusion</strong></p></li><li><p><strong>Bibliography</strong> - same requirements as the proposal</p></li></ul><p>The deliverables for a literature review or tool comparison project will be negotiated on a case-by-case basis.&nbsp;</p><p>* (2a) Students completing a project related to their thesis / dissertation are welcome to submit a 1-minute video following the <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/current-graduate-students/grad-experience/workshops-and-development/gradflix" data-link-index=" (108)"><u>U Waterloo GRADflix specifications</u></a> (and are encouraged to submit this video to that contest).</p><p>Students must submit their final project deliverables via Microsoft Forms 1 week (168 hours) hours after the final meeting. Link to appear here in W12.</p>
+</div>
+
+
+
+<h3 id="late_missed_content" class="header">
+  Late / Missed Content
+</h3>
+
+
+
+<div class="html-block">
+  
+  <p><strong>Responses</strong>: Responses to assigned content are due 48 hours before the associated meeting. Unless advance arrangements* are made with the instructor, there will be a 50% deduction for responses submitted between 48 and 0 hours before the meeting. Responses submitted after the start of the meeting will not be graded (100% deduction).**&nbsp;</p><p><strong>Proposal</strong>: Unless advance arrangements* are made with the instructor, there will be a 10% deduction per day for proposals submitted after the deadline. Proposals submitted more than one week after the deadline will not be graded (100% deduction).&nbsp;</p><p><strong>Final Deliverables</strong>: Unless advance arrangements* are made with the instructor, there will be a 10% deduction per day for final project deliverables submitted after the deadline.&nbsp;</p><p>* = e.g., arrangements may include extensions reflecting accessibility accommodations, academic travel, a paper deadline within 24 hours of the deadline, or a short-term illness. Unless it’s an illness or emergency, inform the instructor in advance.</p><p>** seminar leaders are not required to submit a response for the week they lead a seminar… also, I'll allow one missed response all term long with no questions asked.</p>
+</div>
+
+
+
+<h3 id="assignment_screening" class="header">
+  Assignment Screening
+</h3>
+
+
+
+<div class="html-block">
+  
+  <p>No automated assignment screening will be utilized within this course.</p>
+</div>
+
+
+
+<h3 id="generative_ai" class="header">
+  Generative AI
+</h3>
+
+
+
+<div class="html-block">
+  
+  <p>Use of advanced AI systems to generate code (ie. CoPilot, ChatGPT, Claude etc.) is considered using code from other sources. Using GenAI systems in your project implementation is permitted as long as you disclose exactly what portions of your work were generated by AI.&nbsp;</p><p>Using GenAI in project proposals and written final project deliverables is similarly allowed if you disclose which ideas, terms, sections, paragraphs, sentences, were generated by AI. The course will follow the <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/academic-integrity/artificial-intelligence-and-chatgpt" data-link-index=" (109)"><u>University of Waterloo</u></a> and <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.acm.org/publications/policies/new-acm-policy-on-authorship" data-link-index=" (110)"><u>ACM</u></a> policies on GenAI.</p><p>In both cases, provide a record of your session with the AI system (the series of prompts you used and the answers provided by AI). This disclosure should be submitted with the course component. Failure to do so could result in a grade of 0 and/or academic integrity discipline.</p>
+</div>
+
+
+
+<div class="html-block">
+  
+  
+</div>
+
+
+
+<h2 id="administrative_policy" class="header">
+  Administrative Policy
+</h2>
+
+
+
+<div class="html-block">
+  
+  <p><strong>Territorial Acknowledgement: </strong>The University of Waterloo acknowledges that much of our work takes place on the traditional territory of the Neutral, Anishinaabeg, and Haudenosaunee peoples. Our main campus is situated on the Haldimand Tract, the land granted to the Six Nations that includes six miles on each side of the Grand River. Our active work toward reconciliation takes place across our campuses through research, learning, teaching, and community building, and is co-ordinated within the <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/indigenous" data-link-index=" (111)">Office of Indigenous Relations.</a></p>
+</div>
+
+<div class="html-block">
+  
+  
+  
+  
+</div>
+
+
+
+<h3 id="university_policy" class="header">
+  University Policy
+</h3>
+
+
+
+<div class="html-block">
+  
+  
+  <p><strong>Mental Health: </strong>At the University of Waterloo, we are dedicated to supporting your mental and emotional well-being. Our Counselling Services offer confidential support, including individual counselling, workshops, and crisis intervention. <br>If you're struggling, please reach out for help at 519-888-4096 or visit <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/students/health-and-well-being/counselling-appointments" data-link-index=" (112)">their website</a> for more information.</p><p><strong>Academic integrity</strong>: In order to maintain a culture of academic integrity, members of the University of Waterloo community are expected to promote honesty, trust, fairness, respect and responsibility.</p><p><strong>Grievance: </strong>A student who believes that a decision affecting some aspect of their university life has been unfair or unreasonable may have grounds for initiating a grievance. Read <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70" data-link-index=" (113)">Policy 70, Student Petitions and Grievances, Section 4</a>. When in doubt, please be certain to contact the department’s administrative assistant who will provide further assistance.</p><p><strong>Discipline: </strong>A student is expected to know what constitutes academic integrity to avoid committing an academic offence, and to take responsibility for their actions. A student who is unsure whether an action constitutes an offence, or who needs help in learning how to avoid offences (e.g., plagiarism, cheating) or about “rules” for group work/collaboration should seek guidance from the course instructor, academic advisor, or the undergraduate associate dean. For information on categories of offences and types of penalties, students should refer to <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71" data-link-index=" (114)">Policy 71, Student Discipline</a>. For typical penalties, check <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/secretariat/guidelines/guidelines-assessment-penalties" data-link-index=" (115)">Guidelines for the Assessment of Penalties</a>.</p><p><strong>Appeals: </strong>A decision made or penalty imposed under <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70" data-link-index=" (116)">Policy 70, Student Petitions and Grievances</a> (other than a petition) or <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71" data-link-index=" (117)">Policy 71, Student Discipline</a> may be appealed if there is a ground. A student who believes they have a ground for an appeal should refer to <a target="_blank" rel="noopener noreferrer nofollow" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-72" data-link-index=" (118)">Policy 72, Student Appeals</a>.</p><p><strong>Note for students with disabilities and disabling conditions: </strong>The University of Waterloo recognizes its obligations under the Ontario Human Rights Code to accommodate students with&nbsp;known or suspected disabilities and disabling conditions (e.g. medical conditions, injuries, impacts of trauma such as from violence or discrimination) to the point of undue hardship. To support this obligation, <a target="_blank" rel="noopener noreferrer" href="https://uwaterloo.ca/accessability-services/" data-link-index=" (119)"><u>AccessAbility Services</u></a>&nbsp;(AAS) collaborates with all academic departments and schools to facilitate academic accommodations for students with disabilities and disabling conditions without compromising the academic integrity of the curriculum. If you believe you may require academic accommodations (e.g., testing accommodations, classroom accommodations), register with AAS as early in the term as possible by completing the <a target="_blank" rel="noopener noreferrer" href="https://uwaterloo.ca/accessability-services/students/applying-academic-accommodations/documentation-information-forms" data-link-index=" (120)"><u>online application</u></a>. Students already registered with AAS must activate their accommodations for each of their courses at the beginning of each term using AAS' online system. If you require assistance, contact AAS by phone (519-888-4567 ext. 35082), email (<a target="_blank" rel="noopener noreferrer nofollow" href="mailto:access@uwaterloo.ca"><u>access@uwaterloo.ca</u></a><u>)</u>&nbsp;or in-person (Needles Hall North, 1st Floor, Room 1401).&nbsp;</p><p><strong>Turnitin.com: </strong>Text matching software (Turnitin®) may be used to screen assignments in this course. Turnitin® is used to verify that all materials and sources in assignments are documented. Students' submissions are stored on a U.S. server, therefore students must be given an alternative (e.g., scaffolded assignment or annotated bibliography), if they are concerned about their privacy and/or security. Students will be given due notice, in the first week of the term and/or at the time assignment details are provided, about arrangements and alternatives for the use of Turnitin in this course.</p><p>It is the responsibility of the student to notify the instructor if they, in the first week of term or at the time assignment details are provided, wish to submit alternate assignment.</p>
+  
+</div>
+
+    </article>
+    <aside class="outline-references-links"><h2>Reference: Links from Document</h2><ol><li><a target="_blank" href="https://outlook.office.com/bookwithme/user/9472dce8f95d406187f7c421ed3cfb42@uwaterloo.ca/meetingtype/bsBTEg10uEOH_vTmy937Gw2?bookingcode=33a00ea0-9316-446b-ada4-d28e5dce9562&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mlink">https://outlook.office.com/bookwithme/user/9472dce8f95d406187f7c421ed3cfb42@uwaterloo.ca/meetingtype/bsBTEg10uEOH_vTmy937Gw2?bookingcode=33a00ea0-9316-446b-ada4-d28e5dce9562&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mlink</a></li><li><a target="_blank" href="https://outlook.office.com/bookwithme/user/9472dce8f95d406187f7c421ed3cfb42@uwaterloo.ca/meetingtype/kcQqeTt7NE2pbX1X1aU7Cg2?bookingcode=48178362-df3a-48d9-acc0-6dc4c76399da&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mlink">https://outlook.office.com/bookwithme/user/9472dce8f95d406187f7c421ed3cfb42@uwaterloo.ca/meetingtype/kcQqeTt7NE2pbX1X1aU7Cg2?bookingcode=48178362-df3a-48d9-acc0-6dc4c76399da&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mlink</a></li><li><a target="_blank" href="https://piazza.com/uwaterloo.ca/winter2026/cs889">https://piazza.com/uwaterloo.ca/winter2026/cs889</a></li><li><a target="_blank" href="https://acal.fast.uwaterloo.ca/course/1261/CS/889">https://acal.fast.uwaterloo.ca/course/1261/CS/889</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/1iuGpDG5JrShDmkWb5d_R15J6JbDq6nzyGq-bpQKJbp8/edit?slide=id.g3b322e50cba_2_511#slide=id.g3b322e50cba_2_511">https://docs.google.com/presentation/d/1iuGpDG5JrShDmkWb5d_R15J6JbDq6nzyGq-bpQKJbp8/edit?slide=id.g3b322e50cba_2_511#slide=id.g3b322e50cba_2_511</a></li><li><a target="_blank" href="https://doi.org/10.1177/15291006211051956">https://doi.org/10.1177/15291006211051956</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/1iuGpDG5JrShDmkWb5d_R15J6JbDq6nzyGq-bpQKJbp8/edit?slide=id.g3b322e50cba_2_519#slide=id.g3b322e50cba_2_519">https://docs.google.com/presentation/d/1iuGpDG5JrShDmkWb5d_R15J6JbDq6nzyGq-bpQKJbp8/edit?slide=id.g3b322e50cba_2_519#slide=id.g3b322e50cba_2_519</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2019.2934283">https://doi.org/10.1109/TVCG.2019.2934283</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2019.2934283">https://doi.org/10.1109/TVCG.2019.2934283</a></li><li><a target="_blank" href="https://vimeo.com/182590214">https://vimeo.com/182590214</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2017.2744198">https://doi.org/10.1109/TVCG.2017.2744198</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/1EkKgv1V2QSnwaRg7IYn66406f7jHwnvyASZWCb1s8LE/edit?slide=id.g3b322e50cba_2_511#slide=id.g3b322e50cba_2_511">https://docs.google.com/presentation/d/1EkKgv1V2QSnwaRg7IYn66406f7jHwnvyASZWCb1s8LE/edit?slide=id.g3b322e50cba_2_511#slide=id.g3b322e50cba_2_511</a></li><li><a target="_blank" href="https://hbr.org/2013/04/visualization-as-process">https://hbr.org/2013/04/visualization-as-process</a></li><li><a target="_blank" href="https://www.storytellingwithdata.com/podcast/what-is-dataviz">https://www.storytellingwithdata.com/podcast/what-is-dataviz</a></li><li><a target="_blank" href="https://youtu.be/je12xZghNdg?si=jAHwyZsbEdPSneEX">https://youtu.be/je12xZghNdg?si=jAHwyZsbEdPSneEX</a></li><li><a target="_blank" href="https://youtu.be/je12xZghNdg">https://youtu.be/je12xZghNdg</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://doi.org/10.1109/VIS47514.2020.00048">https://doi.org/10.1109/VIS47514.2020.00048</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/1EkKgv1V2QSnwaRg7IYn66406f7jHwnvyASZWCb1s8LE/edit?slide=id.g3b6e716d0f2_0_30#slide=id.g3b6e716d0f2_0_30">https://docs.google.com/presentation/d/1EkKgv1V2QSnwaRg7IYn66406f7jHwnvyASZWCb1s8LE/edit?slide=id.g3b6e716d0f2_0_30#slide=id.g3b6e716d0f2_0_30</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2019.2934539">https://doi.org/10.1109/TVCG.2019.2934539</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2019.2934539">https://doi.org/10.1109/TVCG.2019.2934539</a></li><li><a target="_blank" href="https://vimeo.com/1139123334?fl=pl&amp;fe=sh#t=1m5s&amp;end=12m34s">https://vimeo.com/1139123334?fl=pl&amp;fe=sh#t=1m5s&amp;end=12m34s</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2022.3209500">https://doi.org/10.1109/TVCG.2022.3209500</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2011.279">https://doi.org/10.1109/TVCG.2011.279</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2011.279">https://doi.org/10.1109/TVCG.2011.279</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2013.126">https://doi.org/10.1109/TVCG.2013.126</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2013.126">https://doi.org/10.1109/TVCG.2013.126</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/1j_37mAjcN2ISK60c1tzDb3CF48kepb5vPhj3dRtQ8EY/edit?usp=sharing">https://docs.google.com/presentation/d/1j_37mAjcN2ISK60c1tzDb3CF48kepb5vPhj3dRtQ8EY/edit?usp=sharing</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBt8S-NyZQkR49wOfl9LVf7AbX06QI4LXIxkU4af0s5ZUI?e=9KqtnH">https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBt8S-NyZQkR49wOfl9LVf7AbX06QI4LXIxkU4af0s5ZUI?e=9KqtnH</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://policyviz.com/podcast/episode-222-richard-brath">https://policyviz.com/podcast/episode-222-richard-brath</a></li><li><a target="_blank" href="https://youtu.be/YNtQK4d5sUY?si=fDGbaeCHohkhHdUihttps://youtu.be/YNtQK4d5sUY">https://youtu.be/YNtQK4d5sUY?si=fDGbaeCHohkhHdUihttps://youtu.be/YNtQK4d5sUY</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2024.3456359">https://doi.org/10.1109/TVCG.2024.3456359</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBzE0mPsb75S5Ct8SAEc9eaAZTNldsmvHA7Sn6NRzGfw7c?e=iS60Wj">https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBzE0mPsb75S5Ct8SAEc9eaAZTNldsmvHA7Sn6NRzGfw7c?e=iS60Wj</a></li><li><a target="_blank" href="https://doi.org/10.1177/1473871617724212">https://doi.org/10.1177/1473871617724212</a></li><li><a target="_blank" href="https://youtu.be/UBgPWLYBi9Q">https://youtu.be/UBgPWLYBi9Q</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2022.3209447">https://doi.org/10.1109/TVCG.2022.3209447</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/181U1iKL8vxQyxTVhFmGgSN7KspZrclC_L0kPWdNPRfw/edit?usp=sharing">https://docs.google.com/presentation/d/181U1iKL8vxQyxTVhFmGgSN7KspZrclC_L0kPWdNPRfw/edit?usp=sharing</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQBMAWAY4wnsQZM__RMIcGtVAWYrLgv1Vr6Sq_CjRWRmK50?e=8RPETc">https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQBMAWAY4wnsQZM__RMIcGtVAWYrLgv1Vr6Sq_CjRWRmK50?e=8RPETc</a></li><li><a target="_blank" href="https://doi.org/10.1111/cgf.13974">https://doi.org/10.1111/cgf.13974</a></li><li><a target="_blank" href="https://www.shipmap.org/">https://www.shipmap.org/</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2021.3114775">https://doi.org/10.1109/TVCG.2021.3114775</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQBGEQBwUqtZQIQrQtSHbcH2AcMOSnInpyNiMRW62v8VrTI?e=tVPyuo">https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQBGEQBwUqtZQIQrQtSHbcH2AcMOSnInpyNiMRW62v8VrTI?e=tVPyuo</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2010.179">https://doi.org/10.1109/TVCG.2010.179</a></li><li><a target="_blank" href="https://doi.org/10.1111/cgf.13195">https://doi.org/10.1111/cgf.13195</a></li><li><a target="_blank" href="https://doi.org/10.1111/cgf.13195">https://doi.org/10.1111/cgf.13195</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/1-wXDLeweqva2LYYdOHiC-bS9hJqkJSZ1y7-LsC__e1w/edit?usp=sharing">https://docs.google.com/presentation/d/1-wXDLeweqva2LYYdOHiC-bS9hJqkJSZ1y7-LsC__e1w/edit?usp=sharing</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBVvlLEYm-0Q5kakWaPUxo0AZGGaO3tzNEgpsKXz-dT3Go">https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQBVvlLEYm-0Q5kakWaPUxo0AZGGaO3tzNEgpsKXz-dT3Go</a></li><li><a target="_blank" href="https://doi.org/10.1145/3290605.3300418">https://doi.org/10.1145/3290605.3300418</a></li><li><a target="_blank" href="https://doi.org/10.1145/2702123.2702608">https://doi.org/10.1145/2702123.2702608</a></li><li><a target="_blank" href="https://doi.org/10.1145/3544548.3580910">https://doi.org/10.1145/3544548.3580910</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQAi-hRMjZ-nRoO6l7e_BOSfAf80dU9HOa7XweNZIJIQEMg">https://uofwaterloo-my.sharepoint.com/:p:/g/personal/mbrehmer_uwaterloo_ca/IQAi-hRMjZ-nRoO6l7e_BOSfAf80dU9HOa7XweNZIJIQEMg</a></li><li><a target="_blank" href="https://lib.uwaterloo.ca/">https://lib.uwaterloo.ca/</a></li><li><a target="_blank" href="https://medium.com/@hint_fm/design-and-redesign-4ab77206cf9">https://medium.com/@hint_fm/design-and-redesign-4ab77206cf9</a></li><li><a target="_blank" href="https://doi.org/10.1109/MCG.2025.3544684">https://doi.org/10.1109/MCG.2025.3544684</a></li><li><a target="_blank" href="https://docs.google.com/presentation/d/1aF0O-GfxgzVFbUrQXS9VIUCQIpoSEC5tKGruRGV8nqE/edit?usp=sharing">https://docs.google.com/presentation/d/1aF0O-GfxgzVFbUrQXS9VIUCQIpoSEC5tKGruRGV8nqE/edit?usp=sharing</a></li><li><a target="_blank" href="https://youtu.be/itChfcTx7ao?si=NYqk_V46b8qdRgcZ">https://youtu.be/itChfcTx7ao?si=NYqk_V46b8qdRgcZ</a></li><li><a target="_blank" href="https://doi.org/10.1109/MCG.2021.3136545">https://doi.org/10.1109/MCG.2021.3136545</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQB7Z75QMwEdT5XpCwXBCYWgAap-OQy__CE5IRWiuAa01FM?e=huuqGH">https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQB7Z75QMwEdT5XpCwXBCYWgAap-OQy__CE5IRWiuAa01FM?e=huuqGH</a></li><li><a target="_blank" href="https://youtu.be/uc5rfTkLzlY?si=Y3Xm9rofMzRvkXln">https://youtu.be/uc5rfTkLzlY?si=Y3Xm9rofMzRvkXln</a></li><li><a target="_blank" href="https://worrydream.com/ExplorableExplanations/">https://worrydream.com/ExplorableExplanations/</a></li><li><a target="_blank" href="http://www.r2d3.us/visual-intro-to-machine-learning-part-1/">http://www.r2d3.us/visual-intro-to-machine-learning-part-1/</a></li><li><a target="_blank" href="http://www.r2d3.us/visual-intro-to-machine-learning-part-2/">http://www.r2d3.us/visual-intro-to-machine-learning-part-2/</a></li><li><a target="_blank" href="https://doi.org/10.1145/2702123.2702452">https://doi.org/10.1145/2702123.2702452</a></li><li><a target="_blank" href="https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQDv6Hxm3Z6kRKd0Ov9Oi32GARrVAA72yRTfUGmSRpEGzX4?e=2VF89y">https://uofwaterloo-my.sharepoint.com/:b:/g/personal/mbrehmer_uwaterloo_ca/IQDv6Hxm3Z6kRKd0Ov9Oi32GARrVAA72yRTfUGmSRpEGzX4?e=2VF89y</a></li><li><a target="_blank" href="https://doi.org/10.23915/distill.00028">https://doi.org/10.23915/distill.00028</a></li><li><a target="_blank" href="https://doi.org/10.1145/3586183.3606791">https://doi.org/10.1145/3586183.3606791</a></li><li><a target="_blank" href="https://youtu.be/DwKPFT-RioU?si=Owtd2ErSUGf44c1S">https://youtu.be/DwKPFT-RioU?si=Owtd2ErSUGf44c1S</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2024.3477926">https://doi.org/10.1109/TVCG.2024.3477926</a></li><li><a target="_blank" href="https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen">https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2022.3146329">https://doi.org/10.1109/TVCG.2022.3146329</a></li><li><a target="_blank" href="https://doi.org/10.1145/3706598.3714265">https://doi.org/10.1145/3706598.3714265</a></li><li><a target="_blank" href="https://doi.org/10.1145/3746059.3747678">https://doi.org/10.1145/3746059.3747678</a></li><li><a target="_blank" href="https://www.arxiv.org/abs/2510.14247">https://www.arxiv.org/abs/2510.14247</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2014.2346573">https://doi.org/10.1109/TVCG.2014.2346573</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2018.2865235">https://doi.org/10.1109/TVCG.2018.2865235</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2018.2865235">https://doi.org/10.1109/TVCG.2018.2865235</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2020.3030366">https://doi.org/10.1109/TVCG.2020.3030366</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2020.3030366">https://doi.org/10.1109/TVCG.2020.3030366</a></li><li><a target="_blank" href="https://doi.org/10.1109/TVCG.2025.3537679">https://doi.org/10.1109/TVCG.2025.3537679</a></li><li><a target="_blank" href="https://doi.org/10.1145/1978942.1979407">https://doi.org/10.1145/1978942.1979407</a></li><li><a target="_blank" href="https://doi.ieeecomputersociety.org/10.1109/MCG.2025.3547944">https://doi.ieeecomputersociety.org/10.1109/MCG.2025.3547944</a></li><li><a target="_blank" href="https://doi.org/10.1145/3479501">https://doi.org/10.1145/3479501</a></li><li><a target="_blank" href="https://doi.org/10.1145/3613904.3642808">https://doi.org/10.1145/3613904.3642808</a></li><li><a target="_blank" href="https://piazza.com/uwaterloo.ca/winter2026/cs889">https://piazza.com/uwaterloo.ca/winter2026/cs889</a></li><li><a target="_blank" href="https://piazza.com/uwaterloo.ca/winter2026/cs889">https://piazza.com/uwaterloo.ca/winter2026/cs889</a></li><li><a target="_blank" href="https://docs.google.com/document/d/1okW5BVJbjvKyqzXAXkiJ8V9SgMSqRxd69a3vXcpCud4/edit?usp=sharing">https://docs.google.com/document/d/1okW5BVJbjvKyqzXAXkiJ8V9SgMSqRxd69a3vXcpCud4/edit?usp=sharing</a></li><li><a target="_blank" href="http://distill.pub/">http://distill.pub/</a></li><li><a target="_blank" href="http://visxai.io/">http://visxai.io/</a></li><li><a target="_blank" href="http://www.cs.ubc.ca/~tmm/vadbook/">http://www.cs.ubc.ca/~tmm/vadbook/</a></li><li><a target="_blank" href="http://www.cs.ubc.ca/~tmm/vadbook/">http://www.cs.ubc.ca/~tmm/vadbook/</a></li><li><a target="_blank" href="https://isabelmeirelles.com/book-design-for-information/">https://isabelmeirelles.com/book-design-for-information/</a></li><li><a target="_blank" href="https://isabelmeirelles.com/book-design-for-information/">https://isabelmeirelles.com/book-design-for-information/</a></li><li><a target="_blank" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policies/policy-73-intellectual-property-rights">https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policies/policy-73-intellectual-property-rights</a></li><li><a target="_blank" href="https://forms.office.com/r/pLbC47P4Ji">https://forms.office.com/r/pLbC47P4Ji</a></li><li><a target="_blank" href="https://piazza.com/uwaterloo.ca/winter2026/cs889">https://piazza.com/uwaterloo.ca/winter2026/cs889</a></li><li><a target="_blank" href="https://forms.office.com/r/UL9zmptrMh">https://forms.office.com/r/UL9zmptrMh</a></li><li><a target="_blank" href="https://tc.computer.org/vgtc/publications/conference/">https://tc.computer.org/vgtc/publications/conference/</a></li><li><a target="_blank" href="https://visap.net/2025/submission.html">https://visap.net/2025/submission.html</a></li><li><a target="_blank" href="https://visxai.io/">https://visxai.io/</a></li><li><a target="_blank" href="https://uwaterloo.ca/current-graduate-students/grad-experience/workshops-and-development/gradflix">https://uwaterloo.ca/current-graduate-students/grad-experience/workshops-and-development/gradflix</a></li><li><a target="_blank" href="https://uwaterloo.ca/academic-integrity/artificial-intelligence-and-chatgpt">https://uwaterloo.ca/academic-integrity/artificial-intelligence-and-chatgpt</a></li><li><a target="_blank" href="https://www.acm.org/publications/policies/new-acm-policy-on-authorship">https://www.acm.org/publications/policies/new-acm-policy-on-authorship</a></li><li><a target="_blank" href="https://uwaterloo.ca/indigenous">https://uwaterloo.ca/indigenous</a></li><li><a target="_blank" href="https://uwaterloo.ca/students/health-and-well-being/counselling-appointments">https://uwaterloo.ca/students/health-and-well-being/counselling-appointments</a></li><li><a target="_blank" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70">https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70</a></li><li><a target="_blank" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71">https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71</a></li><li><a target="_blank" href="https://uwaterloo.ca/secretariat/guidelines/guidelines-assessment-penalties">https://uwaterloo.ca/secretariat/guidelines/guidelines-assessment-penalties</a></li><li><a target="_blank" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70">https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70</a></li><li><a target="_blank" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71">https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71</a></li><li><a target="_blank" href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-72">https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-72</a></li><li><a target="_blank" href="https://uwaterloo.ca/accessability-services/">https://uwaterloo.ca/accessability-services/</a></li><li><a target="_blank" href="https://uwaterloo.ca/accessability-services/students/applying-academic-accommodations/documentation-information-forms">https://uwaterloo.ca/accessability-services/students/applying-academic-accommodations/documentation-information-forms</a></li></ol></aside>
+  </main>
+ 
+
+    
+    <footer class="UW-footer">
+    <div class="copyright">
+        <p>For technical support please email OutlineSupport@uwaterloo.ca</p>
+        <p>Copyright University of Waterloo</p>
+        <p style="max-width: 800px; font-size: 90%; font-style: italic;">
+            Course outline content is provided for personal and academic use by authorized users. Republishing or distributing this content through unauthorized platforms or public-facing applications is not permitted.
+        </p>
+    </div>
+</footer>
+    
+
+<script id="QOL">
+    // Clean up trailing whitespace
+    Array.from(document.querySelectorAll('div.html-block>p:last-child')).filter(p => p.textContent.trim() === '').forEach(p => p.remove());
+    // Find any loose (unlinked) URLs in the document and make them clickable
+    let main = document.querySelector('main.outline-body');
+    //main.innerHTML = main.innerHTML.replace(/(?:^|\s)(https?:\/\/[^\s]+)/g, (match)=>{
+    main.innerHTML = main.innerHTML.replace(/(?:https?|ftp):\/\/[^\s<>"']+?(?=[\s><)\]]|$)(?:<\/a>)?/g, (match)=>{
+      let g = match
+      // Don't linkify if the URL is already in an a tag
+      if (g.endsWith('</a>')) return g;
+      let url = (new URL(match)).hostname.replace(/^www\./, '');
+      let link_text = match.length > 30 ? match.slice(0, 30) + '...' : match;
+      return ` <a href="${match}" target="_blank">${link_text}</a>` 
+    })
+    // get ALL links in the document that are not in the table of contents or mailto
+    let links = Array.from(main.querySelectorAll('a')).filter(a =>{let href=a.getAttribute('href'); return href && !href.startsWith('#') && !href.startsWith('mailto:')});
+    for (let i=0; i<links.length; i++) {
+      let link = links[i];
+      // Add a data link-index attribute to each link
+      link.setAttribute('data-link-index', ` (${i+1})`);
+    }
+    links = links.map(a=>`<li><a target="_blank" href="${a.href}">${a.href}</a></li>`).join('');
+    document.querySelector('aside.outline-references-links').innerHTML = `<h2>Reference: Links from Document</h2><ol>${links}</ol>`;
+    links=undefined
+  </script>
+
+
+</body></html>

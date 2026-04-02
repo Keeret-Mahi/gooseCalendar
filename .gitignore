@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cache / temp artifacts
+.vite/
+.cache/
+tmp/
+tmp-parser-bundle.cjs
+
+# OS / editor files
+.DS_Store
+.claude/
+.vscode/
+.idea/

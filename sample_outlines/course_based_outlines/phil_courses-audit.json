@@ -1,0 +1,1976 @@
+[
+  {
+    "fileName": "Fall 2025_ Departmental Graduate Seminar.html",
+    "courseCode": "PHIL 680A",
+    "courseName": "Departmental Graduate Seminar",
+    "term": "Fall 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "yts7mp",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "HH 335",
+        "instructorName": "Jennifer Saul",
+        "instructorEmail": "jennifer.saul@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 11:30-12:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 2,
+      "Assignments": 27,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "1ytz43o",
+        "label": "Abstract",
+        "title": "PHIL 680A Abstract",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-01",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Abstract | 1 November | 10 points"
+          }
+        ]
+      },
+      {
+        "id": "1xbcnw3",
+        "label": "Choose a Reading",
+        "title": "PHIL 680A Choose a Reading",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 3 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-27",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Choose a reading | 11.59PM 27 October | 3 points"
+          }
+        ]
+      },
+      {
+        "id": "13c96ye",
+        "label": "Conference paper draft",
+        "title": "PHIL 680A Conference paper draft @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20 points",
+          "Conference Paper Draft Due 20 December."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-12-20",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Conference paper draft | 11.59 PM 20 December | 20 points"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Conference Paper Draft Due 20 December."
+          }
+        ]
+      },
+      {
+        "id": "1wyuv6u",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotation on Syllabus due on 7 September 11.59 PM.",
+          "Perusall annotations (on readings) due by 7 September 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-07",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotation on Syllabus due on 7 September 11.59 PM."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 7 September 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "19wqanm",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotation on Syllabus due on 7 September 11.59 PM.",
+          "Perusall annotations (on readings) due by 7 September 11.59 PM",
+          "Perusall annotations (on readings) due by 14 September 11.59 PM",
+          "Perusall annotations (on readings) due by 21 September 11.59 PM",
+          "Perusall annotations (on readings) due by 28 September 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-11",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotation on Syllabus due on 7 September 11.59 PM."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 7 September 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 14 September 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 21 September 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 28 September 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "1dyeobj",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 14 September 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-14",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 14 September 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "1eiz6vf",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 21 September 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-21",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 21 September 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "19ln29e",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 28 September 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-28",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 28 September 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "1w9sxxy",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 5 October 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 5 October 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "zb887c",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 5 October 11.59 PM",
+          "Perusall annotations (on readings) due by 19 October 11.59 PM",
+          "Perusall annotations (on readings) due by 26 October 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-11",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 5 October 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 19 October 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 26 October 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "9wmz0w",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 19 October 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-19",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 19 October 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "hwyq62",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 26 October 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 26 October 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "1o4ihnq",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 2 November 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 2 November 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "1hgnpbf",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 2 November 11.59 PM",
+          "Perusall annotations (on readings) due by 9 November 11.59 PM",
+          "Perusall annotations (on readings) due by 16 November 11.59 PM",
+          "Perusall annotations (on readings) due by 23 November 11.59 PM",
+          "Perusall annotations (on readings) due by 31 November 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-11",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 2 November 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 9 November 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 16 November 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 23 November 11.59 PM"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 31 November 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "ds76al",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 9 November 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-09",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 9 November 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "1nob0bo",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 16 November 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-16",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 16 November 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "156dkfk",
+        "label": "Perusall Annotation",
+        "title": "PHIL 680A Perusall Annotation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Perusall annotations (on readings) due by 23 November 11.59 PM"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Perusall annotations (on readings) due by 23 November 11.59 PM"
+          }
+        ]
+      },
+      {
+        "id": "u3codf",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 9 September. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-09",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 9 September. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "15f54az",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 16 September. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-16",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 16 September. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "yic7hv",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 23 September. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 23 September. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "s196eb",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 30 September. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-09-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 30 September. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "d2nh93",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 7 October. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-07",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 7 October. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "16ws41f",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 21 October. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-21",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 21 October. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "1ijhz6y",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 28 October. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-10-28",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 28 October. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "fz51k3",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 4 November. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-04",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 4 November. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "i0fcd",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 11 November. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-11",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 11 November. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "1fkvig4",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 18 November. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-18",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 18 November. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "1yecgf0",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 25 November. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-11-25",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 25 November. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "seum3g",
+        "label": "QFC",
+        "title": "PHIL 680A QFC @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "QFC Due by class time on 2 December. Must discuss in class to receive credit."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-12-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "QFC Due by class time on 2 December. Must discuss in class to receive credit."
+          }
+        ]
+      },
+      {
+        "id": "1xwggi4",
+        "label": "Lecture SEM 001",
+        "title": "PHIL 680A (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "HH 335",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "11:30",
+          "endTime": "12:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "PHIL 680A 001 [SEM] Tuesday, Thursday - Tue, Thu Sep 3 - Dec 2 11:30AM - 12:50PM HH 335 Jennifer Saul jennifer.saul@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Departmental Graduate Seminar.html",
+    "courseCode": "PHIL 680B",
+    "courseName": "Departmental Graduate Seminar",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "cj5abc",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "HH 335",
+        "instructorName": "Jennifer Saul",
+        "instructorEmail": "jennifer.saul@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU 11:30-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 2,
+      "Assignments": 9,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "coucwh",
+        "label": "Chair Conference Session",
+        "title": "PHIL 680B Chair Conference Session",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 3 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-31",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Chair Conference Session | 24 or 31 March | In person | 3 points"
+          }
+        ]
+      },
+      {
+        "id": "r4as23",
+        "label": "One-Minute Elevator Pitch",
+        "title": "PHIL 680B One-Minute Elevator Pitch",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 5 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-20",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "One-minute Elevator Pitch | 20 January | In person | 5 points"
+          }
+        ]
+      },
+      {
+        "id": "5m0y2f",
+        "label": "April 20: Public Philosophy Project",
+        "title": "PHIL 680B April 20: Public Philosophy Project",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "April 20: Public Philosophy Project DUE"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-20",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "April 20: Public Philosophy Project DUE"
+          }
+        ]
+      },
+      {
+        "id": "1u5se8p",
+        "label": "Conference Presentation",
+        "title": "PHIL 680B Conference Presentation @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-31",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Conference Presentation | 24 or 31 March | In person | 20 points"
+          }
+        ]
+      },
+      {
+        "id": "1g7uykp",
+        "label": "February 24: Response to Revise and Resubmit, Final Paper",
+        "title": "PHIL 680B February 24: Response to Revise and Resubmit, Final Paper @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "February 24: Response to Revise and Resubmit, Final Paper DUE"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-24",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "February 24: Response to Revise and Resubmit, Final Paper DUE"
+          }
+        ]
+      },
+      {
+        "id": "5qxxmy",
+        "label": "January 13: Revise and Resubmit Report on Colleague's Paper",
+        "title": "PHIL 680B January 13: Revise and Resubmit Report on Colleague's Paper @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "January 13: Revise and Resubmit Report on Colleague's Paper DUE"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "January 13: Revise and Resubmit Report on Colleague's Paper DUE"
+          }
+        ]
+      },
+      {
+        "id": "13bcm9r",
+        "label": "March 3: Jobs in Philosophy, Help with Research Proposal",
+        "title": "PHIL 680B March 3: Jobs in Philosophy, Help with Research Proposal @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "March 3: Jobs in philosophy, Help with Research proposal"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-03",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "March 3: Jobs in philosophy, Help with Research proposal"
+          }
+        ]
+      },
+      {
+        "id": "qhh5j",
+        "label": "Public Philosophy Project",
+        "title": "PHIL 680B Public Philosophy Project",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-20",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Public Philosophy Project | 20 April | Drop Box | 15 points"
+          }
+        ]
+      },
+      {
+        "id": "1vb0cqn",
+        "label": "Research Proposal",
+        "title": "PHIL 680B Research Proposal",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-10",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Research Proposal | 10 March | Drop Box | 10 points"
+          }
+        ]
+      },
+      {
+        "id": "c9t4jg",
+        "label": "Response to Revise and Resubmit, final paper",
+        "title": "PHIL 680B Response to Revise and Resubmit, final paper",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-24",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Response to Revise and Resubmit, final paper | 24 February | Drop Box | 20 points"
+          }
+        ]
+      },
+      {
+        "id": "15vjt72",
+        "label": "Revise and Resubmit Report on Colleague's draft paper",
+        "title": "PHIL 680B Revise and Resubmit Report on Colleague's draft paper",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10 points"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Revise and resubmit report on colleague's draft paper | 13 January | Drop Box | 10 points"
+          }
+        ]
+      },
+      {
+        "id": "1i505aa",
+        "label": "Lecture SEM 001",
+        "title": "PHIL 680B (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "HH 335",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "14:20",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "PHIL 680B 001 [SEM] Tuesdays - Tuesdays Jan 5 - Apr 6 11:30AM - 02:20PM HH 335 Jennifer Saul jennifer.saul@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Special Topics.html",
+    "courseCode": "PHIL 471/PHIL 673/PHIL 675",
+    "courseName": "Special Topics",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "126padq",
+        "kind": "SEM",
+        "number": "001",
+        "label": "SEM 001",
+        "location": "HH 336",
+        "instructorName": "Chris Lowry",
+        "instructorEmail": "christopher.lowry@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TH 11:30-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 11,
+      "Assignments": 10,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "ov10pn",
+        "label": "Asking Questions About Other Term Papers",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Asking Questions About Other Term Papers",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 0% or 5%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Asking questions about other term papers | Thursday April 2 | In-person | 0% or 5%"
+          }
+        ]
+      },
+      {
+        "id": "19b0llk",
+        "label": "In-Class Reading Responses and In-Class Participation #1",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #1",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-08",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1qwgzt2",
+        "label": "In-Class Reading Responses and In-Class Participation #10",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #10",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-19",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "rttbuv",
+        "label": "In-Class Reading Responses and In-Class Participation #2",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #2",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-15",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "2sgwwi",
+        "label": "In-Class Reading Responses and In-Class Participation #3",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #3",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-22",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1wwq9i8",
+        "label": "In-Class Reading Responses and In-Class Participation #4",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #4",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-29",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "46hrrs",
+        "label": "In-Class Reading Responses and In-Class Participation #5",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #5",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1kl5s99",
+        "label": "In-Class Reading Responses and In-Class Participation #6",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #6",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "kzlav7",
+        "label": "In-Class Reading Responses and In-Class Participation #7",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #7",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "usdyic",
+        "label": "In-Class Reading Responses and In-Class Participation #8",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #8",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1o3gnf7",
+        "label": "In-Class Reading Responses and In-Class Participation #9",
+        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #9",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "yb4gjq",
+        "label": "Email your Detailed Outline to your group",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Email your Detailed Outline to your group @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Email your detailed outline to your group by Monday March 16 and submit it on Learn."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-16",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Email your detailed outline to your group by Monday March 16 and submit it on Learn."
+          }
+        ]
+      },
+      {
+        "id": "9p2bc0",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible and no later than the Monday following the missed class."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-08",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwa..."
+          }
+        ]
+      },
+      {
+        "id": "1nm23sn",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible and no later than the Monday following the missed class."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-19",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwa..."
+          }
+        ]
+      },
+      {
+        "id": "197dg9a",
+        "label": "Term Paper",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Term Paper @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 35%",
+          "if group of three, take two breaks. I will be available for questions. Submit final version of term paper on Learn on Monday March 30 by 11:59 pm.",
+          "If, due to illness or another good reason, you require an extension for your term paper due March 30, please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Term Paper | Monday March 30 | LEARN by 11:59 pm | 35%"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "if group of three, take two breaks. I will be available for questions. Submit final version of term paper on Learn on Monday March 30 by 11:59 pm."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "If, due to illness or another good reason, you require an extension for your term paper due March 30, please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible."
+          }
+        ]
+      },
+      {
+        "id": "y1axl0",
+        "label": "Term Paper",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Term Paper @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "The last 20% of your course grade will be based on EITHER (a) responding to questions about your term paper during the April 2 in-class workshop (worth 20%), OR (b) asking questions about other students' term papers during the April 2 in-class workshop (worth 5%) and an individual oral exam on your term paper during April 3-17 (worth 15%).",
+          "Weight: 20%",
+          "Weight: 0% or 20%",
+          "If you miss the April 2 class without a good reason, you will receive 0 on \"Responding to questions about your term paper\" or \"Asking questions about other term papers.\""
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "The last 20% of your course grade will be based on EITHER (a) responding to questions about your term paper during the April 2 in-class workshop (worth 20%), OR (b) asking questions about other students' term papers d..."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Responding to questions about your term paper | Thursday April 2 | In-person | 0% or 20%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "If you miss the April 2 class without a good reason, you will receive 0 on \"Responding to questions about your term paper\" or \"Asking questions about other term papers.\""
+          }
+        ]
+      },
+      {
+        "id": "k72824",
+        "label": "Term Paper",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Term Paper @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "The last 20% of your course grade will be based on EITHER (a) responding to questions about your term paper during the April 2 in-class workshop (worth 20%), OR (b) asking questions about other students' term papers during the April 2 in-class workshop (worth 5%) and an individual oral exam on your term paper during April 3-17 (worth 15%).",
+          "Weight: 20%",
+          "Weight: 0% or 15% total across 2 individual oral exam on your term paper"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-03",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "The last 20% of your course grade will be based on EITHER (a) responding to questions about your term paper during the April 2 in-class workshop (worth 20%), OR (b) asking questions about other students' term papers d..."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Individual Oral Exam on your term paper | By appointment, Friday April 3 to Friday April 17 | In-person | 0% or 15%"
+          }
+        ]
+      },
+      {
+        "id": "1g9skev",
+        "label": "Term Paper",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Term Paper @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 0% or 15% total across 2 individual oral exam on your term paper"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-17",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Individual Oral Exam on your term paper | By appointment, Friday April 3 to Friday April 17 | In-person | 0% or 15%"
+          }
+        ]
+      },
+      {
+        "id": "qr3g0e",
+        "label": "Term Paper",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Term Paper @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Email your term paper topic and bare-bones outline to your group by Monday March 9 and submit it on Learn.",
+          "By Monday March 9, you will email a brief statement of your topic and a bare-bones outline for your term paper to your peer feedback group.",
+          "If, due to illness or another good reason, you require an extension for (a) your term paper topic and bare-bones outline due March 9, (b) your detailed outline due March 16, and/or (c) your full draft due March 23, please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-09",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Email your term paper topic and bare-bones outline to your group by Monday March 9 and submit it on Learn."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "By Monday March 9, you will email a brief statement of your topic and a bare-bones outline for your term paper to your peer feedback group."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "If, due to illness or another good reason, you require an extension for (a) your term paper topic and bare-bones outline due March 9, (b) your detailed outline due March 16, and/or (c) your full draft due March 23, pl..."
+          }
+        ]
+      },
+      {
+        "id": "idw4by",
+        "label": "Term Paper",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Term Paper @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "By Monday March 16, you will email a detailed outline for your term paper to your group and submit it on Learn.",
+          "If, due to illness or another good reason, you require an extension for (a) your term paper topic and bare-bones outline due March 9, (b) your detailed outline due March 16, and/or (c) your full draft due March 23, please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-16",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "By Monday March 16, you will email a detailed outline for your term paper to your group and submit it on Learn."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "If, due to illness or another good reason, you require an extension for (a) your term paper topic and bare-bones outline due March 9, (b) your detailed outline due March 16, and/or (c) your full draft due March 23, pl..."
+          }
+        ]
+      },
+      {
+        "id": "apve1q",
+        "label": "Term Paper",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Term Paper @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "By Monday March 23, you will email a full draft of your term paper to your group and submit it on Learn.",
+          "If, due to illness or another good reason, you require an extension for (a) your term paper topic and bare-bones outline due March 9, (b) your detailed outline due March 16, and/or (c) your full draft due March 23, please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "By Monday March 23, you will email a full draft of your term paper to your group and submit it on Learn."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "If, due to illness or another good reason, you require an extension for (a) your term paper topic and bare-bones outline due March 9, (b) your detailed outline due March 16, and/or (c) your full draft due March 23, pl..."
+          }
+        ]
+      },
+      {
+        "id": "1ca0z1v",
+        "label": "Lecture SEM 001",
+        "title": "PHIL 471/PHIL 673/PHIL 675 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "HH 336",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "14:20",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "PHIL 471 / PHIL 673 / PHIL 675 001 [SEM] Thursdays - Thursdays Jan 5 - Apr 6 11:30AM - 02:20PM HH 336 Chris Lowry christopher.lowry@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  }
+]

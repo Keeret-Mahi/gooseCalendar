@@ -1,0 +1,5768 @@
+[
+  {
+    "fileName": "Spring 2025_ Power System Protection and Relaying.html",
+    "courseCode": "ECE 765",
+    "courseName": "Power System Protection and Relaying",
+    "term": "Spring 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "z5cnb",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EIT 3141",
+        "instructorName": "Sahar Pirooz Azad",
+        "instructorEmail": "sahar.azad@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 14:30-15:50 · 2 scheduled dates"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 3
+    },
+    "events": [
+      {
+        "id": "1o4qejx",
+        "label": "Lecture LEC 001",
+        "title": "ECE 765 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3141",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-05-05",
+          "endDate": "2025-07-30",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [
+            "2025-07-02"
+          ],
+          "occurrenceNotes": {
+            "2025-07-30": [
+              "The loss of a Wednesday class on July 2 due to the Monday schedule will be made up on Wed July 30 ."
+            ],
+            "2025-07-02": [
+              "Excluded: The loss of a Wednesday class on July 2 due to the Monday schedule will be made up on Wed July 30 ."
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 765 001 [LEC] Monday, Wednesday - Mon, Wed May 5 - Jul 30 02:30PM - 03:50PM EIT 3141 Sahar Pirooz Azad sahar.azad@uwaterloo.ca"
+          },
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "prose",
+            "snippet": "The loss of a Wednesday class on July 2 due to the Monday schedule will be made up on Wed July 30 ."
+          },
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "prose",
+            "snippet": "The loss of a Wednesday class on July 2 due to the Monday schedule will be made up on Wed July 30 ."
+          }
+        ]
+      },
+      {
+        "id": "q3jzzf",
+        "label": "Lecture LEC 001",
+        "title": "ECE 765 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3141",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2025-07-04",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Fridays - Fridays Jul 4, Jul 25 02:30PM - 03:50PM EIT 3141"
+          }
+        ]
+      },
+      {
+        "id": "17cx3pc",
+        "label": "Lecture LEC 001",
+        "title": "ECE 765 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3141",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2025-07-25",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Fridays - Fridays Jul 4, Jul 25 02:30PM - 03:50PM EIT 3141"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2025_ Applied Quantum Mechanics.html",
+    "courseCode": "ECE 677",
+    "courseName": "Applied Quantum Mechanics",
+    "term": "Winter 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "nvbviz",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EIT 3151",
+        "instructorName": "Hamed Majedi",
+        "instructorEmail": "ahmajedi@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 08:30-09:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "lirdkr",
+        "label": "Lecture LEC 001",
+        "title": "ECE 677 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 677 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 6 - Apr 4 08:30AM - 09:50AM EIT 3151 Hamed Majedi ahmajedi@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2025_ Intelligent Sensor Networks.html",
+    "courseCode": "ECE 493/ECE 659",
+    "courseName": "Intelligent Sensor Networks",
+    "term": "Winter 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1cix814",
+        "kind": "LEC",
+        "number": "004",
+        "label": "LEC 004",
+        "location": "E7 5353",
+        "instructorName": "Otman Basir",
+        "instructorEmail": "otman.basir@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "4 scheduled dates · TU 10:00-11:20 · WE 08:30-09:50"
+      },
+      {
+        "id": "1dwv8hz",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 5353",
+        "instructorName": "Otman Basir",
+        "instructorEmail": "otman.basir@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "4 scheduled dates · TU 10:00-11:20 · WE 08:30-09:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 6
+    },
+    "events": [
+      {
+        "id": "rwoggp",
+        "label": "Lecture LEC 001",
+        "title": "ECE 493/ECE 659 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Tuesdays - Tuesdays Jan 6 - Apr 4 10:00AM - 11:20AM E7 5353"
+          }
+        ]
+      },
+      {
+        "id": "e5ptyu",
+        "label": "Lecture LEC 001",
+        "title": "ECE 493/ECE 659 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Wednesdays - Wednesdays Jan 6 - Apr 4 08:30AM - 09:50AM E7 5353"
+          }
+        ]
+      },
+      {
+        "id": "de2dzl",
+        "label": "Lecture LEC 001",
+        "title": "ECE 493/ECE 659 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-13",
+          "endDate": "2025-03-24",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2025-01-20",
+            "2025-01-27",
+            "2025-02-10",
+            "2025-02-17",
+            "2025-02-24",
+            "2025-03-10",
+            "2025-03-17"
+          ],
+          "occurrenceNotes": {
+            "2025-01-13": [],
+            "2025-02-03": [],
+            "2025-03-03": [],
+            "2025-03-24": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 659 001 [LEC] Mondays - Mondays Jan 13, Feb 3, Mar 3, Mar 24 04:00PM - 05:20PM E7 5353 Otman Basir otman.basir@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "hyiqip",
+        "label": "Lecture LEC 004",
+        "title": "ECE 493/ECE 659 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Tuesdays - Tuesdays Jan 6 - Apr 4 10:00AM - 11:20AM E7 5353"
+          }
+        ]
+      },
+      {
+        "id": "116u7ym",
+        "label": "Lecture LEC 004",
+        "title": "ECE 493/ECE 659 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Wednesdays - Wednesdays Jan 6 - Apr 4 08:30AM - 09:50AM E7 5353"
+          }
+        ]
+      },
+      {
+        "id": "n8rz8q",
+        "label": "Lecture LEC 004",
+        "title": "ECE 493/ECE 659 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-13",
+          "endDate": "2025-03-24",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2025-01-20",
+            "2025-01-27",
+            "2025-02-10",
+            "2025-02-17",
+            "2025-02-24",
+            "2025-03-10",
+            "2025-03-17"
+          ],
+          "occurrenceNotes": {
+            "2025-01-13": [],
+            "2025-02-03": [],
+            "2025-03-03": [],
+            "2025-03-24": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 493 004 [LEC] Mondays - Mondays Jan 13, Feb 3, Mar 3, Mar 24 04:00PM - 05:20PM E7 5353 Otman Basir otman.basir@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2025_ Optoelectronic Devices.html",
+    "courseCode": "ECE 672",
+    "courseName": "Optoelectronic Devices",
+    "term": "Winter 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1ql9j9k",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EIT 3141",
+        "instructorName": "Dayan Ban",
+        "instructorEmail": "dban@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "u3dvpu",
+        "label": "Lecture LEC 001",
+        "title": "ECE 672 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3141",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 672 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 6 - Apr 4 10:00AM - 11:20AM EIT 3141 Dayan Ban dban@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2025_ Organic Electronics.html",
+    "courseCode": "NE 476/ECE 634",
+    "courseName": "Organic Electronics",
+    "term": "Winter 2025",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1zeqy3",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "RCH 305",
+        "instructorName": "Hany Aziz",
+        "instructorEmail": "h2aziz@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO 10:00-11:20 · FR 08:30-09:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 2,
+      "Assignments": 1,
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "1h73yjm",
+        "label": "Midterm",
+        "title": "NE 476/ECE 634 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "06. OLED Physics and Technology\nMidterm"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_course_schedule",
+            "sectionTitle": "Tentative Course Schedule",
+            "sourceKind": "table",
+            "snippet": "7 | 06. OLED Physics and Technology Midterm"
+          }
+        ]
+      },
+      {
+        "id": "1hbnc9a",
+        "label": "Quiz",
+        "title": "NE 476/ECE 634 Quiz",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "The quiz will be ~20 minutes long and will be held during regular lecture time on Monday, Feb 3, 2025.",
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-02-03",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "student_assessment",
+            "sectionTitle": "Student Assessment",
+            "sourceKind": "prose",
+            "snippet": "The quiz will be ~20 minutes long and will be held during regular lecture time on Monday, Feb 3, 2025."
+          },
+          {
+            "sectionId": "student_assessment",
+            "sectionTitle": "Student Assessment",
+            "sourceKind": "table",
+            "snippet": "Quiz | 10%"
+          }
+        ]
+      },
+      {
+        "id": "6zpsnd",
+        "label": "General Presentation",
+        "title": "NE 476/ECE 634 General Presentation",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "General Presentation (2/14)"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2025-02-14",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "student_assessment",
+            "sectionTitle": "Student Assessment",
+            "sourceKind": "prose",
+            "snippet": "General Presentation (2/14)"
+          }
+        ]
+      },
+      {
+        "id": "qznqvu",
+        "label": "Lecture LEC 001",
+        "title": "NE 476/ECE 634 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 305",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2025-02-03"
+          ],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "NE 476 / ECE 634 001 [LEC] Mondays - Mondays Jan 6 - Apr 4 10:00AM - 11:20AM RCH 305 Hany Aziz h2aziz@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1o74xp6",
+        "label": "Lecture LEC 001",
+        "title": "NE 476/ECE 634 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "RCH 305",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-01-06",
+          "endDate": "2025-04-04",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2025-02-03"
+          ],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Fridays - Fridays Jan 6 - Apr 4 08:30AM - 09:50AM RCH 305"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Artificial Life - Embodied Intelligence.html",
+    "courseCode": "ECE 757A",
+    "courseName": "Artificial Life - Embodied Intelligence",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "c4hth3",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4437",
+        "instructorName": "Kerstin Dautenhahn",
+        "instructorEmail": "kerstin.dautenhahn@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/FR 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 4,
+      "Lecture": 1,
+      "Office Hours": 1
+    },
+    "events": [
+      {
+        "id": "y9cp20",
+        "label": "Individual term Project",
+        "title": "ECE 757A Individual term Project @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 57%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Individual term project | 30 March 2026 | Learn dropbox | 57"
+          }
+        ]
+      },
+      {
+        "id": "rpnyz3",
+        "label": "Project Presentations #1",
+        "title": "ECE 757A Project Presentations #1",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10% total across 2 project presentations"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-31",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project presentations | 31 March, 6 April 2026 | in-class | 10"
+          }
+        ]
+      },
+      {
+        "id": "iza3j8",
+        "label": "Project Presentations #2",
+        "title": "ECE 757A Project Presentations #2",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10% total across 2 project presentations"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project presentations | 31 March, 6 April 2026 | in-class | 10"
+          }
+        ]
+      },
+      {
+        "id": "2dnunf",
+        "label": "Project Proposal",
+        "title": "ECE 757A Project Proposal @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 3%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Individual term project proposal | 23 February 2026 | Learn dropbox | 3"
+          }
+        ]
+      },
+      {
+        "id": "bmqemy",
+        "label": "Lecture LEC 001",
+        "title": "ECE 757A (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4437",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TU",
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 757A 001 [LEC] Tuesday, Friday - Tue, Fri Jan 5 - Apr 6 01:00PM - 02:20PM E7 4437 Kerstin Dautenhahn kerstin.dautenhahn@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "ovwgos",
+        "label": "Office Hours with Kerstin Dautenhahn",
+        "title": "ECE 757A Office Hours @ E5-5027",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "E5-5027",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:20",
+          "endTime": "12:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hour: Wednesday 11:20am-12:20pm, E5-5027"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Broadband Communication Networks.html",
+    "courseCode": "ECE 610",
+    "courseName": "Broadband Communication Networks",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "hto53o",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EIT 3151",
+        "instructorName": "Albert Wasef",
+        "instructorEmail": "awasef@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 17:30-18:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "czfmqy",
+        "label": "Midterm",
+        "title": "ECE 610 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Midterm: Wednesday Feb 25th,",
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-25",
+          "startTime": "17:30",
+          "endTime": "19:00",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "8 | February 23 | Ch4&5: Network Layer | Midterm: Wednesday Feb 25th, Time: 5:30- 7:00pm."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | Feb 25, Time: 5:30- 7:00pm. | In-person | 30%"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Midterm: Wednesday Feb 25th,"
+          }
+        ]
+      },
+      {
+        "id": "1vzd0lb",
+        "label": "Project",
+        "title": "ECE 610 Project",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Project Due on Mar. 27 at 11:59pm",
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-27",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | March 23 | Ch6: Link Layer | Project Due on Mar. 27 at 11:59pm"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project | Mar. 27 at 11:59pm | Drop Box | 20%"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Project Due on Mar. 27 at 11:59pm"
+          }
+        ]
+      },
+      {
+        "id": "y1eqq2",
+        "label": "Lecture LEC 001",
+        "title": "ECE 610 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "17:30",
+          "endTime": "18:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [
+            "2026-02-16",
+            "2026-02-18"
+          ],
+          "occurrenceNotes": {
+            "2026-02-16": [
+              "Excluded: 7 | February 16 | Reading week (no classes) | No Lectures"
+            ],
+            "2026-02-18": [
+              "Excluded: 7 | February 16 | Reading week (no classes) | No Lectures"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 610 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 05:30PM - 06:50PM EIT 3151 Albert Wasef awasef@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "7 | February 16 | Reading week (no classes) | No Lectures"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Computer Network Security.html",
+    "courseCode": "ECE 628",
+    "courseName": "Computer Network Security",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "kpim8r",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4437",
+        "instructorName": "Guang Gong",
+        "instructorEmail": "ggong@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 11:30-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "cbde6",
+        "label": "Midterm Examination",
+        "title": "ECE 628 Midterm Examination",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 30%",
+          "Date unresolved in outline: TBD"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm Examination | TBD | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "dteijb",
+        "label": "Project (both Slides and Report)",
+        "title": "ECE 628 Project (both Slides and Report)",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-27",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project (both slides and report) due on March 27 | March 27 | Drop box | 30%"
+          }
+        ]
+      },
+      {
+        "id": "qa1jpl",
+        "label": "Lecture LEC 001",
+        "title": "ECE 628 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4437",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "14:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 628 001 [LEC] Wednesdays - Wednesdays Jan 5 - Apr 6 11:30AM - 02:20PM E7 4437 Guang Gong ggong@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Database Systems.html",
+    "courseCode": "ECE 656",
+    "courseName": "Database Systems",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1j35qqe",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4053",
+        "instructorName": "Paul Ward",
+        "instructorEmail": "pasward@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO 13:00-14:20 · FR 11:30-12:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "1v2okbd",
+        "label": "Lecture LEC 001",
+        "title": "ECE 656 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4053",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 656 001 [LEC] Mondays - Mondays Jan 5 - Apr 6 01:00PM - 02:20PM E7 4053 Paul Ward pasward@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "986moc",
+        "label": "Lecture LEC 001",
+        "title": "ECE 656 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4053",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:50",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Fridays - Fridays Jan 5 - Apr 6 11:30AM - 12:50PM E7 4053"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Digital Hardware Systems.html",
+    "courseCode": "ECE 327/ECE 627",
+    "courseName": "Digital Hardware Systems",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "thohsg",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4053",
+        "instructorName": "Andrew Boutros",
+        "instructorEmail": "andrew.boutros@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/TH 10:00-11:20 · 6 scheduled dates"
+      },
+      {
+        "id": "27mjh2",
+        "kind": "TUT",
+        "number": "101",
+        "label": "TUT 101",
+        "location": "E7 4053",
+        "instructorName": "Andrew Boutros",
+        "instructorEmail": "andrew.boutros@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 12:30-13:20"
+      },
+      {
+        "id": "1vbf8g9",
+        "kind": "LAB",
+        "number": "201",
+        "label": "LAB 201",
+        "location": "E2 2356A",
+        "instructorName": "Maran Ran Ma",
+        "instructorEmail": "maran.ma@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      },
+      {
+        "id": "1uhgfdc",
+        "kind": "LAB",
+        "number": "202",
+        "label": "LAB 202",
+        "location": "E2 2356A",
+        "instructorName": "Maran Ran Ma",
+        "instructorEmail": "maran.ma@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      },
+      {
+        "id": "1urg12b",
+        "kind": "LAB",
+        "number": "203",
+        "label": "LAB 203",
+        "location": "E2 2356A",
+        "instructorName": "Maran Ran Ma",
+        "instructorEmail": "maran.ma@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      },
+      {
+        "id": "1w5e1j6",
+        "kind": "LAB",
+        "number": "204",
+        "label": "LAB 204",
+        "location": "E2 2356A",
+        "instructorName": "Maran Ran Ma",
+        "instructorEmail": "maran.ma@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lab": 4,
+      "Lecture": 2,
+      "Office Hours": 3,
+      "Tutorial": 1
+    },
+    "events": [
+      {
+        "id": "1quioza",
+        "label": "Midterm",
+        "title": "ECE 327/ECE 627 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Week 6\nFeb 9 - Feb 13 | Lecture 11\nResource Sharing | Tutorial 5 | Lecture 12\nMidterm Review"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-09",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 6 Feb 9 - Feb 13 | Lecture 11 Resource Sharing | | Tutorial 5 | Lecture 12 Midterm Review |"
+          }
+        ]
+      },
+      {
+        "id": "1krdyex",
+        "label": "Lab LAB 201",
+        "title": "ECE 327/ECE 627 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 2356A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-12",
+          "endDate": "2026-03-23",
+          "startTime": "13:30",
+          "endTime": "16:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-01-19",
+            "2026-02-02",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-02",
+            "2026-03-16"
+          ],
+          "occurrenceNotes": {
+            "2026-01-12": [],
+            "2026-01-26": [],
+            "2026-02-09": [],
+            "2026-03-09": [],
+            "2026-03-23": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 327 201 [LAB] Mondays - Mondays Jan 12, Jan 26, Feb 9, Mar 9, Mar 23 01:30PM - 04:20PM E2 2356A Maran Ran Ma maran.ma@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 - Feb 6 | Lecture 9 LI Design | | Tutorial 4 | Lecture 10 FIFO-based Design | Lab 2 Due Lab 3 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 9 Mar 2 - Mar 6 | Lecture 13 Memory I | | Tutorial 6 | Lecture 14 Memory II | Lab 3 Due Lab 4 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 13 Mar 30 - Apr 3 | Lecture 21 Course Wrap-up | | | | Lab 4 Due"
+          }
+        ]
+      },
+      {
+        "id": "pxxwjm",
+        "label": "Lab LAB 202",
+        "title": "ECE 327/ECE 627 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 2356A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-13",
+          "endDate": "2026-03-24",
+          "startTime": "13:30",
+          "endTime": "16:20",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [
+            "2026-01-20",
+            "2026-02-03",
+            "2026-02-17",
+            "2026-02-24",
+            "2026-03-03",
+            "2026-03-17"
+          ],
+          "occurrenceNotes": {
+            "2026-01-13": [],
+            "2026-01-27": [],
+            "2026-02-10": [],
+            "2026-03-10": [],
+            "2026-03-24": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 327 202 [LAB] Tuesdays - Tuesdays Jan 13, Jan 27, Feb 10, Mar 10, Mar 24 01:30PM - 04:20PM E2 2356A Maran Ran Ma maran.ma@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 - Feb 6 | Lecture 9 LI Design | | Tutorial 4 | Lecture 10 FIFO-based Design | Lab 2 Due Lab 3 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 9 Mar 2 - Mar 6 | Lecture 13 Memory I | | Tutorial 6 | Lecture 14 Memory II | Lab 3 Due Lab 4 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 13 Mar 30 - Apr 3 | Lecture 21 Course Wrap-up | | | | Lab 4 Due"
+          }
+        ]
+      },
+      {
+        "id": "j2f10f",
+        "label": "Lab LAB 203",
+        "title": "ECE 327/ECE 627 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 2356A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-14",
+          "endDate": "2026-03-25",
+          "startTime": "13:30",
+          "endTime": "16:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [
+            "2026-01-21",
+            "2026-02-04",
+            "2026-02-18",
+            "2026-02-25",
+            "2026-03-04",
+            "2026-03-18"
+          ],
+          "occurrenceNotes": {
+            "2026-01-14": [],
+            "2026-01-28": [],
+            "2026-02-11": [],
+            "2026-03-11": [],
+            "2026-03-25": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 327 203 [LAB] Wednesdays - Wednesdays Jan 14, Jan 28, Feb 11, Mar 11, Mar 25 01:30PM - 04:20PM E2 2356A Maran Ran Ma maran.ma@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 - Feb 6 | Lecture 9 LI Design | | Tutorial 4 | Lecture 10 FIFO-based Design | Lab 2 Due Lab 3 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 9 Mar 2 - Mar 6 | Lecture 13 Memory I | | Tutorial 6 | Lecture 14 Memory II | Lab 3 Due Lab 4 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 13 Mar 30 - Apr 3 | Lecture 21 Course Wrap-up | | | | Lab 4 Due"
+          }
+        ]
+      },
+      {
+        "id": "1rlb0ko",
+        "label": "Lab LAB 204",
+        "title": "ECE 327/ECE 627 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 2356A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-15",
+          "endDate": "2026-03-26",
+          "startTime": "13:30",
+          "endTime": "16:20",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [
+            "2026-01-22",
+            "2026-02-05",
+            "2026-02-19",
+            "2026-02-26",
+            "2026-03-05",
+            "2026-03-19"
+          ],
+          "occurrenceNotes": {
+            "2026-01-15": [],
+            "2026-01-29": [],
+            "2026-02-12": [],
+            "2026-03-12": [],
+            "2026-03-26": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 327 204 [LAB] Thursdays - Thursdays Jan 15, Jan 29, Feb 12, Mar 12, Mar 26 01:30PM - 04:20PM E2 2356A Maran Ran Ma maran.ma@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 - Feb 6 | Lecture 9 LI Design | | Tutorial 4 | Lecture 10 FIFO-based Design | Lab 2 Due Lab 3 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 9 Mar 2 - Mar 6 | Lecture 13 Memory I | | Tutorial 6 | Lecture 14 Memory II | Lab 3 Due Lab 4 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 13 Mar 30 - Apr 3 | Lecture 21 Course Wrap-up | | | | Lab 4 Due"
+          }
+        ]
+      },
+      {
+        "id": "1lwc9j6",
+        "label": "Lecture LEC 001",
+        "title": "ECE 327/ECE 627 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4053",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "MO",
+            "TH"
+          ],
+          "exDates": [
+            "2026-02-09"
+          ],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 627 001 [LEC] Monday, Thursday - Mon, Thu Jan 5 - Apr 6 10:00AM - 11:20AM E7 4053 Andrew Boutros andrew.boutros@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "16h00kg",
+        "label": "Lecture LEC 001",
+        "title": "ECE 327/ECE 627 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4053",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-03-23",
+          "startTime": "11:30",
+          "endTime": "12:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-01-12",
+            "2026-01-26",
+            "2026-02-09",
+            "2026-02-16",
+            "2026-03-02",
+            "2026-03-16"
+          ],
+          "occurrenceNotes": {
+            "2026-01-05": [],
+            "2026-01-19": [],
+            "2026-02-02": [],
+            "2026-02-23": [],
+            "2026-03-09": [],
+            "2026-03-23": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Mondays - Mondays Jan 5, Jan 19, Feb 2, Feb 23, Mar 9, Mar 23 11:30AM - 12:20PM E7 4053"
+          }
+        ]
+      },
+      {
+        "id": "1cdsy8r",
+        "label": "Office Hours with Andrew Boutros",
+        "title": "ECE 327/ECE 627 Office Hours @ E2-2356A",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "E2-2356A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours: Wednesday 11:30 am - 12:30 pm (@ E2-2356A on Jan 21, Mar 4, Mar 18, Apr 1)"
+          }
+        ]
+      },
+      {
+        "id": "x7ue26",
+        "label": "Office Hours with Andrew Boutros",
+        "title": "ECE 327/ECE 627 Office Hours @ E2-2356A",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "E2-2356A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:30",
+          "endTime": "17:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours: Wednesday 4:30 pm - 5:30 pm (@ E2-2356A on Jan 21, Feb 4, Mar 4, Mar 18, Apr 1)"
+          }
+        ]
+      },
+      {
+        "id": "1ecbxz",
+        "label": "Office Hours with Marwan Mekhemer",
+        "title": "ECE 327/ECE 627 Office Hours @ E2-2356A",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "E2-2356A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:30",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours: Tuesday 11:30 am - 12:30 pm (@ E2-2356A on Jan 20, Feb 3, Mar 3, Mar 17, Mar 31)"
+          }
+        ]
+      },
+      {
+        "id": "1etrb50",
+        "label": "Tutorial TUT 101",
+        "title": "ECE 327/ECE 627 (TUT)",
+        "eventType": "Tutorial",
+        "eventGroup": "Tutorial",
+        "location": "E7 4053",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:30",
+          "endTime": "13:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-01-28": [
+              "Tutorial 3"
+            ],
+            "2026-02-04": [
+              "Tutorial 4"
+            ],
+            "2026-02-11": [
+              "Tutorial 5"
+            ],
+            "2026-03-04": [
+              "Tutorial 6"
+            ],
+            "2026-03-11": [
+              "Tutorial 7"
+            ],
+            "2026-03-18": [
+              "Tutorial 8"
+            ],
+            "2026-03-25": [
+              "Tutorial 9"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 327 101 [TUT] Wednesdays - Wednesdays Jan 5 - Apr 6 12:30PM - 01:20PM E7 4053"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 4 Jan 26 - Jan 30 | Lecture 7 Pipelining I | | Tutorial 3 | Lecture 8 Pipelining II |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 - Feb 6 | Lecture 9 LI Design | | Tutorial 4 | Lecture 10 FIFO-based Design | Lab 2 Due Lab 3 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 6 Feb 9 - Feb 13 | Lecture 11 Resource Sharing | | Tutorial 5 | Lecture 12 Midterm Review |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 9 Mar 2 - Mar 6 | Lecture 13 Memory I | | Tutorial 6 | Lecture 14 Memory II | Lab 3 Due Lab 4 Release"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 10 Mar 9 - Mar 13 | Lecture 15 Overlays & Lab 4 | | Tutorial 7 | Lecture 16 Timing Analysis |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 11 Mar 16 - Mar 20 | Lecture 17 Interconnect Delay | | Tutorial 8 | Lecture 18 Power |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 12 Mar 23 - Mar 27 | Lecture 19 FPGA Arch I | | Tutorial 9 | Lecture 20 FPGA Arch II |"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Distributed Optimization.html",
+    "courseCode": "ECE 700",
+    "courseName": "Distributed Optimization",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "30limv",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "EIT 3151",
+        "instructorName": "Michael Fisher",
+        "instructorEmail": "michael.fisher@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU 11:30-12:50 · 1 scheduled date · TH 16:00-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 3
+    },
+    "events": [
+      {
+        "id": "yz67g7",
+        "label": "Lecture LEC 002",
+        "title": "ECE 700 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:50",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 700 002 [LEC] Tuesdays - Tuesdays Jan 5 - Apr 6 11:30AM - 12:50PM EIT 3151 Michael Fisher michael.fisher@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "311uhd",
+        "label": "Lecture LEC 002",
+        "title": "ECE 700 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-15",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Thursdays - Thursdays Jan 15 - Apr 6 04:00PM - 05:20PM EIT 3151"
+          }
+        ]
+      },
+      {
+        "id": "ro33v9",
+        "label": "Lecture LEC 002",
+        "title": "ECE 700 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3142",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-08",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Thursday - Thursday Jan 8 04:00PM - 05:20PM EIT 3142"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Distribution System Engineering.html",
+    "courseCode": "ECE 668",
+    "courseName": "Distribution System Engineering",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1u3ypzr",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EIT 3151",
+        "instructorName": "Ramadan El Shatshat",
+        "instructorEmail": "ramadan.elshatshat@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO 14:00-16:50 · 1 scheduled date"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 2
+    },
+    "events": [
+      {
+        "id": "17b0hn5",
+        "label": "Lecture LEC 001",
+        "title": "ECE 668 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-12",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "16:50",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 668 001 [LEC] Mondays - Mondays Jan 12 - Apr 6 02:00PM - 04:50PM EIT 3151 Ramadan El Shatshat ramadan.elshatshat@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "9xs3ku",
+        "label": "Lecture LEC 001",
+        "title": "ECE 668 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-08",
+          "startTime": "14:00",
+          "endTime": "16:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Thursday - Thursday Jan 8 02:00PM - 04:50PM EIT 3151"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Electric Safety and Grounding System Design.html",
+    "courseCode": "ECE 6616PD",
+    "courseName": "Electric Safety and Grounding System Design",
+    "term": "Winter 2026",
+    "warnings": [
+      "No calendar-ready events were detected in this outline."
+    ],
+    "sectionOptions": [
+      {
+        "id": "196zcqo",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "Online",
+        "instructorName": "Magdy Salama",
+        "instructorEmail": "msalama@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "Online"
+      }
+    ],
+    "countsByGroup": {},
+    "events": []
+  },
+  {
+    "fileName": "Winter 2026_ Foundations of Software Engineering.html",
+    "courseCode": "ECE 651",
+    "courseName": "Foundations of Software Engineering",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "139hdcn",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 5343",
+        "instructorName": "Krzysztof Czarnecki",
+        "instructorEmail": "krzysztof.czarnecki@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 08:30-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 2,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "wuvmid",
+        "label": "Project Abstract",
+        "title": "ECE 651 Project Abstract @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Project abstract due – submit on Learn in Week 2 (deadline is Jan 16, 11:59 pm)"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-16",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Project abstract due – submit on Learn in Week 2 (deadline is Jan 16, 11:59 pm)"
+          }
+        ]
+      },
+      {
+        "id": "fkvh3n",
+        "label": "Project Delivery",
+        "title": "ECE 651 Project Delivery @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Project delivery (each team meets with the instructor) – scheduled before the lectures end, throughout the day on Apr 6"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Project delivery (each team meets with the instructor) – scheduled before the lectures end, throughout the day on Apr 6"
+          }
+        ]
+      },
+      {
+        "id": "cjwxg7",
+        "label": "Lecture LEC 001",
+        "title": "ECE 651 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5343",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "11:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 651 001 [LEC] Wednesdays - Wednesdays Jan 5 - Apr 6 08:30AM - 11:20AM E7 5343 Krzysztof Czarnecki krzysztof.czarnecki@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Image Processing and Visual Communication.html",
+    "courseCode": "ECE 613",
+    "courseName": "Image Processing and Visual Communication",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1eujtct",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4433",
+        "instructorName": "Oleg Michailovich",
+        "instructorEmail": "olegm@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1,
+      "Office Hours": 2
+    },
+    "events": [
+      {
+        "id": "sj7gjo",
+        "label": "Lecture LEC 001",
+        "title": "ECE 613 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 613 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM E7 4433 Oleg Michailovich olegm@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1u0n52h",
+        "label": "Office Hours with Prof. Oleg Michailovich",
+        "title": "ECE 613 Office Hours @ EIT 4127",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT 4127",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:00",
+          "endTime": "12:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours: Monday & Friday, 11:00 AM - 12:00 PM"
+          }
+        ]
+      },
+      {
+        "id": "1jfc7lx",
+        "label": "Office Hours with Prof. Oleg Michailovich",
+        "title": "ECE 613 Office Hours @ EIT 4127",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT 4127",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:00",
+          "endTime": "12:00",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours: Monday & Friday, 11:00 AM - 12:00 PM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Information Theory.html",
+    "courseCode": "ECE 612",
+    "courseName": "Information Theory",
+    "term": "Winter 2026",
+    "warnings": [
+      "No section options were detected from the schedule table."
+    ],
+    "sectionOptions": [],
+    "countsByGroup": {
+      "Assessments": 1
+    },
+    "events": [
+      {
+        "id": "4105do",
+        "label": "Midterm",
+        "title": "ECE 612 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "There will be one in-person in-class midterm tentatively set for the first lecture after winter break (i.e., 23 Feb 2026) and will count for 35% of the grade. The date of the midterm may change based on how quickly/slowly the course material is covered, but will be held in-person in-class. The duration of the midterm is tentatively set to 90 min.",
+          "Weight: 35%",
+          "There will be one in-person in-class midterm tentatively set for the first lecture after winter break (i.e., 23 Feb 2026) and will count for 35% of the grade."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | TBD; see below | in-person in-class | 35"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "There will be one in-person in-class midterm tentatively set for the first lecture after winter break (i.e., 23 Feb 2026) and will count for 35% of the grade."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Introduction to Artificial Intelligence.html",
+    "courseCode": "ECE 657A",
+    "courseName": "Introduction to Artificial Intelligence",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "cdo4l6",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4053",
+        "instructorName": "Mark Crowley",
+        "instructorEmail": "mark.crowley@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/WE 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "b86k2u",
+        "label": "Midterm",
+        "title": "ECE 657A Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | Mid-Term Week | 15%"
+          }
+        ]
+      },
+      {
+        "id": "jhkodu",
+        "label": "Lecture LEC 001",
+        "title": "ECE 657A (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4053",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "MO",
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 657A 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 02:30PM - 03:50PM E7 4053 Mark Crowley mark.crowley@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Introduction to Optimization.html",
+    "courseCode": "ECE 602",
+    "courseName": "Introduction to Optimization",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1t9jg9b",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4437",
+        "instructorName": "Oleg Michailovich",
+        "instructorEmail": "olegm@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 11:30-12:50"
+      }
+    ],
+    "countsByGroup": {
+      "Lecture": 1,
+      "Office Hours": 2
+    },
+    "events": [
+      {
+        "id": "ljprsb",
+        "label": "Lecture LEC 001",
+        "title": "ECE 602 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4437",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 602 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 11:30AM - 12:50PM E7 4437 Oleg Michailovich olegm@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1bgi74k",
+        "label": "Office Hours with Prof. Oleg Michailovich",
+        "title": "ECE 602 Office Hours @ EIT 4127",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT 4127",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office Hours: Monday & Friday, 10:00-11:00 AM"
+          }
+        ]
+      },
+      {
+        "id": "13lxgh0",
+        "label": "Office Hours with Prof. Oleg Michailovich",
+        "title": "ECE 602 Office Hours @ EIT 4127",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT 4127",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:00",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office Hours: Monday & Friday, 10:00-11:00 AM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Master of Engineering Project 1.html",
+    "courseCode": "ECE 699A",
+    "courseName": "Master of Engineering Project 1",
+    "term": "Winter 2026",
+    "warnings": [
+      "No calendar-ready events were detected in this outline."
+    ],
+    "sectionOptions": [
+      {
+        "id": "1b5xjd8",
+        "kind": "PRJ",
+        "number": "001",
+        "label": "PRJ 001",
+        "location": "",
+        "instructorName": "Liang-Liang Xie",
+        "instructorEmail": "llxie@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "Online"
+      }
+    ],
+    "countsByGroup": {},
+    "events": []
+  },
+  {
+    "fileName": "Winter 2026_ Master of Engineering Project 2.html",
+    "courseCode": "ECE 699B",
+    "courseName": "Master of Engineering Project 2",
+    "term": "Winter 2026",
+    "warnings": [
+      "No calendar-ready events were detected in this outline."
+    ],
+    "sectionOptions": [
+      {
+        "id": "nmmk9",
+        "kind": "PRJ",
+        "number": "001",
+        "label": "PRJ 001",
+        "location": "",
+        "instructorName": "Liang-Liang Xie",
+        "instructorEmail": "llxie@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "Online"
+      }
+    ],
+    "countsByGroup": {},
+    "events": []
+  },
+  {
+    "fileName": "Winter 2026_ Methods and Tools for Software Engineering.html",
+    "courseCode": "ECE 650",
+    "courseName": "Methods and Tools for Software Engineering",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "phsrao",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4053",
+        "instructorName": "Mark Crowley",
+        "instructorEmail": "mark.crowley@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "FR 08:30-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "12mneod",
+        "label": "Project",
+        "title": "ECE 650 Project",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Project | April 6, 2026 | 10%"
+          }
+        ]
+      },
+      {
+        "id": "1g8sqet",
+        "label": "Lecture LEC 001",
+        "title": "ECE 650 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4053",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "08:30",
+          "endTime": "11:20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 650 001 [LEC] Fridays - Fridays Jan 5 - Apr 6 08:30AM - 11:20AM E7 4053 Mark Crowley mark.crowley@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Microelectronic Processing Technology.html",
+    "courseCode": "ECE 631",
+    "courseName": "Microelectronic Processing Technology",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "577ymt",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EIT 3151",
+        "instructorName": "William Wong",
+        "instructorEmail": "william.wong@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU 14:30-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 2,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "1gg0uz0",
+        "label": "Midterm",
+        "title": "ECE 631 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 25%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-23",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm Exam | Week of February 23 | in-person | 25%"
+          }
+        ]
+      },
+      {
+        "id": "10gnhx7",
+        "label": "Project Report",
+        "title": "ECE 631 Project Report @ Online",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 25%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Term Project Paper | March 30, 2026 @ 4:30PM | Submit online or by email | 25%"
+          }
+        ]
+      },
+      {
+        "id": "15gqfo",
+        "label": "Written Report",
+        "title": "ECE 631 Written Report @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "A written report presenting the main findings of the literature search on the topic is due by 4:30 PM on Monday, March 30, 2026."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "A written report presenting the main findings of the literature search on the topic is due by 4:30 PM on Monday, March 30, 2026."
+          }
+        ]
+      },
+      {
+        "id": "1femcee",
+        "label": "Lecture LEC 001",
+        "title": "ECE 631 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "17:20",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 631 001 [LEC] Tuesdays - Tuesdays Jan 5 - Apr 6 02:30PM - 05:20PM EIT 3151 William Wong william.wong@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Microfluidic and Nanobiotechnological Systems.html",
+    "courseCode": "ECE 730/NE 487",
+    "courseName": "Microfluidic and Nanobiotechnological Systems",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "13z3pks",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "QNC 2502",
+        "instructorName": "Hesam Abouali",
+        "instructorEmail": "hesam.abouali@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 2,
+      "Assignments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "15595y0",
+        "label": "Quiz#1",
+        "title": "ECE 730/NE 487 Quiz#1 @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 7%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Quiz#1 | Thursday, Feb. 12 | in-person | 7"
+          }
+        ]
+      },
+      {
+        "id": "1ysogq6",
+        "label": "Quiz#2",
+        "title": "ECE 730/NE 487 Quiz#2 @ In person",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 7%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Quiz#2 | Thursday, Mar 12 | in-person | 7"
+          }
+        ]
+      },
+      {
+        "id": "yzc3m2",
+        "label": "Final Project",
+        "title": "ECE 730/NE 487 Final Project",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 50%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-15",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final project | Apr. 15, 23:59 PM | drop box | 50"
+          }
+        ]
+      },
+      {
+        "id": "5i13rd",
+        "label": "Lecture LEC 001",
+        "title": "ECE 730/NE 487 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "QNC 2502",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 730 / NE 487 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM QNC 2502 Hesam Abouali hesam.abouali@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Neural Networks and Deep Learning.html",
+    "courseCode": "ECE 657D",
+    "courseName": "Neural Networks and Deep Learning",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1uh5dyd",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 5353",
+        "instructorName": "Elliot Creager",
+        "instructorEmail": "creager@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "MO/FR 10:00-11:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 8,
+      "Lecture": 1,
+      "Office Hours": 1
+    },
+    "events": [
+      {
+        "id": "ianfxq",
+        "label": "Midterm",
+        "title": "ECE 657D Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | TBA | In person | 10"
+          }
+        ]
+      },
+      {
+        "id": "1ea72id",
+        "label": "Assignment #1",
+        "title": "ECE 657D Assignment #1 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 6 assignments",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-07",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments (3) | A1 out Jan 07, due Jan 22 A2 out Jan 28, due Feb 12 A2 out Mar 04, due Mar 19 | Individual work, submit by Crowdmark/Gitlab | 15"
+          }
+        ]
+      },
+      {
+        "id": "v4yjdk",
+        "label": "Assignment #2",
+        "title": "ECE 657D Assignment #2 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 6 assignments",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-22",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments (3) | A1 out Jan 07, due Jan 22 A2 out Jan 28, due Feb 12 A2 out Mar 04, due Mar 19 | Individual work, submit by Crowdmark/Gitlab | 15"
+          }
+        ]
+      },
+      {
+        "id": "o2ap9u",
+        "label": "Assignment #3",
+        "title": "ECE 657D Assignment #3 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 6 assignments",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-28",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments (3) | A1 out Jan 07, due Jan 22 A2 out Jan 28, due Feb 12 A2 out Mar 04, due Mar 19 | Individual work, submit by Crowdmark/Gitlab | 15"
+          }
+        ]
+      },
+      {
+        "id": "12slkio",
+        "label": "Assignment #4",
+        "title": "ECE 657D Assignment #4 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 6 assignments",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments (3) | A1 out Jan 07, due Jan 22 A2 out Jan 28, due Feb 12 A2 out Mar 04, due Mar 19 | Individual work, submit by Crowdmark/Gitlab | 15"
+          }
+        ]
+      },
+      {
+        "id": "ilgwo2",
+        "label": "Assignment #5",
+        "title": "ECE 657D Assignment #5 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 6 assignments",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-04",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments (3) | A1 out Jan 07, due Jan 22 A2 out Jan 28, due Feb 12 A2 out Mar 04, due Mar 19 | Individual work, submit by Crowdmark/Gitlab | 15"
+          }
+        ]
+      },
+      {
+        "id": "1jj99z0",
+        "label": "Assignment #6",
+        "title": "ECE 657D Assignment #6 @ Crowdmark",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "Crowdmark",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 15% total across 6 assignments",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-19",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments (3) | A1 out Jan 07, due Jan 22 A2 out Jan 28, due Feb 12 A2 out Mar 04, due Mar 19 | Individual work, submit by Crowdmark/Gitlab | 15"
+          }
+        ]
+      },
+      {
+        "id": "qdsnqd",
+        "label": "Research Projects #1",
+        "title": "ECE 657D Research Projects #1",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 25% total across 2 research project"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-25",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Research Project | out Feb 25, due Apr 02 | Individual work | 25"
+          }
+        ]
+      },
+      {
+        "id": "hhj1e",
+        "label": "Research Projects #2",
+        "title": "ECE 657D Research Projects #2",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 25% total across 2 research project"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Research Project | out Feb 25, due Apr 02 | Individual work | 25"
+          }
+        ]
+      },
+      {
+        "id": "1lktiy9",
+        "label": "Lecture LEC 001",
+        "title": "ECE 657D (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "MO",
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 657D 001 [LEC] Monday, Friday - Mon, Fri Jan 5 - Apr 6 10:00AM - 11:20AM E7 5353 Elliot Creager creager@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "tj7r6f",
+        "label": "Office Hours with Prof. Elliot Creager",
+        "title": "ECE 657D Office Hours @ EIT 3116",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT 3116",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "- Wed 4:00–5:00pm in EIT 3116"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Power Systems Operation.html",
+    "courseCode": "ECE 666",
+    "courseName": "Power Systems Operation",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1v4zal9",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "EIT 3151",
+        "instructorName": "Kankar Bhattacharya",
+        "instructorEmail": "kankar.bhattacharya@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 14:30-17:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "2uwaxw",
+        "label": "Midterm Exam",
+        "title": "ECE 666 Midterm Exam @ EIT 3151",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "EIT 3151",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 20%",
+          "Date unresolved in outline: To be announced",
+          "Date unresolved in outline: The midterm exam will be of 60 minute duration and shall be held within one of the lecture time slots, to be announced on LEARN."
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm Exam | To be announced | EIT-3151 | 20%"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "The midterm exam will be of 60 minute duration and shall be held within one of the lecture time slots, to be announced on LEARN."
+          }
+        ]
+      },
+      {
+        "id": "10msm3q",
+        "label": "Lecture LEC 001",
+        "title": "ECE 666 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "EIT 3151",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "17:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 666 001 [LEC] Wednesdays - Wednesdays Jan 5 - Apr 6 02:30PM - 05:20PM EIT 3151 Kankar Bhattacharya kankar.bhattacharya@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Programming of Quantum Computing Algorithms (1).html",
+    "courseCode": "ECE 405C/ECE 676C/QIC 890",
+    "courseName": "Programming of Quantum Computing Algorithms",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1yvwwzi",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4433",
+        "instructorName": "Na Young Kim",
+        "instructorEmail": "nayoung.kim@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/FR 13:00-14:20 · 4 scheduled dates"
+      },
+      {
+        "id": "w6i5gg",
+        "kind": "TUT",
+        "number": "101",
+        "label": "TUT 101",
+        "location": "E7 4433",
+        "instructorName": "Na Young Kim",
+        "instructorEmail": "nayoung.kim@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 19:00-19:50"
+      },
+      {
+        "id": "1ylxbaj",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "E7 4433",
+        "instructorName": "Na Young Kim",
+        "instructorEmail": "nayoung.kim@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/FR 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 4,
+      "Lecture": 3,
+      "Tutorial": 1
+    },
+    "events": [
+      {
+        "id": "9ibxjf",
+        "label": "Assignment #3",
+        "title": "ECE 405C/ECE 676C/QIC 890 Assignment #3 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 3 assignments"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-16",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments | Jan. 23, Feb. 13, Mar. 16, 2026 | LEARN | 30%"
+          }
+        ]
+      },
+      {
+        "id": "19cydst",
+        "label": "Assignments #1-2",
+        "title": "ECE 405C/ECE 676C/QIC 890 Assignments #1-2 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 1-2 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-23",
+          "endDate": "2026-02-13",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-30",
+            "2026-02-06"
+          ],
+          "occurrenceNotes": {
+            "2026-01-23": [
+              "Assignments: Assignment #1",
+              "Weight: 30% total across 3 assignments"
+            ],
+            "2026-02-13": [
+              "Assignments: Assignment #2",
+              "Weight: 30% total across 3 assignments"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments | Jan. 23, Feb. 13, Mar. 16, 2026 | LEARN | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1arlh1d",
+        "label": "Final Presentation (ECE 405C) - 2-Person Team",
+        "title": "ECE 405C/ECE 676C/QIC 890 Final Presentation (ECE 405C) - 2-Person Team @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final Presentation (ECE 405C) - 2-person Team | March 30, 2026 | In-person | 20%"
+          }
+        ]
+      },
+      {
+        "id": "uvuzsw",
+        "label": "Final Presentation (ECE 676C/QIC 890) - Individual",
+        "title": "ECE 405C/ECE 676C/QIC 890 Final Presentation (ECE 676C/QIC 890) - Individual @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final Presentation (ECE 676C/QIC 890) - Individual | March 30, 2026 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1myykv1",
+        "label": "Lecture LEC 001",
+        "title": "ECE 405C/ECE 676C/QIC 890 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO",
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-01-05": [
+              "Introduction to Quantum Computing - Qubits"
+            ],
+            "2026-01-12": [
+              "Quantum Circuits and Queries"
+            ],
+            "2026-01-19": [
+              "Quantum Algorithms"
+            ],
+            "2026-01-26": [
+              "Deutsch-Jozsa Algorithm"
+            ],
+            "2026-02-02": [
+              "Simon Algorithm"
+            ],
+            "2026-02-09": [
+              "Quantum Fourier Transform"
+            ],
+            "2026-03-02": [
+              "Order-Finding Algorithm"
+            ],
+            "2026-03-09": [
+              "Shor’s Factoring Algorithm"
+            ],
+            "2026-03-16": [
+              "Programming"
+            ],
+            "2026-03-23": [
+              "Quantum Error Correction"
+            ],
+            "2026-03-30": [
+              "Presentations - I ( teams)"
+            ],
+            "2026-04-06": [
+              "Review"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 676C 001 [LEC] Monday, Friday - Mon, Fri Jan 5 - Apr 6 01:00PM - 02:20PM E7 4433 Na Young Kim nayoung.kim@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Lec. 1: Jan. 5 | Introduction to Quantum Computing - Qubits | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Lec. 3: Jan. 12 | Quantum Circuits and Queries | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Lec. 5: Jan. 19 | Quantum Algorithms | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Lec. 7. Jan. 26 | Deutsch-Jozsa Algorithm | | PS2. Out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Lec. 9: Feb. 2 | Simon Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Lec. 11: Feb. 9 | Quantum Fourier Transform | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Lec. 13: Mar. 2 | Order-Finding Algorithm | | PS3 out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Lec. 15: Mar. 9 | Shor’s Factoring Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Lec. 18: Mar. 16 | Programming | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Lec. 20: Mar. 23 | Quantum Error Correction | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Lec. 22: Mar. 30 | Presentations - I ( teams) | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Lec. 24: Apr. 6 | Review | |"
+          }
+        ]
+      },
+      {
+        "id": "1vprsuk",
+        "label": "Lecture LEC 001",
+        "title": "ECE 405C/ECE 676C/QIC 890 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-19",
+          "endDate": "2026-03-30",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-01-26",
+            "2026-02-02",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-02",
+            "2026-03-16",
+            "2026-03-23"
+          ],
+          "occurrenceNotes": {
+            "2026-01-19": [
+              "Quantum Algorithms"
+            ],
+            "2026-02-09": [
+              "Quantum Fourier Transform"
+            ],
+            "2026-03-09": [
+              "Shor’s Factoring Algorithm"
+            ],
+            "2026-03-30": [
+              "Presentations - I ( teams)"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Mondays - Mondays Jan 19, Feb 9, Mar 9, Mar 30 04:00PM - 05:20PM E7 4433"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Lec. 1: Jan. 5 | Introduction to Quantum Computing - Qubits | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Lec. 3: Jan. 12 | Quantum Circuits and Queries | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Lec. 5: Jan. 19 | Quantum Algorithms | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Lec. 7. Jan. 26 | Deutsch-Jozsa Algorithm | | PS2. Out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Lec. 9: Feb. 2 | Simon Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Lec. 11: Feb. 9 | Quantum Fourier Transform | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Lec. 13: Mar. 2 | Order-Finding Algorithm | | PS3 out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Lec. 15: Mar. 9 | Shor’s Factoring Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Lec. 18: Mar. 16 | Programming | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Lec. 20: Mar. 23 | Quantum Error Correction | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Lec. 22: Mar. 30 | Presentations - I ( teams) | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Lec. 24: Apr. 6 | Review | |"
+          }
+        ]
+      },
+      {
+        "id": "aeyj1d",
+        "label": "Lecture LEC 002",
+        "title": "ECE 405C/ECE 676C/QIC 890 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO",
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-01-05": [
+              "Introduction to Quantum Computing - Qubits"
+            ],
+            "2026-01-12": [
+              "Quantum Circuits and Queries"
+            ],
+            "2026-01-19": [
+              "Quantum Algorithms"
+            ],
+            "2026-01-26": [
+              "Deutsch-Jozsa Algorithm"
+            ],
+            "2026-02-02": [
+              "Simon Algorithm"
+            ],
+            "2026-02-09": [
+              "Quantum Fourier Transform"
+            ],
+            "2026-03-02": [
+              "Order-Finding Algorithm"
+            ],
+            "2026-03-09": [
+              "Shor’s Factoring Algorithm"
+            ],
+            "2026-03-16": [
+              "Programming"
+            ],
+            "2026-03-23": [
+              "Quantum Error Correction"
+            ],
+            "2026-03-30": [
+              "Presentations - I ( teams)"
+            ],
+            "2026-04-06": [
+              "Review"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "QIC 890 002 [LEC] Monday, Friday - Mon, Fri Jan 5 - Apr 6 01:00PM - 02:20PM E7 4433 Na Young Kim nayoung.kim@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Lec. 1: Jan. 5 | Introduction to Quantum Computing - Qubits | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Lec. 3: Jan. 12 | Quantum Circuits and Queries | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Lec. 5: Jan. 19 | Quantum Algorithms | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Lec. 7. Jan. 26 | Deutsch-Jozsa Algorithm | | PS2. Out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Lec. 9: Feb. 2 | Simon Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Lec. 11: Feb. 9 | Quantum Fourier Transform | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Lec. 13: Mar. 2 | Order-Finding Algorithm | | PS3 out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Lec. 15: Mar. 9 | Shor’s Factoring Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Lec. 18: Mar. 16 | Programming | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Lec. 20: Mar. 23 | Quantum Error Correction | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Lec. 22: Mar. 30 | Presentations - I ( teams) | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Lec. 24: Apr. 6 | Review | |"
+          }
+        ]
+      },
+      {
+        "id": "ti51t9",
+        "label": "Tutorial TUT 101",
+        "title": "ECE 405C/ECE 676C/QIC 890 (TUT)",
+        "eventType": "Tutorial",
+        "eventGroup": "Tutorial",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "19:00",
+          "endTime": "19:50",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 405C 101 [TUT] Wednesdays - Wednesdays Jan 5 - Apr 6 07:00PM - 07:50PM E7 4433"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Programming of Quantum Computing Algorithms.html",
+    "courseCode": "ECE 405C/ECE 676C/QIC 890",
+    "courseName": "Programming of Quantum Computing Algorithms",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "1yvwwzi",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4433",
+        "instructorName": "Na Young Kim",
+        "instructorEmail": "nayoung.kim@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/FR 13:00-14:20 · 4 scheduled dates"
+      },
+      {
+        "id": "w6i5gg",
+        "kind": "TUT",
+        "number": "101",
+        "label": "TUT 101",
+        "location": "E7 4433",
+        "instructorName": "Na Young Kim",
+        "instructorEmail": "nayoung.kim@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 19:00-19:50"
+      },
+      {
+        "id": "1ylxbaj",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "E7 4433",
+        "instructorName": "Na Young Kim",
+        "instructorEmail": "nayoung.kim@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "MO/FR 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 4,
+      "Lecture": 3,
+      "Tutorial": 1
+    },
+    "events": [
+      {
+        "id": "1knja28",
+        "label": "Assignment #3",
+        "title": "ECE 405C/ECE 676C/QIC 890 Assignment #3 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 3 assignments"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-16",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments | Jan. 23, Feb. 13, Mar. 16, 2026 | LEARN | 30%"
+          }
+        ]
+      },
+      {
+        "id": "nhw44s",
+        "label": "Assignments #1-2",
+        "title": "ECE 405C/ECE 676C/QIC 890 Assignments #1-2 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 1-2 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-23",
+          "endDate": "2026-02-13",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-30",
+            "2026-02-06"
+          ],
+          "occurrenceNotes": {
+            "2026-01-23": [
+              "Assignments: Assignment #1",
+              "Weight: 30% total across 3 assignments"
+            ],
+            "2026-02-13": [
+              "Assignments: Assignment #2",
+              "Weight: 30% total across 3 assignments"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments | Jan. 23, Feb. 13, Mar. 16, 2026 | LEARN | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1c9asl2",
+        "label": "Final Presentation (ECE 405C) - 2-Person Team",
+        "title": "ECE 405C/ECE 676C/QIC 890 Final Presentation (ECE 405C) - 2-Person Team @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final Presentation (ECE 405C) - 2-person Team | March 30, 2026 | In-person | 20%"
+          }
+        ]
+      },
+      {
+        "id": "31xd8x",
+        "label": "Final Presentation (ECE 676C/QIC 890) - Individual",
+        "title": "ECE 405C/ECE 676C/QIC 890 Final Presentation (ECE 676C/QIC 890) - Individual @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Final Presentation (ECE 676C/QIC 890) - Individual | March 30, 2026 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "tq5i0m",
+        "label": "Lecture LEC 001",
+        "title": "ECE 405C/ECE 676C/QIC 890 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO",
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-01-05": [
+              "Introduction to Quantum Computing - Qubits"
+            ],
+            "2026-01-12": [
+              "Quantum Circuits and Queries"
+            ],
+            "2026-01-19": [
+              "Quantum Algorithms"
+            ],
+            "2026-01-26": [
+              "Deutsch-Jozsa Algorithm"
+            ],
+            "2026-02-02": [
+              "Simon Algorithm"
+            ],
+            "2026-02-09": [
+              "Quantum Fourier Transform"
+            ],
+            "2026-03-02": [
+              "Order-Finding Algorithm"
+            ],
+            "2026-03-09": [
+              "Shor’s Factoring Algorithm"
+            ],
+            "2026-03-16": [
+              "Programming"
+            ],
+            "2026-03-23": [
+              "Quantum Error Correction"
+            ],
+            "2026-03-30": [
+              "Presentations - I ( teams)"
+            ],
+            "2026-04-06": [
+              "Review"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 676C 001 [LEC] Monday, Friday - Mon, Fri Jan 5 - Apr 6 01:00PM - 02:20PM E7 4433 Na Young Kim nayoung.kim@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Lec. 1: Jan. 5 | Introduction to Quantum Computing - Qubits | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Lec. 3: Jan. 12 | Quantum Circuits and Queries | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Lec. 5: Jan. 19 | Quantum Algorithms | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Lec. 7. Jan. 26 | Deutsch-Jozsa Algorithm | | PS2. Out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Lec. 9: Feb. 2 | Simon Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Lec. 11: Feb. 9 | Quantum Fourier Transform | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Lec. 13: Mar. 2 | Order-Finding Algorithm | | PS3 out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Lec. 15: Mar. 9 | Shor’s Factoring Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Lec. 18: Mar. 16 | Programming | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Lec. 20: Mar. 23 | Quantum Error Correction | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Lec. 22: Mar. 30 | Presentations - I ( teams) | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Lec. 24: Apr. 6 | Review | |"
+          }
+        ]
+      },
+      {
+        "id": "1s0xjph",
+        "label": "Lecture LEC 001",
+        "title": "ECE 405C/ECE 676C/QIC 890 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-19",
+          "endDate": "2026-03-30",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-01-26",
+            "2026-02-02",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-02",
+            "2026-03-16",
+            "2026-03-23"
+          ],
+          "occurrenceNotes": {
+            "2026-01-19": [
+              "Quantum Algorithms"
+            ],
+            "2026-02-09": [
+              "Quantum Fourier Transform"
+            ],
+            "2026-03-09": [
+              "Shor’s Factoring Algorithm"
+            ],
+            "2026-03-30": [
+              "Presentations - I ( teams)"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Mondays - Mondays Jan 19, Feb 9, Mar 9, Mar 30 04:00PM - 05:20PM E7 4433"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Lec. 1: Jan. 5 | Introduction to Quantum Computing - Qubits | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Lec. 3: Jan. 12 | Quantum Circuits and Queries | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Lec. 5: Jan. 19 | Quantum Algorithms | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Lec. 7. Jan. 26 | Deutsch-Jozsa Algorithm | | PS2. Out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Lec. 9: Feb. 2 | Simon Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Lec. 11: Feb. 9 | Quantum Fourier Transform | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Lec. 13: Mar. 2 | Order-Finding Algorithm | | PS3 out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Lec. 15: Mar. 9 | Shor’s Factoring Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Lec. 18: Mar. 16 | Programming | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Lec. 20: Mar. 23 | Quantum Error Correction | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Lec. 22: Mar. 30 | Presentations - I ( teams) | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Lec. 24: Apr. 6 | Review | |"
+          }
+        ]
+      },
+      {
+        "id": "1xz1gkq",
+        "label": "Lecture LEC 002",
+        "title": "ECE 405C/ECE 676C/QIC 890 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "MO",
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-01-05": [
+              "Introduction to Quantum Computing - Qubits"
+            ],
+            "2026-01-12": [
+              "Quantum Circuits and Queries"
+            ],
+            "2026-01-19": [
+              "Quantum Algorithms"
+            ],
+            "2026-01-26": [
+              "Deutsch-Jozsa Algorithm"
+            ],
+            "2026-02-02": [
+              "Simon Algorithm"
+            ],
+            "2026-02-09": [
+              "Quantum Fourier Transform"
+            ],
+            "2026-03-02": [
+              "Order-Finding Algorithm"
+            ],
+            "2026-03-09": [
+              "Shor’s Factoring Algorithm"
+            ],
+            "2026-03-16": [
+              "Programming"
+            ],
+            "2026-03-23": [
+              "Quantum Error Correction"
+            ],
+            "2026-03-30": [
+              "Presentations - I ( teams)"
+            ],
+            "2026-04-06": [
+              "Review"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "QIC 890 002 [LEC] Monday, Friday - Mon, Fri Jan 5 - Apr 6 01:00PM - 02:20PM E7 4433 Na Young Kim nayoung.kim@uwaterloo.ca"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "1 | Lec. 1: Jan. 5 | Introduction to Quantum Computing - Qubits | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "2 | Lec. 3: Jan. 12 | Quantum Circuits and Queries | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "3 | Lec. 5: Jan. 19 | Quantum Algorithms | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "4 | Lec. 7. Jan. 26 | Deutsch-Jozsa Algorithm | | PS2. Out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "5 | Lec. 9: Feb. 2 | Simon Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "6 | Lec. 11: Feb. 9 | Quantum Fourier Transform | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "9 | Lec. 13: Mar. 2 | Order-Finding Algorithm | | PS3 out"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "10 | Lec. 15: Mar. 9 | Shor’s Factoring Algorithm | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "11 | Lec. 18: Mar. 16 | Programming | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | Lec. 20: Mar. 23 | Quantum Error Correction | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "13 | Lec. 22: Mar. 30 | Presentations - I ( teams) | |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "14 | Lec. 24: Apr. 6 | Review | |"
+          }
+        ]
+      },
+      {
+        "id": "8jc3o8",
+        "label": "Tutorial TUT 101",
+        "title": "ECE 405C/ECE 676C/QIC 890 (TUT)",
+        "eventType": "Tutorial",
+        "eventGroup": "Tutorial",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "19:00",
+          "endTime": "19:50",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 405C 101 [TUT] Wednesdays - Wednesdays Jan 5 - Apr 6 07:00PM - 07:50PM E7 4433"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Radio and Wireless Systems.html",
+    "courseCode": "ECE 474/ECE 774",
+    "courseName": "Radio and Wireless Systems",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "17njgc6",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 5353",
+        "instructorName": "Slim Boumaiza",
+        "instructorEmail": "slim.boumaiza@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "4 scheduled dates · WE/TH 14:30-15:50"
+      },
+      {
+        "id": "1fjdv3c",
+        "kind": "TUT",
+        "number": "101",
+        "label": "TUT 101",
+        "location": "E7 5353",
+        "instructorName": "Slim Boumaiza",
+        "instructorEmail": "slim.boumaiza@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 20:00-20:50"
+      },
+      {
+        "id": "1t3jfgz",
+        "kind": "LAB",
+        "number": "201",
+        "label": "LAB 201",
+        "location": "E2 3348",
+        "instructorName": "Slim Boumaiza",
+        "instructorEmail": "slim.boumaiza@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      },
+      {
+        "id": "1tdj15y",
+        "kind": "LAB",
+        "number": "202",
+        "label": "LAB 202",
+        "location": "E2 3348",
+        "instructorName": "Slim Boumaiza",
+        "instructorEmail": "slim.boumaiza@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      },
+      {
+        "id": "1tnimux",
+        "kind": "LAB",
+        "number": "203",
+        "label": "LAB 203",
+        "location": "E2 3348",
+        "instructorName": "Slim Boumaiza",
+        "instructorEmail": "slim.boumaiza@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      },
+      {
+        "id": "1txi8jw",
+        "kind": "LAB",
+        "number": "204",
+        "label": "LAB 204",
+        "location": "E2 3348",
+        "instructorName": "Slim Boumaiza",
+        "instructorEmail": "slim.boumaiza@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "5 scheduled dates"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Lab": 4,
+      "Lecture": 2,
+      "Tutorial": 1
+    },
+    "events": [
+      {
+        "id": "e8gw58",
+        "label": "Midterm",
+        "title": "ECE 474/ECE 774 Midterm",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm | In-person | 30"
+          }
+        ]
+      },
+      {
+        "id": "ec85v2",
+        "label": "Lab LAB 201",
+        "title": "ECE 474/ECE 774 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 3348",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-19",
+          "endDate": "2026-03-30",
+          "startTime": "08:30",
+          "endTime": "11:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-01-26",
+            "2026-02-09",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-09",
+            "2026-03-23"
+          ],
+          "occurrenceNotes": {
+            "2026-01-19": [],
+            "2026-02-02": [],
+            "2026-03-02": [],
+            "2026-03-16": [],
+            "2026-03-30": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 474 201 [LAB] Mondays - Mondays Jan 19, Feb 2, Mar 2, Mar 16, Mar 30 08:30AM - 11:20AM E2 3348"
+          }
+        ]
+      },
+      {
+        "id": "1x3kb1p",
+        "label": "Lab LAB 202",
+        "title": "ECE 474/ECE 774 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 3348",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-23",
+          "endDate": "2026-04-03",
+          "startTime": "08:30",
+          "endTime": "11:20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-30",
+            "2026-02-13",
+            "2026-02-20",
+            "2026-02-27",
+            "2026-03-13",
+            "2026-03-27"
+          ],
+          "occurrenceNotes": {
+            "2026-01-23": [],
+            "2026-02-06": [],
+            "2026-03-06": [],
+            "2026-03-20": [],
+            "2026-04-03": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 474 202 [LAB] Fridays - Fridays Jan 23, Feb 6, Mar 6, Mar 20, Apr 3 08:30AM - 11:20AM E2 3348"
+          }
+        ]
+      },
+      {
+        "id": "1yebrh3",
+        "label": "Lab LAB 203",
+        "title": "ECE 474/ECE 774 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 3348",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-12",
+          "endDate": "2026-03-23",
+          "startTime": "08:30",
+          "endTime": "11:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-01-19",
+            "2026-02-02",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-02",
+            "2026-03-16"
+          ],
+          "occurrenceNotes": {
+            "2026-01-12": [],
+            "2026-01-26": [],
+            "2026-02-09": [],
+            "2026-03-09": [],
+            "2026-03-23": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 474 203 [LAB] Mondays - Mondays Jan 12, Jan 26, Feb 9, Mar 9, Mar 23 08:30AM - 11:20AM E2 3348"
+          }
+        ]
+      },
+      {
+        "id": "2m10f2",
+        "label": "Lab LAB 204",
+        "title": "ECE 474/ECE 774 (LAB)",
+        "eventType": "Lab",
+        "eventGroup": "Lab",
+        "location": "E2 3348",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-16",
+          "endDate": "2026-03-27",
+          "startTime": "08:30",
+          "endTime": "11:20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-23",
+            "2026-02-06",
+            "2026-02-20",
+            "2026-02-27",
+            "2026-03-06",
+            "2026-03-20"
+          ],
+          "occurrenceNotes": {
+            "2026-01-16": [],
+            "2026-01-30": [],
+            "2026-02-13": [],
+            "2026-03-13": [],
+            "2026-03-27": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 474 204 [LAB] Fridays - Fridays Jan 16, Jan 30, Feb 13, Mar 13, Mar 27 08:30AM - 11:20AM E2 3348"
+          }
+        ]
+      },
+      {
+        "id": "7278pi",
+        "label": "Lecture LEC 001",
+        "title": "ECE 474/ECE 774 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "WE",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 774 001 [LEC] Wednesday, Thursday - Wed, Thu Jan 5 - Apr 6 02:30PM - 03:50PM E7 5353 Slim Boumaiza slim.boumaiza@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "rggans",
+        "label": "Lecture LEC 001",
+        "title": "ECE 474/ECE 774 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-19",
+          "endDate": "2026-03-30",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-01-26",
+            "2026-02-02",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-02",
+            "2026-03-16",
+            "2026-03-23"
+          ],
+          "occurrenceNotes": {
+            "2026-01-19": [],
+            "2026-02-09": [],
+            "2026-03-09": [],
+            "2026-03-30": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 474 001 [LEC] Mondays - Mondays Jan 19, Feb 9, Mar 9, Mar 30 04:00PM - 05:20PM E7 5353 Slim Boumaiza slim.boumaiza@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "oojfvy",
+        "label": "Tutorial TUT 101",
+        "title": "ECE 474/ECE 774 (TUT)",
+        "eventType": "Tutorial",
+        "eventGroup": "Tutorial",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-07",
+          "endDate": "2026-04-01",
+          "startTime": "20:00",
+          "endTime": "20:50",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 474 101 [TUT] Wednesdays - Wednesdays Jan 7 - Apr 1 08:00PM - 08:50PM E7 5353"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Social Robotics - Foundations, Technology and Applications of Human-Centered Robotics.html",
+    "courseCode": "ECE 493/ECE 787",
+    "courseName": "Social Robotics - Foundations, Technology and Applications of Human-Centered Robotics",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "3fmxgj",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 5353",
+        "instructorName": "Kerstin Dautenhahn",
+        "instructorEmail": "kerstin.dautenhahn@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE/TH 10:00-11:20 · 4 scheduled dates"
+      },
+      {
+        "id": "1tp8fo1",
+        "kind": "TUT",
+        "number": "101",
+        "label": "TUT 101",
+        "location": "E7 5343",
+        "instructorName": "Kerstin Dautenhahn",
+        "instructorEmail": "kerstin.dautenhahn@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "WE 20:00-20:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 5,
+      "Lecture": 2,
+      "Office Hours": 1,
+      "Tutorial": 1
+    },
+    "events": [
+      {
+        "id": "1kizb6c",
+        "label": "Assignments (x2) #1-2",
+        "title": "ECE 493/ECE 787 Assignments (x2) #1-2 @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments (x2) 1-2 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-26",
+          "endDate": "2026-03-16",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-02-02",
+            "2026-02-09",
+            "2026-02-16",
+            "2026-02-23",
+            "2026-03-02",
+            "2026-03-09"
+          ],
+          "occurrenceNotes": {
+            "2026-01-26": [
+              "Assignments: Assignment (x2) #1",
+              "Weight: 20% total across 2 assignments (x2)"
+            ],
+            "2026-03-16": [
+              "Assignments: Assignment (x2) #2",
+              "Weight: 20% total across 2 assignments (x2)"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignments (x2) | 26 January, 16 March 2026 | Learn dropbox or in-class (submission method will be announced in class) | 20%"
+          }
+        ]
+      },
+      {
+        "id": "1bh7187",
+        "label": "Individual Discussion Paper",
+        "title": "ECE 493/ECE 787 Individual Discussion Paper @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Individual Discussion Paper | 13 February 2026 | Learn dropbox | 20%"
+          }
+        ]
+      },
+      {
+        "id": "1xnrzyu",
+        "label": "Individual Term Project",
+        "title": "ECE 493/ECE 787 Individual Term Project @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 50%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Individual Term Project | 30 March 2026 | Learn dropbox | 50%"
+          }
+        ]
+      },
+      {
+        "id": "1s7440q",
+        "label": "Student Presentation",
+        "title": "ECE 493/ECE 787 Student Presentation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Student Presentations in-class (Graduate, will be moved to video upload if student numbers exceed available time slots)) | 1 and 2 April 2026 | in class | 10%"
+          }
+        ]
+      },
+      {
+        "id": "1qxln1",
+        "label": "Video Upload (Undergrad)",
+        "title": "ECE 493/ECE 787 Video Upload (Undergrad) @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-02",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Video Upload (Undergrad) | 2 April 2026 | Learn dropbox | 10%"
+          }
+        ]
+      },
+      {
+        "id": "yavvnr",
+        "label": "Lecture LEC 001",
+        "title": "ECE 493/ECE 787 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "byDay": [
+            "WE",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 787 001 [LEC] Wednesday, Thursday - Wed, Thu Jan 5 - Apr 6 10:00AM - 11:20AM E7 5353 Kerstin Dautenhahn kerstin.dautenhahn@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1c8my5h",
+        "label": "Lecture LEC 001",
+        "title": "ECE 493/ECE 787 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-23",
+          "endDate": "2026-04-03",
+          "startTime": "16:00",
+          "endTime": "17:20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [
+            "2026-01-30",
+            "2026-02-06",
+            "2026-02-20",
+            "2026-02-27",
+            "2026-03-06",
+            "2026-03-20",
+            "2026-03-27"
+          ],
+          "occurrenceNotes": {
+            "2026-01-23": [],
+            "2026-02-13": [],
+            "2026-03-13": [],
+            "2026-04-03": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Fridays - Fridays Jan 23, Feb 13, Mar 13, Apr 3 04:00PM - 05:20PM E7 5353"
+          }
+        ]
+      },
+      {
+        "id": "1jwvlb6",
+        "label": "Office Hours with Kerstin Dautenhahn",
+        "title": "ECE 493/ECE 787 Office Hours @ E5-5027",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "E5-5027",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:20",
+          "endTime": "12:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office Hours: Wednesday 11:20am-12:20pm, E5-5027"
+          }
+        ]
+      },
+      {
+        "id": "dqc635",
+        "label": "Tutorial TUT 101",
+        "title": "ECE 493/ECE 787 (TUT)",
+        "eventType": "Tutorial",
+        "eventGroup": "Tutorial",
+        "location": "E7 5343",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "20:00",
+          "endTime": "20:50",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 493 101 [TUT] Wednesdays - Wednesdays Jan 5 - Apr 6 08:00PM - 08:50PM E7 5343"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Software Testing, Quality Assurance and Maintenance.html",
+    "courseCode": "ECE 653",
+    "courseName": "Software Testing, Quality Assurance and Maintenance",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "15kdisp",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 4437",
+        "instructorName": "Patrick Lam",
+        "instructorEmail": "patrick.lam@uwaterloo.ca",
+        "defaultSelected": true,
+        "scheduleSummary": "TU/TH 14:30-15:50"
+      }
+    ],
+    "countsByGroup": {
+      "Assessments": 1,
+      "Assignments": 3,
+      "Lecture": 1
+    },
+    "events": [
+      {
+        "id": "z8ab9a",
+        "label": "Midterm",
+        "title": "ECE 653 Midterm @ STC 0040",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "STC 0040",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-23",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "allDay": false
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Midterm (open-notes) | Monday, February 23, 2:30-3:50PM | STC 0040 | 10%"
+          }
+        ]
+      },
+      {
+        "id": "yrkt61",
+        "label": "Assignment 1: test Engineering #1",
+        "title": "ECE 653 Assignment 1: test Engineering #1",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-30",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignment 1: test engineering | Friday, January 30 (Week 4) | submit on gitlab | 10%"
+          }
+        ]
+      },
+      {
+        "id": "1bw54kq",
+        "label": "Assignment 2: Fuzzing/Bounded model Checking #2",
+        "title": "ECE 653 Assignment 2: Fuzzing/Bounded model Checking #2",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignment 2: fuzzing/bounded model checking | Friday, March 6 (Week 8) | submit on gitlab | 10%"
+          }
+        ]
+      },
+      {
+        "id": "1m6b8xx",
+        "label": "Assignment 3: Bounded model Checking/Dafny #3",
+        "title": "ECE 653 Assignment 3: Bounded model Checking/Dafny #3",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Assignment 3: bounded model checking/Dafny | Monday, April 6 | submit on gitlab | 10%"
+          }
+        ]
+      },
+      {
+        "id": "1ix4yze",
+        "label": "Lecture LEC 001",
+        "title": "ECE 653 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4437",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:50",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 653 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM E7 4437 Patrick Lam patrick.lam@uwaterloo.ca"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fileName": "Winter 2026_ Special Topics in Electrical and Computer Engineering.html",
+    "courseCode": "ECE 493/ECE 752",
+    "courseName": "Special Topics in Electrical and Computer Engineering",
+    "term": "Winter 2026",
+    "warnings": [],
+    "sectionOptions": [
+      {
+        "id": "6ctlnw",
+        "kind": "LEC",
+        "number": "002",
+        "label": "LEC 002",
+        "location": "E7 5353",
+        "instructorName": "Seyed Majid Zahedi",
+        "instructorEmail": "smzahedi@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 13:00-14:20 · 4 scheduled dates"
+      },
+      {
+        "id": "76seqt",
+        "kind": "LEC",
+        "number": "001",
+        "label": "LEC 001",
+        "location": "E7 5353",
+        "instructorName": "Seyed Majid Zahedi",
+        "instructorEmail": "smzahedi@uwaterloo.ca",
+        "defaultSelected": false,
+        "scheduleSummary": "TU/TH 13:00-14:20"
+      }
+    ],
+    "countsByGroup": {
+      "Assignments": 1,
+      "Lecture": 3
+    },
+    "events": [
+      {
+        "id": "1u8iu3i",
+        "label": "Apr 06: Project Report",
+        "title": "ECE 493/ECE 752 Apr 06: Project Report @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Apr 06: Project report deadline."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-04-06",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Apr 06: Project report deadline."
+          }
+        ]
+      },
+      {
+        "id": "1dtb2hg",
+        "label": "Lecture LEC 001",
+        "title": "ECE 493/ECE 752 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 752 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM E7 5353 Seyed Majid Zahedi smzahedi@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "132vg40",
+        "label": "Lecture LEC 002",
+        "title": "ECE 493/ECE 752 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 5353",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:20",
+          "byDay": [
+            "TU",
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "ECE 493 002 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM E7 5353 Seyed Majid Zahedi smzahedi@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "tfa3xb",
+        "label": "Lecture LEC 002",
+        "title": "ECE 493/ECE 752 (LEC)",
+        "eventType": "Lecture",
+        "eventGroup": "Lecture",
+        "location": "E7 4433",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-07",
+          "endDate": "2026-03-18",
+          "startTime": "08:30",
+          "endTime": "09:50",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [
+            "2026-01-14",
+            "2026-01-21",
+            "2026-02-04",
+            "2026-02-11",
+            "2026-02-18",
+            "2026-03-04",
+            "2026-03-11"
+          ],
+          "occurrenceNotes": {
+            "2026-01-07": [],
+            "2026-01-28": [],
+            "2026-02-25": [],
+            "2026-03-18": []
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "class_schedule",
+            "sectionTitle": "Class Schedule",
+            "sourceKind": "schedule",
+            "snippet": "Wednesdays - Wednesdays Jan 7, Jan 28, Feb 25, Mar 18 08:30AM - 09:50AM E7 4433"
+          }
+        ]
+      }
+    ]
+  }
+]
