@@ -132,13 +132,15 @@ export type ExportNotificationSetting =
   | "10m"
   | "30m"
   | "1h"
-  | "1d";
+  | "1d"
+  | "custom";
 
 export interface ExportConfig {
   paletteId: string;
   customColors: string[];
   colorStrategy: ExportColorStrategy;
   notificationSettings: Record<EventGroup, ExportNotificationSetting>;
+  customNotificationMinutes: Record<EventGroup, number>;
 }
 
 export interface OutlineParseResult {

@@ -119,6 +119,8 @@ function notificationSettingToMinutes(setting: ExportNotificationSetting) {
       return 60;
     case "1d":
       return 1440;
+    case "custom":
+      return "custom";
     case "none":
       return null;
     default:
@@ -126,13 +128,24 @@ function notificationSettingToMinutes(setting: ExportNotificationSetting) {
   }
 }
 
+function normalizeCustomNotificationMinutes(minutes: number | undefined) {
+  if (!Number.isFinite(minutes)) return 15;
+  return Math.max(1, Math.min(43200, Math.round(minutes as number)));
+}
+
 export function exportNotificationMinutes(
   exportConfig: ExportConfig,
   eventGroup: EventGroup
 ) {
-  return notificationSettingToMinutes(
+  const setting = notificationSettingToMinutes(
     exportConfig.notificationSettings[eventGroup] ?? "default"
   );
+  if (setting === "custom") {
+    return normalizeCustomNotificationMinutes(
+      exportConfig.customNotificationMinutes?.[eventGroup]
+    );
+  }
+  return setting;
 }
 
 export function buildGoogleEventReminders(

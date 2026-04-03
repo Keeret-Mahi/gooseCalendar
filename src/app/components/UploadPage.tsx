@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 import { useAppContext } from "./AppContext";
 import svgPaths from "../../imports/svg-up87mvwjbr";
 import img920081 from "figma:asset/b92fc544a736117e881173174fe48bce3b51e1e8.png";
@@ -125,6 +125,7 @@ function StepCard({
 
 export default function UploadPage() {
   const navigate = useNavigate();
+  const { openHowItWorks } = useOutletContext<{ openHowItWorks: () => void }>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { uploads, courses, isParsing, addFiles, removeUpload } = useAppContext();
@@ -169,18 +170,22 @@ export default function UploadPage() {
     {
       number: 1,
       title: "Upload Course Outlines",
-      description: "Upload UWaterloo Course Outlines",
+      description: "Drop in one or more Waterloo outline HTML files.",
     },
     {
       number: 2,
-      title: "Review Dates",
-      description: "Verify extracted deadlines",
+      title: "Select What You Want",
+      description: "Choose the sections and event types you actually want in your calendar.",
     },
     {
       number: 3,
-      title: "Export Calendar",
-      description: "Sync directly to GCal or .ics",
-      highlighted: true,
+      title: "Review and Fix Anything Missing",
+      description: "Edit detected events, add missing ones, and make sure everything looks right.",
+    },
+    {
+      number: 4,
+      title: "Export Your Calendar",
+      description: "Send everything to Google Calendar or download a ready-to-import .ics file.",
     },
   ];
 
@@ -452,10 +457,16 @@ export default function UploadPage() {
           )}
 
           <div className="group mt-2 flex cursor-pointer items-center justify-center gap-2">
-            <VideoIcon />
-            <span className="font-['Inter',sans-serif] text-sm font-normal text-[#645f52] transition-colors group-hover:underline">
-              Watch a video to see how it works
-            </span>
+            <button
+              type="button"
+              onClick={openHowItWorks}
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-3 py-2 transition-colors hover:bg-[rgba(241,200,75,0.08)]"
+            >
+              <VideoIcon />
+              <span className="font-['Inter',sans-serif] text-sm font-normal text-[#645f52] transition-colors group-hover:underline">
+                Watch a video to see how it works
+              </span>
+            </button>
           </div>
         </div>
 
@@ -466,7 +477,7 @@ export default function UploadPage() {
               number={step.number}
               title={step.title}
               description={step.description}
-              highlighted={step.highlighted}
+              highlighted={step.number === 4}
             />
           ))}
         </section>

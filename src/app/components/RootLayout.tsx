@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router";
+import { HowItWorksModal } from "./HowItWorksModal";
 import { NavBar } from "./NavBar";
 
 function getNavBarProps(pathname: string): { currentStep: number; showProgress: boolean } {
@@ -19,11 +21,28 @@ function getNavBarProps(pathname: string): { currentStep: number; showProgress: 
 export default function RootLayout() {
   const { pathname } = useLocation();
   const navProps = getNavBarProps(pathname);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+
+  useEffect(() => {
+    if (!showHowItWorks) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowHowItWorks(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showHowItWorks]);
 
   return (
     <>
-      <NavBar currentStep={navProps.currentStep} showProgress={navProps.showProgress} />
-      <Outlet />
+      <NavBar
+        currentStep={navProps.currentStep}
+        showProgress={navProps.showProgress}
+        onHowItWorksClick={() => setShowHowItWorks(true)}
+      />
+      <Outlet context={{ openHowItWorks: () => setShowHowItWorks(true) }} />
+      <HowItWorksModal open={showHowItWorks} onClose={() => setShowHowItWorks(false)} />
     </>
   );
 }

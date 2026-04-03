@@ -1533,6 +1533,9 @@ export default function ReviewClassesPage() {
                 <p className={`max-w-[760px] ${goosePageSubheadingClass}`}>
                   Confirm the detected lecture, tutorial, lab, deadline, and office hour details before exporting.
                 </p>
+                <p className="mt-2 font-['Lexend',sans-serif] text-sm font-medium text-[#8b6b12]">
+                  gooseCalendar can make mistakes, so give everything a quick review before exporting.
+                </p>
               </div>
             </div>
 

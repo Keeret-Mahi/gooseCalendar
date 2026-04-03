@@ -15,6 +15,13 @@ import {
 import svgPaths from "../../imports/svg-muqjom28j6";
 import type { GoogleCalendarExportProgress } from "../lib/googleCalendar";
 import { resolveExportPaletteColors } from "../lib/palettes";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import type {
   EventGroup,
   ExportColorStrategy,
@@ -59,6 +66,7 @@ const NOTIFICATION_OPTIONS: Array<{
   { value: "30m", label: "30 minutes before" },
   { value: "1h", label: "1 hour before" },
   { value: "1d", label: "1 day before" },
+  { value: "custom", label: "Custom time" },
 ];
 
 const FALLBACK_NOTIFICATION_SETTINGS: Record<EventGroup, ExportNotificationSetting> = {
@@ -70,6 +78,95 @@ const FALLBACK_NOTIFICATION_SETTINGS: Record<EventGroup, ExportNotificationSetti
   Assignments: "default",
   Other: "default",
 };
+
+const FALLBACK_CUSTOM_NOTIFICATION_MINUTES: Record<EventGroup, number> = {
+  Lecture: 15,
+  Tutorial: 15,
+  Lab: 15,
+  "Office Hours": 15,
+  Assessments: 15,
+  Assignments: 15,
+  Other: 15,
+};
+
+type NotificationUnit = "minutes" | "hours" | "days" | "weeks";
+
+const NOTIFICATION_UNIT_OPTIONS: Array<{
+  value: NotificationUnit;
+  label: string;
+  singularLabel: string;
+  minutes: number;
+}> = [
+  { value: "minutes", label: "Minutes", singularLabel: "Minute", minutes: 1 },
+  { value: "hours", label: "Hours", singularLabel: "Hour", minutes: 60 },
+  { value: "days", label: "Days", singularLabel: "Day", minutes: 1440 },
+  { value: "weeks", label: "Weeks", singularLabel: "Week", minutes: 10080 },
+];
+
+function inferNotificationUnit(minutes: number): NotificationUnit {
+  if (minutes % 10080 === 0) return "weeks";
+  if (minutes % 1440 === 0) return "days";
+  if (minutes % 60 === 0) return "hours";
+  return "minutes";
+}
+
+function notificationValueForUnit(minutes: number, unit: NotificationUnit) {
+  const divisor =
+    NOTIFICATION_UNIT_OPTIONS.find((option) => option.value === unit)?.minutes ?? 1;
+  return Math.max(1, Math.round(minutes / divisor));
+}
+
+function notificationMinutesFromValue(value: number, unit: NotificationUnit) {
+  const multiplier =
+    NOTIFICATION_UNIT_OPTIONS.find((option) => option.value === unit)?.minutes ?? 1;
+  return Math.max(1, value * multiplier);
+}
+
+function notificationUnitLabelForCount(value: number, unit: NotificationUnit) {
+  const option = NOTIFICATION_UNIT_OPTIONS.find((entry) => entry.value === unit);
+  if (!option) return "Minutes";
+  return value === 1 ? option.singularLabel : option.label;
+}
+
+function buildNotificationUnitState(minutesByGroup: Record<EventGroup, number>) {
+  return {
+    Lecture: inferNotificationUnit(minutesByGroup.Lecture),
+    Tutorial: inferNotificationUnit(minutesByGroup.Tutorial),
+    Lab: inferNotificationUnit(minutesByGroup.Lab),
+    "Office Hours": inferNotificationUnit(minutesByGroup["Office Hours"]),
+    Assessments: inferNotificationUnit(minutesByGroup.Assessments),
+    Assignments: inferNotificationUnit(minutesByGroup.Assignments),
+    Other: inferNotificationUnit(minutesByGroup.Other),
+  } satisfies Record<EventGroup, NotificationUnit>;
+}
+
+function buildNotificationInputState(
+  minutesByGroup: Record<EventGroup, number>,
+  unitsByGroup: Record<EventGroup, NotificationUnit>
+) {
+  return {
+    Lecture: String(
+      notificationValueForUnit(minutesByGroup.Lecture, unitsByGroup.Lecture)
+    ),
+    Tutorial: String(
+      notificationValueForUnit(minutesByGroup.Tutorial, unitsByGroup.Tutorial)
+    ),
+    Lab: String(notificationValueForUnit(minutesByGroup.Lab, unitsByGroup.Lab)),
+    "Office Hours": String(
+      notificationValueForUnit(
+        minutesByGroup["Office Hours"],
+        unitsByGroup["Office Hours"]
+      )
+    ),
+    Assessments: String(
+      notificationValueForUnit(minutesByGroup.Assessments, unitsByGroup.Assessments)
+    ),
+    Assignments: String(
+      notificationValueForUnit(minutesByGroup.Assignments, unitsByGroup.Assignments)
+    ),
+    Other: String(notificationValueForUnit(minutesByGroup.Other, unitsByGroup.Other)),
+  } satisfies Record<EventGroup, string>;
+}
 
 function GoogleCalendarIcon() {
   return (
@@ -118,6 +215,7 @@ export default function ExportPage() {
     setCustomColors,
     setColorStrategy,
     setNotificationSetting,
+    setCustomNotificationMinutes,
     exportValidationIssues,
     downloadCalendar,
     googleCalendarConfigured,
@@ -146,6 +244,19 @@ export default function ExportPage() {
     ...FALLBACK_NOTIFICATION_SETTINGS,
     ...(exportConfig.notificationSettings ?? {}),
   };
+  const customNotificationMinutes = {
+    ...FALLBACK_CUSTOM_NOTIFICATION_MINUTES,
+    ...(exportConfig.customNotificationMinutes ?? {}),
+  };
+  const [customNotificationUnits, setCustomNotificationUnits] = useState<
+    Record<EventGroup, NotificationUnit>
+  >(() => buildNotificationUnitState(customNotificationMinutes));
+  const [customNotificationInputs, setCustomNotificationInputs] = useState<
+    Record<EventGroup, string>
+  >(() => {
+    const units = buildNotificationUnitState(customNotificationMinutes);
+    return buildNotificationInputState(customNotificationMinutes, units);
+  });
   const palettePreviewColors = resolveExportPaletteColors(exportConfig);
   const coursePreviewItems = courses
     .slice()
@@ -478,41 +589,152 @@ export default function ExportPage() {
                       {EXPORT_GROUP_ORDER.map((group) => (
                         <div
                           key={group}
-                          className="grid items-center gap-3 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-3 md:grid-cols-[minmax(0,1fr)_220px]"
+                          className="grid items-start gap-3 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-3 md:grid-cols-[minmax(0,1fr)_220px]"
                         >
                           <div>
                             <p className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
                               {group}
                             </p>
                             <p className="text-xs text-[#78716c]">
-                              {group === "Lecture"
-                                ? "Useful for weekly class reminders."
-                                : group === "Assessments"
-                                  ? "Great for midterms, tests, and quizzes."
-                                  : group === "Assignments"
-                                    ? "Helpful for due-date reminders."
-                                    : "Optional reminder for this event type."}
+                              Optional reminder for this event type.
                             </p>
                           </div>
                           <label className="block">
                             <span className="sr-only">{group} reminder setting</span>
-                            <select
+                            <Select
                               value={notificationSettings[group]}
-                              onChange={(event) =>
+                              onValueChange={(value) =>
                                 setNotificationSetting(
                                   group,
-                                  event.target.value as ExportNotificationSetting
+                                  value as ExportNotificationSetting
                                 )
                               }
-                              className="h-11 w-full rounded-xl border border-[#e8e2ce] bg-white px-3 text-sm font-medium text-[#1c180d] outline-none transition-colors focus:border-[#f2b90d] focus:ring-2 focus:ring-[#f2b90d]/20"
                             >
-                              {NOTIFICATION_OPTIONS.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
+                              <SelectTrigger className="h-11 w-full cursor-pointer rounded-xl border-[#e8e2ce] bg-white px-3 text-sm font-medium text-[#1c180d] shadow-none transition-colors focus-visible:border-[#f2b90d] focus-visible:ring-2 focus-visible:ring-[#f2b90d]/20">
+                                <SelectValue placeholder="Calendar default" />
+                              </SelectTrigger>
+                              <SelectContent className="z-[80] rounded-2xl border-[#e8e2ce] bg-[#fffdf9] p-1.5 shadow-[0px_20px_50px_-20px_rgba(28,24,13,0.35)]">
+                                {NOTIFICATION_OPTIONS.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                    className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium text-[#1c180d] focus:bg-[#fff7df] focus:text-[#1c180d] data-[state=checked]:bg-[#fff1cc] data-[state=checked]:text-[#1c180d]"
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </label>
+                          {notificationSettings[group] === "custom" && (
+                            <div className="md:col-start-2">
+                              <div className="grid gap-2 sm:grid-cols-[88px_minmax(0,1fr)]">
+                                <input
+                                  type="number"
+                                  min={1}
+                                  step={1}
+                                  value={customNotificationInputs[group]}
+                                  onChange={(event) => {
+                                    const rawValue = event.target.value;
+                                    if (rawValue !== "" && !/^\d+$/.test(rawValue)) return;
+                                    setCustomNotificationInputs((current) => ({
+                                      ...current,
+                                      [group]: rawValue,
+                                    }));
+                                    if (!rawValue) return;
+                                    const nextValue = Number.parseInt(rawValue, 10);
+                                    setCustomNotificationMinutes(
+                                      group,
+                                      notificationMinutesFromValue(
+                                        Number.isFinite(nextValue) && nextValue > 0 ? nextValue : 1,
+                                        customNotificationUnits[group]
+                                      )
+                                    );
+                                  }}
+                                  onBlur={() => {
+                                    const parsedValue = Number.parseInt(
+                                      customNotificationInputs[group],
+                                      10
+                                    );
+                                    const normalizedValue =
+                                      Number.isFinite(parsedValue) && parsedValue > 0
+                                        ? parsedValue
+                                        : 1;
+                                    setCustomNotificationInputs((current) => ({
+                                      ...current,
+                                      [group]: String(normalizedValue),
+                                    }));
+                                    setCustomNotificationMinutes(
+                                      group,
+                                      notificationMinutesFromValue(
+                                        normalizedValue,
+                                        customNotificationUnits[group]
+                                      )
+                                    );
+                                  }}
+                                  onFocus={(event) => event.currentTarget.select()}
+                                  className="h-10 w-full rounded-lg border border-[#e8e2ce] bg-white px-3 font-['Inter',sans-serif] text-sm font-semibold text-[#1c180d] outline-none focus:border-[#f2b90d] focus:ring-2 focus:ring-[#f2b90d]/20"
+                                />
+                                <Select
+                                  value={customNotificationUnits[group]}
+                                  onValueChange={(value) => {
+                                    const nextUnit = value as NotificationUnit;
+                                    const parsedValue = Number.parseInt(
+                                      customNotificationInputs[group],
+                                      10
+                                    );
+                                    const displayValue =
+                                      Number.isFinite(parsedValue) && parsedValue > 0
+                                        ? parsedValue
+                                        : 1;
+                                    setCustomNotificationUnits((current) => ({
+                                      ...current,
+                                      [group]: nextUnit,
+                                    }));
+                                    setCustomNotificationInputs((current) => ({
+                                      ...current,
+                                      [group]: String(displayValue),
+                                    }));
+                                    setCustomNotificationMinutes(
+                                      group,
+                                      notificationMinutesFromValue(displayValue, nextUnit)
+                                    );
+                                  }}
+                                >
+                                  <SelectTrigger className="h-10 w-full cursor-pointer rounded-lg border-[#e8e2ce] bg-white px-3 text-sm font-medium text-[#1c180d] shadow-none focus-visible:border-[#f2b90d] focus-visible:ring-2 focus-visible:ring-[#f2b90d]/20">
+                                    <span>
+                                      {notificationUnitLabelForCount(
+                                        notificationValueForUnit(
+                                          customNotificationMinutes[group],
+                                          customNotificationUnits[group]
+                                        ),
+                                        customNotificationUnits[group]
+                                      )}
+                                    </span>
+                                  </SelectTrigger>
+                                  <SelectContent className="z-[80] rounded-2xl border-[#e8e2ce] bg-[#fffdf9] p-1.5 shadow-[0px_20px_50px_-20px_rgba(28,24,13,0.35)]">
+                                    {NOTIFICATION_UNIT_OPTIONS.map((option) => (
+                                      <SelectItem
+                                        key={option.value}
+                                        value={option.value}
+                                        className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium text-[#1c180d] focus:bg-[#fff7df] focus:text-[#1c180d] data-[state=checked]:bg-[#fff1cc] data-[state=checked]:text-[#1c180d]"
+                                      >
+                                        {option.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <p className="text-xs text-[#78716c] sm:col-span-2">
+                                  {notificationUnitLabelForCount(
+                                    Number.parseInt(customNotificationInputs[group], 10) > 0
+                                      ? Number.parseInt(customNotificationInputs[group], 10)
+                                      : 1,
+                                    customNotificationUnits[group]
+                                  ).toLowerCase()} before the event
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -534,7 +756,7 @@ export default function ExportPage() {
 
         <main className={goosePageMainClass}>
           <div className="mb-8 w-full max-w-[600px] text-center">
-            <h1 className={`${goosePageHeadingClass} leading-[1.1] tracking-[-0.9px] sm:text-[36px]`}>
+            <h1 className={goosePageHeadingClass}>
               Export Your Calendar
             </h1>
             <p className="mt-3 font-['Lexend',sans-serif] text-base font-normal text-[#78716c]">
@@ -585,12 +807,12 @@ export default function ExportPage() {
                 </button>
               </div>
 
-              <div className="mt-4 flex items-center gap-2">
-                <div className="-scale-y-100 shrink-0">
+              <div className="mt-4 flex items-start gap-2">
+                <div className="-scale-y-100 shrink-0 pt-0.5">
                   <InfoIcon />
                 </div>
-                <span className="font-['Lexend',sans-serif] text-xs font-normal text-[#a8a29e]">
-                  .ICS files don't support colors. Google export now uses separate GooseCalendar calendars per event type so your selected hex palette can be preserved.
+                <span className="font-['Lexend',sans-serif] text-xs font-normal leading-relaxed text-[#a8a29e]">
+                  .ICS files don't support colors. Google export uses separate GooseCalendar calendars per event type so your selected hex palette can be preserved.
                 </span>
               </div>
 
@@ -646,14 +868,12 @@ export default function ExportPage() {
 
             <div className={`border-t ${goosePanelDividerClass} px-6 pb-6 pt-6 sm:px-8 sm:pb-8 sm:pt-7`}>
               <div className="mb-5">
-                <div>
-                  <h3 className="mb-1 font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
-                    Color palette
-                  </h3>
-                  <p className="text-sm font-normal leading-relaxed text-[#78716c]">
-                    Pick a palette before exporting to Google Calendar so each event-type calendar gets its color.
-                  </p>
-                </div>
+                <h3 className="mb-1 font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
+                  Color palette
+                </h3>
+                <p className="text-sm font-normal leading-relaxed text-[#78716c]">
+                  Pick a palette before exporting to Google Calendar so each event-type calendar gets its color.
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">

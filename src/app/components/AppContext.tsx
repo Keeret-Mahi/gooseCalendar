@@ -64,6 +64,7 @@ interface AppContextType {
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
   ) => void;
+  setCustomNotificationMinutes: (eventGroup: EventGroup, minutes: number) => void;
   exportValidationIssues: ReturnType<typeof getExportValidationIssues>;
   downloadCalendar: () => void;
   googleCalendarConfigured: boolean;
@@ -101,6 +102,15 @@ const defaultExportConfig: ExportConfig = {
     Assessments: "default",
     Assignments: "default",
     Other: "default",
+  },
+  customNotificationMinutes: {
+    Lecture: 15,
+    Tutorial: 15,
+    Lab: 15,
+    "Office Hours": 15,
+    Assessments: 15,
+    Assignments: 15,
+    Other: 15,
   },
 };
 
@@ -277,6 +287,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       notificationSettings: {
         ...defaultExportConfig.notificationSettings,
         ...(current.notificationSettings ?? {}),
+      },
+      customNotificationMinutes: {
+        ...defaultExportConfig.customNotificationMinutes,
+        ...(current.customNotificationMinutes ?? {}),
       },
     }));
   }, []);
@@ -538,6 +552,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const setCustomNotificationMinutes = (eventGroup: EventGroup, minutes: number) => {
+    setExportConfig((current) => ({
+      ...current,
+      customNotificationMinutes: {
+        ...current.customNotificationMinutes,
+        [eventGroup]: minutes,
+      },
+    }));
+  };
+
   const exportValidationIssues = useMemo(
     () => getExportValidationIssues(courses, events, selections),
     [courses, events, selections]
@@ -587,6 +611,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setCustomColors,
         setColorStrategy,
         setNotificationSetting,
+        setCustomNotificationMinutes,
         exportValidationIssues,
         downloadCalendar,
         googleCalendarConfigured: isGoogleCalendarConfigured(),

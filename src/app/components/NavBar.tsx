@@ -41,6 +41,7 @@ interface StepDef {
 interface NavBarProps {
   currentStep?: number; // 1=Upload, 2=Select Sections, 3=Review Events, 4=Export
   showProgress?: boolean; // whether to show progress steps or "How It Works" link
+  onHowItWorksClick?: () => void;
 }
 
 function getSteps(currentStep: number): StepDef[] {
@@ -118,7 +119,11 @@ function StepLabel({ step }: { step: StepDef }) {
   );
 }
 
-export function NavBar({ currentStep = 4, showProgress = true }: NavBarProps) {
+export function NavBar({
+  currentStep = 4,
+  showProgress = true,
+  onHowItWorksClick,
+}: NavBarProps) {
   const steps = getSteps(currentStep);
   return (
     <nav className="sticky top-0 z-20 w-full backdrop-blur-[2px] bg-[rgba(248,248,245,0.95)] border-b border-[#e8e2ce]">
@@ -173,7 +178,11 @@ export function NavBar({ currentStep = 4, showProgress = true }: NavBarProps) {
           </>
         ) : (
           /* "How It Works" link */
-          <button className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity">
+          <button
+            type="button"
+            onClick={onHowItWorksClick}
+            className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
+          >
             <span className="font-['Lexend',sans-serif] font-medium text-[#645f52] text-sm">
               How It Works
             </span>

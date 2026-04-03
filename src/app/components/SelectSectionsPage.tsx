@@ -484,7 +484,7 @@ export default function SelectSectionsPage() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h1 className={goosePageHeadingClass}>
-                  Review Detected Courses
+                  Select Calendar Events
                 </h1>
                 <p className={goosePageSubheadingClass}>
                   Found lecture, tutorial, lab, and deadline details for {courses.length} courses.
