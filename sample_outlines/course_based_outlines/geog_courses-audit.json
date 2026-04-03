@@ -196,7 +196,7 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 4,
+      "Assessments": 3,
       "Assignments": 1,
       "Lecture": 1
     },
@@ -252,33 +252,6 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "2. Data Exploration | Feb 10 @ 2359 h | LEARN drop box | 20%"
-          }
-        ]
-      },
-      {
-        "id": "17kcj0f",
-        "label": "3. Modelling Ecological Relationships Using Generalized Linear Models Part I: Using R for Analyses",
-        "title": "GEOG 617 3. Modelling Ecological Relationships Using Generalized Linear Models Part I: Using R for Analyses",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 35%"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-03-24",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "3. Modelling Ecological Relationships using Generalized Linear Models Part I: Using R for Analyses | March 24 @ 2359 h | LEARN drop box | 35%"
           }
         ]
       },
@@ -341,15 +314,15 @@
           ],
           "occurrenceNotes": {
             "2026-01-13": [
-              "Assignments: Assignment 1",
+              "Assignments: Assignment #1",
               "Assignment 1 due Jan 13"
             ],
             "2026-02-10": [
-              "Assignments: Assignment 2",
+              "Assignments: Assignment #2",
               "Assignment 2 due Feb 10"
             ],
             "2026-03-24": [
-              "Assignments: Assignment 3",
+              "Assignments: Assignment #3",
               "Assignment 3 due March 24"
             ]
           }
@@ -538,7 +511,7 @@
           "startDate": "2026-01-05",
           "endDate": "2026-04-06",
           "startTime": "10:00",
-          "endTime": "00:00",
+          "endTime": "12:00",
           "byDay": [
             "WE"
           ],
@@ -550,7 +523,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Brent Doberstein : EV1-220, bdoberst@uwaterloo.ca Office Hours: Wed 10-12 noon (EV1-220)"
+            "snippet": "EV1-220, bdoberst@uwaterloo.ca Office Hours: Wed 10-12 noon (EV1-220)"
           }
         ]
       },
@@ -584,7 +557,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Maria Strack : EV1-320, mstrack@uwaterloo.ca Office Hours: Mon 2:30 - 4 pm (EV1-320)"
+            "snippet": "EV1-320, mstrack@uwaterloo.ca Office Hours: Mon 2:30 - 4 PM (EV1-320)"
           }
         ]
       }
@@ -611,7 +584,8 @@
     ],
     "countsByGroup": {
       "Assignments": 3,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -726,6 +700,38 @@
             "snippet": "ECDEV 606 / GEOG 613 / PLAN 613 001 [SEM] Mondays - Mondays Jan 5 - Apr 6 11:30AM - 02:20PM EV1 350 Heather Hall h.hall@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "14isw1w",
+        "label": "Office Hours with Heather Hall",
+        "title": "ECDEV 606/GEOG 613/PLAN 613 Office Hours",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "16:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Mondays 2:30pm-4:00pm; Also available to schedule appointments at another mutually agreed upon time. Territorial Acknowledgement: The University of Waterloo acknowledges that much of our work takes place on the tradit..."
+          }
+        ]
       }
     ]
   },
@@ -751,7 +757,8 @@
     "countsByGroup": {
       "Assessments": 1,
       "Assignments": 2,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -866,6 +873,38 @@
             "snippet": "GEOG 625 / ERS 625 001 [SEM] Wednesdays - Wednesdays Jan 5 - Apr 6 11:30AM - 02:20PM HH 150 Nancy Worth nancy.worth@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "1b5i1ii",
+        "label": "Office Hours with Dr. Nancy Worth",
+        "title": "GEOG 625/ERS 625 Office Hours @ EV1-229",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EV1-229",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:00",
+          "endTime": "12:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Wednesday 10AM-Noon in EV1-229. Book time with Nancy Worth or drop in."
+          }
+        ]
       }
     ]
   },
@@ -890,7 +929,8 @@
     ],
     "countsByGroup": {
       "Assignments": 2,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -1000,6 +1040,40 @@
             "snippet": "13 (2 Apr) | No Class"
           }
         ]
+      },
+      {
+        "id": "197nhrj",
+        "label": "Office Hours with Richard Kelly",
+        "title": "GEOG 603 Office Hours @ EV1-222",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EV1-222",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "09:30",
+          "endTime": "10:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Thursdays 9:30 to 10:30 hrs. EV1-222."
+          }
+        ]
       }
     ]
   },
@@ -1097,35 +1171,35 @@
           ],
           "occurrenceNotes": {
             "2026-01-27": [
-              "Assignments: Assignment 1",
+              "Assignments: Assignment #1",
               "Assignment 1 distributed (Due Jan. 27)"
             ],
             "2026-02-03": [
-              "Assignments: Assignment 2",
+              "Assignments: Assignment #2",
               "Assignment 2 distributed (Due Feb. 3)"
             ],
             "2026-02-10": [
-              "Assignments: Assignment 3",
+              "Assignments: Assignment #3",
               "Assignment 3 distributed (Due Feb. 10)"
             ],
             "2026-02-24": [
-              "Assignments: Assignment 4",
+              "Assignments: Assignment #4",
               "Assignment 4 distributed (Due Feb. 24)"
             ],
             "2026-03-03": [
-              "Assignments: Assignment 5",
+              "Assignments: Assignment #5",
               "Assignment 5 distributed (Due Mar. 3)"
             ],
             "2026-03-10": [
-              "Assignments: Assignment 6",
+              "Assignments: Assignment #6",
               "Assignment 6 distributed (Due Mar. 10)"
             ],
             "2026-03-17": [
-              "Assignments: Assignment 7",
+              "Assignments: Assignment #7",
               "Assignment 7 distributed (Due Mar. 17)"
             ],
             "2026-03-24": [
-              "Assignments: Assignment 8",
+              "Assignments: Assignment #8",
               "Assignment 8 distributed (Due Mar. 24)"
             ]
           }
@@ -1363,10 +1437,39 @@
       }
     ],
     "countsByGroup": {
+      "Assessments": 1,
       "Assignments": 6,
       "Lecture": 1
     },
     "events": [
+      {
+        "id": "cpz5is",
+        "label": "MID-Term “Three Layers” Essay",
+        "title": "ERS 456/GEOG 456/GEOG 662 MID-Term “Three Layers” Essay",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "2. Mid-Term “Three Layers” Essay Due by February 22rd worth 20%",
+          "Weight: 20%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-22",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "2. Mid-Term “Three Layers” Essay Due by February 22rd worth 20%"
+          }
+        ]
+      },
       {
         "id": "4t5qfi",
         "label": "Biodiversity in the News Analysis",
@@ -1452,6 +1555,33 @@
         ]
       },
       {
+        "id": "1q37otf",
+        "label": "Group Presentation",
+        "title": "ERS 456/GEOG 456/GEOG 662 Group Presentation @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Each deck will be presented in class on March 25 th in a “mock Cabinet” format."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-25",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Each deck will be presented in class on March 25 th in a “mock Cabinet” format."
+          }
+        ]
+      },
+      {
         "id": "1x2lt75",
         "label": "Issue Briefing Note",
         "title": "ERS 456/GEOG 456/GEOG 662 Issue Briefing Note @ LEARN Dropbox",
@@ -1476,34 +1606,6 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "prose",
             "snippet": "3. Issue Briefing Note Due by March 8 th worth 15%"
-          }
-        ]
-      },
-      {
-        "id": "cpz5is",
-        "label": "MID-Term “Three Layers” Essay",
-        "title": "ERS 456/GEOG 456/GEOG 662 MID-Term “Three Layers” Essay @ LEARN Dropbox",
-        "eventType": "Assignment",
-        "eventGroup": "Assignments",
-        "location": "LEARN Dropbox",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "2. Mid-Term “Three Layers” Essay Due by February 22rd worth 20%",
-          "Weight: 20%"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-22",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "prose",
-            "snippet": "2. Mid-Term “Three Layers” Essay Due by February 22rd worth 20%"
           }
         ]
       },

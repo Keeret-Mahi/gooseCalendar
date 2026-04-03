@@ -19,7 +19,8 @@
       }
     ],
     "countsByGroup": {
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 3
     },
     "events": [
       {
@@ -54,6 +55,108 @@
             "snippet": "ENGL 309G / GSJ 309 / HIST 309 / SPCOM 434 001 [LEC] Monday, Wednesday - Mon, Wed Jan 9 - Apr 10 01:00PM - 02:20PM PAS 1241 Stacy Denton stacy.denton@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "18doqwd",
+        "label": "Office Hours with Dr. Stacy Denton",
+        "title": "ENGL 309G/GSJ 309/HIST 309/SPCOM 434 Office Hours @ Online",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2023-01-09",
+          "endDate": "2023-04-10",
+          "startTime": "15:00",
+          "endTime": "16:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructor_amp_ta_teaching_assistant_information",
+            "sectionTitle": "Instructor & TA (Teaching Assistant) Information",
+            "sourceKind": "prose",
+            "snippet": "M, T, W 3-4 PM and by appointment Email: sdenton@uwaterloo.ca (will receive a response within 24 hours) Phone Extension: 48532"
+          }
+        ]
+      },
+      {
+        "id": "1usflgo",
+        "label": "Office Hours with Dr. Stacy Denton",
+        "title": "ENGL 309G/GSJ 309/HIST 309/SPCOM 434 Office Hours @ Online",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2023-01-09",
+          "endDate": "2023-04-10",
+          "startTime": "15:00",
+          "endTime": "16:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructor_amp_ta_teaching_assistant_information",
+            "sectionTitle": "Instructor & TA (Teaching Assistant) Information",
+            "sourceKind": "prose",
+            "snippet": "M, T, W 3-4 PM and by appointment Email: sdenton@uwaterloo.ca (will receive a response within 24 hours) Phone Extension: 48532"
+          }
+        ]
+      },
+      {
+        "id": "1oohx3p",
+        "label": "Office Hours with Dr. Stacy Denton",
+        "title": "ENGL 309G/GSJ 309/HIST 309/SPCOM 434 Office Hours @ Online",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2023-01-09",
+          "endDate": "2023-04-10",
+          "startTime": "15:00",
+          "endTime": "16:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructor_amp_ta_teaching_assistant_information",
+            "sectionTitle": "Instructor & TA (Teaching Assistant) Information",
+            "sourceKind": "prose",
+            "snippet": "M, T, W 3-4 PM and by appointment Email: sdenton@uwaterloo.ca (will receive a response within 24 hours) Phone Extension: 48532"
+          }
+        ]
       }
     ]
   },
@@ -78,7 +181,8 @@
     ],
     "countsByGroup": {
       "Assignments": 3,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -194,6 +298,38 @@
             "snippet": "GSJ 102 001 [LEC] Monday, Wednesday - Mon, Wed Jan 8 - Apr 8 02:30PM - 03:50PM RCH 105 Arany Sivasubramaniam arany.siva@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "pabqh9",
+        "label": "Office Hours with Academic",
+        "title": "GSJ 102 Office Hours @ Online",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2024-01-08",
+          "endDate": "2024-04-08",
+          "startTime": "13:00",
+          "endTime": "14:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructor_amp_ta_teaching_assistant_information",
+            "sectionTitle": "Instructor & TA (Teaching Assistant) Information",
+            "sourceKind": "prose",
+            "snippet": "My drop-in office hours will be on Mondays from 1:00p.m.-2:00 PM. at Hagey Hall, Room 357."
+          }
+        ]
       }
     ]
   },
@@ -293,7 +429,8 @@
     "countsByGroup": {
       "Assessments": 2,
       "Assignments": 2,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -480,6 +617,40 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "PHIL 302 / GSJ 304 / GSJ 302 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 10:00AM - 11:20AM EV3 4412 Carla Fehr carla.fehr@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1nztndt",
+        "label": "Office Hours with Carla Fehr",
+        "title": "PHIL 302/GSJ 304/GSJ 302 Office Hours",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:30",
+          "endTime": "14:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tuesdays from 12:30-2:00 and by appointment Email: carla.fehr@uwaterloo.ca Email policy: Include \"Feminist Theory Course\" in the subject line of all communication. Professor will respond to emails within two business ..."
           }
         ]
       }
@@ -849,7 +1020,8 @@
     ],
     "countsByGroup": {
       "Assessments": 2,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -945,6 +1117,70 @@
             "snippet": "HLTH 401 / GSJ 401 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM STC 0010 Shannon Majowicz smajowic@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "5jyhai",
+        "label": "Office Hours with Dr. Shannon Majowicz",
+        "title": "HLTH 401/GSJ 401 Office Hours @ LHN 1709",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "LHN 1709",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "15:00",
+          "endTime": "16:30",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Mondays 3:00pm – 4:30pm (in person drop in), or other times by appointment (in person or virtual; please email me) Email hours*: Mondays and Thursdays 1:00pm – 2:00pm *I have blocked this time each week to answer your..."
+          }
+        ]
+      },
+      {
+        "id": "nd99io",
+        "label": "Office Hours with Dr. Shannon Majowicz",
+        "title": "HLTH 401/GSJ 401 Office Hours @ LHN 1709",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "LHN 1709",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:00",
+          "endTime": "14:00",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Mondays 3:00pm – 4:30pm (in person drop in), or other times by appointment (in person or virtual; please email me) Email hours*: Mondays and Thursdays 1:00pm – 2:00pm *I have blocked this time each week to answer your..."
+          }
+        ]
       }
     ]
   },
@@ -979,8 +1215,9 @@
       }
     ],
     "countsByGroup": {
-      "Assignments": 2,
-      "Lecture": 2
+      "Assignments": 3,
+      "Lecture": 2,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -1007,6 +1244,34 @@
             "sectionTitle": "Tentative Class Plan",
             "sourceKind": "prose",
             "snippet": "April 13 Reflection Paper due"
+          }
+        ]
+      },
+      {
+        "id": "9pgw8o",
+        "label": "Introductory Posts (800-1200 words)",
+        "title": "ENGL 208B Introductory Posts (800-1200 words)",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Prior to Week 2, each student will sign up for two “Introductory Posts.” These posts will posted to the discussion board the day before an assigned text is due, and will “introduce” the texts to the rest of the class. The focus here should be on summarizing the texts, but also responding to them. As such, the summary portion should be around 1/3 of the post, at most. In terms of response, I'm just looking for what you found interesting about the text. This discussion should include:",
+          "Weight: 15%"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-03",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Introductory Posts (800-1200 words) | 15%"
           }
         ]
       },
@@ -1102,6 +1367,40 @@
             "snippet": "ENGL 208B 002 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM RCH 206 Michael Hancock michael.hancock@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "1t34f7c",
+        "label": "Office Hours with Michael Hancock",
+        "title": "ENGL 208B Office Hours @ PAS 1284",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "PAS 1284",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "16:00",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Fridays 2-4 (virtually, by appointment—just send me an email, and we'll set up a Zoom call. Also available by appointment at other times) Email: m3hancoc@uwaterloo.ca (please put the course name ENGL 208B in your emai..."
+          }
+        ]
       }
     ]
   },
@@ -1126,7 +1425,7 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Assignments": 2,
+      "Assignments": 3,
       "Lecture": 1,
       "Office Hours": 1
     },
@@ -1143,7 +1442,6 @@
         "confidence": "high",
         "notes": [
           "MIDTERM",
-          "9 | March 2 | MIDTERM | No readings",
           "Weight: 25%",
           "The midterm will take place in class on March 2."
         ],
@@ -1210,6 +1508,33 @@
         ]
       },
       {
+        "id": "12ford0",
+        "label": "Sexual Offending in Institutional Settings | *Workshop Assignment",
+        "title": "GSJ 326/LS 325/SOC 325 Sexual Offending in Institutional Settings | *Workshop Assignment",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Sexual offending in institutional settings | *Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-29",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "12 | March 23 | Sexual offending in institutional settings *Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8 · Colpitts (2022)"
+          }
+        ]
+      },
+      {
         "id": "wp9mjd",
         "label": "Workshop Assignment",
         "title": "GSJ 326/LS 325/SOC 325 Workshop Assignment @ LEARN",
@@ -1220,7 +1545,6 @@
         "reviewNeeded": false,
         "confidence": "medium",
         "notes": [
-          "*Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8",
           "*Workshop assignment due Sunday March 29th at 11:59 pm*",
           "Weight: 25%"
         ],
@@ -1282,31 +1606,31 @@
               "Social construction of sexuality and sex behaviours | · Scherrer (2008)\n· Seidman (2006)"
             ],
             "2026-01-19": [
-              "Sexual offences and offenders\nHistorical perspectives | · Ch. 1\n· Ch. 2\n· DeBlock et al. (2013)\n· Young (2008)"
+              "Sexual offences and offenders | Historical perspectives | · Ch. 1\n· Ch. 2\n· DeBlock et al. (2013)\n· Young (2008)"
             ],
             "2026-01-26": [
               "Theories of sexual offending | · Ch. 3 (pp. 55-69)\n· Federoff et al. (1997)"
             ],
             "2026-02-02": [
-              "Cycle of sexual offending\nTypes and typologies\nVictims\n*CRITICAL REFLECTION DUE by 11:59pm * | · Ch. 4\n· Ch. 5\n· Ch. 9"
+              "Cycle of sexual offending | Types and typologies | Victims | *CRITICAL REFLECTION DUE by 11:59pm * | · Ch. 4\n· Ch. 5\n· Ch. 9"
             ],
             "2026-02-09": [
-              "Nuisance sex behaviours\nDangerous sex crimes | · Ch. 3 (pp. 45-53)\n· Burgess et al. (1986)\n· Joyal and Carpentier (2017)"
+              "Nuisance sex behaviours | Dangerous sex crimes | · Ch. 3 (pp. 45-53)\n· Burgess et al. (1986)\n· Joyal and Carpentier (2017)"
             ],
             "2026-02-23": [
-              "Prostitution\nSex work | · Davies (2015)\n· Jeffrey and MacDonald (2006)\n· Sterling and van der Meulen (2008)"
+              "Prostitution | Sex work | · Davies (2015)\n· Jeffrey and MacDonald (2006)\n· Sterling and van der Meulen (2008)"
             ],
             "2026-03-09": [
-              "Commercial sexual exploitation of children\nPedophilia | · Ch. 6\n· Ch. 7\n· Paquette et al. (2020)\n· Seto (2012)"
+              "Commercial sexual exploitation of children | Pedophilia | · Ch. 6\n· Ch. 7\n· Paquette et al. (2020)\n· Seto (2012)"
             ],
             "2026-03-16": [
               "Sexual assault | · Dekeseredy & Schwartz (1993)\n· Lopes-Baker et al. (2017)"
             ],
             "2026-03-23": [
-              "Sexual offending in institutional settings\n*Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8\n· Colpitts (2022)"
+              "Sexual offending in institutional settings | *Workshop assignment due Sunday March 29th at 11:59 pm* | · Ch. 8\n· Colpitts (2022)"
             ],
             "2026-03-30": [
-              "Pornography\nAssessment and Treatment\nGUEST LECTURE: COMMUNITY JUSTICE INITIATIVES | · Bridges et al. (2016)\n· Goldsmith et al. (2017)\n· Lussier and Mathesius (2019)\n· Murphy et al. (2009)\n· Rye et al. (2018)"
+              "Pornography | Assessment and Treatment | GUEST LECTURE: COMMUNITY JUSTICE INITIATIVES | · Bridges et al. (2016)\n· Goldsmith et al. (2017)\n· Lussier and Mathesius (2019)\n· Murphy et al. (2009)\n· Rye et al. (2018)"
             ],
             "2026-02-16": [
               "Excluded: NO CLASS READING WEEK :) | No readings :)"
@@ -1424,7 +1748,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office hours: Wednesday, 2:00-3:00 pm"
+            "snippet": "Wednesday, 2:00-3:00 PM PAS 2040 Or by appointment"
           }
         ]
       }

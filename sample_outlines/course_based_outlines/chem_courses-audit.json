@@ -19,37 +19,11 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 2,
+      "Assessments": 1,
       "Assignments": 2,
       "Lab": 1
     },
     "events": [
-      {
-        "id": "bxsrl1",
-        "label": "Design/Perform and Analyze Experimental Investigations (Mandatory)",
-        "title": "CHEM 335L Design/Perform and Analyze Experimental Investigations (Mandatory)",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": false,
-        "reviewNeeded": true,
-        "confidence": "low",
-        "notes": [
-          "Weight: 72%"
-        ],
-        "timing": {
-          "kind": "single",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "Design/perform and analyze experimental investigations (mandatory) | Please see class plan | In-person, LEARN quiz, LEARN drop box | 72%"
-          }
-        ]
-      },
       {
         "id": "xr9zkb",
         "label": "Written Exam (Mandatory)",
@@ -310,7 +284,8 @@
     "countsByGroup": {
       "Assessments": 4,
       "Assignments": 5,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 4
     },
     "events": [
       {
@@ -483,12 +458,12 @@
           ],
           "occurrenceNotes": {
             "2026-02-24": [
-              "Assignments: Assignment#2",
+              "Assignments: Assignment #2",
               "Weight: 35% total across 3 assignments",
               "Assignment#2 due: Feb. 24 (12 marks)"
             ],
             "2026-03-31": [
-              "Assignments: Assignment#3",
+              "Assignments: Assignment #3",
               "Weight: 35% total across 3 assignments",
               "Assignment#3 due: March 31 (16 marks) (all assignments uploaded to Chem433 LEARN Dropbox)."
             ]
@@ -628,6 +603,142 @@
             "snippet": "CHEM 433 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM RCH 207 John Honek jhonek@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "izo3ef",
+        "label": "Office Hours with John Honek",
+        "title": "CHEM 433 Office Hours @ ESC 246",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC 246",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:30",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "T, Th (2:30-3:30pm) -or email me for an alternate conflict free time"
+          }
+        ]
+      },
+      {
+        "id": "1l07ooo",
+        "label": "Office Hours with John Honek",
+        "title": "CHEM 433 Office Hours @ ESC 246",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC 246",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "T, Th (2:30-3:30pm) -or email me for an alternate conflict free time"
+          }
+        ]
+      },
+      {
+        "id": "1atgb4y",
+        "label": "Office Hours with Professor John Honek",
+        "title": "CHEM 433 Office Hours @ ESC 246",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC 246",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:30",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "T, Th (2:30-3:30pm) -or email me for an alternate conflict free time"
+          }
+        ]
+      },
+      {
+        "id": "1gak56h",
+        "label": "Office Hours with Professor John Honek",
+        "title": "CHEM 433 Office Hours @ ESC 246",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC 246",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "T, Th (2:30-3:30pm) -or email me for an alternate conflict free time"
+          }
+        ]
       }
     ]
   },
@@ -676,7 +787,8 @@
     ],
     "countsByGroup": {
       "Assessments": 2,
-      "Lab": 1
+      "Lab": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -762,6 +874,46 @@
             "snippet": "CHEM 224L 001 [LAB] Thursdays - Thursdays Jan 5 - Apr 6 02:30PM - 08:20PM C2 273 Stacey Lavery stacey.lavery@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "1a4aazh",
+        "label": "Office Hours with Stacey Lavery",
+        "title": "CHEM 224L Office Hours @ C2-275A",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-275A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:30",
+          "endTime": "14:00",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office Hours: Office hours will be Thursdays from 1:30-2:00pm, with other times for the week posted on Learn. Alternate times may be arranged by email."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Thursdays from 1:30-2:00pm, with other times for the week posted on Learn. Alternate times may be arranged by email. Emails: For instrumentation lab questions, please contact your assigned TA first (see email list on ..."
+          }
+        ]
       }
     ]
   },
@@ -785,43 +937,16 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 5,
-      "Lecture": 1
+      "Assessments": 2,
+      "Assignments": 3,
+      "Lecture": 1,
+      "Office Hours": 3
     },
     "events": [
       {
-        "id": "1y6fd8j",
-        "label": "Term Test",
-        "title": "CHEM 267 Term Test",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "high",
-        "notes": [
-          "Term Test 1\nDuring class\nAldehydes and ketones"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-06",
-          "startTime": "13:30",
-          "endTime": "14:20",
-          "allDay": false
-        },
-        "provenance": [
-          {
-            "sectionId": "tentative_class_plan",
-            "sectionTitle": "Tentative Class Plan",
-            "sourceKind": "table",
-            "snippet": "Week 6 Feb 9 | Term Test 1 During class Aldehydes and ketones | M Feb. 9 Term Test 1 16.W pgs 15-22:V (19 min)*6 17.F pgs 23-29:V (13 min) | Ch 20.4.5 – 20.4.8 (Omit sections 20.4.9 and 20.4.10) | No Assignment"
-          }
-        ]
-      },
-      {
         "id": "1yevjhw",
-        "label": "Term Test",
-        "title": "CHEM 267 Term Test",
+        "label": "Midterm #1",
+        "title": "CHEM 267 Midterm #1",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -829,8 +954,11 @@
         "reviewNeeded": false,
         "confidence": "high",
         "notes": [
+          "Term Test 1",
+          "Term Test 1\nDuring class\nAldehydes and ketones",
+          "M Feb. 9 Term Test 1",
           "Term test 1: Monday, February 9, 1:30 – 2:20 pm",
-          "M Feb. 9 Term Test 1"
+          "Term Test 1 (Monday, February 10) (held during lecture time slot)"
         ],
         "timing": {
           "kind": "single",
@@ -841,74 +969,23 @@
         },
         "provenance": [
           {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "prose",
-            "snippet": "Term test 1: Monday, February 9, 1:30 – 2:20 pm"
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 6 Feb 9 | Term Test 1 During class Aldehydes and ketones | M Feb. 9 Term Test 1 16.W pgs 15-22:V (19 min)*6 17.F pgs 23-29:V (13 min) | Ch 20.4.5 – 20.4.8 (Omit sections 20.4.9 and 20.4.10) | No Assignment"
           },
           {
             "sectionId": "tentative_class_plan",
             "sectionTitle": "Tentative Class Plan",
             "sourceKind": "prose",
             "snippet": "M Feb. 9 Term Test 1"
-          }
-        ]
-      },
-      {
-        "id": "6bvpk0",
-        "label": "Term Test",
-        "title": "CHEM 267 Term Test",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "high",
-        "notes": [
-          "Term test 2: Wednesday, March 11, 1:30 – 2:20 pm",
-          "Wed March 11 Term test 2"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-03-11",
-          "startTime": "13:30",
-          "endTime": "14:20",
-          "allDay": false
-        },
-        "provenance": [
+          },
           {
             "sectionId": "assessments_amp_activities",
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "prose",
-            "snippet": "Term test 2: Wednesday, March 11, 1:30 – 2:20 pm"
+            "snippet": "Term test 1: Monday, February 9, 1:30 – 2:20 pm"
           },
-          {
-            "sectionId": "tentative_class_plan",
-            "sectionTitle": "Tentative Class Plan",
-            "sourceKind": "prose",
-            "snippet": "Wed March 11 Term test 2"
-          }
-        ]
-      },
-      {
-        "id": "1vuqht5",
-        "label": "Term Test",
-        "title": "CHEM 267 Term Test",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Term Test 1 (Monday, February 10) (held during lecture time slot)"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-10",
-          "allDay": true
-        },
-        "provenance": [
           {
             "sectionId": "assessments_amp_activities",
             "sectionTitle": "Assessments & Activities",
@@ -918,29 +995,226 @@
         ]
       },
       {
-        "id": "1u0my4o",
-        "label": "Term Test",
-        "title": "CHEM 267 Term Test",
+        "id": "1bjc1xj",
+        "label": "Midterm #2",
+        "title": "CHEM 267 Midterm #2",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
         "include": true,
         "reviewNeeded": false,
-        "confidence": "medium",
+        "confidence": "high",
         "notes": [
+          "Term Test 2 Wed.",
+          "Condensations and Alpha Substitutions of Carbonyl Compounds\nTerm Test 2 Wed.\nDuring class",
+          "Wed March 11 Term test 2",
+          "Term test 2: Wednesday, March 11, 1:30 – 2:20 pm",
           "Term Test 2 (Wednesday, March 12) (held during lecture time slot)"
         ],
         "timing": {
           "kind": "single",
-          "date": "2026-03-12",
-          "allDay": true
+          "date": "2026-03-09",
+          "startTime": "13:30",
+          "endTime": "14:20",
+          "allDay": false
         },
         "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 9 March 9 | Condensations and Alpha Substitutions of Carbonyl Compounds Term Test 2 Wed. During class | 24 pgs 1-8:V (35 min) Wed March 11 Term test 2 25.F pgs 9 -16:V (17 min)*9 | Ch 23.1 - 23.2 | Monday March 9..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Wed March 11 Term test 2"
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Term test 2: Wednesday, March 11, 1:30 – 2:20 pm"
+          },
           {
             "sectionId": "assessments_amp_activities",
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "prose",
             "snippet": "Term Test 2 (Wednesday, March 12) (held during lecture time slot)"
+          }
+        ]
+      },
+      {
+        "id": "1rnaeq9",
+        "label": "Assignment #5",
+        "title": "CHEM 267 Assignment #5 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Sunday Feb 8 Assign 5 Hetero Ch 19.5"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-08",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 | - Reaction of Aromatic compounds - Amines - Aldehydes and ketones | 13.M pgs 46-50 :V (none)*5 14.W pgs 51-60 :V (5 min) 15.F pgs Ald & Ket 1-14 : V (35 min) | Ch 19.1- 19.4-19.6 Ch 19.5 CH 20.1 – 20.4...."
+          }
+        ]
+      },
+      {
+        "id": "ao8jzu",
+        "label": "Assignments #6-10",
+        "title": "CHEM 267 Assignments #6-10 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring assignment series covering assignments 6-10 on selected weeks."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-03-02",
+          "endDate": "2026-04-06",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [
+            "2026-03-30"
+          ],
+          "occurrenceNotes": {
+            "2026-03-02": [
+              "Assignments: Assignment #6",
+              "Monday March 2 Assign 6 Carboxylic Ch 22.0-22.8 Drawing Q Aldehyde Ch 20"
+            ],
+            "2026-03-09": [
+              "Assignments: Assignment #7",
+              "Monday March 9 Assign 7 Carboxylic Ch 22.9 - 22.16"
+            ],
+            "2026-03-16": [
+              "Assignments: Assignment #8",
+              "Monday March 16 Assign 8 Condensation I Ch 23.1 - 23.2"
+            ],
+            "2026-03-23": [
+              "Assignments: Assignment #9",
+              "Monday March 23 Assign 9 Condensation II Ch 23.3 - 23.4"
+            ],
+            "2026-04-06": [
+              "Assignments: Assignment #10",
+              "Monday April 6 Assign 10 IR NMR CH 14.1-14.5, Ch 15.1 - 15.3 and 15.5"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 8 March 2 | Carboxylic acids and derivatives | 21.M pgs 26-28:V (none) 22.W pgs 28-33:V (14 min) 23.F pgs 34-37:V (none)*8 | Ch 22.9 - 22.16 (Omit sec. 22.17) | Monday March 2 Assign 6 Carboxylic Ch 22.0-22.8 Dra..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 9 March 9 | Condensations and Alpha Substitutions of Carbonyl Compounds Term Test 2 Wed. During class | 24 pgs 1-8:V (35 min) Wed March 11 Term test 2 25.F pgs 9 -16:V (17 min)*9 | Ch 23.1 - 23.2 | Monday March 9..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 10 March 16 | Condensations and Alpha Substitutions of Carbonyl Compounds | 26.M pgs 16-23:V (8 min) 27.W pgs 24-28:V (7 min)*10 28.F pgs 29-32:V (4 min) | Ch 23.3 - 23.4 | Monday March 16 Assign 8 Condensation I..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 11 March 23 | - Condensation - Amines - Infrared (IR) | 29.M pgs 33-35:V (6 min) 30.W Amines pg 1-9 *11 31.F IR pgs 1-17:V (40 min) | Ch 23.5 Ch 21 All sections CH 14.1-14.5 | Monday March 23 Assign 9 Condensatio..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 12 March 30 | NMR spectroscopy Monday, April 6 - last day of classes | 32.M NMR 1-14 : V (30 min) 33.W pgs 15-27 : V (23 min) F. Good Friday. No class 34.M pgs 28–36 : V (none) | Ch 15.1 - 15.3 and 15.5 (Omit 15...."
+          }
+        ]
+      },
+      {
+        "id": "1pu1h17",
+        "label": "Weekly Assignments #1-4",
+        "title": "CHEM 267 Weekly Assignments #1-4 @ LEARN",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Recurring weekly assignment series covering assignments 1-4."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-12",
+          "endDate": "2026-02-02",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {
+            "2026-01-12": [
+              "Assignments: Assignment #1",
+              "Monday. Jan. 12 Assign 1 Conj. Ch 17 .1 to 17.5, and 17.8"
+            ],
+            "2026-01-19": [
+              "Assignments: Assignment #2",
+              "Monday. Jan. 19 Assign 2 Aromaticity CH 18. All sections."
+            ],
+            "2026-01-26": [
+              "Assignments: Assignment #3",
+              "Monday Jan 26 Assign 3 EAS Ch 19.1"
+            ],
+            "2026-02-02": [
+              "Assignments: Assignment #4",
+              "Monday Feb 2 Assign 4 EAS NAS Ch 19.2 - 19.6"
+            ]
+          }
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 2 Jan 12 | Aromaticity | 4.M pgs 1-11:V (35 min) 5,W pgs 11-12:V (10 min)*2 6.F pgs 13 – 15:V (4 min) | CH 18. All sections. | Monday. Jan. 12 Assign 1 Conj. Ch 17 .1 to 17.5, and 17.8"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 3 Jan 19 | Reaction of Aromatic compounds | 7.M pgs 1-1-9:V (22 min) 8.W pgs 9-12:V (3 min)*3 9.F pgs 13-23:V (35 min) | Ch 19.0 - 19.1 | Monday. Jan. 19 Assign 2 Aromaticity CH 18. All sections."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 4 Jan 26 | Reaction of Aromatic compounds - Amines | 10.M pgs 24-3:V (23 min) 11.W pgs 32-40:V(27 min)*4 12.F pgs 41-45 :V (10 min) | Ch 19.2 - 19.4 Ch 19.6 Ch 21.4.5 - 21.4.6 | Monday Jan 26 Assign 3 EAS Ch 19.1"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 | - Reaction of Aromatic compounds - Amines - Aldehydes and ketones | 13.M pgs 46-50 :V (none)*5 14.W pgs 51-60 :V (5 min) 15.F pgs Ald & Ket 1-14 : V (35 min) | Ch 19.1- 19.4-19.6 Ch 19.5 CH 20.1 – 20.4...."
           }
         ]
       },
@@ -970,15 +1244,55 @@
             "2026-02-16",
             "2026-02-18",
             "2026-02-20",
-            "2026-02-06",
+            "2026-02-09",
             "2026-03-09"
           ],
           "occurrenceNotes": {
+            "2026-01-05": [
+              "Introduction | Conjugated p systems",
+              "1.M pgs 1-3:V (16 min)\n2.W pgs 4-12:V (17 min)*1\n3.F pgs 13-25:V (14 min)"
+            ],
+            "2026-01-12": [
+              "Aromaticity | Monday. Jan. 12\nAssign 1 Conj.\nCh 17 .1 to 17.5, and 17.8",
+              "4.M pgs 1-11:V (35 min)\n5,W pgs 11-12:V (10 min)*2\n6.F pgs 13 – 15:V (4 min)"
+            ],
+            "2026-01-19": [
+              "Reaction of Aromatic compounds | Monday. Jan. 19\nAssign 2 Aromaticity\nCH 18. All sections.",
+              "7.M pgs 1-1-9:V (22 min)\n8.W pgs 9-12:V (3 min)*3\n9.F pgs 13-23:V (35 min)"
+            ],
+            "2026-01-26": [
+              "Reaction of Aromatic compounds | - Amines | Monday Jan 26\nAssign 3 EAS\nCh 19.1",
+              "10.M pgs 24-3:V (23 min)\n11.W pgs 32-40:V(27 min)*4\n12.F pgs 41-45 :V (10 min)"
+            ],
+            "2026-02-02": [
+              "- Reaction of Aromatic compounds - Amines | - Aldehydes and ketones | Monday Feb 2\nAssign 4 EAS NAS\nCh 19.2 - 19.6\nSunday Feb 8\nAssign 5 Hetero Ch 19.5",
+              "13.M pgs 46-50 :V (none)*5\n14.W pgs 51-60 :V (5 min)\n15.F pgs Ald & Ket 1-14 : V (35 min)"
+            ],
             "2026-02-09": [
               "M Feb. 9 Term Test 1\n16.W pgs 15-22:V (19 min)*6\n17.F pgs 23-29:V (13 min)"
             ],
+            "2026-02-23": [
+              "Carboxylic acids and derivatives | No Assignment\nCh 22.0 to 22.8",
+              "18.M pgs 1-10:V (24 min)\n19.W pgs 11-18:V (26 min)\n20.F pgs 19-25:V (24-min)*7"
+            ],
+            "2026-03-02": [
+              "Carboxylic acids and derivatives | Monday March 2\nAssign 6 Carboxylic\nCh 22.0-22.8\nDrawing Q Aldehyde Ch 20",
+              "21.M pgs 26-28:V (none)\n22.W pgs 28-33:V (14 min)\n23.F pgs 34-37:V (none)*8"
+            ],
             "2026-03-11": [
               "24 pgs 1-8:V (35 min)\nWed March 11 Term test 2\n25.F pgs 9 -16:V (17 min)*9"
+            ],
+            "2026-03-16": [
+              "Condensations and Alpha Substitutions of Carbonyl Compounds | Monday March 16\nAssign 8 Condensation I\nCh 23.1 - 23.2",
+              "26.M pgs 16-23:V (8 min)\n27.W pgs 24-28:V (7 min)*10\n28.F pgs 29-32:V (4 min)"
+            ],
+            "2026-03-23": [
+              "- Condensation | - Amines | - Infrared (IR) | Monday March 23\nAssign 9 Condensation II\nCh 23.3 - 23.4",
+              "29.M pgs 33-35:V (6 min)\n30.W Amines pg 1-9 *11\n31.F IR pgs 1-17:V (40 min)"
+            ],
+            "2026-03-30": [
+              "NMR spectroscopy | Monday, April 6 - last day of classes | Monday April 6\nAssign 10 IR NMR\nCH 14.1-14.5,\nCh 15.1 - 15.3 and 15.5",
+              "32.M NMR 1-14 : V (30 min)\n33.W pgs 15-27 : V (23 min)\nF. Good Friday. No class\n34.M pgs 28–36 : V (none)"
             ],
             "2026-02-16": [
               "Excluded: Reading week"
@@ -1002,7 +1316,91 @@
             "sectionId": "tentative_class_plan",
             "sectionTitle": "Tentative Class Plan",
             "sourceKind": "table",
+            "snippet": "Week 1 Jan 5 | Introduction Conjugated p systems | 1.M pgs 1-3:V (16 min) 2.W pgs 4-12:V (17 min)*1 3.F pgs 13-25:V (14 min) | Ch 17 .1 - 17.5, and 17.8 |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 1 Jan 5 | Introduction Conjugated p systems | 1.M pgs 1-3:V (16 min) 2.W pgs 4-12:V (17 min)*1 3.F pgs 13-25:V (14 min) | Ch 17 .1 - 17.5, and 17.8 |"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 2 Jan 12 | Aromaticity | 4.M pgs 1-11:V (35 min) 5,W pgs 11-12:V (10 min)*2 6.F pgs 13 – 15:V (4 min) | CH 18. All sections. | Monday. Jan. 12 Assign 1 Conj. Ch 17 .1 to 17.5, and 17.8"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 2 Jan 12 | Aromaticity | 4.M pgs 1-11:V (35 min) 5,W pgs 11-12:V (10 min)*2 6.F pgs 13 – 15:V (4 min) | CH 18. All sections. | Monday. Jan. 12 Assign 1 Conj. Ch 17 .1 to 17.5, and 17.8"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 3 Jan 19 | Reaction of Aromatic compounds | 7.M pgs 1-1-9:V (22 min) 8.W pgs 9-12:V (3 min)*3 9.F pgs 13-23:V (35 min) | Ch 19.0 - 19.1 | Monday. Jan. 19 Assign 2 Aromaticity CH 18. All sections."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 3 Jan 19 | Reaction of Aromatic compounds | 7.M pgs 1-1-9:V (22 min) 8.W pgs 9-12:V (3 min)*3 9.F pgs 13-23:V (35 min) | Ch 19.0 - 19.1 | Monday. Jan. 19 Assign 2 Aromaticity CH 18. All sections."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 4 Jan 26 | Reaction of Aromatic compounds - Amines | 10.M pgs 24-3:V (23 min) 11.W pgs 32-40:V(27 min)*4 12.F pgs 41-45 :V (10 min) | Ch 19.2 - 19.4 Ch 19.6 Ch 21.4.5 - 21.4.6 | Monday Jan 26 Assign 3 EAS Ch 19.1"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 4 Jan 26 | Reaction of Aromatic compounds - Amines | 10.M pgs 24-3:V (23 min) 11.W pgs 32-40:V(27 min)*4 12.F pgs 41-45 :V (10 min) | Ch 19.2 - 19.4 Ch 19.6 Ch 21.4.5 - 21.4.6 | Monday Jan 26 Assign 3 EAS Ch 19.1"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 | - Reaction of Aromatic compounds - Amines - Aldehydes and ketones | 13.M pgs 46-50 :V (none)*5 14.W pgs 51-60 :V (5 min) 15.F pgs Ald & Ket 1-14 : V (35 min) | Ch 19.1- 19.4-19.6 Ch 19.5 CH 20.1 – 20.4...."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 Feb 2 | - Reaction of Aromatic compounds - Amines - Aldehydes and ketones | 13.M pgs 46-50 :V (none)*5 14.W pgs 51-60 :V (5 min) 15.F pgs Ald & Ket 1-14 : V (35 min) | Ch 19.1- 19.4-19.6 Ch 19.5 CH 20.1 – 20.4...."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
             "snippet": "Week 6 Feb 9 | Term Test 1 During class Aldehydes and ketones | M Feb. 9 Term Test 1 16.W pgs 15-22:V (19 min)*6 17.F pgs 23-29:V (13 min) | Ch 20.4.5 – 20.4.8 (Omit sections 20.4.9 and 20.4.10) | No Assignment"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 7 Feb 23 | Carboxylic acids and derivatives | 18.M pgs 1-10:V (24 min) 19.W pgs 11-18:V (26 min) 20.F pgs 19-25:V (24-min)*7 | Ch 22.0 - 22.8 | No Assignment Ch 22.0 to 22.8"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 7 Feb 23 | Carboxylic acids and derivatives | 18.M pgs 1-10:V (24 min) 19.W pgs 11-18:V (26 min) 20.F pgs 19-25:V (24-min)*7 | Ch 22.0 - 22.8 | No Assignment Ch 22.0 to 22.8"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 8 March 2 | Carboxylic acids and derivatives | 21.M pgs 26-28:V (none) 22.W pgs 28-33:V (14 min) 23.F pgs 34-37:V (none)*8 | Ch 22.9 - 22.16 (Omit sec. 22.17) | Monday March 2 Assign 6 Carboxylic Ch 22.0-22.8 Dra..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 8 March 2 | Carboxylic acids and derivatives | 21.M pgs 26-28:V (none) 22.W pgs 28-33:V (14 min) 23.F pgs 34-37:V (none)*8 | Ch 22.9 - 22.16 (Omit sec. 22.17) | Monday March 2 Assign 6 Carboxylic Ch 22.0-22.8 Dra..."
           },
           {
             "sectionId": "tentative_class_plan",
@@ -1014,7 +1412,163 @@
             "sectionId": "tentative_class_plan",
             "sectionTitle": "Tentative Class Plan",
             "sourceKind": "table",
+            "snippet": "Week 10 March 16 | Condensations and Alpha Substitutions of Carbonyl Compounds | 26.M pgs 16-23:V (8 min) 27.W pgs 24-28:V (7 min)*10 28.F pgs 29-32:V (4 min) | Ch 23.3 - 23.4 | Monday March 16 Assign 8 Condensation I..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 10 March 16 | Condensations and Alpha Substitutions of Carbonyl Compounds | 26.M pgs 16-23:V (8 min) 27.W pgs 24-28:V (7 min)*10 28.F pgs 29-32:V (4 min) | Ch 23.3 - 23.4 | Monday March 16 Assign 8 Condensation I..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 11 March 23 | - Condensation - Amines - Infrared (IR) | 29.M pgs 33-35:V (6 min) 30.W Amines pg 1-9 *11 31.F IR pgs 1-17:V (40 min) | Ch 23.5 Ch 21 All sections CH 14.1-14.5 | Monday March 23 Assign 9 Condensatio..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 11 March 23 | - Condensation - Amines - Infrared (IR) | 29.M pgs 33-35:V (6 min) 30.W Amines pg 1-9 *11 31.F IR pgs 1-17:V (40 min) | Ch 23.5 Ch 21 All sections CH 14.1-14.5 | Monday March 23 Assign 9 Condensatio..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 12 March 30 | NMR spectroscopy Monday, April 6 - last day of classes | 32.M NMR 1-14 : V (30 min) 33.W pgs 15-27 : V (23 min) F. Good Friday. No class 34.M pgs 28–36 : V (none) | Ch 15.1 - 15.3 and 15.5 (Omit 15...."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 12 March 30 | NMR spectroscopy Monday, April 6 - last day of classes | 32.M NMR 1-14 : V (30 min) 33.W pgs 15-27 : V (23 min) F. Good Friday. No class 34.M pgs 28–36 : V (none) | Ch 15.1 - 15.3 and 15.5 (Omit 15...."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
             "snippet": "Feb 16 | Reading week | | |"
+          }
+        ]
+      },
+      {
+        "id": "1i4sgox",
+        "label": "Office Hours with Steven Forsey",
+        "title": "CHEM 267 Office Hours @ C2-391",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-391",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:20",
+          "endTime": "16:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours MWF 2:20 to 4:00pm"
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "MWF 2:20 to 4:00pm"
+          }
+        ]
+      },
+      {
+        "id": "y8bmjh",
+        "label": "Office Hours with Steven Forsey",
+        "title": "CHEM 267 Office Hours @ C2-391",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-391",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:20",
+          "endTime": "16:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours MWF 2:20 to 4:00pm"
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "MWF 2:20 to 4:00pm"
+          }
+        ]
+      },
+      {
+        "id": "qfwmml",
+        "label": "Office Hours with Steven Forsey",
+        "title": "CHEM 267 Office Hours @ C2-391",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-391",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:20",
+          "endTime": "16:00",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours MWF 2:20 to 4:00pm"
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "MWF 2:20 to 4:00pm"
           }
         ]
       }
@@ -1171,7 +1725,8 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Lab": 2
+      "Lab": 2,
+      "Office Hours": 4
     },
     "events": [
       {
@@ -1291,6 +1846,140 @@
             "snippet": "CHEM 125L 002 [LAB] Thursdays - Thursdays Jan 15, Jan 29, Feb 12, Mar 5, Mar 19, Apr 2 02:30PM - 05:20PM STC 4019 Sue Stathopulos sckramer@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "156ybzq",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "cu06i1",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "1qw190q",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "178j5fi",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start (9:30 – 10:30 ..."
+          }
+        ]
       }
     ]
   },
@@ -1326,7 +2015,8 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Lab": 2
+      "Lab": 2,
+      "Office Hours": 4
     },
     "events": [
       {
@@ -1444,6 +2134,140 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "CHEM 125L 002 [LAB] Thursdays - Thursdays Jan 15, Jan 29, Feb 12, Mar 5, Mar 19, Apr 2 02:30PM - 05:20PM STC 4019 Sue Stathopulos sckramer@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "vp9rus",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "1khtrnv",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "jnw78g",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "no26eg",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 125L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-08",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:30 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start (9:30 – 10:30 ..."
           }
         ]
       }
@@ -1766,62 +2590,10 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 3,
+      "Assessments": 1,
       "Lab": 1
     },
     "events": [
-      {
-        "id": "p3o0zk",
-        "label": "Final Test (Last Day of Lab)",
-        "title": "CHEM 233L Final Test (Last Day of Lab)",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": false,
-        "reviewNeeded": true,
-        "confidence": "low",
-        "notes": [
-          "Weight: 20%"
-        ],
-        "timing": {
-          "kind": "single",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "Final Test (last day of lab) | Last day of Lab | In-person | 20 %"
-          }
-        ]
-      },
-      {
-        "id": "tejnbj",
-        "label": "Lab Performance (Daily) Pre-Lab Assignments",
-        "title": "CHEM 233L Lab Performance (Daily) Pre-Lab Assignments",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": false,
-        "reviewNeeded": true,
-        "confidence": "low",
-        "notes": [
-          "Weight: 12%"
-        ],
-        "timing": {
-          "kind": "single",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "Lab performance (daily) Pre-Lab Assignments | Monday weekly at 12 pm (noon) | In-person, LEARN quiz | 12 %"
-          }
-        ]
-      },
       {
         "id": "hi2odp",
         "label": "Pre-Lab Quizzes",
@@ -1915,6 +2687,7 @@
     "countsByGroup": {
       "Assessments": 3,
       "Lecture": 1,
+      "Office Hours": 3,
       "Tutorial": 1
     },
     "events": [
@@ -2066,6 +2839,108 @@
         ]
       },
       {
+        "id": "addbwk",
+        "label": "Office Hours with Evgeniy Panzhinskiy",
+        "title": "CHEM 233 Office Hours @ C2-389",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-389",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "12:30",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email."
+          }
+        ]
+      },
+      {
+        "id": "73wrv0",
+        "label": "Office Hours with Evgeniy Panzhinskiy",
+        "title": "CHEM 233 Office Hours @ C2-389",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-389",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "12:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email."
+          }
+        ]
+      },
+      {
+        "id": "1qmgoz8",
+        "label": "Office Hours with Evgeniy Panzhinskiy",
+        "title": "CHEM 233 Office Hours @ C2-389",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-389",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "12:30",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email."
+          }
+        ]
+      },
+      {
         "id": "1w5qgq",
         "label": "Tutorial TUT 101",
         "title": "CHEM 233 (TUT)",
@@ -2119,8 +2994,9 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 5,
-      "Lecture": 1
+      "Assessments": 3,
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -2152,8 +3028,8 @@
       },
       {
         "id": "ippgdv",
-        "label": "Term Test",
-        "title": "CHEM 120 Term Test",
+        "label": "Test",
+        "title": "CHEM 120 Test",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -2161,7 +3037,9 @@
         "reviewNeeded": false,
         "confidence": "high",
         "notes": [
-          "Term Test 1: February 5, in class"
+          "Term Test 1: February 5, in class",
+          "Test 1: Thursday, February 5 — 20% of the course grade.",
+          "Weight: 20%"
         ],
         "timing": {
           "kind": "single",
@@ -2176,58 +3054,7 @@
             "sectionTitle": "Tentative Class Plan",
             "sourceKind": "prose",
             "snippet": "Term Test 1: February 5, in class"
-          }
-        ]
-      },
-      {
-        "id": "1rvkc4g",
-        "label": "Term Test",
-        "title": "CHEM 120 Term Test",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "high",
-        "notes": [
-          "Term Test 2: March 12, in class"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-03-12",
-          "startTime": "10:00",
-          "endTime": "11:20",
-          "allDay": false
-        },
-        "provenance": [
-          {
-            "sectionId": "tentative_class_plan",
-            "sectionTitle": "Tentative Class Plan",
-            "sourceKind": "prose",
-            "snippet": "Term Test 2: March 12, in class"
-          }
-        ]
-      },
-      {
-        "id": "1i2ew78",
-        "label": "Test",
-        "title": "CHEM 120 Test",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Test 1: Thursday, February 5 — 20% of the course grade.",
-          "Weight: 20%"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-05",
-          "allDay": true
-        },
-        "provenance": [
+          },
           {
             "sectionId": "assessments_amp_activities",
             "sectionTitle": "Assessments & Activities",
@@ -2243,7 +3070,7 @@
         ]
       },
       {
-        "id": "1n926or",
+        "id": "1rvkc4g",
         "label": "Test",
         "title": "CHEM 120 Test",
         "eventType": "Assessment",
@@ -2251,17 +3078,26 @@
         "location": "",
         "include": true,
         "reviewNeeded": false,
-        "confidence": "medium",
+        "confidence": "high",
         "notes": [
+          "Term Test 2: March 12, in class",
           "Test 2: Thursday, March 12 — 20% of the course grade.",
           "Weight: 20%"
         ],
         "timing": {
           "kind": "single",
           "date": "2026-03-12",
-          "allDay": true
+          "startTime": "10:00",
+          "endTime": "11:20",
+          "allDay": false
         },
         "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "Term Test 2: March 12, in class"
+          },
           {
             "sectionId": "assessments_amp_activities",
             "sectionTitle": "Assessments & Activities",
@@ -2311,6 +3147,86 @@
             "snippet": "CHEM 120 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 10:00AM - 11:20AM DC 1350 Bill Power bill.power@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "8pnd7r",
+        "label": "Office Hours with Bill Power",
+        "title": "CHEM 120 Office Hours @ C2 272",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2 272",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours will be held each Tuesday and Wednesday from 4-5 PM, in a hybrid manner, in my office, C2 272, and online via TEAM S. In picking this time slot, I have tried to find one where most of you do not have a sc..."
+          }
+        ]
+      },
+      {
+        "id": "gddo06",
+        "label": "Office Hours with Bill Power",
+        "title": "CHEM 120 Office Hours @ C2 272",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2 272",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "16:00",
+          "endTime": "17:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours will be held each Tuesday and Wednesday from 4-5 PM, in a hybrid manner, in my office, C2 272, and online via TEAM S. In picking this time slot, I have tried to find one where most of you do not have a sc..."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "- in person and via Teams: During designated virtual or in-person drop-in sessions, instructors or teaching assistants will be available to answer questions and provide clarification on course material. Session detail..."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tuesday and Wednesday from 4-5 PM, in a hybrid manner, in my office, C2 272, and online via TEAM S. In picking this time slot, I have tried to find one where most of you do not have a scheduled class. If this time is ..."
+          }
+        ]
       }
     ]
   },
@@ -2358,7 +3274,8 @@
     "countsByGroup": {
       "Assessments": 2,
       "Assignments": 2,
-      "Lecture": 3
+      "Lecture": 3,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -2686,6 +3603,70 @@
             "snippet": "February 16 – 20 READING WEEK (no classes, study hall, or office hours)"
           }
         ]
+      },
+      {
+        "id": "1bbfpdi",
+        "label": "Office Hours with s. The Course Coordinator",
+        "title": "CHEM 123 Office Hours @ CHEM 123",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "CHEM 123",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "17:30",
+          "endTime": "18:45",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "are posted on the course LEARN site. CHEM 123 Teaching Assistants are available during First Year Study Hall Hours (most Tuesdays and Thursdays, 5:30 PM - 6:45 PM). Further details are posted on the CHEM 123 LEARN site."
+          }
+        ]
+      },
+      {
+        "id": "1vsbxhv",
+        "label": "Office Hours with s. The Course Coordinator",
+        "title": "CHEM 123 Office Hours @ CHEM 123",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "CHEM 123",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "17:30",
+          "endTime": "18:45",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "are posted on the course LEARN site. CHEM 123 Teaching Assistants are available during First Year Study Hall Hours (most Tuesdays and Thursdays, 5:30 PM - 6:45 PM). Further details are posted on the CHEM 123 LEARN site."
+          }
+        ]
       }
     ]
   },
@@ -2808,7 +3789,8 @@
       }
     ],
     "countsByGroup": {
-      "Lab": 10
+      "Lab": 10,
+      "Office Hours": 4
     },
     "events": [
       {
@@ -3270,6 +4252,140 @@
             "snippet": "CHEM 123L 010 [LAB] Thursdays - Thursdays Jan 15, Jan 29, Feb 12, Mar 5, Mar 19, Apr 2 10:00AM - 12:50PM STC 4019 Sue Stathopulos sckramer@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "x7dl6h",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 123L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:00 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "ppipya",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 123L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:00 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "f7kum9",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 123L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:00 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          }
+        ]
+      },
+      {
+        "id": "1cobd1",
+        "label": "Office Hours with Sue Stathopulos",
+        "title": "CHEM 123L Office Hours @ STC-4019C",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "STC-4019C",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-02",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Office hours : My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:00 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start..."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "My door is open and I welcome questions, comments and visits Monday – Thursday, between 9:00 AM – 5:00 PM. Unless you have an urgent need, avoid the busiest lab times: ½ hour before and after labs start (9:30 – 10:30 ..."
+          }
+        ]
       }
     ]
   },
@@ -3395,7 +4511,7 @@
     "countsByGroup": {
       "Assessments": 1,
       "Lecture": 1,
-      "Office Hours": 1
+      "Office Hours": 2
     },
     "events": [
       {
@@ -3458,8 +4574,8 @@
         ]
       },
       {
-        "id": "ef3ev4",
-        "label": "Office Hours with Dr. Yangju Lin;",
+        "id": "5byl4r",
+        "label": "Office Hours with Dr. Yangju Lin",
         "title": "CHEM 370 Office Hours @ C2-165",
         "eventType": "OfficeHours",
         "eventGroup": "Office Hours",
@@ -3487,7 +4603,41 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office hour: Wednesday 2:30 – 3:30 pm, C2-165"
+            "snippet": "Wednesday 2:30 – 3:30 PM, C2-165 Email: yangju.lin@uwaterloo.ca ; ldiloreto@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "4e2waz",
+        "label": "Office Hours with Lauren Di Loreto",
+        "title": "CHEM 370 Office Hours @ C2-165",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-165",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:30",
+          "endTime": "15:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Wednesday 2:30 – 3:30 PM, C2-165"
           }
         ]
       }
@@ -4026,6 +5176,7 @@
     "countsByGroup": {
       "Assessments": 3,
       "Lecture": 2,
+      "Office Hours": 3,
       "Tutorial": 2
     },
     "events": [
@@ -4211,6 +5362,126 @@
         ]
       },
       {
+        "id": "6gwrsu",
+        "label": "Office Hours with Evgeniy Panzhinskiy",
+        "title": "CHEM 237 Office Hours @ C2-389",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-389",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "12:30",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email. Teaching Assistants: Iain McDonald ( mhmcdon@uwaterloo.ca ) Urszula Mastej ( umastej@uwaterloo.ca )"
+          }
+        ]
+      },
+      {
+        "id": "2su9i",
+        "label": "Office Hours with Evgeniy Panzhinskiy",
+        "title": "CHEM 237 Office Hours @ C2-389",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-389",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "12:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email. Teaching Assistants: Iain McDonald ( mhmcdon@uwaterloo.ca ) Urszula Mastej ( umastej@uwaterloo.ca )"
+          }
+        ]
+      },
+      {
+        "id": "195j882",
+        "label": "Office Hours with Evgeniy Panzhinskiy",
+        "title": "CHEM 237 Office Hours @ C2-389",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-389",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "12:30",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email."
+          },
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "10:30 - 12:30 MWF and by appointment at other times. Please email. Teaching Assistants: Iain McDonald ( mhmcdon@uwaterloo.ca ) Urszula Mastej ( umastej@uwaterloo.ca )"
+          }
+        ]
+      },
+      {
         "id": "41r6qw",
         "label": "Tutorial TUT 101",
         "title": "CHEM 237 (TUT)",
@@ -4355,9 +5626,36 @@
       }
     ],
     "countsByGroup": {
+      "Assessments": 1,
       "Assignments": 7
     },
     "events": [
+      {
+        "id": "vntgya",
+        "label": "Practice Exercise Quizzes",
+        "title": "CHEM 340 Practice Exercise Quizzes",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Practice Exercise Quizzes | Refer to the CHEM 340 Course Schedule. | LEARN | 10%"
+          }
+        ]
+      },
       {
         "id": "15ag631",
         "label": "Chem 340 Check-in Session",
@@ -4558,13 +5856,14 @@
     ],
     "countsByGroup": {
       "Assessments": 2,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
         "id": "fxo9hd",
-        "label": "Term Test",
-        "title": "CHEM 313 Term Test",
+        "label": "Midterm #1",
+        "title": "CHEM 313 Midterm #1",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -4592,8 +5891,8 @@
       },
       {
         "id": "6zvd5s",
-        "label": "Term Test",
-        "title": "CHEM 313 Term Test",
+        "label": "Midterm #2",
+        "title": "CHEM 313 Midterm #2",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -4655,6 +5954,40 @@
             "snippet": "CHEM 313 001 [LEC] Monday, Wednesday, Friday - Mon, Wed, Fri Jan 5 - Apr 6 09:30AM - 10:20AM AL 105 Rodney Smith rodsmith@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "uqmqxk",
+        "label": "Office Hours with Rodney Smith",
+        "title": "CHEM 313 Office Hours @ C2 365",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2 365",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "15:00",
+          "endTime": "16:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Mondays 3:00-4:00 PM"
+          }
+        ]
       }
     ]
   },
@@ -4678,7 +6011,7 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 1,
+      "Assessments": 2,
       "Lecture": 1
     },
     "events": [
@@ -4706,6 +6039,32 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "midterms | TBD | in class, in person | 40%"
+          }
+        ]
+      },
+      {
+        "id": "70jsw4",
+        "label": "Quizzes (10)",
+        "title": "CHEM 383 Quizzes (10)",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 10% (each worth 1 %)"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "quizzes (10) | each Monday during class , 10-15 min | in class, in person | 10% (each worth 1 %)"
           }
         ]
       },
@@ -4776,7 +6135,7 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 1,
+      "Assessments": 2,
       "Lecture": 1,
       "Tutorial": 1
     },
@@ -4805,6 +6164,32 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "prose",
             "snippet": "Midterm examination will be held on February 26 during regularly scheduled hours. Final examination will be scheduled by the Registrar’s Office."
+          }
+        ]
+      },
+      {
+        "id": "1vh595g",
+        "label": "Tutorial Quizzes",
+        "title": "CHEM 221 Tutorial Quizzes",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 11 % (11 x 1%)"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Tutorial quizzes | 11 % (11 x 1%)"
           }
         ]
       },
@@ -4895,9 +6280,62 @@
       }
     ],
     "countsByGroup": {
+      "Assessments": 2,
       "Lecture": 1
     },
     "events": [
+      {
+        "id": "103f8j3",
+        "label": "Term Tests (2 Total, Drop Lowest)",
+        "title": "CHEM 265 Term Tests (2 Total, Drop Lowest)",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 30%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Term Tests (2 total, drop lowest) | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1t17tsz",
+        "label": "Term Tests (3 Total)",
+        "title": "CHEM 265 Term Tests (3 Total)",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 45%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Term Tests (3 total) | 45%"
+          }
+        ]
+      },
       {
         "id": "blh3on",
         "label": "Lecture LEC 001",
@@ -4954,13 +6392,14 @@
     ],
     "countsByGroup": {
       "Assessments": 3,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 3
     },
     "events": [
       {
         "id": "1vbpah7",
-        "label": "Term Test #1",
-        "title": "CHEM 360 Term Test #1",
+        "label": "Midterm #1",
+        "title": "CHEM 360 Midterm #1",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -4988,8 +6427,8 @@
       },
       {
         "id": "qunz1n",
-        "label": "Term Test #2",
-        "title": "CHEM 360 Term Test #2",
+        "label": "Midterm #2",
+        "title": "CHEM 360 Midterm #2",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -5017,8 +6456,8 @@
       },
       {
         "id": "1rszzoj",
-        "label": "Term Test #3",
-        "title": "CHEM 360 Term Test #3",
+        "label": "Midterm #3",
+        "title": "CHEM 360 Midterm #3",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -5077,6 +6516,108 @@
             "snippet": "CHEM 360 001 [LEC] Monday, Wednesday, Friday - Mon, Wed, Fri Jan 5 - Apr 6 11:30AM - 12:20PM MC 2038 Eric Fillion efillion@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "19dwpfv",
+        "label": "Office Hours with Eric Fillion",
+        "title": "CHEM 360 Office Hours @ C2-390",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-390",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "11:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "learning_outcomes",
+            "sectionTitle": "Learning Outcomes",
+            "sourceKind": "prose",
+            "snippet": "If you have difficulties with specific concepts, and to facilitate your understanding and learning of course material, I will be available in my office, C2-390, to answer your questions from 10:30-11:20 AM, Monday, We..."
+          }
+        ]
+      },
+      {
+        "id": "1b2pid3",
+        "label": "Office Hours with Eric Fillion",
+        "title": "CHEM 360 Office Hours @ C2-390",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-390",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "11:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "learning_outcomes",
+            "sectionTitle": "Learning Outcomes",
+            "sourceKind": "prose",
+            "snippet": "If you have difficulties with specific concepts, and to facilitate your understanding and learning of course material, I will be available in my office, C2-390, to answer your questions from 10:30-11:20 AM, Monday, We..."
+          }
+        ]
+      },
+      {
+        "id": "1m4x603",
+        "label": "Office Hours with Eric Fillion",
+        "title": "CHEM 360 Office Hours @ C2-390",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-390",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "11:20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "learning_outcomes",
+            "sectionTitle": "Learning Outcomes",
+            "sourceKind": "prose",
+            "snippet": "If you have difficulties with specific concepts, and to facilitate your understanding and learning of course material, I will be available in my office, C2-390, to answer your questions from 10:30-11:20 AM, Monday, We..."
+          }
+        ]
       }
     ]
   },
@@ -5100,7 +6641,7 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 1,
+      "Assessments": 2,
       "Lab": 1
     },
     "events": [
@@ -5127,6 +6668,32 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "Practical Lab Exam | 10%"
+          }
+        ]
+      },
+      {
+        "id": "fuz4b5",
+        "label": "Preliminary Lab Quizzes",
+        "title": "CHEM 265L Preliminary Lab Quizzes",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 5%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Preliminary Lab Quizzes | 5%"
           }
         ]
       },
@@ -5195,9 +6762,37 @@
       }
     ],
     "countsByGroup": {
-      "Lab": 2
+      "Assessments": 1,
+      "Lab": 2,
+      "Office Hours": 4
     },
     "events": [
+      {
+        "id": "1i9l6x8",
+        "label": "Pre-Laboratory Quizzes",
+        "title": "CHEM 262L Pre-Laboratory Quizzes",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 10%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Pre-laboratory Quizzes | 10%"
+          }
+        ]
+      },
       {
         "id": "17sz0x6",
         "label": "Lab LAB 001",
@@ -5288,6 +6883,142 @@
             "snippet": "CHEM 262L 002 [LAB] Fridays - Fridays Jan 16, Jan 30, Feb 13, Mar 6, Mar 20, Mar 27 08:30AM - 11:20AM ESC 104 Leanne Racicot leanne.racicot@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "b1eple",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 262L Office Hours @ ESC-104",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-104",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-09",
+          "endDate": "2026-03-27",
+          "startTime": "15:00",
+          "endTime": "17:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
+      },
+      {
+        "id": "ledns1",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 262L Office Hours @ ESC-104",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-104",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-09",
+          "endDate": "2026-03-27",
+          "startTime": "15:00",
+          "endTime": "17:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
+      },
+      {
+        "id": "yam4as",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 262L Office Hours @ ESC-102A",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-102A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-09",
+          "endDate": "2026-03-27",
+          "startTime": "13:00",
+          "endTime": "15:00",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
+      },
+      {
+        "id": "17ewo1m",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 262L Office Hours @ ESC-104",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-104",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-09",
+          "endDate": "2026-03-27",
+          "startTime": "09:00",
+          "endTime": "11:00",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
       }
     ]
   },
@@ -5322,9 +7053,37 @@
       }
     ],
     "countsByGroup": {
-      "Lab": 2
+      "Assessments": 1,
+      "Lab": 2,
+      "Office Hours": 4
     },
     "events": [
+      {
+        "id": "13nxdeu",
+        "label": "Pre-Laboratory Quizzes",
+        "title": "CHEM 267L Pre-Laboratory Quizzes",
+        "eventType": "Assessment",
+        "eventGroup": "Assessments",
+        "location": "",
+        "include": false,
+        "reviewNeeded": true,
+        "confidence": "low",
+        "notes": [
+          "Weight: 12%"
+        ],
+        "timing": {
+          "kind": "single",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "Pre-laboratory Quizzes | 12"
+          }
+        ]
+      },
       {
         "id": "w0dx6t",
         "label": "Lab LAB 003",
@@ -5416,6 +7175,142 @@
             "snippet": "CHEM 267L 004 [LAB] Wednesdays - Wednesdays Jan 14, Jan 28, Feb 11, Mar 4, Mar 18, Apr 1 02:30PM - 05:20PM ESC 104 Leanne Racicot leanne.racicot@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "dl29t4",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 267L Office Hours @ ESC-104",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-104",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-13",
+          "endDate": "2026-04-01",
+          "startTime": "15:00",
+          "endTime": "17:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
+      },
+      {
+        "id": "qutm0r",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 267L Office Hours @ ESC-104",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-104",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-13",
+          "endDate": "2026-04-01",
+          "startTime": "15:00",
+          "endTime": "17:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
+      },
+      {
+        "id": "qaewha",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 267L Office Hours @ ESC-102A",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-102A",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-13",
+          "endDate": "2026-04-01",
+          "startTime": "13:00",
+          "endTime": "15:00",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
+      },
+      {
+        "id": "13ciftk",
+        "label": "Office Hours with Leanne Racicot",
+        "title": "CHEM 267L Office Hours @ ESC-104",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC-104",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-13",
+          "endDate": "2026-04-01",
+          "startTime": "09:00",
+          "endTime": "11:00",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Tue/Wed 3–5 PM in ESC-104, Thu 1–3 PM in ESC-102A and Fri 9–11 AM in ESC-104."
+          }
+        ]
       }
     ]
   },
@@ -5450,42 +7345,16 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 3,
+      "Assessments": 2,
       "Lecture": 2,
+      "Office Hours": 3,
       "Tutorial": 1
     },
     "events": [
       {
-        "id": "1ogr1gh",
-        "label": "Final Cumulative Examination",
-        "title": "CHEM 262 Final Cumulative Examination",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": false,
-        "reviewNeeded": true,
-        "confidence": "low",
-        "notes": [
-          "Weight: 50%",
-          "Date unresolved in outline: The Registrar will schedule the Final Cumulative Examination"
-        ],
-        "timing": {
-          "kind": "single",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "Final Cumulative Examination | The Registrar will schedule the Final Cumulative Examination | In-person | 50%"
-          }
-        ]
-      },
-      {
         "id": "b5tuve",
-        "label": "Term Test #1",
-        "title": "CHEM 262 Term Test #1",
+        "label": "Midterm #1",
+        "title": "CHEM 262 Midterm #1",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -5513,8 +7382,8 @@
       },
       {
         "id": "ievyv8",
-        "label": "Term Test #2",
-        "title": "CHEM 262 Term Test #2",
+        "label": "Midterm #2",
+        "title": "CHEM 262 Midterm #2",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -5601,6 +7470,108 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "Thursdays - Thursdays Jan 5 - Apr 6 10:30AM - 11:20AM RCH 309"
+          }
+        ]
+      },
+      {
+        "id": "l82a9r",
+        "label": "Office Hours with Eric Fillion",
+        "title": "CHEM 262 Office Hours @ C2-390",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-390",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "11:20",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "learning_outcomes",
+            "sectionTitle": "Learning Outcomes",
+            "sourceKind": "prose",
+            "snippet": "If you have difficulties with specific concepts, and to facilitate your understanding and learning of course material, I will be available in my office, C2-390, to answer your questions from 10:30-11:20 AM, Monday, We..."
+          }
+        ]
+      },
+      {
+        "id": "3zuzvf",
+        "label": "Office Hours with Eric Fillion",
+        "title": "CHEM 262 Office Hours @ C2-390",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-390",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "11:20",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "learning_outcomes",
+            "sectionTitle": "Learning Outcomes",
+            "sourceKind": "prose",
+            "snippet": "If you have difficulties with specific concepts, and to facilitate your understanding and learning of course material, I will be available in my office, C2-390, to answer your questions from 10:30-11:20 AM, Monday, We..."
+          }
+        ]
+      },
+      {
+        "id": "12d9zjj",
+        "label": "Office Hours with Eric Fillion",
+        "title": "CHEM 262 Office Hours @ C2-390",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2-390",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "11:20",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "learning_outcomes",
+            "sectionTitle": "Learning Outcomes",
+            "sourceKind": "prose",
+            "snippet": "If you have difficulties with specific concepts, and to facilitate your understanding and learning of course material, I will be available in my office, C2-390, to answer your questions from 10:30-11:20 AM, Monday, We..."
           }
         ]
       },
@@ -5723,8 +7694,41 @@
             "2026-02-20"
           ],
           "occurrenceNotes": {
+            "2026-01-05": [
+              "Mon: Lecture 1. Introduction | Wed: Lecture 2. Introduction | Fri: Lecture 3. Introduction In-class group questions #1"
+            ],
+            "2026-01-12": [
+              "Mon: Lecture 4. Safety 2a In-class group questions #2 | Wed: Lecture 5. Safety 2a | Fri: Lecture 6: Assign 1: Process Chemistry"
+            ],
+            "2026-01-19": [
+              "Mon: Lecture 7. Safety 2a | Wed: Lecture 8. Safety 2a In-class group questions #3 | Fri: Lecture 9. Assign 2: Runaway reactions"
+            ],
+            "2026-01-26": [
+              "Mon: Lecture 10. Safety 2b | Wed: Lecture 11 Route Selection 3 In-class group questions #4 | Fri: Lecture 12. Assign 3: Runaway reactions"
+            ],
+            "2026-02-02": [
+              "Mon: Lecture 13. Route Selection 3 | Wed: Lecture 14. Route Selection 3 In-class group questions #5 | Fri: Lecture 15. Assign 4: Green Chemistry."
+            ],
+            "2026-02-09": [
+              "Mon: Lecture 16. Reagent Selection 4 | Wed: Lecture 17 Reagent Selection 4 In-class group questions #6 | Fri: Lecture 18. Assign 5: Green Chemistry"
+            ],
+            "2026-02-23": [
+              "Mon: Lecture 19. Reagent Selection 4 | Wed: Lecture 20 Patents 5 In-class group questions #7 | Fri: Lecture 21. Assign 6: Patents"
+            ],
+            "2026-03-02": [
+              "Mon: Lecture 22. Solvent Selection 6 | Wed: Lecture 23 Solvent Selection 6 In-class group questions #8 | Fri: Lecture 24 Assign 7: Reagent Selection"
+            ],
             "2026-03-09": [
-              "Mon: Lecture 25. Solvent Selection 6 In-class group questions #9\nWed: Lecture 26. Effects of water 7.\nFri: Lecture 27. Assign 8: Process Analytical Technology"
+              "Mon: Lecture 25. Solvent Selection 6 In-class group questions #9 | Wed: Lecture 26. Effects of water 7. | Fri: Lecture 27. Assign 8: Process Analytical Technology"
+            ],
+            "2026-03-16": [
+              "Mon: Lecture 28. In Process Controls 8 | Wed: Lecture 29. Practical Considerations for Scale In-class group questions #10 | Fri: Lecture 30. Assign 9: Reagent/solvent selection"
+            ],
+            "2026-03-23": [
+              "Mon: Lecture 31. Practical Considerations for Scale | Wed: Lecture 32. Workup - continuous | Fri: Lecture 33. Assign 10: Route Selection and Process | Sunday, March 29 th , at 11:59 pm Term Paper due."
+            ],
+            "2026-03-30": [
+              "Mon: Lecture 34. Workup – continuous | Wed: Marking | Fri: Good Friday. | Monday: Marking"
             ],
             "2026-02-16": [
               "Excluded: Reading Week"
@@ -5748,7 +7752,73 @@
             "sectionId": "tentative_class_plan",
             "sectionTitle": "Tentative Class Plan",
             "sourceKind": "table",
+            "snippet": "Week 1 January 5 | Mon: Lecture 1. Introduction Wed: Lecture 2. Introduction Fri: Lecture 3. Introduction In-class group questions #1"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 2 January 12 | Mon: Lecture 4. Safety 2a In-class group questions #2 Wed: Lecture 5. Safety 2a Fri: Lecture 6: Assign 1: Process Chemistry"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 3 January 19 | Mon: Lecture 7. Safety 2a Wed: Lecture 8. Safety 2a In-class group questions #3 Fri: Lecture 9. Assign 2: Runaway reactions"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 4 January 26 | Mon: Lecture 10. Safety 2b Wed: Lecture 11 Route Selection 3 In-class group questions #4 Fri: Lecture 12. Assign 3: Runaway reactions"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 5 February 2 | Mon: Lecture 13. Route Selection 3 Wed: Lecture 14. Route Selection 3 In-class group questions #5 Fri: Lecture 15. Assign 4: Green Chemistry."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 6 February 9 | Mon: Lecture 16. Reagent Selection 4 Wed: Lecture 17 Reagent Selection 4 In-class group questions #6 Fri: Lecture 18. Assign 5: Green Chemistry"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 7 February 23 | Mon: Lecture 19. Reagent Selection 4 Wed: Lecture 20 Patents 5 In-class group questions #7 Fri: Lecture 21. Assign 6: Patents"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 8 March 2 | Mon: Lecture 22. Solvent Selection 6 Wed: Lecture 23 Solvent Selection 6 In-class group questions #8 Fri: Lecture 24 Assign 7: Reagent Selection"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
             "snippet": "Week 9 March 9 | Mon: Lecture 25. Solvent Selection 6 In-class group questions #9 Wed: Lecture 26. Effects of water 7. Fri: Lecture 27. Assign 8: Process Analytical Technology"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 10 March 16 | Mon: Lecture 28. In Process Controls 8 Wed: Lecture 29. Practical Considerations for Scale In-class group questions #10 Fri: Lecture 30. Assign 9: Reagent/solvent selection"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 11 March 23 | Mon: Lecture 31. Practical Considerations for Scale Wed: Lecture 32. Workup - continuous Fri: Lecture 33. Assign 10: Route Selection and Process Sunday, March 29 th , at 11:59 pm Term Paper due."
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "table",
+            "snippet": "Week 12 March 30 | Mon: Lecture 34. Workup – continuous Wed: Marking Fri: Good Friday. Monday: Marking"
           },
           {
             "sectionId": "tentative_class_plan",
@@ -5781,7 +7851,8 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -5844,6 +7915,74 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "CHEM 357 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 11:30AM - 12:50PM EV3 1408 Elizabeth Meiering meiering@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "lzycv4",
+        "label": "Office Hours with Elizabeth",
+        "title": "CHEM 357 Office Hours @ ESC 228",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC 228",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "15:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tues. 2:00-3:00 PM (primarily in person) and TBA (announced in class and LEARN). Held in ESC 228 when primarily in person and in Microsoft Teams. The best way to reach me is by Chat to 'meiering' in Microsoft Teams. Y..."
+          }
+        ]
+      },
+      {
+        "id": "bvgb2u",
+        "label": "Office Hours with Elizabeth (Liz) Meiering",
+        "title": "CHEM 357 Office Hours @ ESC 228",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "ESC 228",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "15:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tues. 2:00-3:00 PM (primarily in person) and TBA (announced in class and LEARN). Held in ESC 228 when primarily in person and in Microsoft Teams. The best way to reach me is by Chat to 'meiering' in Microsoft Teams."
           }
         ]
       }
@@ -6057,7 +8196,7 @@
       }
     ],
     "countsByGroup": {
-      "Assignments": 1
+      "Assignments": 2
     },
     "events": [
       {
@@ -6084,6 +8223,33 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "Interim report | March 21, 2026 (by 4 pm) | Drop box | 15%"
+          }
+        ]
+      },
+      {
+        "id": "15vtodl",
+        "label": "Interim Reports are",
+        "title": "CHEM 494A Interim Reports are @ LEARN Dropbox",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "LEARN Dropbox",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Interim reports are due by March 21, 2026 (4:00 pm)."
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-21",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "prose",
+            "snippet": "Interim reports are due by March 21, 2026 (4:00 pm)."
           }
         ]
       }
@@ -6391,13 +8557,14 @@
     "countsByGroup": {
       "Assessments": 1,
       "Assignments": 3,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
         "id": "z3zry8",
-        "label": "Term Test",
-        "title": "CHEM 400 Term Test",
+        "label": "Midterm",
+        "title": "CHEM 400 Midterm",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "",
@@ -6561,6 +8728,40 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "CHEM 400 001 [LEC] Monday, Wednesday, Friday - Mon, Wed, Fri Jan 5 - Apr 6 01:30PM - 02:20PM RCH 207 Rodney Smith rodsmith@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "qifklk",
+        "label": "Office Hours with Rodney Smith",
+        "title": "CHEM 400 Office Hours @ C2 365",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "C2 365",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:00",
+          "endTime": "12:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Mondays 11:00-12:00 AM"
           }
         ]
       }

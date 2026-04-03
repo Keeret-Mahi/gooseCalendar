@@ -309,7 +309,8 @@
     ],
     "countsByGroup": {
       "Assessments": 2,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -396,6 +397,74 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "PACS 336 / RCS 335 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM CGR 1300 Derek Suderman dsuderman@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1gpkjdx",
+        "label": "Office Hours with Derek Suderman",
+        "title": "PACS 336/RCS 335 Office Hours @ 2126",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "2126",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:30",
+          "endTime": "14:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tues. 1:30-2; 4-5; Thurs. 1:30-2, 4-5; or by appointment Marking Assistant: Tucker Finch, tfinch@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1vu1meg",
+        "label": "Office Hours with Derek Suderman",
+        "title": "PACS 336/RCS 335 Office Hours @ 2126",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "2126",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:30",
+          "endTime": "14:00",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tues. 1:30-2; 4-5; Thurs. 1:30-2, 4-5; or by appointment Marking Assistant: Tucker Finch, tfinch@uwaterloo.ca"
           }
         ]
       }

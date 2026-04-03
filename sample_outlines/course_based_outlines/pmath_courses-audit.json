@@ -44,7 +44,8 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -111,6 +112,70 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "PMATH 950 001 [LEC] Tuesday, Thursday - Tue, Thu Sep 3 - Dec 2 09:30AM - 10:50AM MC 5479 Jesse Peterson jesse.peterson@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "28t2ac",
+        "label": "Office Hours with Jesse Peterson",
+        "title": "PMATH 950 Office Hours @ MC 5439",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5439",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "14:00",
+          "endTime": "15:30",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Mondays 2:00pm-3:30pm, Tuesdays 1:00pm-2:30pm"
+          }
+        ]
+      },
+      {
+        "id": "1cj8px4",
+        "label": "Office Hours with Jesse Peterson",
+        "title": "PMATH 950 Office Hours @ MC 5439",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5439",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "13:00",
+          "endTime": "14:30",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Mondays 2:00pm-3:30pm, Tuesdays 1:00pm-2:30pm"
           }
         ]
       }
@@ -362,7 +427,7 @@
             "sectionId": "instructor_amp_ta_teaching_assistant_information",
             "sectionTitle": "Instructor & TA (Teaching Assistant) Information",
             "sourceKind": "prose",
-            "snippet": "Office Hours: Tue 11:30-1:00 and Fri 1:30-3:00"
+            "snippet": "Tue 11:30-1:00 and Fri 1:30-3:00 All course information (including important announcements) will be posted on the course webpage ."
           }
         ]
       },
@@ -396,7 +461,7 @@
             "sectionId": "instructor_amp_ta_teaching_assistant_information",
             "sectionTitle": "Instructor & TA (Teaching Assistant) Information",
             "sourceKind": "prose",
-            "snippet": "Office Hours: Tue 11:30-1:00 and Fri 1:30-3:00"
+            "snippet": "Tue 11:30-1:00 and Fri 1:30-3:00 All course information (including important announcements) will be posted on the course webpage ."
           }
         ]
       }
@@ -675,7 +740,7 @@
     ],
     "countsByGroup": {
       "Lecture": 1,
-      "Office Hours": 2
+      "Office Hours": 3
     },
     "events": [
       {
@@ -713,6 +778,38 @@
         ]
       },
       {
+        "id": "l4ie45",
+        "label": "Office Hours with Spiro Karigiannis",
+        "title": "PMATH 868 Office Hours @ MC 5326",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5326",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "13:30",
+          "endTime": "14:20",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tue/Thu 1:30pm–2:20pm • Lecture Times: Mon/Wed/Fri 8:30am–9:20am"
+          }
+        ]
+      },
+      {
         "id": "6gmnu6",
         "label": "Office Hours with Spiro Karigiannis",
         "title": "PMATH 868 Office Hours @ MC 5326",
@@ -740,7 +837,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "• Office Hours: Tue/Thu 1:30pm–2:20pm"
+            "snippet": "Tue/Thu 1:30pm–2:20pm • Lecture Times: Mon/Wed/Fri 8:30am–9:20am"
           }
         ]
       },
@@ -772,7 +869,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "• Lecture Times: Mon/Wed/Fri 8:30am–9:20am"
+            "snippet": "Tue/Thu 1:30pm–2:20pm • Lecture Times: Mon/Wed/Fri 8:30am–9:20am"
           }
         ]
       }
@@ -890,7 +987,8 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -958,6 +1056,38 @@
             "snippet": "PMATH 833 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 08:30AM - 09:50AM RCH 209 Kateryna Tatarko ktatarko@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "1ivnw0c",
+        "label": "Office Hours with Kateryna Tatarko",
+        "title": "PMATH 833 Office Hours",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Thursdays, 11:30 AM - 12:30 PM"
+          }
+        ]
       }
     ]
   },
@@ -982,7 +1112,8 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -1055,6 +1186,74 @@
             "snippet": "PMATH 464 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM DWE 1501 Jesse Huang j654huang@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "1qre53p",
+        "label": "Office Hours with Jesse Huang Instructor",
+        "title": "PMATH 464 Office Hours @ MC 5321",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5321",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:30",
+          "endTime": "14:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Instructor: Jesse Huang Instructor email: j654huan@uwaterloo.ca Instructor office: MC5329 Instructor Office Hour: Wednesdays 12:30-2:30 online via Zoom link https://uwaterloo.zoom.us/j/8715285942?pwd=Igebl4okcjeB1lMKS..."
+          }
+        ]
+      },
+      {
+        "id": "1l3yuw0",
+        "label": "Office Hours with Jesse Huang Instructor",
+        "title": "PMATH 464 Office Hours @ MC 5329",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5329",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "15:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Instructor: Jesse Huang Instructor email: j654huan@uwaterloo.ca Instructor office: MC5329 Instructor Office Hour: Wednesdays 12:30-2:30 online via Zoom link https://uwaterloo.zoom.us/j/8715285942?pwd=Igebl4okcjeB1lMKS..."
+          }
+        ]
       }
     ]
   },
@@ -1079,7 +1278,8 @@
     ],
     "countsByGroup": {
       "Assessments": 1,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -1150,6 +1350,74 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "PMATH 764 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 01:00PM - 02:20PM DWE 1501 Jesse Huang j654huang@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1h7cpk2",
+        "label": "Office Hours with Jesse Huang Instructor",
+        "title": "PMATH 764 Office Hours @ MC 5321",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5321",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:30",
+          "endTime": "14:30",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Instructor: Jesse Huang Instructor email: j654huan@uwaterloo.ca Instructor office: MC5329 Instructor Office Hour: Wednesdays 12:30-2:30 online via Zoom link https://uwaterloo.zoom.us/j/8715285942?pwd=Igebl4okcjeB1lMKS..."
+          }
+        ]
+      },
+      {
+        "id": "azyahf",
+        "label": "Office Hours with Jesse Huang Instructor",
+        "title": "PMATH 764 Office Hours @ MC 5329",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5329",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "15:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Instructor: Jesse Huang Instructor email: j654huan@uwaterloo.ca Instructor office: MC5329 Instructor Office Hour: Wednesdays 12:30-2:30 online via Zoom link https://uwaterloo.zoom.us/j/8715285942?pwd=Igebl4okcjeB1lMKS..."
           }
         ]
       }
@@ -1562,7 +1830,8 @@
     ],
     "countsByGroup": {
       "Assignments": 1,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -1622,6 +1891,38 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "PMATH 965 001 [LEC] Monday, Wednesday - Mon, Wed Jan 5 - Apr 6 12:00PM - 01:20PM MC 5479 Elana Kalashnikov e2kalashnikov@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "1yfvmkm",
+        "label": "Office Hours with Elana Kalashnikov",
+        "title": "PMATH 965 Office Hours @ MC 5441",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "MC 5441",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "11:30",
+          "endTime": "12:30",
+          "byDay": [
+            "FR"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "The instructor for the course is Elana Kalashnikov. Feel free to reach out by email. Office hours are Fridays, 11:30am-12:30pm in my office MC 5441, or by appointment."
           }
         ]
       }

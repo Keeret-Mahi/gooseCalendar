@@ -99,6 +99,7 @@ interface OfficeHourSeed {
   location?: string;
   dayCode: WeekdayCode;
   startDate?: string;
+  endDate?: string;
   exDates?: string[];
   startTime?: string;
   endTime?: string;
@@ -136,6 +137,15 @@ const RELEVANT_PROSE_SECTIONS = new Set([
   "course_requirements",
   "evaluation",
   "grading",
+]);
+
+const OFFICE_HOUR_SCHEDULE_SECTION_IDS = new Set([
+  "class_schedule",
+  "tentative_class_plan",
+  "tentative_course_schedule",
+  "course_schedule",
+  "weekly_schedule",
+  "schedule",
 ]);
 
 const WEEKDAY_BY_INDEX: WeekdayCode[] = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
@@ -217,20 +227,38 @@ function normalizeOfficeHourParsingText(value: string | null | undefined) {
     .replace(/\bMc\s+([A-Z])/g, "Mc$1");
 }
 
+function stripOfficeHourContactNoise(value: string | null | undefined) {
+  return normalizeWhitespace(value)
+    .replace(
+      /\*?\s*my preferred contact method is via email\.[\s\S]*?(?=(?:\bstudent(?:\s*\(office\))?\s*hours?\b|\boffice hours?\b|$))/gi,
+      " "
+    )
+    .replace(/\bplease include\b[^.?!]*\bsubject line\b[^.?!]*[.?!]?/gi, " ")
+    .replace(
+      /\b(?:i will try to respond|i will do my best to respond|we check email[^.?!]*?and will make every effort to reply|feel free to re-send your email with a friendly reminder)[^.?!]*(?:24\s*(?:-|–|—|to)\s*48|24|48)\s*hours[^.?!]*[.?!]?/gi,
+      " "
+    )
+    .replace(/\b(?:my\s+)?working hours are\b[^.?!]*[.?!]?/gi, " ")
+    .replace(/\bemails received after\b[^.?!]*[.?!]?/gi, " ")
+    .replace(/\b(?:during )?normal working hours\b[^.?!]*[.?!]?/gi, " ")
+    .replace(/\bmonday to friday\b[^.?!]*(?:reply|respond|email)[^.?!]*[.?!]?/gi, " ");
+}
+
 function officeHourBlockStartRegex() {
-  return /^(?:(?:(?:Prof\.?|Professor|Dr\.?)\s+)?[\p{L}][\p{L}'’.-]*(?:\s+[\p{L}][\p{L}'’.-]*){0,4}'s\s+)?(?:office hours?|office location (?:and|&) hours?|student(?:\s*\(office\))?\s*hours?|open student hours?|my office hours are|drop-in ta office hours)\b/iu;
+  return /^(?:(?:(?:Prof\.?|Professor|Dr\.?)\s+)?[\p{L}][\p{L}'’.-]*(?:\s+[\p{L}][\p{L}'’.-]*){0,4}'s\s+|instructor'?s\s+|teaching assistants?'?\s+|ta\s+)?(?:office hours?|office location (?:and|&) hours?|student(?:\s*\(office\))?\s*hours?|open student hours?|my office hours are|drop-in ta office hours)\b/iu;
 }
 
 function officeHourSectionBoundaryRegex() {
-  return /^(?:instructor|course instructor|lab instructor|lecture instructor|tutorial instructor|lectures?|tutorials?|labs?|teaching assistants?|teaching assistant|lead teaching assistant|lead ta|tas?|instructional support coordinator|instructional support assistant|instructional assistants?|instructional apprentices?|piazza|contact details|technical support|student resources|who and why)\b/i;
+  return /^(?:instructor|course instructor|lab instructor|lecture instructor|tutorial instructor|lectures?|tutorials?|labs?|teaching assistants?|teaching assistant|lead teaching assistant|lead ta|tas?|instructional support coordinator|instructional support assistant|instructional assistants?|instructional apprentices?|name|contacting the instructor|contact details|technical support|student resources|who and why|piazza)\b/i;
 }
 
 function splitOfficeHourAwareLines(text: string) {
   return normalizeOfficeHourParsingText(text)
     .replace(
-      /\s*(Instructor:|Course Instructor:|Teaching Assistants?:|Teaching Assistant:|Lead Teaching Assistant(?:\s*\(TA\))?:|Lead TA:|TA:|Piazza:|Lectures?:|Tutorials?:|Labs?:|Instructional Support Coordinator(?:\s*\(ISC\))?:|Instructional Support Assistant(?:\s*\(ISA\))?:|Instructional Assistants?(?:\s*\(IA\))?:|Instructional Apprentices?(?:\s*\(IA\))?:)/gi,
+      /\s*(Instructor:|Course Instructor:|Teaching Assistants?:|Teaching Assistant:|Lead Teaching Assistant(?:\s*\(TA\))?:|Lead TA:|TA:|Name:|Piazza:|Lectures?:|Tutorials?:|Labs?:|Instructional Support Coordinator(?:\s*\(ISC\))?:|Instructional Support Assistant(?:\s*\(ISA\))?:|Instructional Assistants?(?:\s*\(IA\))?:|Instructional Apprentices?(?:\s*\(IA\))?:)/gi,
       "\n$1"
     )
+    .replace(/\s*(Contacting the Instructor)\b/gi, "\n$1")
     .replace(
       /\s*(((?:Prof\.?|Professor|Dr\.?)\s+)?[\p{L}][\p{L}'’.-]*(?:\s+[\p{L}][\p{L}'’.-]*){0,4}'s office hours?:)/giu,
       "\n$1"
@@ -252,6 +280,42 @@ function htmlToText(element: Element) {
       .replace(/<\/td>/gi, "\n")
       .replace(/<[^>]+>/g, " ")
   );
+}
+
+function htmlSnippetToText(value: string | null | undefined) {
+  return normalizeWhitespace(
+    (value ?? "")
+      .replace(/<(?:s|strike|del)[^>]*>[\s\S]*?<\/(?:s|strike|del)>/gi, " ")
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<\/p>/gi, "\n")
+      .replace(/<\/li>/gi, "\n")
+      .replace(/<li[^>]*>/gi, "\n")
+      .replace(/<\/tr>/gi, "\n")
+      .replace(/<\/td>/gi, "\n")
+      .replace(/<[^>]+>/g, " ")
+  );
+}
+
+function extractInstructionalTeamOfficeHourBlock(section: SectionBlock) {
+  const html = section.elements.map((element) => element.outerHTML).join("\n");
+  if (!html) return undefined;
+
+  const matchedHtml = html.match(
+    /Instructor.?s Office Hours[\s\S]*?(?=Contacting the Instructor|Teaching Assistants|TA(?:.s)?|Course Description|Student Resources|$)/i
+  )?.[0];
+
+  if (!matchedHtml) return undefined;
+
+  const text = normalizeOfficeHourParsingText(
+    htmlSnippetToText(
+      matchedHtml.replace(
+        /<strong[^>]*>\s*Instructor.?s Office Hours\s*<\/strong>/i,
+        "Office Hours\n"
+      )
+    )
+  );
+
+  return text || undefined;
 }
 
 function shortSnippet(value: string) {
@@ -613,6 +677,7 @@ function canonicalizeProseDeliverableLabel(label: string, contextText?: string) 
     [/\bwritten assignment\b/, "Written Assignment"],
     [/\bwritten report\b/, "Written Report"],
     [/\bliterature survey\b/, "Literature Survey"],
+    [/\bthe final\b.*\bpebblepad workbook\b/, "Final Assignment"],
     [/\bjournal prompts?\b|\bmonday journals?\b/, "Journal Prompts"],
     [/\bcritical reflection\b/, "Critical Reflection"],
     [/\bread(?:ing)? responses?\b/, "Reading Response"],
@@ -621,7 +686,6 @@ function canonicalizeProseDeliverableLabel(label: string, contextText?: string) 
     [/\bself-assessment\b/, "Self-Assessment"],
     [/\bpassage analysis\b/, "Passage Analysis"],
     [/\bterm paper\b/, "Term Paper"],
-    [/\bthe final\b.*\bpebblepad workbook\b/, "Final Assignment"],
     [/\bextra credit\b.*\b(?:present|discussion leader|lead discussion)\b/, "Extra Credit Paper Presentation or Discussion"],
     [/\bfive critical concepts project\b/, "Five Critical Concepts Project"],
     [/\bstudent presentations?\b/, "Student Presentation"],
@@ -963,6 +1027,10 @@ function extractDeadlineAnchoredDates(text: string, year: number) {
 
 function assignmentLabelFromText(text: string) {
   const normalized = stripLeadingSchedulePrefix(text);
+  const withoutLeadingDate = normalized.replace(
+    /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)[.,]?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s+\d{1,2}|\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December))[.,]?\s*/i,
+    ""
+  );
   if (
     /\bcfe\b/i.test(normalized) ||
     /\b(?:read assigned texts?|read assigned text|read group members['’] sources|purchase course textbook|complete .* before class|find schedule|join piazza|locate lecture room|log into learn|contact group members)\b/i.test(
@@ -977,8 +1045,9 @@ function assignmentLabelFromText(text: string) {
   }
 
   const assignmentCode =
-    normalized.match(/^\s*A\s*0*(\d+)\b/i)?.[1] ??
-    normalized.match(/^\s*(?:homework|hw)\s*#?\s*0*(\d+)\b/i)?.[1];
+    withoutLeadingDate.match(/^\s*Assign(?:ment)?\s*#?\s*0*(\d+)\b/i)?.[1] ??
+    withoutLeadingDate.match(/^\s*A\s*0*(\d+)\b/i)?.[1] ??
+    withoutLeadingDate.match(/^\s*(?:homework|hw)\s*#?\s*0*(\d+)\b/i)?.[1];
   if (assignmentCode) {
     return `Assignment #${Number(assignmentCode)}`;
   }
@@ -1017,6 +1086,9 @@ function extractProseDeliverableLabel(text: string) {
     )?.[1],
     normalized.match(
       /^(.+?)\s*\((?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}|\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)/i
+    )?.[1],
+    normalized.match(
+      /^(.+?)\s*\(\s*(?:due by|due on|deadline(?:\s+for)?|available as of|opens?(?:\s+on)?|closes?(?:\s+on)?)\b/i
     )?.[1],
   ]
     .map((candidate) =>
@@ -1518,8 +1590,8 @@ function parseTimeRange(value: string | null | undefined) {
   const endClock = parseLooseClock(endRaw);
   const startExplicit = hasMeridiem(startRaw) || (startClock?.hour ?? 0) > 12;
   const endExplicit = hasMeridiem(endRaw) || (endClock?.hour ?? 0) > 12;
-  const directStart = startExplicit ? parseFlexibleTime(startRaw) : undefined;
-  const directEnd = endExplicit ? parseFlexibleTime(endRaw) : undefined;
+  let directStart = startExplicit ? parseFlexibleTime(startRaw) : undefined;
+  let directEnd = endExplicit ? parseFlexibleTime(endRaw) : undefined;
 
   if (!startClock || !endClock) {
     return {
@@ -1559,6 +1631,9 @@ function monthTokenToAbbrev(value: string) {
 }
 
 function parseFlexibleDate(rawValue: string | null | undefined, defaultYear: number) {
+  const weekdayHint = normalizeWhitespace(rawValue).match(
+    /\b(Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)\b/i
+  )?.[1];
   const value = normalizeLooseMonthDaySpacing(
     normalizeWhitespace(rawValue)
       .replace(/,/g, "")
@@ -1600,6 +1675,28 @@ function parseFlexibleDate(rawValue: string | null | undefined, defaultYear: num
         /y/.test(pattern) || parsed.getFullYear() !== defaultYear
           ? parsed
           : new Date(defaultYear, parsed.getMonth(), parsed.getDate());
+      const desiredWeekday = parseWeekdayCodes(weekdayHint)[0];
+      if (desiredWeekday) {
+        const exactWeekday = WEEKDAY_BY_INDEX[getDay(withYear)];
+        if (exactWeekday !== desiredWeekday) {
+          const shiftedBackward = addDays(withYear, -1);
+          if (
+            shiftedBackward.getMonth() === withYear.getMonth() &&
+            WEEKDAY_BY_INDEX[getDay(shiftedBackward)] === desiredWeekday
+          ) {
+            return format(shiftedBackward, "yyyy-MM-dd");
+          }
+
+          const shiftedForward = addDays(withYear, 1);
+          if (
+            shiftedForward.getMonth() === withYear.getMonth() &&
+            WEEKDAY_BY_INDEX[getDay(shiftedForward)] === desiredWeekday
+          ) {
+            return format(shiftedForward, "yyyy-MM-dd");
+          }
+        }
+      }
+
       return format(withYear, "yyyy-MM-dd");
     }
   }
@@ -1816,17 +1913,55 @@ function parseWeekdayCodes(value: string | null | undefined) {
   return unique(dayCodes);
 }
 
+function officeHourDayCodeFromToken(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value)
+    .replace(/[.]/g, "")
+    .replace(/s$/i, "")
+    .toLowerCase();
+
+  if (/^(?:m|mon|monday)$/.test(normalized)) return "MO" as const;
+  if (/^(?:t|tu|tue|tues|tuesday)$/.test(normalized)) return "TU" as const;
+  if (/^(?:w|wed|wednesday)$/.test(normalized)) return "WE" as const;
+  if (/^(?:th|thu|thur|thurs|thursday)$/.test(normalized)) return "TH" as const;
+  if (/^(?:f|fri|friday)$/.test(normalized)) return "FR" as const;
+  if (/^(?:sat|saturday)$/.test(normalized)) return "SA" as const;
+  if (/^(?:sun|sunday)$/.test(normalized)) return "SU" as const;
+  return undefined;
+}
+
 function parseOfficeHourDayCodes(value: string | null | undefined) {
-  const normalized = normalizeWhitespace(value);
+  const normalized = normalizeWhitespace(value)
+    .replace(/\bMWF\b/gi, "Mon Wed Fri")
+    .replace(/\bMW\b/gi, "Mon Wed")
+    .replace(/\bWF\b/gi, "Wed Fri")
+    .replace(/\bTTh\b/gi, "Tue Thu")
+    .replace(/\bTuTh\b/gi, "Tue Thu")
+    .replace(/\bT\/Th\b/gi, "Tue Thu")
+    .replace(/[–—]/g, "-");
   const weekdayOnly = normalized
     .replace(/\b\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/g, " ")
     .replace(/\b\d{1,2}:\d{2}\b/g, " ")
     .replace(/\b(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/g, " ")
     .replace(/\b[A-Z](?:\.?[A-Z0-9]){0,3}\.?(?:-|\s*)\d{3,4}[A-Za-z]?\b/g, " ")
     .replace(/\([^)]*\)/g, " ");
+  const rangeMatch = weekdayOnly.match(
+    /\b(Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F)\b\s*-\s*\b(Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F)\b/i
+  );
+  if (rangeMatch) {
+    const weekdayOrder: WeekdayCode[] = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+    const startCode = officeHourDayCodeFromToken(rangeMatch[1]);
+    const endCode = officeHourDayCodeFromToken(rangeMatch[2]);
+    if (startCode && endCode) {
+      const startIndex = weekdayOrder.indexOf(startCode);
+      const endIndex = weekdayOrder.indexOf(endCode);
+      if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+        return weekdayOrder.slice(startIndex, endIndex + 1);
+      }
+    }
+  }
   const cuesByCode: Array<[WeekdayCode, RegExp]> = [
     ["MO", /\b(?:m|mon(?:day)?s?'?s?)\b/gi],
-    ["TU", /\b(?:tu|tue(?:s(?:day)?)?s?'?s?)\b/gi],
+    ["TU", /\b(?:t(?!h\b)|tu|tue(?:s(?:day)?)?s?'?s?)\b/gi],
     ["WE", /\b(?:w|wed(?:nesday)?s?'?s?)\b/gi],
     ["TH", /\b(?:th|thu(?:r(?:s(?:day)?)?)?s?'?s?)\b/gi],
     ["FR", /\b(?:f|fri(?:day)?s?'?s?)\b/gi],
@@ -1988,6 +2123,21 @@ function structuredOfficeHourTableContext(table: HTMLTableElement) {
     personEmail,
     location,
   };
+}
+
+function splitStructuredOfficeHourCellEntries(value: string | null | undefined) {
+  return normalizeWhitespace(value)
+    .split(/\n+/)
+    .map((entry) => normalizeWhitespace(entry))
+    .map((entry) =>
+      entry.replace(
+        /^(?:course instructor|instructor\(s\)|instructors?|lab instructors?|teaching assistant\(s\)|teaching assistants?|teaching assistant)\s*:?\s*/i,
+        ""
+      )
+    )
+    .map((entry) => entry.replace(/^&nbsp;$/i, "").trim())
+    .filter(Boolean)
+    .filter((entry) => !/^(?:-+|—+|–+)$/.test(entry));
 }
 
 function combineNotes(...noteGroups: Array<string[] | undefined>) {
@@ -2362,7 +2512,7 @@ function officeHoursLineCandidates(text: string) {
     const normalized = normalizeWhitespace(line);
     if (!normalized) return false;
     if (
-      /^(?:Instructor|Course Instructor|Teaching Assistant|Lead Teaching Assistant|Lead TA|TA)\s*:?\s*/i.test(
+      /^(?:Instructor|Course Instructor|Teaching Assistant|Lead Teaching Assistant|Lead TA|TA|Name)\s*:?\s*/i.test(
         normalized
       )
     ) {
@@ -2397,6 +2547,13 @@ function officeHoursLineCandidates(text: string) {
     }
     if (
       /^(?:office|office location|location|email|contact|instructor|course instructor|teaching assistants?|lead teaching assistant|ta|tas|teams?|zoom|online|virtual)\s*:?\b/i.test(
+        normalized
+      )
+    ) {
+      return true;
+    }
+    if (
+      /\b(?:drop-?in|no appointment needed|clarify course content|ask questions?|student questions?)\b/i.test(
         normalized
       )
     ) {
@@ -2460,9 +2617,9 @@ function officeHoursLineCandidates(text: string) {
     .filter(Boolean);
 }
 
-function normalizeOfficeHoursSnippet(line: string) {
+function normalizeOfficeHoursSnippet(line: string | null | undefined) {
   return normalizeOfficeHourParsingText(
-    line
+    (line ?? "")
       .replace(/^.*?\bdrop-in ta office hours\b[:\s-]*/i, "")
       .replace(/^.*?\bopen student hours?\b(?:\s+with\s+[^-:]+)?\s*[-:]\s*/i, "")
       .replace(/^.*?\bmy office hours are\b[:\s]*/i, "")
@@ -2475,6 +2632,18 @@ function normalizeOfficeHoursSnippet(line: string) {
       )
       .replace(/\bnoon\b/gi, "12:00 PM")
       .replace(/\bmidnight\b/gi, "12:00 AM")
+      .replace(
+        /\beach\s+(?=(?:Mon(?:day)?|Tue(?:s(?:day)?)?|Wed(?:nesday)?|Thu(?:r(?:s(?:day)?)?)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?|M|Tu|Th|T|W|F)\b)/gi,
+        ""
+      )
+      .replace(
+        /\btypically\s+on\s+(?=(?:Mon(?:day)?|Tue(?:s(?:day)?)?|Wed(?:nesday)?|Thu(?:r(?:s(?:day)?)?)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?|M|Tu|Th|T|W|F)\b)/gi,
+        ""
+      )
+      .replace(
+        /\bon\s+(?=(?:Mon(?:day)?|Tue(?:s(?:day)?)?|Wed(?:nesday)?|Thu(?:r(?:s(?:day)?)?)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?|M|Tu|Th|T|W|F)\b)/gi,
+        ""
+      )
       .replace(/\bor\s+e-?mail\s+for\s+appointment\b.*$/i, "")
   );
 }
@@ -2485,6 +2654,35 @@ function normalizeWeekTableDateSourceText(value: string | null | undefined) {
       .replace(/^\s*(?:week\s+\d+|reading week|week of)\b[:\s-]*/i, "")
       .replace(/\bweek\s+\d+\b[:\s-]*/gi, " ")
   );
+}
+
+function normalizeWeekTableInferredDate(
+  date: string | undefined,
+  sourceText: string | null | undefined,
+  termYear: number
+) {
+  if (!date) return date;
+
+  const normalizedSource = normalizeWhitespace(sourceText);
+  if (!normalizedSource || /\b\d{4}\b/.test(normalizedSource)) {
+    return date;
+  }
+
+  if (
+    !/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b/i.test(
+      normalizedSource
+    ) &&
+    !/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/.test(normalizedSource)
+  ) {
+    return date;
+  }
+
+  const parsed = parseISO(date);
+  if (!isValid(parsed) || parsed.getFullYear() === termYear) {
+    return date;
+  }
+
+  return format(new Date(termYear, parsed.getMonth(), parsed.getDate()), "yyyy-MM-dd");
 }
 
 function resolveWeekTableAssessmentDate(
@@ -2521,9 +2719,11 @@ function officeHourLocation(text: string | null | undefined) {
   const rawText = text ?? "";
   const normalized = normalizeWhitespace(rawText);
   const explicitPhysicalLocation =
+    rawText.match(
+      /^\s*([A-Z]{2,5}\s*\d{3,4}[A-Za-z]?)\s*\(\s*Office hours?\b/i
+    )?.[1]?.trim() ||
     rawText.match(/\bLocation:\s*([A-Z]{1,5}(?:-|\s*)\d{3,4}[A-Za-z]?)\b/i)?.[1]?.trim() ||
     rawText.match(/\bOffice:\s*([A-Z]{1,5}(?:-|\s*)\d{3,4}[A-Za-z]?)\b/i)?.[1]?.trim() ||
-    rawText.match(/\b([A-Z]{2,5}\s*-\s*[A-Z]{2,5}\s+\d{3,4}[A-Za-z]?)\b/i)?.[1]?.trim() ||
     rawText.match(/\b([A-Z]{2,5}\s+[A-Z]{2,5}-\d{3,4}[A-Za-z]?)\b/i)?.[1]?.trim() ||
     rawText.match(/\b([A-Z]{2,4})\s*\([A-Z]{2,4}\)\s*(\d{3,4}[A-Za-z]?)\b/i)
       ?.slice(1, 3)
@@ -2541,7 +2741,20 @@ function officeHourLocation(text: string | null | undefined) {
     rawText.match(/\bOffice:\s*([A-Za-z0-9 -]+\d+[A-Za-z0-9-]*)/i)?.[1]?.trim() ||
     rawText.match(/\b([A-Z][A-Z0-9]{0,3}(?:-|\s*)\d{3,4}[A-Za-z]?)\b/)?.[1]?.trim();
   if (explicitPhysicalLocation) {
-    return explicitPhysicalLocation;
+    return explicitPhysicalLocation.replace(/^in\s+/i, "").trim();
+  }
+  if (
+    /\b(?:subject line|homepage|classlist|connect dropdown|instructors tab|send email)\b/i.test(
+      normalized
+    )
+  ) {
+    return /\b(?:microsoft\s+)?teams?\b|zoom\b/i.test(normalized) ? "Online" : undefined;
+  }
+  if (
+    /\b(?:microsoft\s+)?teams?\b|zoom\b/i.test(normalized) &&
+    /\b(?:via|on|using|through|team)\b/i.test(normalized)
+  ) {
+    return "Online";
   }
   if (/\bmeeting-join\b/i.test(normalized) && /\b(?:microsoft\s+)?teams?\b|zoom\b/i.test(normalized)) {
     return "Online";
@@ -2563,6 +2776,10 @@ function sanitizeOfficeHourPersonName(value: string | null | undefined) {
   return normalizeWhitespace(value)
     .replace(/^(?:Instructor(?:\s+name)?|Course Instructor(?:\s+name)?|Teaching Assistants?|Teaching Assistant|Lead Teaching Assistant(?:\s*\(TA\))?|Lead TA|TA|Instructional Support Coordinator(?:\s*\(ISC\))?|Instructional Support Assistants?(?:\s*\(ISA\))?|Instructional Assistants?(?:\s*\(IA\))?|Instructional Apprentices?(?:\s*\(IA\))?)\s*:?\s*/i, "")
     .replace(/^name\s*:?\s*/i, "")
+    .replace(/^instructors?\s+and\s+office\s+hours?\s*/i, "")
+    .replace(/^instructor(?:'s)?\s+office\s+hours?\s*/i, "")
+    .replace(/^instructor\s+information\s*:?\s*/i, "")
+    .replace(/^contacting\s+the\s+instructor\s*:?\s*/i, "")
     .replace(/^(?:and|or)\s+/i, "")
     .replace(/\[\s*\]/g, "")
     .replace(/\n+[a-z][a-z0-9._%+-]*$/g, "")
@@ -2575,11 +2792,12 @@ function sanitizeOfficeHourPersonName(value: string | null | undefined) {
     .replace(/\b[A-Z0-9._%+-]+@uwaterloo\.ca\b/gi, "")
     .replace(/^note\s*:?\s*/i, "")
     .replace(/\b(?:Office|Tutorials?|Lectures?|Consulting Hours?)\b.*$/i, "")
+    .replace(/\s+Students?$/i, "")
     .replace(/\s*\([^)]*$/g, "")
     .replace(/\b(?:course staff|teaching assistants?|tas?)['’]?\s*$/i, "")
     .replace(/\s+[a-z]{2,}$/g, "")
     .replace(/\n+/g, " ")
-    .replace(/\s*[-,:]\s*$/g, "")
+    .replace(/\s*[-,:;]\s*$/g, "")
     .trim();
 }
 
@@ -2603,7 +2821,21 @@ function extractOfficeHourEmail(text: string | null | undefined) {
 function isClearlyInvalidOfficeHourLocation(value: string | null | undefined) {
   const normalized = normalizeWhitespace(value);
   if (!normalized) return true;
-  return /^(?:LEC|TUT|LAB)\s*\d{3}$/i.test(normalized);
+  return (
+    /^(?:LEC|TUT|LAB)\s*\d{3}$/i.test(normalized) ||
+    /^[A-Z]{3,5}\s*\d{3}[A-Za-z]?$/i.test(normalized)
+  );
+}
+
+function chooseOfficeHourLocation(...candidates: Array<string | undefined>) {
+  const validLocations = candidates
+    .map((candidate) => normalizeWhitespace(candidate))
+    .filter(
+      (candidate): candidate is string =>
+        !!candidate && !isClearlyInvalidOfficeHourLocation(candidate)
+    );
+
+  return validLocations.find((candidate) => candidate !== "Online") || validLocations[0];
 }
 
 function officeHourInstructorName(text: string, meetings: RawMeetingRow[], meta: OutlineMeta) {
@@ -2662,6 +2894,42 @@ function isLikelyInstructionalSection(section: SectionBlock) {
   );
 }
 
+function extractDetailedOfficeHourSegments(
+  snippet: string,
+  fallbackLocation: string | undefined
+) {
+  const normalizedSnippet = normalizeOfficeHoursSnippet(snippet);
+  const segmentMatches = Array.from(
+    normalizedSnippet.matchAll(
+      /\b((?:(?:and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:\/|,|&|-|\band\b)?\s*)+)\s*(?:,?\s*(?:between|from)\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)([\s\S]*?)(?=(?:,\s*|\s+and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:\/|,|&|-|\band\b)?\s*(?:\d|from|between)|$)/gi
+    )
+  );
+
+  return segmentMatches.flatMap((match) => {
+    const dayCodes = parseOfficeHourDayCodes(match[1]);
+    const range = parseOfficeHourTimeRange(`${match[2]} - ${match[3]}`);
+    if (dayCodes.length === 0 || !range.startTime || !range.endTime) {
+      return [];
+    }
+
+    const locationContext = normalizeWhitespace(match[4]);
+    const location = chooseOfficeHourLocation(
+      officeHourLocation(locationContext),
+      officeHourLocation(match[0]),
+      officeHourLocation(snippet),
+      fallbackLocation
+    );
+
+    return dayCodes.map((dayCode) => ({
+      dayCode,
+      startTime: range.startTime!,
+      endTime: range.endTime!,
+      inferred: range.inferred,
+      location,
+    }));
+  });
+}
+
 function createOfficeHourSeedsFromStructuredSnippet(
   section: SectionBlock,
   snippet: string,
@@ -2673,7 +2941,147 @@ function createOfficeHourSeedsFromStructuredSnippet(
   if (isAdministrativeOfficeHourNoiseSnippet(snippet)) {
     return [] as OfficeHourSeed[];
   }
-  const normalizedSnippet = normalizeOfficeHoursSnippet(snippet);
+  const cleanedSnippet = stripOfficeHourContactNoise(snippet);
+  if (
+    isAdministrativeOfficeHourNoiseSnippet(cleanedSnippet) ||
+    (!/\b(?:office hours?|student(?:\s*\(office\))?\s*hours?|drop-?in|no appointment needed)\b/i.test(
+      cleanedSnippet
+    ) &&
+      /\b(?:within\s+24\s*hours|within\s+48\s*hours|24\s*(?:-|–|—|to)\s*48\s*hours|working hours)\b/i.test(
+        cleanedSnippet
+      ))
+  ) {
+    return [] as OfficeHourSeed[];
+  }
+  const normalizedSnippet = normalizeOfficeHoursSnippet(cleanedSnippet);
+  const snippetDates = unique(
+    extractExplicitDates(normalizedSnippet, parseISO(termBounds.startDate).getFullYear())
+  ).sort();
+  const snippetDayCodes = unique(parseOfficeHourDayCodes(normalizedSnippet));
+  const snippetTimeRanges = Array.from(
+    normalizedSnippet.matchAll(
+      /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
+    )
+  );
+  if (snippetDates.length > 1 && snippetDayCodes.length === 1 && snippetTimeRanges.length === 1) {
+    const range = parseOfficeHourTimeRange(
+      `${snippetTimeRanges[0][1]} - ${snippetTimeRanges[0][2]}`
+    );
+    if (range.startTime && range.endTime) {
+      return [
+        {
+          personName,
+          personEmail,
+          location: chooseOfficeHourLocation(
+            officeHourLocation(normalizedSnippet),
+            fallbackLocation
+          ),
+          dayCode: snippetDayCodes[0],
+          startDate: snippetDates[0],
+          endDate: snippetDates[snippetDates.length - 1],
+          exDates: buildWeeklySeriesExDates(
+            snippetDates[0],
+            snippetDates[snippetDates.length - 1],
+            snippetDates
+          ),
+          startTime: range.startTime,
+          endTime: range.endTime,
+          notes: range.inferred
+            ? ["Office-hour time inferred from shorthand in outline."]
+            : [],
+          provenance: [makeProvenance(section, "prose", snippet)],
+        },
+      ];
+    }
+  }
+  const detailedSegments = extractDetailedOfficeHourSegments(
+    normalizedSnippet,
+    fallbackLocation
+  );
+  if (detailedSegments.length > 0) {
+    return detailedSegments.map((segment) => ({
+      personName,
+      personEmail,
+      location: segment.location,
+      dayCode: segment.dayCode,
+      startDate: termBounds.startDate,
+      exDates: [],
+      startTime: segment.startTime,
+      endTime: segment.endTime,
+      notes: segment.inferred
+        ? ["Office-hour time inferred from shorthand in outline."]
+        : [],
+      provenance: [makeProvenance(section, "prose", snippet)],
+    }));
+  }
+  const clusteredDayTimeMatches = Array.from(
+    normalizedSnippet.matchAll(
+      /\b((?:(?:and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:\/|,|&|-|\band\b)?\s*)+)\s*(?:\(([^)]+)\)|(?:,?\s*(?:between|from)\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?))\s*(?:,?\s*(?:in|at)\s*([^,.;]+))?/gi
+    )
+  );
+  if (clusteredDayTimeMatches.length > 0) {
+    return clusteredDayTimeMatches.flatMap((match) => {
+      const dayCodes = parseOfficeHourDayCodes(match[1]);
+      const rangeText = match[2] ? match[2] : `${match[3]} - ${match[4]}`;
+      const range = parseOfficeHourTimeRange(rangeText);
+      if (dayCodes.length === 0 || !range.startTime || !range.endTime) return [];
+
+      const locationHint = normalizeWhitespace(match[5]);
+      const location =
+        /virtual|online|teams?|zoom/i.test(locationHint) && !chooseOfficeHourLocation(fallbackLocation)
+          ? "Online"
+          : chooseOfficeHourLocation(
+              officeHourLocation(locationHint),
+              officeHourLocation(match[0]),
+              fallbackLocation,
+              officeHourLocation(snippet)
+            );
+
+      return dayCodes.map((dayCode) => ({
+        personName,
+        personEmail,
+        location,
+        dayCode,
+        startDate: termBounds.startDate,
+        exDates: [],
+        startTime: range.startTime,
+        endTime: range.endTime,
+        notes: range.inferred
+          ? ["Office-hour time inferred from shorthand in outline."]
+          : [],
+        provenance: [makeProvenance(section, "prose", snippet)],
+      }));
+    });
+  }
+  const timeThenDaysMatch = normalizedSnippet.match(
+    /(?:from\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*,?\s*((?:(?:and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:,|&|and|\/|-)?\s*)+)/i
+  );
+  if (timeThenDaysMatch) {
+    const dayCodes = parseOfficeHourDayCodes(timeThenDaysMatch[3]);
+    const range = parseOfficeHourTimeRange(
+      `${timeThenDaysMatch[1]} - ${timeThenDaysMatch[2]}`
+    );
+    if (dayCodes.length > 0 && range.startTime && range.endTime) {
+      const location = chooseOfficeHourLocation(
+        officeHourLocation(snippet),
+        fallbackLocation
+      );
+      return dayCodes.map((dayCode) => ({
+        personName,
+        personEmail,
+        location,
+        dayCode,
+        startDate: termBounds.startDate,
+        exDates: [],
+        startTime: range.startTime!,
+        endTime: range.endTime!,
+        notes: range.inferred
+          ? ["Office-hour time inferred from shorthand in outline."]
+          : [],
+        provenance: [makeProvenance(section, "prose", snippet)],
+      }));
+    }
+  }
   const sequentialDayTimeMatches = Array.from(
     normalizedSnippet.matchAll(
       /\b(Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\b\.?\s*(?:\(([^)]+)\)\s*)?(?:,)?\s*(?:from\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
@@ -2686,22 +3094,30 @@ function createOfficeHourSeedsFromStructuredSnippet(
       if (dayCodes.length === 0 || !range.startTime || !range.endTime) return [];
 
       const locationHint = normalizeWhitespace(match[2]);
+      const snippetLocation = chooseOfficeHourLocation(
+        officeHourLocation(normalizedSnippet),
+        fallbackLocation
+      );
+      const snippetHasPhysicalLocation =
+        !!snippetLocation &&
+        !isClearlyInvalidOfficeHourLocation(snippetLocation) &&
+        snippetLocation !== "Online";
       const snippetIsSingleOnlineSeries =
         sequentialDayTimeMatches.length === 1 &&
         /\bonline\b/i.test(normalizedSnippet) &&
-        /\b(?:teams?|zoom)\b/i.test(normalizedSnippet);
-      const resolvedLocation =
-        /virtual|online|teams?|zoom/i.test(locationHint)
+        /\b(?:teams?|zoom)\b/i.test(normalizedSnippet) &&
+        !snippetHasPhysicalLocation;
+      const location =
+        /virtual|online|teams?|zoom/i.test(locationHint) && !snippetHasPhysicalLocation
           ? "Online"
           : snippetIsSingleOnlineSeries
           ? "Online"
-          : officeHourLocation(locationHint) ||
-            officeHourLocation(match[0]) ||
-            fallbackLocation ||
-            officeHourLocation(snippet);
-      const location = isClearlyInvalidOfficeHourLocation(resolvedLocation)
-        ? undefined
-        : resolvedLocation;
+          : chooseOfficeHourLocation(
+              officeHourLocation(locationHint),
+              officeHourLocation(match[0]),
+              fallbackLocation,
+              officeHourLocation(snippet)
+            );
 
       return dayCodes.map((dayCode) => ({
         personName,
@@ -2730,10 +3146,10 @@ function createOfficeHourSeedsFromStructuredSnippet(
       `${explicitTimeRanges[0][1]} - ${explicitTimeRanges[0][2]}`
     );
     if (range.startTime && range.endTime) {
-      const resolvedLocation = officeHourLocation(snippet) || fallbackLocation;
-      const location = isClearlyInvalidOfficeHourLocation(resolvedLocation)
-        ? undefined
-        : resolvedLocation;
+      const location = chooseOfficeHourLocation(
+        officeHourLocation(snippet),
+        fallbackLocation
+      );
       return explicitDayCodes.map((dayCode) => ({
         personName,
         personEmail,
@@ -2910,9 +3326,49 @@ function parseStructuredOfficeHourTables(
 
         if (officeHoursIndex !== -1) {
           rows.slice(headerIndex + 1).forEach((row) => {
-          const rowText = row.join("\n");
+          const expandedRows = (() => {
+            const nameEntries = nameIndex === -1 ? [] : splitStructuredOfficeHourCellEntries(row[nameIndex]);
+            const officeEntries = officeIndex === -1 ? [] : splitStructuredOfficeHourCellEntries(row[officeIndex]);
+            const contactEntries =
+              contactIndex === -1 ? [] : splitStructuredOfficeHourCellEntries(row[contactIndex]);
+            const officeHourEntries = splitStructuredOfficeHourCellEntries(row[officeHoursIndex]);
+            const maxEntries = Math.max(
+              1,
+              nameEntries.length,
+              officeEntries.length,
+              contactEntries.length,
+              officeHourEntries.length
+            );
+            const shouldExpand =
+              maxEntries > 1 &&
+              [nameEntries, officeEntries, contactEntries, officeHourEntries].filter(
+                (entries) => entries.length > 1
+              ).length >= 2;
+
+            if (!shouldExpand) {
+              return [row];
+            }
+
+            return Array.from({ length: maxEntries }, (_, index) => {
+              const nextRow = [...row];
+              if (nameIndex !== -1 && nameEntries.length > 0) {
+                nextRow[nameIndex] = nameEntries[index] ?? "";
+              }
+              if (officeIndex !== -1 && officeEntries.length > 0) {
+                nextRow[officeIndex] = officeEntries[index] ?? "";
+              }
+              if (contactIndex !== -1 && contactEntries.length > 0) {
+                nextRow[contactIndex] = contactEntries[index] ?? "";
+              }
+              nextRow[officeHoursIndex] = officeHourEntries[index] ?? "";
+              return nextRow;
+            });
+          })();
+
+          expandedRows.forEach((expandedRow) => {
+          const rowText = expandedRow.join("\n");
           const personName = sanitizeOfficeHourPersonName(
-            row[nameIndex] ||
+            expandedRow[nameIndex] ||
               context.personName ||
               rowText.match(
                 /\b((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,5})\b/iu
@@ -2922,17 +3378,23 @@ function parseStructuredOfficeHourTables(
           if (!personName || isGenericOfficeHourName(personName)) return;
 
           const personEmail =
-              extractOfficeHourEmail(row[contactIndex] || rowText) ||
+              extractOfficeHourEmail(expandedRow[contactIndex] || rowText) ||
               tableEmail ||
               context.personEmail ||
               officeHourInstructorEmail(rowText, meetings);
-          const officeHoursCell = row[officeHoursIndex] || "";
-          const officeCell = officeIndex === -1 ? "" : row[officeIndex] || "";
+          const officeHoursCell = expandedRow[officeHoursIndex] || "";
+          const officeCell = officeIndex === -1 ? "" : expandedRow[officeIndex] || "";
           const combinedSnippet = [officeHoursCell, officeCell].filter(Boolean).join("\n");
           const explicitDayCodes = parseWeekdayCodes(officeHoursCell);
           const explicitRange = parseOfficeHourTimeRange(officeHoursCell);
+          const explicitTimeRangeCount = Array.from(
+            officeHoursCell.matchAll(
+              /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
+            )
+          ).length;
           if (
             explicitDayCodes.length > 1 &&
+            explicitTimeRangeCount === 1 &&
             explicitRange.startTime &&
             explicitRange.endTime
           ) {
@@ -2970,6 +3432,7 @@ function parseStructuredOfficeHourTables(
             termBounds
           );
           seeds.push(...structuredSeeds);
+          });
           });
           return;
         }
@@ -3091,9 +3554,17 @@ function parseStructuredOfficeHourLines(
         )
     )
     .forEach((section) => {
+      const initialSectionSeedCount = seeds.length;
+      const sectionHasTable = section.elements.some(
+        (element) =>
+          element.tagName.toLowerCase() === "table" || !!element.querySelector("table")
+      );
       let activeInstructorName = officeHourInstructorName(section.text, meetings, meta);
       let activeInstructorEmail = officeHourInstructorEmail(section.text, meetings);
       let activeLocation = officeHourLocation(section.text);
+      const sectionFallbackInstructorName = activeInstructorName;
+      const sectionFallbackInstructorEmail = activeInstructorEmail;
+      const sectionFallbackLocation = activeLocation;
       const sectionTaOfficeHourLocation = officeHourLocation(
         normalizeOfficeHourParsingText(section.text).match(
           /\b(?:teaching assistants?|TAs?)['’]?\s+office hours?.{0,120}/i
@@ -3116,20 +3587,36 @@ function parseStructuredOfficeHourLines(
           pendingSnippetLines = [];
           return;
         }
-        seeds.push(
-          ...createOfficeHourSeedsFromStructuredSnippet(
-            section,
-            snippet,
-            personName,
-            pendingInstructorEmail,
-            pendingLocation,
-            termBounds
-          )
+        const structuredSeeds = createOfficeHourSeedsFromStructuredSnippet(
+          section,
+          snippet,
+          personName,
+          pendingInstructorEmail,
+          pendingLocation,
+          termBounds
         );
+        if (structuredSeeds.length > 0) {
+          seeds.push(...structuredSeeds);
+        } else {
+          pendingSnippetLines.forEach((line) => {
+            const fallbackLineSeeds = createOfficeHourSeedsFromStructuredSnippet(
+              section,
+              line,
+              personName,
+              pendingInstructorEmail,
+              pendingLocation,
+              termBounds
+            );
+            seeds.push(...fallbackLineSeeds);
+          });
+        }
         pendingSnippetLines = [];
       };
 
       const handlePotentialIdentityLine = (line: string) => {
+        const namePrefixedMatch = line.match(
+          /^name\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,5})/iu
+        )?.[1];
         const prefixedNameMatch = line.match(
           /^(?:Instructor|Course Instructor|Teaching Assistant|Lead Teaching Assistant(?:\s*\(TA\))?|Lead TA|TA|Instructional Support Assistant(?:\s*\(ISA\))?|Instructional Assistant(?:\s*\(IA\))?|Instructional Support Coordinator(?:\s*\(ISC\))?|ISC|ISA|IA)\s*:?\s*([^,]+)/i
         )?.[1];
@@ -3143,10 +3630,19 @@ function parseStructuredOfficeHourLines(
           line.match(
             /^((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})\s+([A-Z0-9._%+-]+@uwaterloo\.ca)\b/iu
           );
+        const directNameOfficeMatch = line.match(
+          /^((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})\s*-\s*([A-Z][A-Z0-9]{0,3}(?:-|\s*)\d{3,4}[A-Za-z]?)\b/iu
+        );
         const bareNameMatch = line.match(
           /^((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){1,4})$/u
         )?.[1];
         const lineEmail = extractOfficeHourEmail(line);
+
+        if (namePrefixedMatch && !isGenericOfficeHourName(namePrefixedMatch)) {
+          activeInstructorName = sanitizeOfficeHourPersonName(namePrefixedMatch);
+          activeLocation = officeHourLocation(line) || activeLocation;
+          return true;
+        }
 
         if (prefixedNameMatch && !isGenericOfficeHourName(prefixedNameMatch)) {
           activeInstructorName = sanitizeOfficeHourPersonName(prefixedNameMatch);
@@ -3166,6 +3662,12 @@ function parseStructuredOfficeHourLines(
           activeInstructorName = sanitizeOfficeHourPersonName(directNameEmailMatch[1]);
           activeInstructorEmail = directNameEmailMatch[2];
           activeLocation = officeHourLocation(line) || activeLocation;
+          return true;
+        }
+
+        if (directNameOfficeMatch) {
+          activeInstructorName = sanitizeOfficeHourPersonName(directNameOfficeMatch[1]);
+          activeLocation = directNameOfficeMatch[2];
           return true;
         }
 
@@ -3208,6 +3710,9 @@ function parseStructuredOfficeHourLines(
               normalizedLine.match(
                 /^((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,6})(?:\s*\(([^)]*)\))?,\s*office hours?\s*:\s*(.+)$/iu
               );
+            const namedScheduleLineMatch = normalizedLine.match(
+              /^(?:name\s*:?\s*)?((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,6})(?:\s*\(([^)]*)\))?\s*:\s*(?:office hours?\s*)?(.+)$/iu
+            );
             const inlineInstructorOfficeHours =
               normalizedLine.match(
                 /^(?:Instructor|Course Instructor)\s*:?\s*([^,]+?)(?:,\s*([^,]+@uwaterloo\.ca|[A-Z0-9._%+-]+\s*\[\s*at\s*\]\s*uwaterloo\s*\[\s*dot\s*\]\s*ca))?(?:,\s*([^,]+))?.*\boffice hours?\s*:\s*(.+)$/i
@@ -3256,6 +3761,40 @@ function parseStructuredOfficeHourLines(
                 activeInstructorName = roleName;
                 activeInstructorEmail = roleEmail;
                 activeLocation = roleLocation || activeLocation;
+              }
+              return;
+            }
+
+            if (
+              namedScheduleLineMatch &&
+              (OFFICE_HOUR_WEEKDAY_REGEX.test(namedScheduleLineMatch[3]) ||
+                extractOfficeHourSlots(namedScheduleLineMatch[3]).length > 0)
+            ) {
+              flushPendingSnippet();
+              withinOfficeHoursBlock = true;
+              const lineName = sanitizeOfficeHourPersonName(namedScheduleLineMatch[1]);
+              const lineEmail =
+                extractOfficeHourEmail(
+                  [namedScheduleLineMatch[2], normalizedLine].filter(Boolean).join(" ")
+                ) || activeInstructorEmail;
+              const lineLocation =
+                officeHourLocation(namedScheduleLineMatch[3]) ||
+                officeHourLocation(normalizedLine) ||
+                activeLocation;
+              if (lineName && !isGenericOfficeHourName(lineName)) {
+                seeds.push(
+                  ...createOfficeHourSeedsFromStructuredSnippet(
+                    section,
+                    namedScheduleLineMatch[3],
+                    lineName,
+                    lineEmail,
+                    lineLocation,
+                    termBounds
+                  )
+                );
+                activeInstructorName = lineName;
+                activeInstructorEmail = lineEmail;
+                activeLocation = lineLocation || activeLocation;
               }
               return;
             }
@@ -3311,6 +3850,21 @@ function parseStructuredOfficeHourLines(
               return;
             }
 
+            if (
+              /^(?:instructor'?s office hours|teaching assistants?'? office hours|ta office hours|office hours|student(?:\s*\(office\))?\s*hours?)\s*:?\s*$/i.test(
+                normalizedLine
+              )
+            ) {
+              flushPendingSnippet();
+              withinOfficeHoursBlock = true;
+              pendingInstructorName = activeInstructorName;
+              pendingInstructorEmail = activeInstructorEmail;
+              pendingLocation = activeLocation;
+              pendingSnippetLines = [];
+              waitingForOfficeHourContinuation = true;
+              return;
+            }
+
             if (/\boffice hours?:|my office hours are|instructor office hours?:/i.test(normalizedLine)) {
               flushPendingSnippet();
               withinOfficeHoursBlock = true;
@@ -3363,6 +3917,9 @@ function parseStructuredOfficeHourLines(
               (pendingSnippetLines.length > 0 || waitingForOfficeHourContinuation) &&
               (OFFICE_HOUR_WEEKDAY_REGEX.test(normalizedLine) ||
                 extractOfficeHourSlots(normalizedLine).length > 0 ||
+                /\b(?:drop-?in|no appointment needed|clarify course content|ask questions?|student questions?)\b/i.test(
+                  normalizedLine
+                ) ||
                 /\b(?:online|teams?|zoom|virtual|by appointment|appointment)\b/i.test(
                   normalizedLine
                 ) ||
@@ -3405,10 +3962,93 @@ function parseStructuredOfficeHourLines(
             if (!withinOfficeHoursBlock && !hasOfficeHourCue) {
               return;
             }
+
+            if (
+              hasOfficeHourCue &&
+              !pendingSnippetLines.length &&
+              (OFFICE_HOUR_WEEKDAY_REGEX.test(normalizedLine) ||
+                extractOfficeHourSlots(normalizedLine).length > 0)
+            ) {
+              const structuredLinePersonName =
+                activeInstructorName && !isGenericOfficeHourName(activeInstructorName)
+                  ? activeInstructorName
+                  : fallbackInstructorName;
+              if (structuredLinePersonName) {
+                const directLineSeeds = createOfficeHourSeedsFromStructuredSnippet(
+                  section,
+                  normalizedLine,
+                  structuredLinePersonName,
+                  activeInstructorEmail,
+                  activeLocation,
+                  termBounds
+                );
+                if (directLineSeeds.length > 0) {
+                  seeds.push(...directLineSeeds);
+                  withinOfficeHoursBlock = true;
+                  return;
+                }
+              }
+            }
           });
         });
 
       flushPendingSnippet();
+
+      if (
+        seeds.length === initialSectionSeedCount &&
+        !/\bName\s*:/.test(section.text) &&
+        !sectionHasTable
+      ) {
+        const fallbackStructuredName =
+          sectionFallbackInstructorName &&
+          !isGenericOfficeHourName(sectionFallbackInstructorName)
+            ? sectionFallbackInstructorName
+            : undefined;
+        if (fallbackStructuredName && !isGenericOfficeHourName(fallbackStructuredName)) {
+          const fallbackOfficeBlock =
+            normalizeWhitespace(
+              normalizeOfficeHourParsingText(section.text).match(
+                /\b(?:Instructor'?s Office Hours|Office Hours|Student(?:\s*\(Office\))?\s*Hours?)\b[:\s-]*([\s\S]*?)(?=\b(?:Contacting the Instructor|Teaching Assistants?|TA(?:'s)?\b|Course Description|Student Resources)\b|$)/i
+              )?.[1]
+            ) || section.text;
+          seeds.push(
+            ...createOfficeHourSeedsFromStructuredSnippet(
+              section,
+              fallbackOfficeBlock,
+              fallbackStructuredName,
+              sectionFallbackInstructorEmail,
+              sectionFallbackLocation,
+              termBounds
+            )
+          );
+
+          if (seeds.length === initialSectionSeedCount) {
+            const fallbackSlots = extractOfficeHourSlots(fallbackOfficeBlock);
+            const fallbackLocation =
+              officeHourLocation(fallbackOfficeBlock) || sectionFallbackLocation;
+            if (fallbackSlots.length > 0) {
+              seeds.push(
+                ...fallbackSlots.map((slot) => ({
+                  personName: fallbackStructuredName,
+                  personEmail: sectionFallbackInstructorEmail,
+                  location: isClearlyInvalidOfficeHourLocation(fallbackLocation)
+                    ? undefined
+                    : fallbackLocation,
+                  dayCode: slot.dayCode,
+                  startDate: termBounds.startDate,
+                  exDates: [],
+                  startTime: slot.startTime,
+                  endTime: slot.endTime,
+                  notes: slot.inferred
+                    ? ["Office-hour time inferred from shorthand in outline."]
+                    : [],
+                  provenance: [makeProvenance(section, "prose", fallbackOfficeBlock)],
+                }))
+              );
+            }
+          }
+        }
+      }
     });
 
   return seeds;
@@ -3433,12 +4073,20 @@ function isGenericOfficeHourName(value: string | null | undefined) {
   return /^(?:office hours?|office hour|email|instructor|instructors|teaching assistants?|teaching assistant|tas?|instructional support assistants?|instructional support assistant|instructional assistants?|instructional apprentice|instructional support coordinator|isc|isa|ia|consulting hours?)$/i.test(
       normalized
   ) ||
+    /^(?:walking|walking office hours|in-person|online)$/i.test(normalized) ||
+    /^(?:information|instructor information|contacting the instructor|course coordinator and instructor|instructors and office hours|instructor'?s office hours)$/i.test(
+      normalized
+    ) ||
+    /^(?:student|students|department(?:\s+of\s+.+)?|school(?:\s+of\s+.+)?|faculty(?:\s+of\s+.+)?|program(?:\s+coordinator)?)$/i.test(
+      normalized
+    ) ||
     /\b(?:course staff|teaching assistants?|tas?)\b/i.test(normalized) ||
     /^(?:name|contact|name contact)$/i.test(normalized) ||
     /^(?:email address|phone number|contact details|who and why|technical support|student resources)$/i.test(
       normalized
     ) ||
     /^include your full name\b/i.test(normalized) ||
+    /^please use\b/i.test(normalized) ||
     /^for\b.*\bquestions?\b/i.test(normalized) ||
     /^(?:(?:Mon(?:day)?s?|Tue(?:s(?:day)?)?s?|Wed(?:nesday)?s?|Thu(?:r(?:s(?:day)?)?)?s?|Fri(?:day)?s?|Sat(?:urday)?s?|Sun(?:day)?s?)\s*(?:,|&|and)?\s*)+$/i.test(
       normalized
@@ -3452,7 +4100,10 @@ function isAdministrativeOfficeHourNoiseSnippet(value: string | null | undefined
     normalized.includes("technical support") ||
     normalized.includes("student resources") ||
     normalized.includes("learnhelp@uwaterloo.ca") ||
-    normalized.includes("regular business hours")
+    normalized.includes("regular business hours") ||
+    normalized.includes("not going to have specific set office hours") ||
+    normalized.includes("set up individual times to meet") ||
+    normalized.includes("if needed we can arrange a time and date to meet")
   );
 }
 
@@ -3525,8 +4176,8 @@ function parseOfficeHourTimeRange(value: string) {
   const endClock = parseLooseClock(endRaw);
   const startExplicit = hasMeridiem(startRaw) || (startClock?.hour ?? 0) > 12;
   const endExplicit = hasMeridiem(endRaw) || (endClock?.hour ?? 0) > 12;
-  const directStart = startExplicit ? parseFlexibleTime(startRaw) : undefined;
-  const directEnd = endExplicit ? parseFlexibleTime(endRaw) : undefined;
+  let directStart = startExplicit ? parseFlexibleTime(startRaw) : undefined;
+  let directEnd = endExplicit ? parseFlexibleTime(endRaw) : undefined;
 
   if (!startClock || !endClock) {
     return {
@@ -3550,6 +4201,15 @@ function parseOfficeHourTimeRange(value: string) {
     inferred = true;
     if (endMeridiem === "PM" && startClock.hour > endClock.hour && startClock.hour !== 12) {
       startMeridiem = "AM";
+    } else if (
+      endMeridiem === "AM" &&
+      endClock.hour === 12 &&
+      startClock.hour >= 7 &&
+      startClock.hour < 12
+    ) {
+      directEnd = undefined;
+      startMeridiem = "AM";
+      endMeridiem = "PM";
     } else {
       startMeridiem = endMeridiem;
     }
@@ -3570,9 +4230,19 @@ function parseOfficeHourTimeRange(value: string) {
     }
   }
 
+  const startTime = directStart ?? to24HourTime(startClock, startMeridiem);
+  const endTime = directEnd ?? to24HourTime(endClock, endMeridiem);
+
   return {
-    startTime: directStart ?? to24HourTime(startClock, startMeridiem),
-    endTime: directEnd ?? to24HourTime(endClock, endMeridiem),
+    startTime,
+    endTime:
+      endTime === "00:00" &&
+      !hasMeridiem(startRaw) &&
+      /12(?::00)?\s*a\.?m\.?/i.test(endRaw) &&
+      startClock.hour >= 7 &&
+      startClock.hour < 12
+        ? "12:00"
+        : endTime,
     inferred,
   };
 }
@@ -3590,6 +4260,29 @@ function extractOfficeHourSlots(value: string | null | undefined) {
     endTime: string;
     inferred?: boolean;
   }>;
+
+  const clusteredDayTimeMatches = Array.from(
+    normalized.matchAll(
+      /\b((?:(?:and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:\/|,|&|-|\band\b)?\s*)+)\s*(?:\(([^)]+)\)|(?:,?\s*(?:between|from)\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?))/gi
+    )
+  );
+  if (clusteredDayTimeMatches.length > 0) {
+    const slots = clusteredDayTimeMatches.flatMap((match) => {
+      const dayCodes = parseOfficeHourDayCodes(match[1]);
+      const rangeText = match[2] ? match[2] : `${match[3]} - ${match[4]}`;
+      const range = parseOfficeHourTimeRange(rangeText);
+      if (dayCodes.length === 0 || !range.startTime || !range.endTime) return [];
+      return dayCodes.map((dayCode) => ({
+        dayCode,
+        startTime: range.startTime!,
+        endTime: range.endTime!,
+        inferred: range.inferred,
+      }));
+    });
+    if (slots.length > 0) {
+      return slots;
+    }
+  }
 
   const explicitCompoundDayMatch = normalized.match(
     /^((?:(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?)(?:\s*(?:,|&|and|\/)\s*)?)+)\s*(?:from\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/i
@@ -3678,6 +4371,50 @@ function extractOfficeHourSlots(value: string | null | undefined) {
   }>;
 }
 
+function extractOfficeHourSlotsWithFallback(value: string | null | undefined) {
+  const directSlots = extractOfficeHourSlots(value);
+  if (directSlots.length > 0) {
+    return {
+      slots: directSlots,
+      sourceText: normalizeOfficeHoursSnippet(value),
+    };
+  }
+
+  const normalized = normalizeOfficeHourParsingText(value);
+  const lines = normalized
+    .split(/\n+/)
+    .map((line) => normalizeWhitespace(line))
+    .filter(Boolean);
+
+  for (const line of lines) {
+    const lineSlots = extractOfficeHourSlots(line);
+    if (lineSlots.length > 0) {
+      return {
+        slots: lineSlots,
+        sourceText: line,
+      };
+    }
+  }
+
+  const weekdayTail = normalized.match(
+    /\b(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?)\b[\s\S]*$/i
+  )?.[0];
+  if (weekdayTail) {
+    const tailSlots = extractOfficeHourSlots(weekdayTail);
+    if (tailSlots.length > 0) {
+      return {
+        slots: tailSlots,
+        sourceText: weekdayTail,
+      };
+    }
+  }
+
+  return {
+    slots: [] as ReturnType<typeof extractOfficeHourSlots>,
+    sourceText: normalizeOfficeHoursSnippet(value),
+  };
+}
+
 function parseOfficeHours(
   sections: SectionBlock[],
   meta: OutlineMeta,
@@ -3689,6 +4426,7 @@ function parseOfficeHours(
   const seeds: OfficeHourSeed[] = [];
   const relevantSections = sections.filter((section) =>
     !isLikelyInstructionalSection(section) &&
+    !OFFICE_HOUR_SCHEDULE_SECTION_IDS.has(section.id) &&
     /\b(office hours?|office location (?:and|&) hours?|student(?:\s*\(office\))?\s*hours?|open student hours?|my office hours are|drop-in ta office hours)\b/i.test(
       normalizeOfficeHourParsingText(section.text)
     ) &&
@@ -3895,6 +4633,13 @@ function parseOfficeHours(
       const rolePrefixedNameMatch = normalizedCandidateLine.match(
         /^(?:Instructor|Course Instructor|Teaching Assistant|TA|Instructional Support Assistant|Instructional Assistant|Instructional Apprentice|Instructional Support Coordinator|ISC|ISA|IA)\s*(?:\([^)]*\))?:\s*((?:Dr\.?\s+)?[A-Z][A-Za-z'’.-]+(?:\s+[A-Z][A-Za-z'’.-]+){1,3})\b/i
       );
+      const namePrefixedMatch = normalizedCandidateLine.match(
+        /^name\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[A-Z][A-Za-z'’.-]+(?:\s+[A-Z][A-Za-z'’.-]+){1,4})\b/iu
+      )?.[1];
+      if (namePrefixedMatch && !isGenericOfficeHourName(namePrefixedMatch)) {
+        activeInstructorName = sanitizeOfficeHourPersonName(namePrefixedMatch);
+        activeInstructorEmail = lineEmail || activeInstructorEmail;
+      }
       if (rolePrefixedNameMatch && !isGenericOfficeHourName(rolePrefixedNameMatch[1])) {
         activeInstructorName = sanitizeOfficeHourPersonName(rolePrefixedNameMatch[1]);
         activeInstructorEmail = lineEmail || activeInstructorEmail;
@@ -3959,6 +4704,7 @@ function parseOfficeHours(
           normalizedCandidateLine
         ) ||
         /\b(?:online|teams?|zoom|room)\b/i.test(normalizedCandidateLine) ||
+        /^[A-Z][A-Z0-9]{0,3}(?:-|\s*)\d{3,4}[A-Za-z]?\b/.test(normalizedCandidateLine) ||
         /\([A-Z][A-Z0-9]{0,3}(?:-|\s*)\d{3,4}[A-Za-z]?\)/.test(normalizedCandidateLine) ||
         /\bin\s+[A-Z][A-Z0-9]{0,3}(?:-|\s*)\d{3,4}[A-Za-z]?\b/i.test(normalizedCandidateLine);
       const officeHoursOnlySnippet =
@@ -3968,7 +4714,7 @@ function parseOfficeHours(
           )?.[0] ?? normalizedCandidateLine
         ) || normalizedCandidateLine;
       const lineLocation = canUpdateLocationFromLine
-        ? officeHourLocation(officeHoursOnlySnippet)
+        ? officeHourLocation(normalizedCandidateLine) || officeHourLocation(officeHoursOnlySnippet)
         : undefined;
       const candidateLocation =
         lineLocation ||
@@ -3984,6 +4730,38 @@ function parseOfficeHours(
       if (!normalizedLine) return;
       if (hasOfficeHourCue) {
         withinOfficeHoursBlock = true;
+      }
+      const heldEachDayTimeMatch = normalizedCandidateLine.match(
+        /\boffice hours?\s+will\s+be\s+held\s+(?:each\s+)?((?:(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|F(?![a-z]))\.?\s*(?:,|&|and|\/)?\s*)+)(?:between\s+|from\s+)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/i
+      );
+      if (heldEachDayTimeMatch) {
+        const dayCodes = parseOfficeHourDayCodes(heldEachDayTimeMatch[1]);
+        const range = parseOfficeHourTimeRange(
+          `${heldEachDayTimeMatch[2]} - ${heldEachDayTimeMatch[3]}`
+        );
+        const personName =
+          activeInstructorName && !isGenericOfficeHourName(activeInstructorName)
+            ? activeInstructorName
+            : fallbackInstructorName;
+        if (dayCodes.length > 0 && range.startTime && range.endTime) {
+          dayCodes.forEach((dayCode) => {
+            seeds.push({
+              personName,
+              personEmail: activeInstructorEmail,
+              location: candidateLocation,
+              dayCode,
+              startDate: officeHoursWindowContext?.startDate,
+              exDates: officeHoursWindowContext?.exDates,
+              startTime: range.startTime,
+              endTime: range.endTime,
+              notes: range.inferred
+                ? ["Office-hour time inferred from shorthand in outline."]
+                : [],
+              provenance: [makeProvenance(section, "prose", line)],
+            });
+          });
+          return;
+        }
       }
       const extractedLineSlots = extractOfficeHourSlots(normalizedLine);
       if (
@@ -4035,6 +4813,24 @@ function parseOfficeHours(
 
       if (lineProducedSeed) {
         return;
+      }
+      const structuredLinePersonName =
+        activeInstructorName && !isGenericOfficeHourName(activeInstructorName)
+          ? activeInstructorName
+          : fallbackInstructorName;
+      if (structuredLinePersonName) {
+        const structuredLineSeeds = createOfficeHourSeedsFromStructuredSnippet(
+          section,
+          normalizedLine,
+          structuredLinePersonName,
+          activeInstructorEmail,
+          candidateLocation,
+          termBounds
+        );
+        if (structuredLineSeeds.length > 0) {
+          seeds.push(...structuredLineSeeds);
+          return;
+        }
       }
       if (extractedLineSlots.length > 0) {
         const personName =
@@ -4494,7 +5290,23 @@ function dedupeOfficeHourSeeds(seeds: OfficeHourSeed[]) {
       return;
     }
     const explicitDayCodes = parseOfficeHourDayCodes(officeHoursSnippet);
-    if (explicitDayCodes.length > 1 && !explicitDayCodes.includes(seed.dayCode)) {
+    const explicitTimeRangeCount = Array.from(
+      officeHoursSnippet.matchAll(
+        /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
+      )
+    ).length;
+    const shouldExpandSharedDaySeries =
+      explicitDayCodes.length > 1 &&
+      explicitTimeRangeCount === 1 &&
+      extractOfficeHourSlots(officeHoursSnippet).length <= 1;
+    const dayCodesToApply = shouldExpandSharedDaySeries
+      ? explicitDayCodes
+      : explicitDayCodes.length > 1
+      ? explicitDayCodes.includes(seed.dayCode)
+        ? [seed.dayCode]
+        : []
+      : [seed.dayCode];
+    if (dayCodesToApply.length === 0) {
       return;
     }
     if (
@@ -4503,21 +5315,47 @@ function dedupeOfficeHourSeeds(seeds: OfficeHourSeed[]) {
     ) {
       return;
     }
-    const key = `${seed.personName}:${seed.personEmail ?? ""}:${seed.dayCode}:${seed.startTime ?? ""}:${seed.endTime ?? ""}`;
+    dayCodesToApply.forEach((dayCode) => {
+    const key = `${seed.personName}:${seed.personEmail ?? ""}:${dayCode}:${seed.startTime ?? ""}:${seed.endTime ?? ""}`;
     const existing = deduped.get(key);
+    const seedLocationFromProvenance = seed.provenance
+      .map((item) => officeHourLocation(item.snippet))
+      .find((location) => location && !isClearlyInvalidOfficeHourLocation(location));
     if (!existing) {
-      deduped.set(key, seed);
+      deduped.set(key, {
+        ...seed,
+        location: seed.location || seedLocationFromProvenance,
+        dayCode,
+      });
       return;
     }
-    const mergedLocation =
-      existing.location && !isClearlyInvalidOfficeHourLocation(existing.location)
-        ? existing.location
-        : seed.location;
-    deduped.set(key, {
-      ...existing,
-      location: mergedLocation,
-      notes: combineNotes(existing.notes, seed.notes),
-      provenance: mergeProvenanceLists([existing.provenance, seed.provenance]),
+      const existingLocation =
+        existing.location && !isClearlyInvalidOfficeHourLocation(existing.location)
+          ? existing.location
+          : undefined;
+      const nextLocation =
+        seed.location && !isClearlyInvalidOfficeHourLocation(seed.location)
+          ? seed.location
+          : undefined;
+      const mergedLocation =
+        existingLocation === "Online" && nextLocation && nextLocation !== "Online"
+          ? nextLocation
+          : existingLocation && nextLocation === "Online"
+          ? existingLocation
+          : existingLocation ||
+            nextLocation ||
+            [existing, seed]
+              .flatMap((candidate) => candidate.provenance.map((item) => officeHourLocation(item.snippet)))
+              .find(
+                (location) =>
+                  location && !isClearlyInvalidOfficeHourLocation(location)
+              );
+      deduped.set(key, {
+        ...existing,
+        location: mergedLocation,
+        notes: combineNotes(existing.notes, seed.notes),
+        provenance: mergeProvenanceLists([existing.provenance, seed.provenance]),
+      });
     });
   });
   return Array.from(deduped.values());
@@ -4553,58 +5391,111 @@ function parseInlineInstructionalTeamOfficeHours(
 
     const inlineSegments = normalizeWhitespace(text)
       .split(
-        /(?=\b(?:Instructor|Course Instructor|Teaching Assistant|Lead Teaching Assistant|TA)\s*:)/i
+        /(?=\b(?:Course Instructor|Lab Instructor|Lecture Instructor|Tutorial Instructor|Teaching Assistants?|Teaching Assistant|Lead Teaching Assistant|Lead TA|TA|Name|Instructor)\s*:)/i
       )
       .map((segment) => normalizeWhitespace(normalizeOfficeHourParsingText(segment)))
       .filter(Boolean);
 
-    return inlineSegments.flatMap((segment) => {
+    const segmentSeeds = inlineSegments.flatMap((segment) => {
       if (isAdministrativeOfficeHourNoiseSnippet(segment)) {
         return [];
       }
-      const segmentLines = splitOfficeHourAwareLines(segment)
+      const segmentLines = splitOfficeHourAwareLines(
+        normalizeOfficeHourParsingText(segment)
+          .replace(/\s*(Contact:|Office:|Office hours?:)/gi, "\n$1")
+          .replace(
+            /\b(Teaching Assistants?:)\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){1,4}\s*\([A-Z0-9._%+-]+@uwaterloo\.ca\))/giu,
+            "$1\n$2"
+          )
+          .replace(
+            /\)\s+((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){1,4}\s*\([A-Z0-9._%+-]+@uwaterloo\.ca\))/giu,
+            ")\n$1"
+          )
+      )
         .map((line) => normalizeWhitespace(line))
         .filter(Boolean);
-      const officeHoursLineIndex = segmentLines.findIndex((line) =>
-        /\b(?:office hours?|student(?:\s*\(office\))?\s*hours?)\b/i.test(line)
-      );
-      const officeSnippet = normalizeOfficeHoursSnippet(
-        officeHoursLineIndex === -1
-          ? segment
-          : segmentLines.slice(officeHoursLineIndex).join("\n")
-      );
-      const extractedOfficeSnippetSlots = extractOfficeHourSlots(officeSnippet);
-      if (
-        !/\boffice hours?\b/i.test(segment) ||
-        isAdministrativeOfficeHourNoiseSnippet(officeSnippet) ||
-        ((/by appointment|upon appointment|tbd|to be determined/i.test(officeSnippet) ||
-          /\boffice hours?\s*\(\s*by appointment\s*\)/i.test(segment)) &&
-          extractedOfficeSnippetSlots.length === 0)
-      ) {
-        return [];
-      }
+      const lineLevelSeeds: OfficeHourSeed[] = [];
+      let lineLevelPersonName = fallbackInstructorName;
+      let lineLevelPersonEmail = fallbackInstructorEmail;
+      let lineLevelLocation = fallbackLocation;
 
-        const personName =
+      segmentLines.forEach((line) => {
+        const normalizedLine = normalizeWhitespace(line);
+        if (!normalizedLine || isAdministrativeOfficeHourNoiseSnippet(normalizedLine)) {
+          return;
+        }
+
+        const lineEmail = normalizedLine.match(/[A-Z0-9._%+-]+@uwaterloo\.ca/i)?.[0];
+        const roleLineName =
           sanitizeOfficeHourPersonName(
-            segment.match(
-              /\b(?:Instructor|Course Instructor|Teaching Assistant|Lead Teaching Assistant|TA)\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})(?=\s*(?:Email(?: Address)?\s*:|[A-Z0-9._%+-]+@uwaterloo\.ca\b|Office hours?\b))/iu
+            normalizedLine.match(
+              /\b(?:Instructor|Course Instructor|Lab Instructor|Teaching Assistant|Lead Teaching Assistant|TA|Name)\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})\b/iu
             )?.[1]
-          ) || fallbackInstructorName;
-        const personEmail =
-          segment.match(/[A-Z0-9._%+-]+@uwaterloo\.ca/i)?.[0] || fallbackInstructorEmail;
-        const location =
-          officeHourLocation(officeSnippet) &&
-          !isClearlyInvalidOfficeHourLocation(officeHourLocation(officeSnippet))
-            ? officeHourLocation(officeSnippet)
-            : officeHourLocation(segment) &&
-              !isClearlyInvalidOfficeHourLocation(officeHourLocation(segment))
-            ? officeHourLocation(segment)
-            : fallbackLocation;
-        if (extractedOfficeSnippetSlots.length > 0) {
-          return extractedOfficeSnippetSlots.map((slot) => ({
-            personName,
-            personEmail,
-            location,
+          ) ||
+          sanitizeOfficeHourPersonName(
+            normalizedLine.match(
+              /^((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){1,4})(?=\s*(?:\(|[A-Z0-9._%+-]+@uwaterloo\.ca|$))/iu
+            )?.[1]
+          );
+
+        if (roleLineName && !isGenericOfficeHourName(roleLineName)) {
+          lineLevelPersonName = roleLineName;
+        }
+        if (lineEmail) {
+          lineLevelPersonEmail = lineEmail;
+        }
+
+        const explicitOfficeLineLocation =
+          /^office\s*:/i.test(normalizedLine) || /^office hours?\s*:/i.test(normalizedLine)
+            ? officeHourLocation(normalizedLine)
+            : undefined;
+        if (explicitOfficeLineLocation && !isClearlyInvalidOfficeHourLocation(explicitOfficeLineLocation)) {
+          lineLevelLocation = explicitOfficeLineLocation;
+        }
+
+        if (!/\boffice hours?\b/i.test(normalizedLine)) {
+          return;
+        }
+
+        const officeHoursOnlySnippet =
+          normalizeOfficeHoursSnippet(
+            normalizedLine.match(
+              /\b(?:office hours?|student(?:\s*\(office\))?\s*hours?)\b[:\s-]*.*$/i
+            )?.[0] ?? normalizedLine
+          ) || normalizedLine;
+        const structuredLineLocation = chooseOfficeHourLocation(
+          officeHourLocation(officeHoursOnlySnippet),
+          lineLevelLocation,
+          fallbackLocation
+        );
+        const structuredLineSeeds = createOfficeHourSeedsFromStructuredSnippet(
+          section,
+          officeHoursOnlySnippet,
+          lineLevelPersonName,
+          lineLevelPersonEmail,
+          structuredLineLocation,
+          termBounds
+        );
+        if (structuredLineSeeds.length > 0) {
+          lineLevelSeeds.push(...structuredLineSeeds);
+          return;
+        }
+
+        const fallbackLineRecovery = extractOfficeHourSlotsWithFallback(normalizedLine);
+        if (fallbackLineRecovery.slots.length === 0) {
+          return;
+        }
+
+        const fallbackLineLocation = chooseOfficeHourLocation(
+          officeHourLocation(fallbackLineRecovery.sourceText),
+          officeHourLocation(officeHoursOnlySnippet),
+          structuredLineLocation
+        );
+        lineLevelSeeds.push(
+          ...fallbackLineRecovery.slots.map((slot) => ({
+            personName: lineLevelPersonName,
+            personEmail: lineLevelPersonEmail,
+            location: fallbackLineLocation,
             dayCode: slot.dayCode,
             startDate: termBounds.startDate,
             exDates: [],
@@ -4613,39 +5504,278 @@ function parseInlineInstructionalTeamOfficeHours(
             notes: slot.inferred
               ? ["Office-hour time inferred from shorthand in outline."]
               : [],
-            provenance: [makeProvenance(section, "prose", segment)],
-          }));
-        }
+            provenance: [makeProvenance(section, "prose", fallbackLineRecovery.sourceText)],
+          }))
+        );
+      });
 
-        const match = officeSnippet.match(sectionDayTimePattern);
-        if (!match) {
-          return [];
-        }
+      if (lineLevelSeeds.length > 0) {
+        return lineLevelSeeds;
+      }
 
-        const dayCodes = parseOfficeHourDayCodes(match[1]);
-        const range = parseOfficeHourTimeRange(`${match[2]} - ${match[3]}`);
-        if (dayCodes.length === 0 || !range.startTime || !range.endTime) {
-          return [];
-        }
+      const officeHoursLineIndex = segmentLines.findIndex((line) =>
+        /\b(?:office hours?|student(?:\s*\(office\))?\s*hours?)\b/i.test(line)
+      );
+      const boundedOfficeTail = (() => {
+        const rawTail =
+          officeHoursLineIndex === -1
+            ? segment
+            : segmentLines.slice(officeHoursLineIndex).join("\n");
+        return (
+          normalizeWhitespace(
+            normalizeOfficeHourParsingText(rawTail).match(
+              /([\s\S]*?)(?=\b(?:Contacting the Instructor|Teaching Assistants?|TA(?:'s)?\b|Course Description|Student Resources)\b|$)/i
+            )?.[1]
+          ) || rawTail
+        );
+      })();
+      const officeSnippet = normalizeOfficeHoursSnippet(
+        boundedOfficeTail
+      );
+      if (
+        !/\boffice hours?\b/i.test(segment) ||
+        isAdministrativeOfficeHourNoiseSnippet(officeSnippet) ||
+        ((/by appointment|upon appointment|tbd|to be determined/i.test(officeSnippet) ||
+          /\boffice hours?\s*\(\s*by appointment\s*\)/i.test(segment)) &&
+          extractOfficeHourSlots(officeSnippet).length === 0)
+      ) {
+        return [];
+      }
 
-        return dayCodes.map((dayCode) => ({
+      const personName =
+        sanitizeOfficeHourPersonName(
+          segment.match(
+            /\bName\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})\b/iu
+          )?.[1]
+        ) ||
+        sanitizeOfficeHourPersonName(
+          segment.match(
+            /\b(?:Instructor|Course Instructor|Teaching Assistant|Lead Teaching Assistant|TA)\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})(?=\s*(?:Email(?: Address)?\s*:|[A-Z0-9._%+-]+@uwaterloo\.ca\b|Office hours?\b))/iu
+          )?.[1]
+        ) || fallbackInstructorName;
+      const personEmail =
+        segment.match(/[A-Z0-9._%+-]+@uwaterloo\.ca/i)?.[0] || fallbackInstructorEmail;
+      const officeSnippetLocation = officeHourLocation(officeSnippet);
+      const segmentLocation = officeHourLocation(segment);
+      const location = chooseOfficeHourLocation(
+        officeSnippetLocation,
+        segmentLocation,
+        fallbackLocation
+      );
+
+      const structuredSeeds = createOfficeHourSeedsFromStructuredSnippet(
+        section,
+        officeSnippet,
+        personName,
+        personEmail,
+        location,
+        termBounds
+      );
+      if (structuredSeeds.length > 0) {
+        return structuredSeeds;
+      }
+
+      const extractedOfficeSnippetSlots = extractOfficeHourSlots(officeSnippet);
+      if (extractedOfficeSnippetSlots.length > 0) {
+        return extractedOfficeSnippetSlots.map((slot) => ({
           personName,
           personEmail,
           location,
-          dayCode,
+          dayCode: slot.dayCode,
           startDate: termBounds.startDate,
           exDates: [],
-          startTime: range.startTime,
-          endTime: range.endTime,
-          notes: range.inferred
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          notes: slot.inferred
             ? ["Office-hour time inferred from shorthand in outline."]
             : [],
           provenance: [makeProvenance(section, "prose", segment)],
         }));
-      });
+      }
+
+      const explicitOfficeBlock = normalizeWhitespace(
+        segment.match(
+          /\bInstructor'?s Office Hours\b[:\s-]*([\s\S]*?)(?=\b(?:Contacting the Instructor|Teaching Assistants?|TA(?:'s)?\b|Course Description|Student Resources)\b|$)/i
+        )?.[1]
+      );
+      const explicitOfficeBlockRecovery = extractOfficeHourSlotsWithFallback(explicitOfficeBlock);
+      if (explicitOfficeBlock && explicitOfficeBlockRecovery.slots.length > 0) {
+        const explicitLocation = chooseOfficeHourLocation(
+          officeHourLocation(explicitOfficeBlockRecovery.sourceText),
+          officeHourLocation(explicitOfficeBlock),
+          location
+        );
+        return explicitOfficeBlockRecovery.slots.map((slot) => ({
+          personName,
+          personEmail,
+          location: explicitLocation,
+          dayCode: slot.dayCode,
+          startDate: termBounds.startDate,
+          exDates: [],
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          notes: slot.inferred
+            ? ["Office-hour time inferred from shorthand in outline."]
+            : [],
+          provenance: [makeProvenance(section, "prose", explicitOfficeBlockRecovery.sourceText)],
+        }));
+      }
+
+      const match = officeSnippet.match(sectionDayTimePattern);
+      if (!match) {
+        return [];
+      }
+
+      const dayCodes = parseOfficeHourDayCodes(match[1]);
+      const range = parseOfficeHourTimeRange(`${match[2]} - ${match[3]}`);
+      if (dayCodes.length === 0 || !range.startTime || !range.endTime) {
+        return [];
+      }
+
+      return dayCodes.map((dayCode) => ({
+        personName,
+        personEmail,
+        location,
+        dayCode,
+        startDate: termBounds.startDate,
+        exDates: [],
+        startTime: range.startTime,
+        endTime: range.endTime,
+        notes: range.inferred
+          ? ["Office-hour time inferred from shorthand in outline."]
+          : [],
+          provenance: [makeProvenance(section, "prose", segment)],
+      }));
+    });
+
+    if (segmentSeeds.length > 0) {
+      return segmentSeeds;
+    }
+
+    const explicitInstructorOfficeTextBlock = normalizeWhitespace(
+      text.match(
+        /\bInstructor'?s Office Hours\b[:\s-]*([\s\S]*?)(?=\b(?:Contacting the Instructor|Teaching Assistants?|TA(?:'s)?\b|Course Description|Student Resources)\b|$)/i
+      )?.[1]
+    );
+    const explicitInstructorOfficeHtmlBlock = extractInstructionalTeamOfficeHourBlock(section);
+    const explicitInstructorOfficeTextRecovery = extractOfficeHourSlotsWithFallback(
+      explicitInstructorOfficeTextBlock
+    );
+    const explicitInstructorOfficeHtmlRecovery = extractOfficeHourSlotsWithFallback(
+      explicitInstructorOfficeHtmlBlock
+    );
+    const explicitInstructorOfficeRecovery =
+      explicitInstructorOfficeHtmlRecovery.slots.length >
+      explicitInstructorOfficeTextRecovery.slots.length
+        ? explicitInstructorOfficeHtmlRecovery
+        : explicitInstructorOfficeTextRecovery;
+    const explicitInstructorOfficeBlock =
+      explicitInstructorOfficeRecovery === explicitInstructorOfficeHtmlRecovery
+        ? explicitInstructorOfficeHtmlBlock
+        : explicitInstructorOfficeTextBlock;
+    if (
+      explicitInstructorOfficeBlock &&
+      explicitInstructorOfficeRecovery.slots.length > 0 &&
+      fallbackInstructorName &&
+      !isGenericOfficeHourName(fallbackInstructorName)
+    ) {
+      const explicitLocation = chooseOfficeHourLocation(
+        officeHourLocation(explicitInstructorOfficeBlock),
+        fallbackLocation
+      );
+      return explicitInstructorOfficeRecovery.slots.map((slot) => ({
+        personName: fallbackInstructorName,
+        personEmail: fallbackInstructorEmail,
+        location: explicitLocation,
+        dayCode: slot.dayCode,
+        startDate: termBounds.startDate,
+        exDates: [],
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        notes: slot.inferred
+          ? ["Office-hour time inferred from shorthand in outline."]
+          : [],
+        provenance: [makeProvenance(section, "prose", explicitInstructorOfficeBlock)],
+      }));
+    }
+
+    return [];
   });
 
   return dedupeOfficeHourSeeds(seeds);
+}
+
+function recoverInstructionalTeamOfficeHours(
+  sections: SectionBlock[],
+  meta: OutlineMeta,
+  meetings: RawMeetingRow[]
+) {
+  const termBounds = computeTermBounds(meetings) ?? computeFallbackTermBounds(sections, meta);
+  if (!termBounds) return [] as OfficeHourSeed[];
+
+  return sections.flatMap((section) => {
+    if (
+      section.id !== "instructional_team" &&
+      !/\binstructional team\b/i.test(section.title)
+    ) {
+      return [];
+    }
+
+    const text = normalizeOfficeHourParsingText(section.text);
+    const explicitInstructorOfficeTextBlock = normalizeWhitespace(
+      text.match(
+        /\bInstructor'?s Office Hours\b[:\s-]*([\s\S]*?)(?=\b(?:Contacting the Instructor|Teaching Assistants?|TA(?:'s)?\b|Course Description|Student Resources)\b|$)/i
+      )?.[1]
+    );
+    const explicitInstructorOfficeHtmlBlock = extractInstructionalTeamOfficeHourBlock(section);
+    const explicitInstructorOfficeTextRecovery = extractOfficeHourSlotsWithFallback(
+      explicitInstructorOfficeTextBlock
+    );
+    const explicitInstructorOfficeHtmlRecovery = extractOfficeHourSlotsWithFallback(
+      explicitInstructorOfficeHtmlBlock
+    );
+    const explicitInstructorOfficeRecovery =
+      explicitInstructorOfficeHtmlRecovery.slots.length >
+      explicitInstructorOfficeTextRecovery.slots.length
+        ? explicitInstructorOfficeHtmlRecovery
+        : explicitInstructorOfficeTextRecovery;
+    const explicitInstructorOfficeBlock =
+      explicitInstructorOfficeRecovery === explicitInstructorOfficeHtmlRecovery
+        ? explicitInstructorOfficeHtmlBlock
+        : explicitInstructorOfficeTextBlock;
+    const personName = officeHourInstructorName(text, meetings, meta);
+
+    if (
+      !explicitInstructorOfficeBlock ||
+      explicitInstructorOfficeRecovery.slots.length === 0 ||
+      !personName ||
+      isGenericOfficeHourName(personName)
+    ) {
+      return [];
+    }
+
+    const personEmail = officeHourInstructorEmail(text, meetings);
+    const location = chooseOfficeHourLocation(
+      officeHourLocation(explicitInstructorOfficeRecovery.sourceText),
+      officeHourLocation(explicitInstructorOfficeBlock),
+      officeHourLocation(text)
+    );
+
+    return explicitInstructorOfficeRecovery.slots.map((slot) => ({
+      personName,
+      personEmail,
+      location,
+      dayCode: slot.dayCode,
+      startDate: termBounds.startDate,
+      exDates: [],
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+      notes: slot.inferred
+        ? ["Office-hour time inferred from shorthand in outline."]
+        : [],
+      provenance: [makeProvenance(section, "prose", explicitInstructorOfficeRecovery.sourceText)],
+    }));
+  });
 }
 
 function assessmentTypeFromLabel(label: string | null | undefined, location?: string) {
@@ -4799,6 +5929,16 @@ function splitStructuredAssessmentEntries(line: string) {
   }
 
   const prefixedEntries: Array<{ prefix?: string; value: string }> = [];
+  const repeatedNamedEntries = Array.from(
+    normalized.matchAll(
+      /((?:term test|midterm|quiz|test|exam|case|reflection)\s*#?\s*\d+)\s*:\s*(.+?)(?=(?:(?:\s*)(?:term test|midterm|quiz|test|exam|case|reflection)\s*#?\s*\d+\s*:|$))/gi
+    )
+  ).map((match) => ({
+    prefix: normalizeWhitespace(match[1]),
+    value: normalizeWhitespace(match[2]),
+  }));
+  if (repeatedNamedEntries.length > 1) return repeatedNamedEntries;
+
   const responseSegments = normalized
     .split(/\s*;\s*/)
     .map((segment) => normalizeWhitespace(segment))
@@ -5005,11 +6145,26 @@ function isAssessmentPolicyNoise(text: string) {
       normalized
     )
   ) {
+    if (
+      /\brequest an alternative to turnitin\b/.test(normalized) &&
+      /\bby\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec|january|february|march|april|june|july|august|september|october|november|december)\b/.test(
+        normalized
+      )
+    ) {
+      return false;
+    }
     return true;
   }
   if (
     /\baccessability services\b|\baas\b/.test(normalized) &&
     /\bexam accommodation\b|\brequest to write\b/.test(normalized)
+  ) {
+    return true;
+  }
+  if (
+    /\bdaylight savings time\b|\bthe time that is current in waterloo\b|\byou must start the test prior to the end of test period\b|\bstart your test before 10 pm\b/.test(
+      normalized
+    )
   ) {
     return true;
   }
@@ -5835,7 +6990,9 @@ function parseWeekWindowTable(
     const normalizedDateSourceText = normalizeWeekTableDateSourceText(dateSourceText);
     const rowDates =
       normalizedDateSourceText
-        ? extractExplicitDates(normalizedDateSourceText, meta.termYear)
+        ? extractExplicitDates(normalizedDateSourceText, meta.termYear).map((date) =>
+            normalizeWeekTableInferredDate(date, normalizedDateSourceText, meta.termYear)
+          )
         : [];
 
     let dateSpec =
@@ -5868,11 +7025,17 @@ function parseWeekWindowTable(
       ) {
         return;
       }
-      const explicitDates = extractExplicitDates(entry, meta.termYear);
+      const explicitDates = extractExplicitDates(entry, meta.termYear).map((date) =>
+        normalizeWeekTableInferredDate(date, entry, meta.termYear)
+      );
       const exactDate =
-        explicitDates[0] ??
-        (rowDates.length === topicEntries.length ? rowDates[index] : undefined) ??
-        resolveWeekTableAssessmentDate(entry, rowDates, dateSpec);
+        normalizeWeekTableInferredDate(
+          explicitDates[0] ??
+            (rowDates.length === topicEntries.length ? rowDates[index] : undefined) ??
+            resolveWeekTableAssessmentDate(entry, rowDates, dateSpec),
+          explicitDates[0] ? entry : normalizedDateSourceText,
+          meta.termYear
+        );
       assessments.push({
         label: assessmentLabel,
         eventType: "Assessment",
@@ -5935,7 +7098,8 @@ function parseWeekWindowTable(
           if (dateSpec?.kind === "single") {
             attachments.push({
               appliesTo: ["Lecture"],
-              exactDates: [dateSpec.date],
+              startDate: dateSpec.date,
+              endDate: format(addDays(parseISO(dateSpec.date), 6), "yyyy-MM-dd"),
               note: lectureNote,
               provenance,
             });
@@ -5949,9 +7113,15 @@ function parseWeekWindowTable(
             });
           }
         } else {
-          const topicDates = extractExplicitDates(topic, meta.termYear);
+          const topicDates = extractExplicitDates(topic, meta.termYear).map((date) =>
+            normalizeWeekTableInferredDate(date, topic, meta.termYear)
+          );
           const exactDate =
-            topicDates[0] ?? resolveWeekTableAssessmentDate(topic, rowDates, dateSpec);
+            normalizeWeekTableInferredDate(
+              topicDates[0] ?? resolveWeekTableAssessmentDate(topic, rowDates, dateSpec),
+              topicDates[0] ? topic : normalizedDateSourceText,
+              meta.termYear
+            );
           assessments.push({
             label: assessmentLabel,
             eventType: "Assessment",
@@ -5976,7 +7146,7 @@ function parseWeekWindowTable(
       )
       .forEach((entry) => {
         const entryLabel =
-          extractAssessmentLabelFromText(entry) ?? extractProseDeliverableLabel(entry);
+          extractProseDeliverableLabel(entry) ?? extractAssessmentLabelFromText(entry);
         if (!entryLabel || isFinalExamLabel(entryLabel)) return;
 
         const eventType = assessmentTypeFromLabel(entryLabel, entry);
@@ -6015,21 +7185,75 @@ function parseWeekWindowTable(
         .split(/\n+/)
         .map((entry) => normalizeWhitespace(entry))
         .filter(Boolean)
-        .reduce<string[]>((entries, line) => {
-          if (
-            entries.length > 0 &&
-            (/^\(/.test(line) ||
-              /^(?:due\b|available from\b|opens?\b|closes?\b|submitted?\b|deadline\b)/i.test(
-                line
-              ))
-          ) {
-            entries[entries.length - 1] = normalizeWhitespace(
-              `${entries[entries.length - 1]} ${line}`
-            );
-            return entries;
-          }
-          return [...entries, ...line.split(/\s*;\s*/).map((entry) => normalizeWhitespace(entry))];
-        }, [])
+        .reduce<{ entries: string[]; pendingDateHeading?: string }>((state, line) => {
+          const splitEntries = line
+            .split(/\s*;\s*/)
+            .map((entry) => normalizeWhitespace(entry))
+            .filter(Boolean);
+
+          splitEntries.forEach((splitEntry) => {
+            if (/^none$/i.test(splitEntry) || /^no assignments?\b/i.test(splitEntry)) {
+              state.pendingDateHeading = undefined;
+              return;
+            }
+
+            const assignmentLabel =
+              assignmentLabelFromText(splitEntry) ??
+              extractProseDeliverableLabel(splitEntry) ??
+              (/^a\s*\d+\b/i.test(splitEntry) ? assignmentLabelFromText(splitEntry) : undefined);
+            const assessmentLabel = extractAssessmentLabelFromText(splitEntry);
+            const dateSpecForLine = parseDateSpec(splitEntry, meta.termYear);
+            const deadlineDates = extractDeadlineAnchoredDates(splitEntry, meta.termYear);
+            const hasExplicitDate =
+              Boolean(dateSpecForLine?.kind) || deadlineDates.length > 0;
+
+            let effectiveEntry = splitEntry;
+            if (
+              state.pendingDateHeading &&
+              (assignmentLabel || assessmentLabel) &&
+              !hasExplicitDate
+            ) {
+              effectiveEntry = normalizeWhitespace(`${state.pendingDateHeading} ${splitEntry}`);
+              state.pendingDateHeading = undefined;
+            }
+
+            if (
+              state.entries.length > 0 &&
+              (/^\(/.test(splitEntry) ||
+                /^(?:due\b|available from\b|opens?\b|closes?\b|submitted?\b|deadline\b)/i.test(
+                  splitEntry
+                ))
+            ) {
+              state.entries[state.entries.length - 1] = normalizeWhitespace(
+                `${state.entries[state.entries.length - 1]} ${splitEntry}`
+              );
+              return;
+            }
+
+            if (hasExplicitDate && !assignmentLabel && !assessmentLabel) {
+              state.pendingDateHeading = splitEntry;
+              return;
+            }
+
+            if (
+              state.entries.length > 0 &&
+              !assignmentLabel &&
+              !assessmentLabel &&
+              !hasExplicitDate &&
+              !/^(?:week|reading week|term test|midterm|quiz|test|exam)\b/i.test(splitEntry)
+            ) {
+              state.entries[state.entries.length - 1] = normalizeWhitespace(
+                `${state.entries[state.entries.length - 1]} ${splitEntry}`
+              );
+              return;
+            }
+
+            state.entries.push(effectiveEntry);
+          });
+
+          return state;
+        }, { entries: [] as string[] })
+        .entries
         .filter(Boolean)
         .filter((entry) => !/^none$/i.test(entry));
       const defaultWeekday =
@@ -6197,8 +7421,8 @@ function parseWeekWindowTable(
         if (!entryHasDateCue) return;
 
         const entryLabel =
-          extractAssessmentLabelFromText(entry) ??
           extractProseDeliverableLabel(entry) ??
+          extractAssessmentLabelFromText(entry) ??
           labelFromScheduleEntry(entry);
         if (!entryLabel || isFinalExamLabel(entryLabel)) return;
 
@@ -6352,9 +7576,12 @@ function parseWeekWindowTable(
             (!sectionNumber || option.number === sectionNumber)
         )
         .map((option) => option.id);
-      const exactDate =
+      const exactDate = normalizeWeekTableInferredDate(
         parseSlashDate(notesCell, meta.termYear) ??
-        extractExplicitDates(notesCell, meta.termYear)[0];
+          extractExplicitDates(notesCell, meta.termYear)[0],
+        notesCell,
+        meta.termYear
+      );
       const anchoredDate =
         exactDate ??
         (dateSpec?.kind === "single"
@@ -6403,14 +7630,21 @@ function parseWeekWindowTable(
         ? dateSpec.startDate
         : undefined;
     const rowAssessmentLabel = extractAssessmentLabelFromText(rowText);
-    const rowAssessmentDates = extractDeadlineAnchoredDates(rowText, meta.termYear);
-    const nonAnchoredExplicitRowDate = extractExplicitDates(rowText, meta.termYear).find(
-      (date) => date !== anchoredRowDate
+    const rowAssessmentDates = extractDeadlineAnchoredDates(rowText, meta.termYear).map((date) =>
+      normalizeWeekTableInferredDate(date, rowText, meta.termYear)
     );
+    const normalizedAnchoredRowDate = normalizeWeekTableInferredDate(
+      anchoredRowDate,
+      dateSourceText,
+      meta.termYear
+    );
+    const nonAnchoredExplicitRowDate = extractExplicitDates(rowText, meta.termYear)
+      .map((date) => normalizeWeekTableInferredDate(date, rowText, meta.termYear))
+      .find((date) => date !== normalizedAnchoredRowDate);
     const resolvedRowAssessmentDate =
-      rowAssessmentDates.find((date) => date !== anchoredRowDate) ??
+      rowAssessmentDates.find((date) => date !== normalizedAnchoredRowDate) ??
       nonAnchoredExplicitRowDate ??
-      anchoredRowDate;
+      normalizedAnchoredRowDate;
     if (
       assessments.length === assessmentsBeforeRow &&
       resolvedRowAssessmentDate &&
@@ -6421,7 +7655,7 @@ function parseWeekWindowTable(
         label: rowAssessmentLabel,
         eventType: "Assessment",
         date: resolvedRowAssessmentDate,
-        allDay: resolvedRowAssessmentDate === anchoredRowDate,
+        allDay: resolvedRowAssessmentDate === normalizedAnchoredRowDate,
         notes: [rowText],
         confidence:
           extractExplicitDates(rowText, meta.termYear).length > 0 ? "medium" : "low",
@@ -6826,6 +8060,135 @@ function parseAssessmentWeightTable(
     .filter(Boolean) as AssessmentWeightReference[];
 }
 
+function parseDatedRowsFromWeightOnlyTable(
+  section: SectionBlock,
+  rows: string[][],
+  headers: string[],
+  meta: OutlineMeta
+) {
+  const lowerHeaders = headers.map((header) => header.toLowerCase());
+  const labelIndex = lowerHeaders.findIndex((header) =>
+    /(component|assessment|activity|item|evaluation|name)/.test(header)
+  );
+  const valueIndex = lowerHeaders.findIndex((header) =>
+    /(value|weight|worth|percentage|percent)/.test(header)
+  );
+
+  if (labelIndex === -1 || valueIndex === -1) {
+    return [] as AssessmentSeed[];
+  }
+
+  return rows.flatMap((row) => {
+    const rawLabel = normalizeWhitespace(row[labelIndex]);
+    if (!rawLabel) return [];
+
+    const anchoredDates = extractDeadlineAnchoredDates(rawLabel, meta.termYear);
+    const dateSpec = parseDateSpec(rawLabel, meta.termYear);
+    const dates =
+      anchoredDates.length > 0
+        ? anchoredDates
+        : dateSpec?.kind === "single"
+        ? [dateSpec.date]
+        : dateSpec?.kind === "dates"
+        ? dateSpec.dates
+        : /\b(?:on|due on|due by|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?\s+by)\b/i.test(
+            rawLabel
+          ) ||
+          /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b/i.test(
+            rawLabel
+          )
+        ? extractExplicitDates(rawLabel, meta.termYear)
+        : [];
+    if (dates.length === 0) return [];
+
+    const weight = normalizeWeightText(row[valueIndex]);
+    const location = assignmentLocationFromContext([rawLabel, section.text].join(" "));
+    const label =
+      extractProseDeliverableLabel(rawLabel) ??
+      extractAssessmentLabelFromText(rawLabel) ??
+      labelFromScheduleEntry(rawLabel);
+    if (!label || isFinalExamLabel(label)) return [];
+
+    const eventType =
+      assessmentTypeFromLabel(label, location) === "Assessment"
+        ? ("Assessment" as const)
+        : ("Assignment" as const);
+
+    return dates.map((date) => ({
+      label,
+      eventType,
+      date,
+      allDay: true,
+      location,
+      notes: combineNotes([rawLabel], weight ? [`Weight: ${weight}`] : []),
+      weight,
+      confidence: "high" as const,
+      provenance: [makeProvenance(section, "table", row.join(" | "))],
+    }));
+  });
+}
+
+function parseFallbackDatedWeightRows(
+  section: SectionBlock,
+  rows: string[][],
+  meta: OutlineMeta
+) {
+  return rows.flatMap((row) => {
+    const normalizedCells = row.map((cell) => normalizeWhitespace(cell)).filter(Boolean);
+    if (normalizedCells.length < 2) return [];
+
+    const weightCell = normalizedCells.find((cell) => normalizeWeightText(cell));
+    const rawLabel = normalizedCells.find(
+      (cell) =>
+        cell !== weightCell &&
+        (/\b(?:due on|due by|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?\s+by|deadline|on)\b/i.test(
+          cell
+        ) ||
+          /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b/i.test(
+            cell
+          ))
+    );
+    if (!rawLabel) return [];
+
+    const anchoredDates = extractDeadlineAnchoredDates(rawLabel, meta.termYear);
+    const dateSpec = parseDateSpec(rawLabel, meta.termYear);
+    const dates =
+      anchoredDates.length > 0
+        ? anchoredDates
+        : dateSpec?.kind === "single"
+        ? [dateSpec.date]
+        : dateSpec?.kind === "dates"
+        ? dateSpec.dates
+        : extractExplicitDates(rawLabel, meta.termYear);
+    if (dates.length === 0) return [];
+
+    const weight = normalizeWeightText(weightCell);
+    const location = assignmentLocationFromContext([rawLabel, section.text].join(" "));
+    const label =
+      extractProseDeliverableLabel(rawLabel) ??
+      extractAssessmentLabelFromText(rawLabel) ??
+      labelFromScheduleEntry(rawLabel);
+    if (!label || isFinalExamLabel(label)) return [];
+
+    const eventType =
+      assessmentTypeFromLabel(label, location) === "Assessment"
+        ? ("Assessment" as const)
+        : ("Assignment" as const);
+
+    return dates.map((date) => ({
+      label,
+      eventType,
+      date,
+      allDay: true,
+      location,
+      notes: combineNotes([rawLabel], weight ? [`Weight: ${weight}`] : []),
+      weight,
+      confidence: "high" as const,
+      provenance: [makeProvenance(section, "table", row.join(" | "))],
+    }));
+  });
+}
+
 function splitLongProseEntry(entry: string) {
   const normalized = normalizeWhitespace(entry).replace(/\s+\.\s+/g, ". ");
   if (!normalized) return [] as string[];
@@ -6835,6 +8198,15 @@ function splitLongProseEntry(entry: string) {
       normalized
     );
   if (!hasDeadlineSignals || normalized.length < 160) {
+    return [normalized];
+  }
+  if (
+    /\b(?:available|opens?)\b/i.test(normalized) &&
+    /\bdue\b/i.test(normalized) &&
+    (looksLikeAssignmentText(normalized) ||
+      looksLikeAssessmentText(normalized) ||
+      /\b(?:pebblepad|workbook)\b/i.test(normalized))
+  ) {
     return [normalized];
   }
 
@@ -6894,6 +8266,7 @@ function parseTables(
         !/(date|due date|start date|location|submission)/.test(headerText)
       ) {
         assessmentWeights.push(...parseAssessmentWeightTable(section, rows, headers));
+        assessments.push(...parseDatedRowsFromWeightOnlyTable(section, rows, headers, meta));
         return;
       }
 
@@ -6943,6 +8316,93 @@ function parseTables(
   return { weekWindows, attachments, exclusions, assessments, assessmentWeights };
 }
 
+function parseDocumentWideDatedWeightTables(document: Document, meta: OutlineMeta) {
+  const fallbackSection: SectionBlock = {
+    id: "document_assessment_tables",
+    title: "Document assessment tables",
+    elements: [],
+    text: "",
+  };
+
+  const seenRowSignatures = new Set<string>();
+
+  return Array.from(document.querySelectorAll("tr")).flatMap((rowEl) => {
+    const row = Array.from(rowEl.querySelectorAll("th,td")).map((cell) =>
+      htmlToText(cell as Element)
+    );
+    if (row.length < 2) return [] as AssessmentSeed[];
+
+    const normalizedCells = row.map((cell) => normalizeWhitespace(cell)).filter(Boolean);
+    if (normalizedCells.length < 2) return [] as AssessmentSeed[];
+    if (
+      normalizedCells.every((cell) =>
+        /^(component|assessment|activity|evaluation|item|name|value|weight|worth|percentage|percent)$/i.test(
+          cell
+        )
+      )
+    ) {
+      return [] as AssessmentSeed[];
+    }
+
+    const weightCell = normalizedCells.find((cell) => /^\d+(?:\.\d+)?%$/.test(cell));
+    const rawLabel = normalizedCells.find(
+      (cell) =>
+        cell !== weightCell &&
+        (/\b(?:due on|due by|due\b|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|on)\b/i.test(
+          cell
+        ) ||
+          /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b/i.test(
+            cell
+          ))
+    );
+    if (!weightCell || !rawLabel) return [] as AssessmentSeed[];
+
+    const rowSignature = `${rawLabel}|${weightCell}`;
+    if (seenRowSignatures.has(rowSignature)) return [] as AssessmentSeed[];
+    seenRowSignatures.add(rowSignature);
+
+    const anchoredDates = extractDeadlineAnchoredDates(rawLabel, meta.termYear);
+    const dateSpec = parseDateSpec(rawLabel, meta.termYear);
+    const dates =
+      anchoredDates.length > 0
+        ? anchoredDates
+        : dateSpec?.kind === "single"
+        ? [dateSpec.date]
+        : dateSpec?.kind === "dates"
+        ? dateSpec.dates
+        : extractExplicitDates(rawLabel, meta.termYear);
+    if (dates.length === 0) return [] as AssessmentSeed[];
+
+    const section = {
+      ...fallbackSection,
+      text: normalizeWhitespace(normalizedCells.join("\n")),
+    };
+    const location = assignmentLocationFromContext([rawLabel, section.text].join(" "));
+    const label =
+      extractProseDeliverableLabel(rawLabel) ??
+      extractAssessmentLabelFromText(rawLabel) ??
+      labelFromScheduleEntry(rawLabel);
+    if (!label || isFinalExamLabel(label)) return [] as AssessmentSeed[];
+
+    const eventType =
+      assessmentTypeFromLabel(label, location) === "Assessment"
+        ? ("Assessment" as const)
+        : ("Assignment" as const);
+
+    return dates.map((date) => ({
+      label,
+      eventType,
+      date,
+      allDay: true,
+      location,
+      notes: combineNotes([rawLabel], [`Weight: ${weightCell}`]),
+      weight: weightCell,
+      confidence: "high" as const,
+      provenance: [makeProvenance(section, "table", normalizedCells.join(" | "))],
+    }));
+  });
+}
+
 function parseRelevantProse(
   sections: SectionBlock[],
   meta: OutlineMeta,
@@ -6953,7 +8413,11 @@ function parseRelevantProse(
   const exclusions: ExclusionWindow[] = [];
 
   sections
-    .filter((section) => RELEVANT_PROSE_SECTIONS.has(section.id))
+    .filter(
+      (section) =>
+        RELEVANT_PROSE_SECTIONS.has(section.id) ||
+        /\brequest an alternative to turnitin\b/i.test(section.text)
+    )
     .forEach((section) => {
       const blocks = section.elements.flatMap((element) =>
         Array.from(element.querySelectorAll("p, li"))
@@ -7002,6 +8466,26 @@ function parseRelevantProse(
           if (isAssessmentPolicyNoise(entry) || /^tentative$/i.test(entry)) return;
 
           const entryProvenance = [makeProvenance(section, "prose", entry)];
+          const turnitinAlternativeMatch = entry.match(
+            /\brequest an alternative to turnitin\b[\s\S]*?\bby\s+([^.;]+?)(?:\s*\(|\.|$)/i
+          );
+          if (turnitinAlternativeMatch) {
+            const requestDate = parseFlexibleDate(turnitinAlternativeMatch[1], meta.termYear);
+            if (requestDate) {
+              assessments.push({
+                label: "Turnitin Alternative Request",
+                eventType: "Assignment",
+                date: requestDate,
+                allDay: true,
+                location: "Email",
+                notes: [entry],
+                confidence: "medium",
+                provenance: entryProvenance,
+              });
+            }
+            return;
+          }
+
           const makeUpClassMatch = entry.match(
             /\bloss of a [a-z]+ class on ([A-Za-z0-9,\s]+?) due to .*? will be made up on ([A-Za-z0-9,\s]+)\.?$/i
           );
@@ -7082,7 +8566,21 @@ function parseRelevantProse(
             /\b(?:available|opens?|posted)\b/i.test(entry) &&
             /\bdue\b/i.test(entry)
           ) {
+            const availableDate = resolvedDates[0];
             const dueDate = resolvedDates[resolvedDates.length - 1];
+            assessments.push({
+              label: `${preferredLabel} Available`,
+              eventType,
+              date: availableDate,
+              allDay: true,
+              location:
+                location ||
+                assignmentLocationFromContext(section.text),
+              notes: combineNotes([entry], weight ? [`Weight: ${weight}`] : []),
+              weight,
+              confidence: confidenceFromSeed({ date: availableDate, location }),
+              provenance: entryProvenance,
+            });
             assessments.push({
               label: preferredLabel,
               eventType,
@@ -7636,7 +9134,7 @@ function createOfficeHourEvents(
       timing: {
         kind: "recurring",
         startDate: seed.startDate ?? termBounds.startDate,
-        endDate: termBounds.endDate,
+        endDate: seed.endDate ?? termBounds.endDate,
         startTime: seed.startTime,
         endTime: seed.endTime,
         byDay: [seed.dayCode],
@@ -7650,6 +9148,154 @@ function createOfficeHourEvents(
     event.include = defaultIncludeForEvent(event);
     return event;
   });
+}
+
+function createFallbackInstructionalTeamOfficeHourEvents(
+  course: ParsedCourse,
+  rawHtml: string,
+  sections: SectionBlock[],
+  meta: OutlineMeta,
+  meetings: RawMeetingRow[],
+  termBounds: { startDate: string; endDate: string } | undefined
+) {
+  if (!termBounds) return [] as EventCandidate[];
+
+  let fallbackSeeds: OfficeHourSeed[] = sections.flatMap((section) => {
+    if (
+      section.id !== "instructional_team" &&
+      !/\binstructional team\b/i.test(section.title)
+    ) {
+      return [];
+    }
+
+    const officeHourBlock = extractInstructionalTeamOfficeHourBlock(section);
+    if (!officeHourBlock) return [];
+
+    const officeHourLines = normalizeOfficeHourParsingText(officeHourBlock)
+      .split(/\n+/)
+      .map((line) => normalizeWhitespace(line))
+      .filter(
+        (line) =>
+          OFFICE_HOUR_WEEKDAY_REGEX.test(line) &&
+          /\d{1,2}(?::\d{2})?\s*(?:-|–|—|to)\s*\d{1,2}(?::\d{2})?/i.test(line)
+      );
+    if (officeHourLines.length === 0) return [];
+
+    const personName = officeHourInstructorName(section.text, meetings, meta);
+    if (!personName || isGenericOfficeHourName(personName)) {
+      return [];
+    }
+
+    const personEmail = officeHourInstructorEmail(section.text, meetings);
+    return officeHourLines.flatMap((line) => {
+      const dayText = line.match(
+        /^((?:(?:and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F)\.?\s*(?:\/|,|&|-|\band\b)?\s*)+)/i
+      )?.[1];
+      const rangeText = line.match(
+        /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/i
+      )?.[0];
+
+      const dayCodes = parseOfficeHourDayCodes(dayText);
+      const range = rangeText ? parseOfficeHourTimeRange(rangeText) : {};
+      if (dayCodes.length === 0 || !range.startTime || !range.endTime) {
+        return [];
+      }
+
+      const location = chooseOfficeHourLocation(
+        officeHourLocation(line),
+        officeHourLocation(officeHourBlock),
+        officeHourLocation(section.text)
+      );
+
+      return dayCodes.map((dayCode) => ({
+        personName,
+        personEmail,
+        location,
+        dayCode,
+        startDate: termBounds.startDate,
+        exDates: [],
+        startTime: range.startTime!,
+        endTime: range.endTime!,
+        notes: range.inferred
+          ? ["Office-hour time inferred from shorthand in outline."]
+          : [],
+        provenance: [makeProvenance(section, "prose", line)],
+      }));
+    });
+  });
+
+  if (fallbackSeeds.length === 0) {
+    const htmlBlock = rawHtml.match(
+      /<strong[^>]*>\s*Instructor.?s Office Hours\s*<\/strong>[\s\S]*?(?=<p[^>]*>\s*<strong[^>]*>\s*(?:Contacting the Instructor|Teaching Assistants?|TA(?:.s)?|Course Description|Student Resources)\s*<\/strong>|$)/i
+    )?.[0];
+
+    if (htmlBlock) {
+      const officeHourBlock = normalizeOfficeHourParsingText(
+        htmlSnippetToText(
+          htmlBlock.replace(
+            /<strong[^>]*>\s*Instructor.?s Office Hours\s*<\/strong>/i,
+            "Office Hours\n"
+          )
+        )
+      );
+      const officeHourLines = officeHourBlock
+        .split(/\n+/)
+        .map((line) => normalizeWhitespace(line))
+        .filter(
+          (line) =>
+            OFFICE_HOUR_WEEKDAY_REGEX.test(line) &&
+            /\d{1,2}(?::\d{2})?\s*(?:-|–|—|to)\s*\d{1,2}(?::\d{2})?/i.test(line)
+        );
+
+      const personName =
+        meetings.find((meeting) => meeting.instructorName)?.instructorName ||
+        sanitizeOfficeHourPersonName(meta.courseName);
+      const personEmail = meetings.find((meeting) => meeting.instructorEmail)?.instructorEmail;
+
+      if (personName && !isGenericOfficeHourName(personName)) {
+        fallbackSeeds = officeHourLines.flatMap((line) => {
+          const dayText = line.match(
+            /^((?:(?:and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F)\.?\s*(?:\/|,|&|-|\band\b)?\s*)+)/i
+          )?.[1];
+          const rangeText = line.match(
+            /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/i
+          )?.[0];
+
+          const dayCodes = parseOfficeHourDayCodes(dayText);
+          const range = rangeText ? parseOfficeHourTimeRange(rangeText) : {};
+          if (dayCodes.length === 0 || !range.startTime || !range.endTime) {
+            return [];
+          }
+
+          const location = chooseOfficeHourLocation(officeHourLocation(line), officeHourLocation(officeHourBlock));
+
+          return dayCodes.map((dayCode) => ({
+            personName,
+            personEmail,
+            location,
+            dayCode,
+            startDate: termBounds.startDate,
+            exDates: [],
+            startTime: range.startTime!,
+            endTime: range.endTime!,
+            notes: range.inferred
+              ? ["Office-hour time inferred from shorthand in outline."]
+              : [],
+            provenance: [
+              {
+                sectionId: "instructional_team",
+                sectionTitle: "Instructional Team",
+                sourceKind: "prose" as const,
+                snippet: line,
+              },
+            ],
+          }));
+        });
+      }
+    }
+  }
+
+  return createOfficeHourEvents(course, dedupeOfficeHourSeeds(fallbackSeeds), termBounds);
 }
 
 function createAssessmentEvents(
@@ -7885,7 +9531,7 @@ function confidenceRank(confidence: EventConfidence) {
 function looksLikeMidterm(event: EventCandidate) {
   return (
     event.eventType === "Assessment" &&
-    /\bmidterm\b/i.test(event.label) &&
+    /\b(?:midterm|term test)\b/i.test(event.label) &&
     !/\b(?:group-stage|individual test)\b/i.test(event.label)
   );
 }
@@ -7902,6 +9548,15 @@ function midtermRichnessScore(event: EventCandidate) {
 }
 
 function candidateMidtermDates(event: EventCandidate) {
+  if (
+    event.timing.kind === "single" &&
+    event.timing.date &&
+    /\b(?:midterm|term test|test)\b/i.test(event.label) &&
+    /#\s*\d+\b/.test(event.label)
+  ) {
+    return [event.timing.date];
+  }
+
   const explicit = new Set<string>();
   if (event.timing.kind === "single" && event.timing.date) {
     explicit.add(event.timing.date);
@@ -8091,7 +9746,7 @@ function canonicalAssessmentFamily(label: string) {
   const normalized = normalizeAssessmentLabel(label).toLowerCase();
   if (/\bendterm\b/.test(normalized)) return "endterm";
   if (/\bmidterm\b/.test(normalized)) return "midterm";
-  if (/\bterm test\b/.test(normalized)) return "term test";
+  if (/\bterm test\b/.test(normalized)) return "test";
   if (/\bquiz\b/.test(normalized)) return "quiz";
   if (/\btest\b/.test(normalized)) return "test";
   if (/\bexam\b/.test(normalized)) return "exam";
@@ -8109,12 +9764,17 @@ function dedupeEquivalentAssessments(events: EventCandidate[]) {
     }
 
     const family = canonicalAssessmentFamily(event.label);
+    const compatibleFamilies = new Set<string>([family]);
+    if (family === "midterm" || family === "test") {
+      compatibleFamilies.add("midterm");
+      compatibleFamilies.add("test");
+    }
     const existing = deduped.find((candidate) => {
       if (
         candidate.eventType !== "Assessment" ||
         candidate.timing.kind !== "single" ||
         candidate.courseId !== event.courseId ||
-        canonicalAssessmentFamily(candidate.label) !== family
+        !compatibleFamilies.has(canonicalAssessmentFamily(candidate.label))
       ) {
         return false;
       }
@@ -8288,13 +9948,17 @@ function dropShadowedTentativePlanEvents(events: EventCandidate[]) {
           : canonicalAssessmentFamily(candidate.label);
       if (!candidateFamily || candidateFamily !== family) return false;
 
+      const sameCalendarDay =
+        format(parseISO(candidate.timing.date), "MM-dd") ===
+        format(parseISO(event.timing.date), "MM-dd");
       const sameWindow =
         Math.abs(
           differenceInCalendarDays(
             parseISO(candidate.timing.date),
             parseISO(event.timing.date)
           )
-        ) <= 2;
+        ) <= 2 ||
+        sameCalendarDay;
       if (!sameWindow) return false;
 
       const candidateScore =
@@ -8305,6 +9969,13 @@ function dropShadowedTentativePlanEvents(events: EventCandidate[]) {
         event.eventType === "Assignment"
           ? assignmentDeduplicationScore(event)
           : assessmentDeduplicationScore(event);
+      if (
+        sameCalendarDay &&
+        !isTentativePlanTableEvent(candidate) &&
+        candidateScore >= eventScore
+      ) {
+        return true;
+      }
       if (preferredMergedLabel(event.label, candidate.label) !== candidate.label) {
         return false;
       }
@@ -8449,6 +10120,7 @@ function isGenericSummaryLabel(label: string) {
   const normalized = normalizeWhitespace(label).toLowerCase();
   return (
     /^(?:\d+\s+)?quizzes?$/.test(normalized) ||
+    /^(?:\d+\s+)?term tests?$/.test(normalized) ||
     /^(?:\d+\s+)?written tutorial assignments?$/.test(normalized) ||
     /^(?:\d+\s+)?tutorial assignments?$/.test(normalized) ||
     /^(?:\d+\s+)?assignments?$/.test(normalized)
@@ -8564,6 +10236,91 @@ function dropShadowedSummaryEvents(events: EventCandidate[]) {
   });
 }
 
+function renumberSequentialAssessmentSeries(events: EventCandidate[]) {
+  const grouped = new Map<
+    string,
+    { baseLabel: string; normalizedFamily: string; events: EventCandidate[] }
+  >();
+
+  events.forEach((event) => {
+    if (
+      event.eventType !== "Assessment" ||
+      event.timing.kind !== "single" ||
+      !event.timing.date ||
+      !/#\s*\d+\b/.test(event.label)
+    ) {
+      return;
+    }
+
+    const baseLabel = normalizeAssessmentLabel(event.label)
+      .replace(/\s*#\s*\d+\b/i, "")
+      .trim();
+    if (!baseLabel) return;
+
+    const family = canonicalAssessmentFamily(baseLabel);
+    const normalizedFamily = family === "test" ? "midterm" : family;
+    const normalizedBaseLabel =
+      normalizedFamily === "midterm" ? "Midterm" : baseLabel;
+    const key = `${event.courseId}::${normalizedFamily}::${normalizedBaseLabel.toLowerCase()}`;
+    const bucket =
+      grouped.get(key) ??
+      {
+        baseLabel: normalizedBaseLabel,
+        normalizedFamily,
+        events: [],
+      };
+    bucket.events.push(event);
+    grouped.set(key, bucket);
+  });
+
+  grouped.forEach((bucket) => {
+    if (bucket.events.length < 2) return;
+
+    bucket.events
+      .sort((left, right) => {
+        const dateCompare = left.timing.date!.localeCompare(right.timing.date!);
+        if (dateCompare !== 0) return dateCompare;
+        return (left.timing.startTime ?? "").localeCompare(right.timing.startTime ?? "");
+      })
+      .forEach((event, index) => {
+        event.label = `${bucket.baseLabel} #${index + 1}`;
+      });
+  });
+
+  const midtermGroups = new Map<string, EventCandidate[]>();
+  events.forEach((event) => {
+    if (
+      event.eventType !== "Assessment" ||
+      event.timing.kind !== "single" ||
+      !event.timing.date ||
+      !looksLikeMidterm(event)
+    ) {
+      return;
+    }
+
+    const key = `${event.courseId}::midterm`;
+    const bucket = midtermGroups.get(key) ?? [];
+    bucket.push(event);
+    midtermGroups.set(key, bucket);
+  });
+
+  midtermGroups.forEach((bucket) => {
+    if (bucket.length < 2) return;
+
+    bucket
+      .sort((left, right) => {
+        const dateCompare = left.timing.date!.localeCompare(right.timing.date!);
+        if (dateCompare !== 0) return dateCompare;
+        return (left.timing.startTime ?? "").localeCompare(right.timing.startTime ?? "");
+      })
+      .forEach((event, index) => {
+        event.label = `Midterm #${index + 1}`;
+      });
+  });
+
+  return events;
+}
+
 function mergeLabAssessmentsIntoLabEvents(events: EventCandidate[]) {
   const labSeedEvents = events.filter(
     (event) =>
@@ -8612,6 +10369,42 @@ function mergeLabAssessmentsIntoLabEvents(events: EventCandidate[]) {
   });
 
   return events.filter((event) => !mergedIds.has(event.id));
+}
+
+function renumberFinalMidtermLabels(events: EventCandidate[]) {
+  const grouped = new Map<string, EventCandidate[]>();
+
+  events.forEach((event) => {
+    if (
+      event.eventType !== "Assessment" ||
+      event.timing.kind !== "single" ||
+      !event.timing.date ||
+      !looksLikeMidterm(event)
+    ) {
+      return;
+    }
+
+    const key = `${event.courseId}::midterm`;
+    const bucket = grouped.get(key) ?? [];
+    bucket.push(event);
+    grouped.set(key, bucket);
+  });
+
+  grouped.forEach((bucket) => {
+    if (bucket.length < 2) return;
+
+    bucket
+      .sort((left, right) => {
+        const dateCompare = left.timing.date!.localeCompare(right.timing.date!);
+        if (dateCompare !== 0) return dateCompare;
+        return (left.timing.startTime ?? "").localeCompare(right.timing.startTime ?? "");
+      })
+      .forEach((event, index) => {
+        event.label = `Midterm #${index + 1}`;
+      });
+  });
+
+  return events;
 }
 
 function hasStrongAssessmentCue(label: string) {
@@ -9338,6 +11131,42 @@ function compactRecurringAssessmentSeries(events: EventCandidate[]) {
   return [...passthrough, ...compacted];
 }
 
+function normalizeTableEventDatesToTermYear(events: EventCandidate[], meta: OutlineMeta) {
+  return events.map((event) => {
+    if (event.timing.kind !== "single" || !event.timing.date) {
+      return event;
+    }
+
+    const tableProvenance = event.provenance.find(
+      (entry) =>
+        entry.sourceKind === "table" &&
+        /^(?:tentative_class_plan|weekly_course_schedule|week_by_week_course_schedule|course_schedule)$/i.test(
+          entry.sectionId
+        )
+    );
+    if (!tableProvenance) {
+      return event;
+    }
+
+    const normalizedDate = normalizeWeekTableInferredDate(
+      event.timing.date,
+      tableProvenance.snippet,
+      meta.termYear
+    );
+    if (!normalizedDate || normalizedDate === event.timing.date) {
+      return event;
+    }
+
+    return {
+      ...event,
+      timing: {
+        ...event.timing,
+        date: normalizedDate,
+      },
+    };
+  });
+}
+
 function dedupeEvents(events: EventCandidate[]) {
   const byKey = new Map<string, EventCandidate>();
 
@@ -9399,6 +11228,10 @@ export function parseOutlineHtml(html: string, outlineName: string): OutlinePars
 
   const tableData = parseTables(sections, meta, scheduleData.sectionOptions);
   const proseData = parseRelevantProse(sections, meta, tableData.weekWindows);
+  const documentWideWeightTableAssessments =
+    tableData.assessments.length === 0 && proseData.assessments.length === 0
+      ? parseDocumentWideDatedWeightTables(document, meta)
+      : [];
   const structuredOfficeHourTableSeeds = parseStructuredOfficeHourTables(
     sections,
     meta,
@@ -9433,19 +11266,30 @@ export function parseOutlineHtml(html: string, outlineName: string): OutlinePars
     sections,
     meta,
     scheduleData.meetings
+  );
+  const inlineInstructionalSectionIds = new Set(
+    inlineInstructionalOfficeHourSeeds.flatMap((seed) =>
+      seed.provenance.map((entry) => entry.sectionId).filter(Boolean)
+    )
+  );
+  const filteredStructuredOfficeHourLineSeeds = structuredOfficeHourLineSeeds.filter(
+    (seed) =>
+      !seed.provenance.some((entry) => inlineInstructionalSectionIds.has(entry.sectionId))
+  );
+  const genericOfficeHourSeeds = parseOfficeHours(
+    sections,
+    meta,
+    scheduleData.meetings
   ).filter(
     (seed) =>
-      !seed.provenance.some(
-        (entry) =>
-          structuredOfficeHourSectionIds.has(entry.sectionId) ||
-          structuredOfficeHourLineSectionIds.has(entry.sectionId)
-      )
+      !seed.provenance.some((entry) => inlineInstructionalSectionIds.has(entry.sectionId))
   );
   const officeHourSeeds = dedupeOfficeHourSeeds([
     ...structuredOfficeHourTableSeeds,
-    ...structuredOfficeHourLineSeeds,
-    ...parseOfficeHours(sections, meta, scheduleData.meetings),
+    ...filteredStructuredOfficeHourLineSeeds,
+    ...genericOfficeHourSeeds,
     ...inlineInstructionalOfficeHourSeeds,
+    ...recoverInstructionalTeamOfficeHours(sections, meta, scheduleData.meetings),
   ]);
   const termBounds =
     computeTermBounds(scheduleData.meetings) ?? computeFallbackTermBounds(sections, meta);
@@ -9459,31 +11303,46 @@ export function parseOutlineHtml(html: string, outlineName: string): OutlinePars
     [...tableData.exclusions, ...proseData.exclusions]
   );
 
-  const officeHourEvents = createOfficeHourEvents(course, officeHourSeeds, termBounds);
+  let officeHourEvents = createOfficeHourEvents(course, officeHourSeeds, termBounds);
+  if (officeHourEvents.length === 0) {
+    officeHourEvents = createFallbackInstructionalTeamOfficeHourEvents(
+      course,
+      html,
+      sections,
+      meta,
+      scheduleData.meetings,
+      termBounds
+    );
+  }
   const assessmentResult = createAssessmentEvents(
     course,
     scheduleData.meetings,
-    [...tableData.assessments, ...proseData.assessments],
+    [...tableData.assessments, ...documentWideWeightTableAssessments, ...proseData.assessments],
     meetingEvents,
     tableData.assessmentWeights
   );
-  const normalizedAssessmentEvents = normalizeAssessmentEventTypes(
-    assessmentResult.assessmentEvents
+  const normalizedAssessmentEvents = normalizeTableEventDatesToTermYear(
+    normalizeAssessmentEventTypes(assessmentResult.assessmentEvents),
+    meta
   );
-  const compactedAssessmentEvents = dropShadowedSummaryEvents(
-    dropShadowedGenericTimedSummaryEvents(
-      dropShadowedTentativePlanEvents(
-        dedupeEquivalentAssessments(
-          compactGenericWeeklySeries(
-            compactRecurringAssessmentSeries(
-              compactAssignmentSeries(
-                mergeAssessmentWindowPairs(dedupeEquivalentAssignments(dedupeMidterms(normalizedAssessmentEvents)))
+  const compactedAssessmentEvents = normalizeTableEventDatesToTermYear(
+    dropShadowedSummaryEvents(
+      dropShadowedGenericTimedSummaryEvents(
+        dropShadowedTentativePlanEvents(
+          renumberSequentialAssessmentSeries(
+            dedupeEquivalentAssessments(
+            compactGenericWeeklySeries(
+              compactRecurringAssessmentSeries(
+                compactAssignmentSeries(
+                  mergeAssessmentWindowPairs(dedupeEquivalentAssignments(dedupeMidterms(normalizedAssessmentEvents)))
+                )
               )
             )
-          )
+          ))
         )
       )
-    )
+    ),
+    meta
   );
   const mergedEvents = mergeLabAssessmentsIntoLabEvents([
     ...assessmentResult.meetingEvents,
@@ -9493,7 +11352,7 @@ export function parseOutlineHtml(html: string, outlineName: string): OutlinePars
 
   const events = applyCalendarTitles(
     course,
-    dedupeEvents(mergedEvents).map((event) => ({
+    renumberFinalMidtermLabels(dedupeEvents(mergedEvents).map((event) => ({
       ...event,
       label:
         event.eventType === "Assessment"
@@ -9509,7 +11368,7 @@ export function parseOutlineHtml(html: string, outlineName: string): OutlinePars
           : event.label,
       reviewNeeded: reviewNeededForEvent(event) || event.reviewNeeded,
       include: event.include && !reviewNeededForEvent(event),
-    }))
+    })))
   );
 
   course.eventIds = events.map((event) => event.id);

@@ -538,6 +538,7 @@
         "reviewNeeded": true,
         "confidence": "low",
         "notes": [
+          "Midterm",
           "06. OLED Physics and Technology\nMidterm"
         ],
         "timing": {
@@ -564,8 +565,7 @@
         "reviewNeeded": false,
         "confidence": "high",
         "notes": [
-          "The quiz will be ~20 minutes long and will be held during regular lecture time on Monday, Feb 3, 2025.",
-          "Weight: 10%"
+          "The quiz will be ~20 minutes long and will be held during regular lecture time on Monday, Feb 3, 2025."
         ],
         "timing": {
           "kind": "single",
@@ -580,12 +580,6 @@
             "sectionTitle": "Student Assessment",
             "sourceKind": "prose",
             "snippet": "The quiz will be ~20 minutes long and will be held during regular lecture time on Monday, Feb 3, 2025."
-          },
-          {
-            "sectionId": "student_assessment",
-            "sectionTitle": "Student Assessment",
-            "sourceKind": "table",
-            "snippet": "Quiz | 10%"
           }
         ]
       },
@@ -880,7 +874,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office hour: Wednesday 11:20am-12:20pm, E5-5027"
+            "snippet": "Professor Kerstin Dautenhahn email: kerstin.dautenhahn@uwaterloo.ca https://uwaterloo.ca/electrical-computer-engineering/profile/kdautenh Office hour: Wednesday 11:20am-12:20pm, E5-5027"
           }
         ]
       }
@@ -1324,12 +1318,12 @@
       "Assessments": 1,
       "Lab": 4,
       "Lecture": 2,
-      "Office Hours": 3,
+      "Office Hours": 1,
       "Tutorial": 1
     },
     "events": [
       {
-        "id": "1quioza",
+        "id": "vr6m5u",
         "label": "Midterm",
         "title": "ECE 327/ECE 627 Midterm",
         "eventType": "Assessment",
@@ -1337,16 +1331,14 @@
         "location": "",
         "include": true,
         "reviewNeeded": false,
-        "confidence": "high",
+        "confidence": "medium",
         "notes": [
           "Week 6\nFeb 9 - Feb 13 | Lecture 11\nResource Sharing | Tutorial 5 | Lecture 12\nMidterm Review"
         ],
         "timing": {
           "kind": "single",
-          "date": "2026-02-09",
-          "startTime": "10:00",
-          "endTime": "11:20",
-          "allDay": false
+          "date": "2026-02-06",
+          "allDay": true
         },
         "provenance": [
           {
@@ -1630,9 +1622,7 @@
             "MO",
             "TH"
           ],
-          "exDates": [
-            "2026-02-09"
-          ],
+          "exDates": [],
           "occurrenceNotes": {}
         },
         "provenance": [
@@ -1718,71 +1708,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office hours: Wednesday 11:30 am - 12:30 pm (@ E2-2356A on Jan 21, Mar 4, Mar 18, Apr 1)"
-          }
-        ]
-      },
-      {
-        "id": "x7ue26",
-        "label": "Office Hours with Andrew Boutros",
-        "title": "ECE 327/ECE 627 Office Hours @ E2-2356A",
-        "eventType": "OfficeHours",
-        "eventGroup": "Office Hours",
-        "location": "E2-2356A",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "high",
-        "notes": [],
-        "timing": {
-          "kind": "recurring",
-          "startDate": "2026-01-05",
-          "endDate": "2026-04-06",
-          "startTime": "16:30",
-          "endTime": "17:30",
-          "byDay": [
-            "WE"
-          ],
-          "exDates": [],
-          "occurrenceNotes": {}
-        },
-        "provenance": [
-          {
-            "sectionId": "instructional_team",
-            "sectionTitle": "Instructional Team",
-            "sourceKind": "prose",
-            "snippet": "Office hours: Wednesday 4:30 pm - 5:30 pm (@ E2-2356A on Jan 21, Feb 4, Mar 4, Mar 18, Apr 1)"
-          }
-        ]
-      },
-      {
-        "id": "1ecbxz",
-        "label": "Office Hours with Marwan Mekhemer",
-        "title": "ECE 327/ECE 627 Office Hours @ E2-2356A",
-        "eventType": "OfficeHours",
-        "eventGroup": "Office Hours",
-        "location": "E2-2356A",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "high",
-        "notes": [],
-        "timing": {
-          "kind": "recurring",
-          "startDate": "2026-01-05",
-          "endDate": "2026-04-06",
-          "startTime": "11:30",
-          "endTime": "12:30",
-          "byDay": [
-            "TU"
-          ],
-          "exDates": [],
-          "occurrenceNotes": {}
-        },
-        "provenance": [
-          {
-            "sectionId": "instructional_team",
-            "sectionTitle": "Instructional Team",
-            "sourceKind": "prose",
-            "snippet": "Office hours: Tuesday 11:30 am - 12:30 pm (@ E2-2356A on Jan 20, Feb 3, Mar 3, Mar 17, Mar 31)"
+            "snippet": "Monday @ 12:30 - 1:30 PM Lab Instructor: Maran Ma Contact: maran.ma@uwaterloo.ca Office: E2-3354A Office hours: Wednesday 11:30 AM - 12:30 PM (@ E2-2356A on Jan 21, Mar 4, Mar 18, Apr 1)"
           }
         ]
       },
@@ -1904,7 +1830,8 @@
       }
     ],
     "countsByGroup": {
-      "Lecture": 3
+      "Lecture": 3,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -1995,6 +1922,40 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "Thursday - Thursday Jan 8 04:00PM - 05:20PM EIT 3142"
+          }
+        ]
+      },
+      {
+        "id": "1xeum0y",
+        "label": "Office Hours with Prof. Michael W. Fisher",
+        "title": "ECE 700 Office Hours @ EIT-3112",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT-3112",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "10:30",
+          "endTime": "11:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "EIT-3112, Thursdays from 10:30-11:30 AM"
           }
         ]
       }
@@ -2089,9 +2050,7 @@
     "courseCode": "ECE 6616PD",
     "courseName": "Electric Safety and Grounding System Design",
     "term": "Winter 2026",
-    "warnings": [
-      "No calendar-ready events were detected in this outline."
-    ],
+    "warnings": [],
     "sectionOptions": [
       {
         "id": "196zcqo",
@@ -2105,8 +2064,43 @@
         "scheduleSummary": "Online"
       }
     ],
-    "countsByGroup": {},
-    "events": []
+    "countsByGroup": {
+      "Office Hours": 1
+    },
+    "events": [
+      {
+        "id": "1h8b73l",
+        "label": "Office Hours with Dr. M.M.A. Salama",
+        "title": "ECE 6616PD Office Hours",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-01",
+          "endDate": "2026-04-30",
+          "startTime": "16:30",
+          "endTime": "17:30",
+          "byDay": [
+            "TH"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Thursday 4:30 PM to 5:30 PM"
+          }
+        ]
+      }
+    ]
   },
   {
     "fileName": "Winter 2026_ Foundations of Software Engineering.html",
@@ -2305,7 +2299,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office hours: Monday & Friday, 11:00 AM - 12:00 PM"
+            "snippet": "Monday & Friday, 11:00 AM - 12:00 PM Location: EIT 4127"
           }
         ]
       },
@@ -2337,7 +2331,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office hours: Monday & Friday, 11:00 AM - 12:00 PM"
+            "snippet": "Monday & Friday, 11:00 AM - 12:00 PM Location: EIT 4127"
           }
         ]
       }
@@ -2353,7 +2347,8 @@
     ],
     "sectionOptions": [],
     "countsByGroup": {
-      "Assessments": 1
+      "Assessments": 1,
+      "Office Hours": 1
     },
     "events": [
       {
@@ -2388,6 +2383,40 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "prose",
             "snippet": "There will be one in-person in-class midterm tentatively set for the first lecture after winter break (i.e., 23 Feb 2026) and will count for 35% of the grade."
+          }
+        ]
+      },
+      {
+        "id": "1ejxbjc",
+        "label": "Office Hours with Prof. Patrick Mitran",
+        "title": "ECE 612 Office Hours @ EIT-4146",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT-4146",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2011-12-01",
+          "endDate": "2026-02-23",
+          "startTime": "10:30",
+          "endTime": "11:30",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tuesdays, 10:30-11:30am E-mail: pmitran@uwaterloo.ca Discussion: Piazza will be used for course discussion Self-signup: https://piazza.com/uwaterloo.ca/winter 2026/ece 612 Access-code : Shannon 612"
           }
         ]
       }
@@ -2565,7 +2594,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office Hours: Monday & Friday, 10:00-11:00 AM"
+            "snippet": "Monday & Friday, 10:00-11:00 AM Office Location: EIT 4127"
           }
         ]
       },
@@ -2599,7 +2628,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office Hours: Monday & Friday, 10:00-11:00 AM"
+            "snippet": "Monday & Friday, 10:00-11:00 AM Office Location: EIT 4127"
           }
         ]
       }
@@ -2900,13 +2929,14 @@
     "countsByGroup": {
       "Assessments": 2,
       "Assignments": 1,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
         "id": "15595y0",
-        "label": "Quiz#1",
-        "title": "ECE 730/NE 487 Quiz#1 @ In person",
+        "label": "Quiz #1",
+        "title": "ECE 730/NE 487 Quiz #1 @ In person",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "In person",
@@ -2932,8 +2962,8 @@
       },
       {
         "id": "1ysogq6",
-        "label": "Quiz#2",
-        "title": "ECE 730/NE 487 Quiz#2 @ In person",
+        "label": "Quiz #2",
+        "title": "ECE 730/NE 487 Quiz #2 @ In person",
         "eventType": "Assessment",
         "eventGroup": "Assessments",
         "location": "In person",
@@ -3016,6 +3046,40 @@
             "snippet": "ECE 730 / NE 487 001 [LEC] Tuesday, Thursday - Tue, Thu Jan 5 - Apr 6 02:30PM - 03:50PM QNC 2502 Hesam Abouali hesam.abouali@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "bmp5vp",
+        "label": "Office Hours with Hesam Abouali",
+        "title": "ECE 730/NE 487 Office Hours @ QNC 5622",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "QNC 5622",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:00",
+          "endTime": "13:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Wednesdays 12-1 PM (by appointment), Location: QNC 5622"
+          }
+        ]
       }
     ]
   },
@@ -3042,7 +3106,7 @@
       "Assessments": 1,
       "Assignments": 8,
       "Lecture": 1,
-      "Office Hours": 1
+      "Office Hours": 2
     },
     "events": [
       {
@@ -3327,6 +3391,40 @@
         ]
       },
       {
+        "id": "14mnqba",
+        "label": "Office Hours with Prof. Elliot Creager",
+        "title": "ECE 657D Office Hours @ EIT 3116",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "EIT 3116",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "12:00",
+          "endTime": "13:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "• Office Hours: - Tue 12:00--1:00pm by Zoom - Wed 4:00–5:00pm in EIT 3116"
+          }
+        ]
+      },
+      {
         "id": "tj7r6f",
         "label": "Office Hours with Prof. Elliot Creager",
         "title": "ECE 657D Office Hours @ EIT 3116",
@@ -3356,7 +3454,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "- Wed 4:00–5:00pm in EIT 3116"
+            "snippet": "• Office Hours: - Tue 12:00--1:00pm by Zoom - Wed 4:00–5:00pm in EIT 3116"
           }
         ]
       }
@@ -5382,7 +5480,7 @@
             "sectionId": "instructional_team",
             "sectionTitle": "Instructional Team",
             "sourceKind": "prose",
-            "snippet": "Office Hours: Wednesday 11:20am-12:20pm, E5-5027"
+            "snippet": "Wednesday 11:20am-12:20pm, E5-5027"
           }
         ]
       },
@@ -5475,9 +5573,9 @@
         ]
       },
       {
-        "id": "yrkt61",
-        "label": "Assignment 1: test Engineering #1",
-        "title": "ECE 653 Assignment 1: test Engineering #1",
+        "id": "1oskceh",
+        "label": "Assignment 1: Test Engineering #1",
+        "title": "ECE 653 Assignment 1: Test Engineering #1",
         "eventType": "Assignment",
         "eventGroup": "Assignments",
         "location": "",
@@ -5626,9 +5724,9 @@
     },
     "events": [
       {
-        "id": "1u8iu3i",
-        "label": "Apr 06: Project Report",
-        "title": "ECE 493/ECE 752 Apr 06: Project Report @ LEARN",
+        "id": "17tij13",
+        "label": "Project Report",
+        "title": "ECE 493/ECE 752 Project Report @ LEARN",
         "eventType": "Assignment",
         "eventGroup": "Assignments",
         "location": "LEARN",

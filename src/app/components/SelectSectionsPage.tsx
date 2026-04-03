@@ -381,7 +381,7 @@ function CourseCard({
         >
           <div className="overflow-hidden">
             <div
-              className={`flex flex-col gap-4 px-6 pb-5 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              className={`flex flex-col gap-4 px-6 ${showOfficeHours ? "pb-4" : "pb-2"} transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 expanded ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
               }`}
             >

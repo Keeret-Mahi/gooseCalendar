@@ -21,7 +21,8 @@
     "countsByGroup": {
       "Assessments": 2,
       "Assignments": 27,
-      "Lecture": 1
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -923,6 +924,74 @@
             "snippet": "PHIL 680A 001 [SEM] Tuesday, Thursday - Tue, Thu Sep 3 - Dec 2 11:30AM - 12:50PM HH 335 Jennifer Saul jennifer.saul@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "13qgr55",
+        "label": "Office Hours with Jennifer Saul",
+        "title": "PHIL 680A Office Hours @ HH 334",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "HH 334",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "30:00",
+          "endTime": "14:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tuesdays, 1.30-2.30, and my office is HH 334. But I'm also happy to meet at lots of other times-- just send me an email and we can set something up."
+          }
+        ]
+      },
+      {
+        "id": "19jxr58",
+        "label": "Office Hours with Jennifer Saul",
+        "title": "PHIL 680A Office Hours @ HH 334",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "HH 334",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2025-09-03",
+          "endDate": "2025-12-02",
+          "startTime": "30:00",
+          "endTime": "14:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tuesdays, 1.30-2.30, and my office is HH 334. But I'm also happy to meet at lots of other times-- just send me an email and we can set something up."
+          }
+        ]
       }
     ]
   },
@@ -947,8 +1016,9 @@
     ],
     "countsByGroup": {
       "Assessments": 2,
-      "Assignments": 9,
-      "Lecture": 1
+      "Assignments": 8,
+      "Lecture": 1,
+      "Office Hours": 2
     },
     "events": [
       {
@@ -1006,33 +1076,6 @@
         ]
       },
       {
-        "id": "5m0y2f",
-        "label": "April 20: Public Philosophy Project",
-        "title": "PHIL 680B April 20: Public Philosophy Project",
-        "eventType": "Assignment",
-        "eventGroup": "Assignments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "April 20: Public Philosophy Project DUE"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-04-20",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "tentative_class_plan",
-            "sectionTitle": "Tentative Class Plan",
-            "sourceKind": "prose",
-            "snippet": "April 20: Public Philosophy Project DUE"
-          }
-        ]
-      },
-      {
         "id": "1u5se8p",
         "label": "Conference Presentation",
         "title": "PHIL 680B Conference Presentation @ In person",
@@ -1060,63 +1103,9 @@
         ]
       },
       {
-        "id": "1g7uykp",
-        "label": "February 24: Response to Revise and Resubmit, Final Paper",
-        "title": "PHIL 680B February 24: Response to Revise and Resubmit, Final Paper @ In class",
-        "eventType": "Assignment",
-        "eventGroup": "Assignments",
-        "location": "In class",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "February 24: Response to Revise and Resubmit, Final Paper DUE"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-24",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "tentative_class_plan",
-            "sectionTitle": "Tentative Class Plan",
-            "sourceKind": "prose",
-            "snippet": "February 24: Response to Revise and Resubmit, Final Paper DUE"
-          }
-        ]
-      },
-      {
-        "id": "5qxxmy",
-        "label": "January 13: Revise and Resubmit Report on Colleague's Paper",
-        "title": "PHIL 680B January 13: Revise and Resubmit Report on Colleague's Paper @ In class",
-        "eventType": "Assignment",
-        "eventGroup": "Assignments",
-        "location": "In class",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "January 13: Revise and Resubmit Report on Colleague's Paper DUE"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-01-13",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "tentative_class_plan",
-            "sectionTitle": "Tentative Class Plan",
-            "sourceKind": "prose",
-            "snippet": "January 13: Revise and Resubmit Report on Colleague's Paper DUE"
-          }
-        ]
-      },
-      {
-        "id": "13bcm9r",
-        "label": "March 3: Jobs in Philosophy, Help with Research Proposal",
-        "title": "PHIL 680B March 3: Jobs in Philosophy, Help with Research Proposal @ In class",
+        "id": "ghp1fr",
+        "label": "Jobs in Philosophy, Help with Research Proposal",
+        "title": "PHIL 680B Jobs in Philosophy, Help with Research Proposal @ In class",
         "eventType": "Assignment",
         "eventGroup": "Assignments",
         "location": "In class",
@@ -1151,7 +1140,8 @@
         "reviewNeeded": false,
         "confidence": "medium",
         "notes": [
-          "Weight: 15 points"
+          "Weight: 15 points",
+          "April 20: Public Philosophy Project DUE"
         ],
         "timing": {
           "kind": "single",
@@ -1164,6 +1154,12 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "Public Philosophy Project | 20 April | Drop Box | 15 points"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "April 20: Public Philosophy Project DUE"
           }
         ]
       },
@@ -1195,9 +1191,9 @@
         ]
       },
       {
-        "id": "c9t4jg",
-        "label": "Response to Revise and Resubmit, final paper",
-        "title": "PHIL 680B Response to Revise and Resubmit, final paper",
+        "id": "1aoxpn8",
+        "label": "Research Proposals",
+        "title": "PHIL 680B Research Proposals",
         "eventType": "Assignment",
         "eventGroup": "Assignments",
         "location": "",
@@ -1205,7 +1201,35 @@
         "reviewNeeded": false,
         "confidence": "medium",
         "notes": [
-          "Weight: 20 points"
+          "March 10: Research Proposals DUE"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-10",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "March 10: Research Proposals DUE"
+          }
+        ]
+      },
+      {
+        "id": "c9t4jg",
+        "label": "Response to Revise and Resubmit, final paper",
+        "title": "PHIL 680B Response to Revise and Resubmit, final paper @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 20 points",
+          "February 24: Response to Revise and Resubmit, Final Paper DUE"
         ],
         "timing": {
           "kind": "single",
@@ -1218,6 +1242,12 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "Response to Revise and Resubmit, final paper | 24 February | Drop Box | 20 points"
+          },
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "February 24: Response to Revise and Resubmit, Final Paper DUE"
           }
         ]
       },
@@ -1245,6 +1275,33 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "Revise and resubmit report on colleague's draft paper | 13 January | Drop Box | 10 points"
+          }
+        ]
+      },
+      {
+        "id": "wro412",
+        "label": "Revise and Resubmit Report on Colleague's Paper",
+        "title": "PHIL 680B Revise and Resubmit Report on Colleague's Paper @ In class",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In class",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "January 13: Revise and Resubmit Report on Colleague's Paper DUE"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-13",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "tentative_class_plan",
+            "sectionTitle": "Tentative Class Plan",
+            "sourceKind": "prose",
+            "snippet": "January 13: Revise and Resubmit Report on Colleague's Paper DUE"
           }
         ]
       },
@@ -1279,6 +1336,74 @@
             "snippet": "PHIL 680B 001 [SEM] Tuesdays - Tuesdays Jan 5 - Apr 6 11:30AM - 02:20PM HH 335 Jennifer Saul jennifer.saul@uwaterloo.ca"
           }
         ]
+      },
+      {
+        "id": "7np019",
+        "label": "Office Hours with Jennifer Saul",
+        "title": "PHIL 680B Office Hours @ Online",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "30:00",
+          "endTime": "15:00",
+          "byDay": [
+            "MO"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tuesdays 2.30-3.30, but I'm also available many other times, in person or on zoom. Stop by, or send me an email."
+          }
+        ]
+      },
+      {
+        "id": "1tkrcp4",
+        "label": "Office Hours with Jennifer Saul",
+        "title": "PHIL 680B Office Hours @ Online",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Online",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "30:00",
+          "endTime": "15:00",
+          "byDay": [
+            "TU"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "Tuesdays 2.30-3.30, but I'm also available many other times, in person or on zoom. Stop by, or send me an email."
+          }
+        ]
       }
     ]
   },
@@ -1302,18 +1427,18 @@
       }
     ],
     "countsByGroup": {
-      "Assessments": 11,
-      "Assignments": 10,
-      "Lecture": 1
+      "Assignments": 19,
+      "Lecture": 1,
+      "Office Hours": 1
     },
     "events": [
       {
-        "id": "ov10pn",
-        "label": "Asking Questions About Other Term Papers",
-        "title": "PHIL 471/PHIL 673/PHIL 675 Asking Questions About Other Term Papers",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
+        "id": "13ainp2",
+        "label": "Asking Questions about other term Papers",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Asking Questions about other term Papers @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
         "include": true,
         "reviewNeeded": false,
         "confidence": "medium",
@@ -1331,276 +1456,6 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "table",
             "snippet": "Asking questions about other term papers | Thursday April 2 | In-person | 0% or 5%"
-          }
-        ]
-      },
-      {
-        "id": "19b0llk",
-        "label": "In-Class Reading Responses and In-Class Participation #1",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #1",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-01-08",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "1qwgzt2",
-        "label": "In-Class Reading Responses and In-Class Participation #10",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #10",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-03-19",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "rttbuv",
-        "label": "In-Class Reading Responses and In-Class Participation #2",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #2",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-01-15",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "2sgwwi",
-        "label": "In-Class Reading Responses and In-Class Participation #3",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #3",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-01-22",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "1wwq9i8",
-        "label": "In-Class Reading Responses and In-Class Participation #4",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #4",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-01-29",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "46hrrs",
-        "label": "In-Class Reading Responses and In-Class Participation #5",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #5",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-05",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "1kl5s99",
-        "label": "In-Class Reading Responses and In-Class Participation #6",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #6",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-12",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "kzlav7",
-        "label": "In-Class Reading Responses and In-Class Participation #7",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #7",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-02-26",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "usdyic",
-        "label": "In-Class Reading Responses and In-Class Participation #8",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #8",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-03-05",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
-          }
-        ]
-      },
-      {
-        "id": "1o3gnf7",
-        "label": "In-Class Reading Responses and In-Class Participation #9",
-        "title": "PHIL 471/PHIL 673/PHIL 675 In-Class Reading Responses and In-Class Participation #9",
-        "eventType": "Assessment",
-        "eventGroup": "Assessments",
-        "location": "",
-        "include": true,
-        "reviewNeeded": false,
-        "confidence": "medium",
-        "notes": [
-          "Weight: 30% total across 10 in-class reading responses and in-class participation"
-        ],
-        "timing": {
-          "kind": "single",
-          "date": "2026-03-12",
-          "allDay": true
-        },
-        "provenance": [
-          {
-            "sectionId": "assessments_amp_activities",
-            "sectionTitle": "Assessments & Activities",
-            "sourceKind": "table",
-            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
           }
         ]
       },
@@ -1642,7 +1497,8 @@
         "reviewNeeded": false,
         "confidence": "medium",
         "notes": [
-          "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible and no later than the Monday following the missed class."
+          "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible and no later than the Monday following the missed class.",
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
         ],
         "timing": {
           "kind": "single",
@@ -1655,6 +1511,228 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "prose",
             "snippet": "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwa..."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "5utpue",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-15",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "umee8x",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-22",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "o21qkf",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-01-29",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1h6ia6f",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "zxspt8",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "1d4px6e",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-02-26",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "7qxyt7",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-05",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
+          }
+        ]
+      },
+      {
+        "id": "173iib2",
+        "label": "Reading Response",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Reading Response @ In person",
+        "eventType": "Assignment",
+        "eventGroup": "Assignments",
+        "location": "In person",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "medium",
+        "notes": [
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
+        ],
+        "timing": {
+          "kind": "single",
+          "date": "2026-03-12",
+          "allDay": true
+        },
+        "provenance": [
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
           }
         ]
       },
@@ -1669,7 +1747,8 @@
         "reviewNeeded": false,
         "confidence": "medium",
         "notes": [
-          "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible and no later than the Monday following the missed class."
+          "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwaterloo.ca ) as soon as possible and no later than the Monday following the missed class.",
+          "Weight: 30% total across 10 in-class reading responses and in-class participation"
         ],
         "timing": {
           "kind": "single",
@@ -1682,6 +1761,12 @@
             "sectionTitle": "Assessments & Activities",
             "sourceKind": "prose",
             "snippet": "If, due to illness or another good reason, you miss a class when students write a reading response or have in-class discussion (which is every class from January 8 to March 19), please email me ( Christopher.Lowry@uwa..."
+          },
+          {
+            "sectionId": "assessments_amp_activities",
+            "sectionTitle": "Assessments & Activities",
+            "sourceKind": "table",
+            "snippet": "In-Class Reading Responses and In-Class Participation | Jan 8, 15, 22, 29, Feb 5, 12, 26, Mar 5, 12, 19 | In-person | 30%"
           }
         ]
       },
@@ -1968,6 +2053,40 @@
             "sectionTitle": "Class Schedule",
             "sourceKind": "schedule",
             "snippet": "PHIL 471 / PHIL 673 / PHIL 675 001 [SEM] Thursdays - Thursdays Jan 5 - Apr 6 11:30AM - 02:20PM HH 336 Chris Lowry christopher.lowry@uwaterloo.ca"
+          }
+        ]
+      },
+      {
+        "id": "jakpu4",
+        "label": "Office Hours with My email",
+        "title": "PHIL 471/PHIL 673/PHIL 675 Office Hours @ Hagey Hall 333",
+        "eventType": "OfficeHours",
+        "eventGroup": "Office Hours",
+        "location": "Hagey Hall 333",
+        "include": true,
+        "reviewNeeded": false,
+        "confidence": "high",
+        "notes": [
+          "Office-hour time inferred from shorthand in outline."
+        ],
+        "timing": {
+          "kind": "recurring",
+          "startDate": "2026-01-05",
+          "endDate": "2026-04-06",
+          "startTime": "14:00",
+          "endTime": "16:00",
+          "byDay": [
+            "WE"
+          ],
+          "exDates": [],
+          "occurrenceNotes": {}
+        },
+        "provenance": [
+          {
+            "sectionId": "instructional_team",
+            "sectionTitle": "Instructional Team",
+            "sourceKind": "prose",
+            "snippet": "My email is Christopher.Lowry@uwaterloo.ca. I will do my best to reply to email within 24 hours except on weekends and holidays. My drop-in office hours are on Wednesdays 2:00-4:00 in Hagey Hall 333. I will not have d..."
           }
         ]
       }

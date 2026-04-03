@@ -13,7 +13,19 @@ import {
 import { parseOutlineHtml } from "../src/app/lib/parser.ts";
 
 const SAMPLE_ROOT = path.resolve("sample_outlines");
-const OUTPUT_PATH = path.resolve("sample_outlines/full-date-comparison.json");
+const COURSE_BASED_ROOT = path.resolve("sample_outlines/course_based_outlines");
+const OUTPUT_PATH = path.resolve(
+  "sample_outlines/course_based_outlines/remaining-folders-date-comparison.json"
+);
+const INCLUDED_FOLDERS = new Set([
+  "ece_courses",
+  "econ_courses",
+  "geog_courses",
+  "gsj_courses",
+  "phil_courses",
+  "pmath_courses",
+  "rcs_courses",
+]);
 
 const dom = new JSDOM("");
 globalThis.DOMParser = dom.window.DOMParser as typeof DOMParser;
@@ -179,8 +191,8 @@ function extractRelevantSourceDates(lines: string[], fallbackYear: number) {
     if (isAncillaryDateLine(line)) continue;
 
     const dates = extractDatesFromText(line, fallbackYear);
-
     if (dates.length === 0) continue;
+
     entries.push({
       line,
       dates: Array.from(new Set(dates)),
@@ -195,7 +207,9 @@ function occurrenceDatesForEvent(event: ReturnType<typeof parseOutlineHtml>["eve
     return event.timing.date ? [event.timing.date] : [];
   }
 
-  const weekdayIndexes = event.timing.byDay.map((code) => WEEKDAY_CODES[code]).filter((value) => value !== undefined);
+  const weekdayIndexes = event.timing.byDay
+    .map((code) => WEEKDAY_CODES[code])
+    .filter((value) => value !== undefined);
   const excluded = new Set(event.timing.exDates);
   const dates: string[] = [];
 
@@ -212,18 +226,22 @@ function occurrenceDatesForEvent(event: ReturnType<typeof parseOutlineHtml>["eve
   return dates;
 }
 
-async function walkHtmlFiles(root: string) {
+async function walkIncludedHtmlFiles(root: string) {
   const results: string[] = [];
   const entries = await fs.readdir(root, { withFileTypes: true });
 
   for (const entry of entries) {
     const fullPath = path.join(root, entry.name);
     if (entry.isDirectory()) {
-      results.push(...(await walkHtmlFiles(fullPath)));
+      if (INCLUDED_FOLDERS.has(entry.name)) {
+        const nestedEntries = await fs.readdir(fullPath, { withFileTypes: true });
+        for (const nested of nestedEntries) {
+          if (nested.isFile() && /\.html?$/i.test(nested.name)) {
+            results.push(path.join(fullPath, nested.name));
+          }
+        }
+      }
       continue;
-    }
-    if (entry.isFile() && /\.html?$/i.test(entry.name)) {
-      results.push(fullPath);
     }
   }
 
@@ -256,7 +274,7 @@ function collectParserKnownDates(
 }
 
 async function main() {
-  const files = await walkHtmlFiles(SAMPLE_ROOT);
+  const files = await walkIncludedHtmlFiles(COURSE_BASED_ROOT);
   const report = [];
 
   for (const fullPath of files) {
@@ -287,7 +305,9 @@ async function main() {
   }
 
   await fs.writeFile(OUTPUT_PATH, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  console.log(`Wrote full source-vs-parser comparison for ${report.length} outlines to ${OUTPUT_PATH}`);
+  console.log(
+    `Wrote remaining course-based source-vs-parser comparison for ${report.length} outlines to ${OUTPUT_PATH}`
+  );
 }
 
 main().catch((error) => {

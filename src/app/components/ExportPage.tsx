@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { RouteGuard } from "./RouteGuard";
 import { PaletteCard, palettes, CustomPaletteCard } from "./AppearanceCard";
@@ -95,6 +95,20 @@ function InfoIcon() {
   );
 }
 
+function StatusCheckIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        stroke="#16a34a"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function ExportPage() {
   const navigate = useNavigate();
   const {
@@ -121,7 +135,12 @@ export default function ExportPage() {
     useState<GoogleCalendarExportProgress | null>(null);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [settingsTab, setSettingsTab] = useState<"colors" | "notifications">("colors");
+  const [googleStatusHighlighted, setGoogleStatusHighlighted] = useState(false);
+  const googleStatusRef = useRef<HTMLDivElement | null>(null);
+  const googleStatusHighlightTimeoutRef = useRef<number | null>(null);
   const hasSelectedPalette = Boolean(exportConfig.paletteId);
+  const isGoogleButtonBlocked =
+    !googleCalendarConfigured || !hasSelectedPalette || exportValidationIssues.length > 0;
   const colorStrategy = exportConfig.colorStrategy ?? "eventGroup";
   const notificationSettings = {
     ...FALLBACK_NOTIFICATION_SETTINGS,
@@ -153,6 +172,20 @@ export default function ExportPage() {
     setSuccessState({ kind: "ics" });
   };
 
+  const triggerGoogleStatusHighlight = () => {
+    if (googleStatusHighlightTimeoutRef.current !== null) {
+      window.clearTimeout(googleStatusHighlightTimeoutRef.current);
+    }
+
+    setGoogleStatusHighlighted(true);
+    googleStatusRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+    googleStatusHighlightTimeoutRef.current = window.setTimeout(() => {
+      setGoogleStatusHighlighted(false);
+      googleStatusHighlightTimeoutRef.current = null;
+    }, 950);
+  };
+
   const handleGoogleCalendar = async () => {
     if (
       !googleCalendarConfigured ||
@@ -160,6 +193,9 @@ export default function ExportPage() {
       exportValidationIssues.length > 0 ||
       isGoogleExporting
     ) {
+      if (!isGoogleExporting) {
+        triggerGoogleStatusHighlight();
+      }
       return;
     }
 
@@ -203,6 +239,34 @@ export default function ExportPage() {
         )
       )
     : 0;
+  const googleStatus = (() => {
+    if (!googleCalendarConfigured) {
+      return {
+        tone: "info" as const,
+        message:
+          "Set VITE_GOOGLE_CLIENT_ID and reload the app to enable Google export.",
+      };
+    }
+
+    if (!hasSelectedPalette) {
+      return {
+        tone: "info" as const,
+        message: "Select a color palette to enable Google Calendar export.",
+      };
+    }
+
+    if (exportValidationIssues.length > 0) {
+      return {
+        tone: "info" as const,
+        message: "Resolve the export issues below before sending events to Google Calendar.",
+      };
+    }
+
+    return {
+      tone: "success" as const,
+      message: "Google Calendar is ready to export.",
+    };
+  })();
 
   return (
     <RouteGuard>
@@ -487,17 +551,10 @@ export default function ExportPage() {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={handleGoogleCalendar}
-                  disabled={
-                    !googleCalendarConfigured ||
-                    !hasSelectedPalette ||
-                    exportValidationIssues.length > 0 ||
-                    isGoogleExporting
-                  }
+                  disabled={isGoogleExporting}
+                  aria-disabled={isGoogleButtonBlocked || isGoogleExporting}
                   className={`flex flex-1 items-center justify-center gap-3 rounded-xl p-4 transition-all ${
-                    !googleCalendarConfigured ||
-                    !hasSelectedPalette ||
-                    exportValidationIssues.length > 0 ||
-                    isGoogleExporting
+                    isGoogleButtonBlocked || isGoogleExporting
                       ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
                       : "cursor-pointer bg-[#f4f1e7] text-[#1c180d] shadow-[0px_0px_0px_2px_rgba(231,229,228,0.9)] hover:bg-[#efe7cc]"
                   }`}
@@ -528,7 +585,7 @@ export default function ExportPage() {
                 </button>
               </div>
 
-              <div className="mt-4 flex items-center gap-2 mb-[-18px]">
+              <div className="mt-4 flex items-center gap-2">
                 <div className="-scale-y-100 shrink-0">
                   <InfoIcon />
                 </div>
@@ -537,10 +594,34 @@ export default function ExportPage() {
                 </span>
               </div>
 
-              {googleCalendarConfigured && !hasSelectedPalette && (
-                <p className="mt-6 text-sm font-medium text-[#b91c1c]">
-                  Google Calendar export is disabled until you select a color palette.
-                </p>
+              {!isGoogleExporting && (
+                <div
+                  ref={googleStatusRef}
+                  className={`mt-5 flex min-h-[64px] items-center rounded-xl border px-5 py-2 ${
+                    googleStatus.tone === "success"
+                      ? "border-[#bbf7d0] bg-[#f0fdf4]"
+                      : "border-[#eadfbc] bg-[#faf6ea]"
+                  } ${
+                    googleStatusHighlighted
+                      ? "scale-[1.01] shadow-[0px_0px_0px_3px_rgba(242,185,13,0.14)] ring-2 ring-[#f2b90d]/30"
+                      : ""
+                  } transition-all duration-300`}
+                >
+                  <div className="flex w-full items-center justify-between gap-3">
+                    <p
+                      className={`min-w-0 text-sm font-medium leading-snug ${
+                        googleStatus.tone === "success" ? "text-[#166534]" : "text-[#8b6b12]"
+                      }`}
+                    >
+                      {googleStatus.message}
+                    </p>
+                    {googleStatus.tone === "success" && (
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#dcfce7]">
+                        <StatusCheckIcon />
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
 
               {isGoogleExporting && googleExportProgress && (
@@ -673,17 +754,6 @@ export default function ExportPage() {
               </div>
             </div>
           </div>
-
-          {!googleCalendarConfigured && (
-            <div className="mt-6 w-full max-w-[680px] rounded-xl border border-[#fde68a] bg-[#fffbeb] px-5 py-4">
-              <h3 className="font-['Lexend',sans-serif] text-sm font-bold text-[#92400e]">
-                Google Calendar needs one env var
-              </h3>
-              <p className="mt-2 text-sm text-[#92400e]">
-                Set <code>VITE_GOOGLE_CLIENT_ID</code> in your environment, then reload the app to enable Google export.
-              </p>
-            </div>
-          )}
 
           {googleError && (
             <div className="mt-6 w-full max-w-[680px] rounded-xl border border-[#fecaca] bg-[#fef2f2] px-5 py-4">
