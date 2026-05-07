@@ -719,14 +719,20 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
       ...parsedContent.warnings,
       ...validation.warnings,
     ];
-    const cacheable =
-      validation.ok && completionWarnings.length === 0 && parsedContent.warnings.length === 0;
+    const cacheSkipReasons = [
+      completionWarnings.length > 0 ? "openai_response_incomplete" : "",
+      parsedContent.warnings.length > 0 ? "openai_response_unparseable" : "",
+      !validation.ok ? "schema_validation_failed" : "",
+    ].filter(Boolean);
+    const cacheable = cacheSkipReasons.length === 0;
     console.info("[gooseCalendar] OpenAI extraction completed", {
       courseCode: request.courseCode,
       model,
       endpoint,
       eventCount: validation.data.events.length,
       warningCount: warnings.length + validation.data.warnings.length,
+      cacheable,
+      cacheSkipReasons,
       promptTokens: cost?.inputTokens ?? usage?.prompt_tokens,
       cachedPromptTokens: cost?.cachedInputTokens ?? usage?.prompt_tokens_details?.cached_tokens,
       completionTokens: cost?.outputTokens ?? usage?.completion_tokens,
@@ -844,6 +850,7 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       console.info("[gooseCalendar] Skipping AI extraction cache write", {
         courseCode: parsed.courseCode,
         reason: "OpenAI result was not cacheable.",
+        warnings: result.warnings.slice(0, 5),
       });
     }
 

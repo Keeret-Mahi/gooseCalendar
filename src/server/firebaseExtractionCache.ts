@@ -38,7 +38,13 @@ function normalizeWarning(value: unknown) {
 }
 
 function normalizePrivateKey(value: string) {
-  return value.replace(/\\n/g, "\n");
+  const trimmed = value.trim();
+  const unquoted =
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+      ? trimmed.slice(1, -1)
+      : trimmed;
+  return unquoted.replace(/\\n/g, "\n");
 }
 
 function isCacheEnabled() {
@@ -63,14 +69,23 @@ function getFirebaseConfig() {
 
 function getCacheDb() {
   if (!isCacheEnabled()) {
+    console.info("[gooseCalendar] AI extraction cache disabled by env", {
+      AI_EXTRACTION_CACHE_ENABLED: process.env.AI_EXTRACTION_CACHE_ENABLED,
+    });
     return undefined;
   }
 
   const firebaseConfig = getFirebaseConfig();
   if (!firebaseConfig) {
     if (!hasLoggedMissingFirebaseConfig) {
+      const missingKeys = [
+        !process.env.FIREBASE_PROJECT_ID ? "FIREBASE_PROJECT_ID" : "",
+        !process.env.FIREBASE_CLIENT_EMAIL ? "FIREBASE_CLIENT_EMAIL" : "",
+        !process.env.FIREBASE_PRIVATE_KEY ? "FIREBASE_PRIVATE_KEY" : "",
+      ].filter(Boolean);
       console.warn(
-        "[gooseCalendar] AI extraction cache disabled: Firebase Admin env vars are incomplete."
+        "[gooseCalendar] AI extraction cache disabled: Firebase Admin env vars are incomplete.",
+        { missingKeys }
       );
       hasLoggedMissingFirebaseConfig = true;
     }
@@ -103,6 +118,12 @@ export async function readAiExtractionCache(
 ): Promise<CacheReadResult> {
   const cacheKey = buildCacheKey(request);
   if (!cacheKey) {
+    console.info("[gooseCalendar] AI extraction cache skipped: no valid outline hash", {
+      courseCode: request.courseCode,
+      termYear: request.termYear,
+      hasOutlineHash: Boolean(request.outlineHash),
+      outlineHashLength: request.outlineHash?.length ?? 0,
+    });
     return { status: "disabled" };
   }
 
@@ -190,6 +211,12 @@ export async function readAiExtractionCache(
 export async function writeAiExtractionCache(input: CacheWriteInput) {
   const cacheKey = buildCacheKey(input.request);
   if (!cacheKey) {
+    console.info("[gooseCalendar] Skipping AI extraction cache write: no valid outline hash", {
+      courseCode: input.request.courseCode,
+      termYear: input.request.termYear,
+      hasOutlineHash: Boolean(input.request.outlineHash),
+      outlineHashLength: input.request.outlineHash?.length ?? 0,
+    });
     return;
   }
 
