@@ -231,6 +231,28 @@ function sendJson(response: any, statusCode: number, body: unknown) {
 }
 
 async function readBody(request: any, limitBytes = 2_000_000) {
+  if (typeof request.body === "string") {
+    if (Buffer.byteLength(request.body, "utf8") > limitBytes) {
+      throw new Error("Request body is too large.");
+    }
+    return request.body;
+  }
+
+  if (Buffer.isBuffer(request.body)) {
+    if (request.body.length > limitBytes) {
+      throw new Error("Request body is too large.");
+    }
+    return request.body.toString("utf8");
+  }
+
+  if (typeof request.body === "object" && request.body !== null) {
+    const bodyText = JSON.stringify(request.body);
+    if (Buffer.byteLength(bodyText, "utf8") > limitBytes) {
+      throw new Error("Request body is too large.");
+    }
+    return bodyText;
+  }
+
   const chunks: Buffer[] = [];
   let size = 0;
 
