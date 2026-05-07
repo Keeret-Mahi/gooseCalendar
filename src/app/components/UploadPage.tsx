@@ -174,16 +174,12 @@ export default function UploadPage() {
     },
     {
       number: 2,
-      title: "Select What You Want",
-      description: "Choose the sections and event types you actually want in your calendar.",
+      title: "Review and Fix Anything Missing",
+      description:
+        "Choose sections, edit detected events, add missing ones, and make sure everything looks right.",
     },
     {
       number: 3,
-      title: "Review and Fix Anything Missing",
-      description: "Edit detected events, add missing ones, and make sure everything looks right.",
-    },
-    {
-      number: 4,
       title: "Export Your Calendar",
       description: "Send everything to Google Calendar or download a ready-to-import .ics file.",
     },
@@ -477,7 +473,7 @@ export default function UploadPage() {
               number={step.number}
               title={step.title}
               description={step.description}
-              highlighted={step.number === 4}
+              highlighted={step.number === 3}
             />
           ))}
         </section>

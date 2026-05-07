@@ -31,7 +31,7 @@ import {
   exportEventsToGoogleCalendar,
   isGoogleCalendarConfigured,
 } from "../lib/googleCalendar";
-import { parseOutlineHtml } from "../lib/parser";
+import { parseOutlineHtmlWithAi } from "../lib/parser";
 import type {
   GoogleCalendarExportProgress,
   GoogleCalendarExportResult,
@@ -310,9 +310,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
         upload.file
           .text()
-          .then((html) => {
+          .then(async (html) => {
             if (removedUploadIdsRef.current.has(upload.id)) return;
-            const result = parseOutlineHtml(html, upload.name);
+            const result = await parseOutlineHtmlWithAi(html, upload.name);
 
             setCourses((current) => [
               ...current.filter((course) => course.id !== result.course.id),

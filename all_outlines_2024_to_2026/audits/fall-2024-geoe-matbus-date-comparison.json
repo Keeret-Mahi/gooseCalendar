@@ -1,0 +1,2319 @@
+[
+  {
+    "fileName": "1249__n5j6hv__Geotechnical Engineering 2.html",
+    "relativePath": "GEOE/GEOE 354/1249__n5j6hv__Geotechnical Engineering 2.html",
+    "subject": "GEOE",
+    "courseCode": "GEOE 354",
+    "courseName": "Geotechnical Engineering 2",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office Hours - Tuesdays 8:00 – 9:00 p.m. (online)",
+      "Mohammad Zaid – mzaid@uwaterloo.ca (TA) Office Hours - Fridays 5:30 - 6:30 p.m. (Teams)",
+      "Zahidul Islam -- z7islam@uwaterloo.ca (CA) Office Hours - Monday 10:30 – 11:30 a.m. (online)"
+    ],
+    "officeHoursHintDayCount": 3,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzdspu__On Becoming a Geographer.html",
+    "relativePath": "GEOG/GEOG 100/1249__nzdspu__On Becoming a Geographer.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 100",
+    "courseName": "On Becoming a Geographer",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6gbs2__Human Geographies_ People_ Space and Change.html",
+    "relativePath": "GEOG/GEOG 101/1249__n6gbs2__Human Geographies_ People_ Space and Change.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 101",
+    "courseName": "Human Geographies: People, Space and Change",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9v96g__Global Environmental Systems_ Processes and Change.html",
+    "relativePath": "GEOG/GEOG 102/1249__n9v96g__Global Environmental Systems_ Processes and Change.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 102",
+    "courseName": "Global Environmental Systems: Processes and Change",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Photo-blog #3 due F Nov 29 th",
+        "dates": [
+          "2024-11-29"
+        ],
+        "missingDates": [
+          "2024-11-29"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office hours: EV1 - 307: Mondays 12:30 - 2:00pm or by appointment.",
+      "Office Hours: Wednesdays, EV1-356 on Wednesday from 9-11:00am"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n578eh__Designing Effective Maps.html",
+    "relativePath": "GEOG/GEOG 181/1249__n578eh__Designing Effective Maps.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 181",
+    "courseName": "Designing Effective Maps",
+    "parserEventCount": 13,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n7bpqm__Geospatial Data Science.html",
+    "relativePath": "GEOG/GEOG 187/1249__n7bpqm__Geospatial Data Science.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 187",
+    "courseName": "Geospatial Data Science",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9s3en__Environment and Development in a Global Perspective.html",
+    "relativePath": "GEOG/GEOG 203/1249__n9s3en__Environment and Development in a Global Perspective.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 203",
+    "courseName": "Environment and Development in a Global Perspective",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 3,
+    "unmatched": [
+      {
+        "line": "T1- Due Oct 6 (11:59 pm) (Submit to Dropbox on LEARN)",
+        "dates": [
+          "2024-10-06"
+        ],
+        "missingDates": [
+          "2024-10-06"
+        ]
+      },
+      {
+        "line": "T2- Due Nov 15 (11:59 pm) (Submit to Dropbox on LEARN)",
+        "dates": [
+          "2024-11-15"
+        ],
+        "missingDates": [
+          "2024-11-15"
+        ]
+      },
+      {
+        "line": "T3- Due -Dec 4 (11:59 pm) (Submit to Dropbox on LEARN)",
+        "dates": [
+          "2024-12-04"
+        ],
+        "missingDates": [
+          "2024-12-04"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Mondays 10:00 AM – 12:00 PM, EV2 2039, or by appointment."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__n77mb3__Principles of Geomorphology.html",
+    "relativePath": "GEOG/GEOG 205/1249__n77mb3__Principles of Geomorphology.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 205",
+    "courseName": "Principles of Geomorphology",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 5,
+    "unmatchedCount": 5,
+    "unmatched": [
+      {
+        "line": "Due Sunday Oct 6 at 11:59pm",
+        "dates": [
+          "2024-10-06"
+        ],
+        "missingDates": [
+          "2024-10-06"
+        ]
+      },
+      {
+        "line": "Due Sunday Oct 27 at 11:59pm",
+        "dates": [
+          "2024-10-27"
+        ],
+        "missingDates": [
+          "2024-10-27"
+        ]
+      },
+      {
+        "line": "Due Sunday Nov 3 at 11:59pm",
+        "dates": [
+          "2024-11-03"
+        ],
+        "missingDates": [
+          "2024-11-03"
+        ]
+      },
+      {
+        "line": "Due Sunday Nov 17 at 11:59pm",
+        "dates": [
+          "2024-11-17"
+        ],
+        "missingDates": [
+          "2024-11-17"
+        ]
+      },
+      {
+        "line": "Due Sunday Nov 24 at 11:59pm",
+        "dates": [
+          "2024-11-24"
+        ],
+        "missingDates": [
+          "2024-11-24"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office hours: Monday’s 10:00 – 12:00"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nypaxc__Climate Change Fundamentals.html",
+    "relativePath": "GEOG/GEOG 207/1249__nypaxc__Climate Change Fundamentals.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 207",
+    "courseName": "Climate Change Fundamentals",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npc8gf__How Pandemics Change the World.html",
+    "relativePath": "GEOG/GEOG 219/1249__npc8gf__How Pandemics Change the World.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 219",
+    "courseName": "How Pandemics Change the World",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nr6fyp__Global Environment and Health.html",
+    "relativePath": "GEOG/GEOG 225/1249__nr6fyp__Global Environment and Health.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 225",
+    "courseName": "Global Environment and Health",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzce8c__Geography of Tourism.html",
+    "relativePath": "GEOG/GEOG 233/1249__nzce8c__Geography of Tourism.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 233",
+    "courseName": "Geography of Tourism",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours : In Person – Wednesdays, 10:30-11:30am, EV1 #235; Virtual – by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nruq6t__Earth from Space Using Remote Sensing.html",
+    "relativePath": "GEOG/GEOG 271/1249__nruq6t__Earth from Space Using Remote Sensing.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 271",
+    "courseName": "Earth from Space Using Remote Sensing",
+    "parserEventCount": 16,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 4,
+    "officeHoursHints": [
+      "Instructor: Claude Duguay (Email: crduguay@uwaterloo.ca; Office: EV1 309; Office hours in person or via Teams channel Monday 10:30-12:30)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nv2xg6__Introduction to Geographic Information Systems _GIS_.html",
+    "relativePath": "GEOG/GEOG 281/1249__nv2xg6__Introduction to Geographic Information Systems _GIS_.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 281",
+    "courseName": "Introduction to Geographic Information Systems (GIS)",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nm9nvb__Approaches to Research in Human Geography.html",
+    "relativePath": "GEOG/GEOG 293/1249__nm9nvb__Approaches to Research in Human Geography.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 293",
+    "courseName": "Approaches to Research in Human Geography",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npzbj4__Approaches to Research in Physical Geography.html",
+    "relativePath": "GEOG/GEOG 294/1249__npzbj4__Approaches to Research in Physical Geography.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 294",
+    "courseName": "Approaches to Research in Physical Geography",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 10,
+    "unmatchedCount": 7,
+    "unmatched": [
+      {
+        "line": "Submit groupwork contract: Sep 20",
+        "dates": [
+          "2024-09-20"
+        ],
+        "missingDates": [
+          "2024-09-20"
+        ]
+      },
+      {
+        "line": "Due Oct 1 submit to Dropbox",
+        "dates": [
+          "2024-10-01"
+        ],
+        "missingDates": [
+          "2024-10-01"
+        ]
+      },
+      {
+        "line": "Upload draft on Sep 30; Submit review by Oct 4",
+        "dates": [
+          "2024-09-30",
+          "2024-10-04"
+        ],
+        "missingDates": [
+          "2024-10-04"
+        ]
+      },
+      {
+        "line": "Activity: Lab 3 – Stream gauging and sediment load; Due Oct 22, submit to Dropbox",
+        "dates": [
+          "2024-10-22"
+        ],
+        "missingDates": [
+          "2024-10-22"
+        ]
+      },
+      {
+        "line": "Due Nov 1 , submit to Dropbox",
+        "dates": [
+          "2024-11-01"
+        ],
+        "missingDates": [
+          "2024-11-01"
+        ]
+      },
+      {
+        "line": "Activity: Lab 1 due Nov 8 , submit to Dropbox",
+        "dates": [
+          "2024-11-08"
+        ],
+        "missingDates": [
+          "2024-11-08"
+        ]
+      },
+      {
+        "line": "Final proposal due on Dec 3 , submit to Dropbox",
+        "dates": [
+          "2024-12-03"
+        ],
+        "missingDates": [
+          "2024-12-03"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Monday 2:30 pm-4:00 pm"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ncrum2__Physical Hydrology.html",
+    "relativePath": "GEOG/GEOG 303/1249__ncrum2__Physical Hydrology.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 303",
+    "courseName": "Physical Hydrology",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours Thursdays 10:30-11:30am, EV1- 237"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9jtkx__Fluvial Geomorphology.html",
+    "relativePath": "GEOG/GEOG 305/1249__n9jtkx__Fluvial Geomorphology.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 305",
+    "courseName": "Fluvial Geomorphology",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ncgsw4__GEOG 310 GEODESY _ SURVEYING_ Fall 2024 Course Outline.html",
+    "relativePath": "GEOG/GEOG 310/1249__ncgsw4__GEOG 310 GEODESY _ SURVEYING_ Fall 2024 Course Outline.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 310",
+    "courseName": "GEOG 310 GEODESY & SURVEYING, Fall 2024 Course Outline",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 5,
+    "unmatched": [
+      {
+        "line": "Due: Lab #1 Oct 9, Wed",
+        "dates": [
+          "2024-10-01"
+        ],
+        "missingDates": [
+          "2024-10-01"
+        ]
+      },
+      {
+        "line": "Due: Lab #2 Oct 30, Wed",
+        "dates": [
+          "2024-10-02"
+        ],
+        "missingDates": [
+          "2024-10-02"
+        ]
+      },
+      {
+        "line": "Due: Lab #5 Nov 20, Wed",
+        "dates": [
+          "2024-11-05"
+        ],
+        "missingDates": [
+          "2024-11-05"
+        ]
+      },
+      {
+        "line": "Due: Lab #6 Nov 27, Mon",
+        "dates": [
+          "2024-11-06"
+        ],
+        "missingDates": [
+          "2024-11-06"
+        ]
+      },
+      {
+        "line": "Due: Lab #7 Dec 4, Wed",
+        "dates": [
+          "2024-12-07"
+        ],
+        "missingDates": [
+          "2024-12-07"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office: EV1-232, Ext. 40577, junli@uwaterloo.ca; Office Hours: Monday, 2:00 pm - 3:00 pm EDT or by appointment via email.",
+      "TA : Zhengsen Xu, PhD Student at GEM, zhengsen.xu@uwaterloo.ca; Office Hours: Thursday, 2:30 pm – 3:30 pm online (LEARN), or by appointment via email."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmhmhm__GEOG 316 Multivariate Statistics_ Fall 2024 Course Outline.html",
+    "relativePath": "GEOG/GEOG 316/1249__nmhmhm__GEOG 316 Multivariate Statistics_ Fall 2024 Course Outline.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 316",
+    "courseName": "GEOG 316 Multivariate Statistics, Fall 2024 Course Outline",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 4,
+    "unmatched": [
+      {
+        "line": "Sep 11 Lab #1: Intro to R [5%] due Sep 18",
+        "dates": [
+          "2024-09-11",
+          "2024-09-18"
+        ],
+        "missingDates": [
+          "2024-09-11",
+          "2024-09-18"
+        ]
+      },
+      {
+        "line": "Sep 18 Lab #2: Logistic regression [5%], due Sep 25,",
+        "dates": [
+          "2024-09-18",
+          "2024-09-25"
+        ],
+        "missingDates": [
+          "2024-09-18"
+        ]
+      },
+      {
+        "line": "Oct 23 Lab #4 PCA: [5%] Due Oct 30",
+        "dates": [
+          "2024-10-23",
+          "2024-10-30"
+        ],
+        "missingDates": [
+          "2024-10-23",
+          "2024-10-30"
+        ]
+      },
+      {
+        "line": "Nov 20 Lab #6: SVM [5%] due Nov 27",
+        "dates": [
+          "2024-11-20",
+          "2024-11-27"
+        ],
+        "missingDates": [
+          "2024-11-27"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office: EV1-232, Ext. 40577, junli@uwaterloo.ca; Office Hours: Monday 1:00 pm - 2:00 pm EDT or by appointment via email."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvsc49__Resources Management.html",
+    "relativePath": "GEOG/GEOG 356/1249__nvsc49__Resources Management.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 356",
+    "courseName": "Resources Management",
+    "parserEventCount": 12,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Online: Wednesday 12:00 - 2:00 pm (MS-Teams link on LEARN)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nbjgpu__Advanced Remote Sensing Techniques.html",
+    "relativePath": "GEOG/GEOG 371/1249__nbjgpu__Advanced Remote Sensing Techniques.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 371",
+    "courseName": "Advanced Remote Sensing Techniques",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 4,
+    "unmatched": [
+      {
+        "line": "MLP1 due September 18",
+        "dates": [
+          "2024-09-18"
+        ],
+        "missingDates": [
+          "2024-09-18"
+        ]
+      },
+      {
+        "line": "MLP2 due September 25",
+        "dates": [
+          "2024-09-25"
+        ],
+        "missingDates": [
+          "2024-09-25"
+        ]
+      },
+      {
+        "line": "MLP3 due November 20",
+        "dates": [
+          "2024-11-20"
+        ],
+        "missingDates": [
+          "2024-11-20"
+        ]
+      },
+      {
+        "line": "MLP4 due November 27",
+        "dates": [
+          "2024-11-27"
+        ],
+        "missingDates": [
+          "2024-11-27"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Mondays 10:30 am - 12:30 pm, Room EV1 309",
+      "Office Hours: Fridays 10:00-11:00 am, Room EV2 1014 (Magellan Lab)"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nz4ney__Field Research.html",
+    "relativePath": "GEOG/GEOG 391/1249__nz4ney__Field Research.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 391",
+    "courseName": "Field Research",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 8,
+    "unmatched": [
+      {
+        "line": "Research Statement and Sampling Design - Due September 27th @ 11:50PM:",
+        "dates": [
+          "2024-09-27"
+        ],
+        "missingDates": [
+          "2024-09-27"
+        ]
+      },
+      {
+        "line": "Revised Sampling Design - Due October 21st @ 11:50PM:",
+        "dates": [
+          "2024-10-21"
+        ],
+        "missingDates": [
+          "2024-10-21"
+        ]
+      },
+      {
+        "line": "Summary of Field Data Collections - Due November 11 @ 11:50PM:",
+        "dates": [
+          "2024-11-11"
+        ],
+        "missingDates": [
+          "2024-11-11"
+        ]
+      },
+      {
+        "line": "9-10/10: Consistently participates in class discussions, in exercises and field research. Is a clear team-player in their group and active participant in research project",
+        "dates": [
+          "2024-10-10"
+        ],
+        "missingDates": [
+          "2024-10-10"
+        ]
+      },
+      {
+        "line": "7-8/10: Frequent participant in class discussions, in exercises and field research. Contributes as a team-player in their group and is active participant in research project.",
+        "dates": [
+          "2024-08-10"
+        ],
+        "missingDates": [
+          "2024-08-10"
+        ]
+      },
+      {
+        "line": "5-6/10: Occasional participant in class discussions, in exercises and field research. Sometimes contributes in their group project.",
+        "dates": [
+          "2024-06-10"
+        ],
+        "missingDates": [
+          "2024-06-10"
+        ]
+      },
+      {
+        "line": "3-4/10: Rarely participates in class discussion but does participate in exercises and field research. Is a passive participant in the group research project.",
+        "dates": [
+          "2024-04-10"
+        ],
+        "missingDates": [
+          "2024-04-10"
+        ]
+      },
+      {
+        "line": "0-2/10: Rarely or never participates in class discussions, exercises or during field research. Does not contribute in a meaningful way to the group project.",
+        "dates": [
+          "2024-02-10"
+        ],
+        "missingDates": [
+          "2024-02-10"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Tuesdays from 1:00 to 2:15, or by appointment",
+      "Office Hours: Tuesdays from 11:00-12:00, Wednesdays from 2:00-3:00"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ng67y5__Eutrophication_ From Process to Water-Quality Management.html",
+    "relativePath": "GEOG/GEOG 403/1249__ng67y5__Eutrophication_ From Process to Water-Quality Management.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 403",
+    "courseName": "Eutrophication: From Process to Water-Quality Management",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Tuesdays, 1:00-2:00PM (Please see Learn for details)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8uu6u__Soil Ecosystem Dynamics.html",
+    "relativePath": "GEOG/GEOG 404/1249__n8uu6u__Soil Ecosystem Dynamics.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 404",
+    "courseName": "Soil Ecosystem Dynamics",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__n83v2j__Economic Geography Project.html",
+    "relativePath": "GEOG/GEOG 415/1249__n83v2j__Economic Geography Project.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 415",
+    "courseName": "Economic Geography Project",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 8,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours Weds 11 - 12 or by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nctxh5__Urban Stormwater Management.html",
+    "relativePath": "GEOG/GEOG 453/1249__nctxh5__Urban Stormwater Management.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 453",
+    "courseName": "Urban Stormwater Management",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "OFFICE HOURS: Tues 10:00 AM to 12:00 PM, EV1 Room 224"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n79d6y__Honours Thesis Preparation.html",
+    "relativePath": "GEOG/GEOG 490A/1249__n79d6y__Honours Thesis Preparation.html",
+    "subject": "GEOG",
+    "courseCode": "GEOG 490A",
+    "courseName": "Honours Thesis Preparation",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzyw3p__Elementary German 1.html",
+    "relativePath": "GER/GER 101/1249__nzyw3p__Elementary German 1.html",
+    "subject": "GER",
+    "courseCode": "GER 101",
+    "courseName": "Elementary German 1",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npx63g__Elementary German 2.html",
+    "relativePath": "GER/GER 102/1249__npx63g__Elementary German 2.html",
+    "subject": "GER",
+    "courseCode": "GER 102",
+    "courseName": "Elementary German 2",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nz6dj6__Intermediate German 1.html",
+    "relativePath": "GER/GER 201/1249__nz6dj6__Intermediate German 1.html",
+    "subject": "GER",
+    "courseCode": "GER 201",
+    "courseName": "Intermediate German 1",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n99w8u__Vikings_.html",
+    "relativePath": "GER/GER 230/1249__n99w8u__Vikings_.html",
+    "subject": "GER",
+    "courseCode": "GER 230",
+    "courseName": "Vikings!",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n9b3e2__Introduction to Gender and Social Justice_ the Global North.html",
+    "relativePath": "GSJ/GSJ 101/1249__n9b3e2__Introduction to Gender and Social Justice_ the Global North.html",
+    "subject": "GSJ",
+    "courseCode": "GSJ 101",
+    "courseName": "Introduction to Gender and Social Justice: the Global North",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "Self-Assessment due December 13, 11:59 p.m. through your PebblePad Workbook.",
+        "dates": [
+          "2024-12-13"
+        ],
+        "missingDates": [
+          "2024-12-13"
+        ]
+      },
+      {
+        "line": "Due Friday December 13, 11:59 pm",
+        "dates": [
+          "2024-12-13"
+        ],
+        "missingDates": [
+          "2024-12-13"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9pey9__Mental Health Literacy.html",
+    "relativePath": "HEALTH/HEALTH 105/1249__n9pey9__Mental Health Literacy.html",
+    "subject": "HEALTH",
+    "courseCode": "HEALTH 105",
+    "courseName": "Mental Health Literacy",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nj5yet__Mental Health Literacy.html",
+    "relativePath": "HEALTH/HEALTH 105/1249__nj5yet__Mental Health Literacy.html",
+    "subject": "HEALTH",
+    "courseCode": "HEALTH 105",
+    "courseName": "Mental Health Literacy",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n7tz3s__Sociology of Activity_ Health_ and Well-Being.html",
+    "relativePath": "HEALTH/HEALTH 107/1249__n7tz3s__Sociology of Activity_ Health_ and Well-Being.html",
+    "subject": "HEALTH",
+    "courseCode": "HEALTH 107",
+    "courseName": "Sociology of Activity, Health, and Well-Being",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 10,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Course Communication Plan Student (Office) Hours It’s important to know that Student Hours (what I call Office Hours) are dedicated time for you! You are welcome to drop in with any questions you have, whether that be course related or more broadly about university life. I have scheduled time for HEALTH 107 students on Mondays from 1:30-2:20 PM. However, there is also an open student hour (available for all students across my courses) on Tuesdays from 12:00-12:50 PM, which you are welcome to attend. Student hours will be held weekly in my office (BMH 1056). If you need to connect outside of this time or want to discuss a more sensitive matter, please send me an email and we will make alternative arrangements together. Please note that TAs will not be holding regular student hours. If you need to meet with your TA, please send them an email to set up a time together."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n7cx58__A History of the Western World 1.html",
+    "relativePath": "HIST/HIST 110/1249__n7cx58__A History of the Western World 1.html",
+    "subject": "HIST",
+    "courseCode": "HIST 110",
+    "courseName": "A History of the Western World 1",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office Hours: 2:30-4:00 p.m., Tuesdays and Thursdays and by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nj665g__History and Film.html",
+    "relativePath": "HIST/HIST 200/1249__nj665g__History and Film.html",
+    "subject": "HIST",
+    "courseCode": "HIST 200",
+    "courseName": "History and Film",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n82c6w__Smallpox to Medicare_ Canadian Medical History.html",
+    "relativePath": "HIST/HIST 209/1249__n82c6w__Smallpox to Medicare_ Canadian Medical History.html",
+    "subject": "HIST",
+    "courseCode": "HIST 209",
+    "courseName": "Smallpox to Medicare: Canadian Medical History",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours: Tue, Thu 1:30PM - 2:20PM or by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ng86xd__What is History_ An Introduction to Historical Thinking.html",
+    "relativePath": "HIST/HIST 250/1249__ng86xd__What is History_ An Introduction to Historical Thinking.html",
+    "subject": "HIST",
+    "courseCode": "HIST 250",
+    "courseName": "What is History? An Introduction to Historical Thinking",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "AI Paper and Peer Review Critique (2000-2500 words) 15 Dec Think back to that scoping exercise you did at the beginning of the term. Using MS Copilot or Perplexity, each person will produce a 1200 word essay on one of their questions using three prompts and asking it to use at least five sources of which two should be primary sources. You will then do a peer review of it using the library's physical and electronic resources. Your critique will focus on the arguments presented by and their scholarly foundations in the Gen AI produced essay. In other words, test GenAI by using your skills as a historian to identify the most scholarly resources against which you can compare what Gen AI produced. Did it hallucinate? Was it drawing on the most up to date or reliable sources? Did GenAI argue with more certainty that the evidence warranted? Was GenAI shaped by pre-existing perceptions or biases that might have coloured its conclusions. How compelling/persuasive was it? Did the structure of the argument work in its favour? Was there something missing?",
+        "dates": [
+          "2024-12-15"
+        ],
+        "missingDates": [
+          "2024-12-15"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Wednesdays 15:00-16:00 or by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ny2xkw__Global History of the Prison.html",
+    "relativePath": "HIST/HIST 323/1249__ny2xkw__Global History of the Prison.html",
+    "subject": "HIST",
+    "courseCode": "HIST 323",
+    "courseName": "Global History of the Prison",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours: Wednesdays, 3:00pm-4:00pm (Zoom), Thursdays 4:00pm-5:00pm (in-person) or by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzedc2__Special Topics in History.html",
+    "relativePath": "HIST/HIST 422/1249__nzedc2__Special Topics in History.html",
+    "subject": "HIST",
+    "courseCode": "HIST 422",
+    "courseName": "Special Topics in History",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours: Tue, Thu 1:30PM - 2:20PM or by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8xafx__Introduction to Health 1.html",
+    "relativePath": "HLTH/HLTH 101/1249__n8xafx__Introduction to Health 1.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 101",
+    "courseName": "Introduction to Health 1",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nb6y7n__Principles of Epidemiology.html",
+    "relativePath": "HLTH/HLTH 333/1249__nb6y7n__Principles of Epidemiology.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 333",
+    "courseName": "Principles of Epidemiology",
+    "parserEventCount": 15,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Wednesday 11:00 – 14:00 or by appointment, LHN 3731"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrhwtt__Environmental Toxicology and Public Health.html",
+    "relativePath": "HLTH/HLTH 340/1249__nrhwtt__Environmental Toxicology and Public Health.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 340",
+    "courseName": "Environmental Toxicology and Public Health",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 5,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nn8c5d__Global Health.html",
+    "relativePath": "HLTH/HLTH 401/1249__nn8c5d__Global Health.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 401",
+    "courseName": "Global Health",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nmhjcj__Epidemiology of Non-Communicable Diseases.html",
+    "relativePath": "HLTH/HLTH 442/1249__nmhjcj__Epidemiology of Non-Communicable Diseases.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 442",
+    "courseName": "Epidemiology of Non-Communicable Diseases",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Wednesday 11:00-14:00 (LHN-3731) or by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmwa2n__Disease Mapping and Geographic Information Systems.html",
+    "relativePath": "HLTH/HLTH 455/1249__nmwa2n__Disease Mapping and Geographic Information Systems.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 455",
+    "courseName": "Disease Mapping and Geographic Information Systems",
+    "parserEventCount": 13,
+    "sourceDateEntryCount": 9,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Friday 1:30 to 2:30 pm (by appointment)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6mgaa__Competencies in Health.html",
+    "relativePath": "HLTH/HLTH 480/1249__n6mgaa__Competencies in Health.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 480",
+    "courseName": "Competencies in Health",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 9,
+    "unmatchedCount": 4,
+    "unmatched": [
+      {
+        "line": "PebblePad Workbook Reflection Portfolio (curated best 5 plus broad justification) due on Dec 3 by 11:59 pm",
+        "dates": [
+          "2024-12-03"
+        ],
+        "missingDates": [
+          "2024-12-03"
+        ]
+      },
+      {
+        "line": "Final polished career ePortfolio due on Dec 6 by 11:59 pm (includes reflection on the community stakeholder sessions and application of social innovation process to address challenges in climate change and PH)",
+        "dates": [
+          "2024-12-06"
+        ],
+        "missingDates": [
+          "2024-12-06"
+        ]
+      },
+      {
+        "line": "Each week you are asked to reflect on course content, an activity from class, a reading, or your participation in the health innovation challenge. For this assessment, you are asked to curate your best five reflections together for a Reflection Portfolio and provide a broad justification for how these reflections align with the rubric. The rubric assesses the level of clarity, the relevance of the learning experience, analysis of the experience and how it contributes to student learning, interconnections to past experiences/other courses/personal goals, and evidence of self-criticism such as awareness and knowledge of limits and new modes of thinking as a result. Due Date: Dec 3 (last day of classes for term).",
+        "dates": [
+          "2024-12-03"
+        ],
+        "missingDates": [
+          "2024-12-03"
+        ]
+      },
+      {
+        "line": "Reflection about the Health Innovation Challenge - Another tab in the career ePortfolio will include a reflection on the community stakeholder sessions and application of the social innovation process to address challenges in climate change and PH. Your reflection should address the development of skills in critical thinking, an innovation mindset, communication, collaboration, and leadership that are important for future careers. Include examples of artifacts from your group's work on the health innovation challenge, such as the final deliverable for demo day, the outline of the problem space, photos of sticky notes from the ideation and solution generation workshop, etc. (Deadline: December 6, worth 15%). This is also a chance to polish up the entire Career Portfolio based on feedback you have received.",
+        "dates": [
+          "2024-12-06"
+        ],
+        "missingDates": [
+          "2024-12-06"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9nm52__Competencies in Health.html",
+    "relativePath": "HLTH/HLTH 480/1249__n9nm52__Competencies in Health.html",
+    "subject": "HLTH",
+    "courseCode": "HLTH 480",
+    "courseName": "Competencies in Health",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 9,
+    "unmatchedCount": 4,
+    "unmatched": [
+      {
+        "line": "PebblePad Workbook Reflection Portfolio (curated best 5 plus broad justification) due on Dec 6 by 11:59 pm",
+        "dates": [
+          "2024-12-06"
+        ],
+        "missingDates": [
+          "2024-12-06"
+        ]
+      },
+      {
+        "line": "Final polished career ePortfolio due on Dec 9 by 11:59 pm (includes reflection on the community stakeholder sessions and application of social innovation process to address challenges related to integration of social prescribing into healthcare)",
+        "dates": [
+          "2024-12-09"
+        ],
+        "missingDates": [
+          "2024-12-09"
+        ]
+      },
+      {
+        "line": "Each week you are asked to reflect on course content, an activity from class, a reading, or your participation in the health innovation challenge. For this assessment, you are asked to curate your best five reflections together for a Reflection Portfolio and provide a broad justification for how these reflections align with the rubric. The rubric assesses the level of clarity, the relevance of the learning experience, analysis of the experience and how it contributes to student learning, interconnections to past experiences/other courses/personal goals, and evidence of self-criticism such as awareness and knowledge of limits and new modes of thinking as a result. Due Date: Dec 5.",
+        "dates": [
+          "2024-12-05"
+        ],
+        "missingDates": [
+          "2024-12-05"
+        ]
+      },
+      {
+        "line": "Reflection about the Health Innovation Challenge - Another tab in the career ePortfolio will include a reflection on the community stakeholder sessions and application of the social innovation process to address challenges related to integration of social prescribing into healthcare. Your reflection should address the development of skills in critical thinking, an innovation mindset, communication, collaboration, and leadership that are important for future careers. Include examples of artifacts from your group's work on the health innovation challenge, such as the final deliverable for demo day, the outline of the problem space, photos of sticky notes from the ideation and solution generation workshop, etc. (Deadline: December 9, worth 15%). This is also a chance to polish up the entire Career Portfolio based on feedback you have received.",
+        "dates": [
+          "2024-12-09"
+        ],
+        "missingDates": [
+          "2024-12-09"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nm8jcx__Basic Human Resources Management.html",
+    "relativePath": "HRM/HRM 200/1249__nm8jcx__Basic Human Resources Management.html",
+    "subject": "HRM",
+    "courseCode": "HRM 200",
+    "courseName": "Basic Human Resources Management",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmg8f2__Strategic Human Resources Management.html",
+    "relativePath": "HRM/HRM 301/1249__nmg8f2__Strategic Human Resources Management.html",
+    "subject": "HRM",
+    "courseCode": "HRM 301",
+    "courseName": "Strategic Human Resources Management",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nbms6h__Foundations and Critiques of Human Rights.html",
+    "relativePath": "HRTS/HRTS 201/1249__nbms6h__Foundations and Critiques of Human Rights.html",
+    "subject": "HRTS",
+    "courseCode": "HRTS 201",
+    "courseName": "Foundations and Critiques of Human Rights",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5zjd7__The Political Economy of Development.html",
+    "relativePath": "INDEV/INDEV 200/1249__n5zjd7__The Political Economy of Development.html",
+    "subject": "INDEV",
+    "courseCode": "INDEV 200",
+    "courseName": "The Political Economy of Development",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 4,
+    "unmatched": [
+      {
+        "line": "Pre-Step (milestone): Due 27 September",
+        "dates": [
+          "2024-09-27"
+        ],
+        "missingDates": [
+          "2024-09-27"
+        ]
+      },
+      {
+        "line": "Step 1 (5%) : Due 11 October",
+        "dates": [
+          "2024-10-11"
+        ],
+        "missingDates": [
+          "2024-10-11"
+        ]
+      },
+      {
+        "line": "Step 2 (15%): Due 15 November",
+        "dates": [
+          "2024-11-15"
+        ],
+        "missingDates": [
+          "2024-11-15"
+        ]
+      },
+      {
+        "line": "Step 3 (30%): Due 6 December",
+        "dates": [
+          "2024-12-06"
+        ],
+        "missingDates": [
+          "2024-12-06"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4uxz9__Development Agents.html",
+    "relativePath": "INDEV/INDEV 302/1249__n4uxz9__Development Agents.html",
+    "subject": "INDEV",
+    "courseCode": "INDEV 302",
+    "courseName": "Development Agents",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5vtxt__Honours Thesis_ Project Preparation.html",
+    "relativePath": "INDEV/INDEV 490A/1249__n5vtxt__Honours Thesis_ Project Preparation.html",
+    "subject": "INDEV",
+    "courseCode": "INDEV 490A",
+    "courseName": "Honours Thesis: Project Preparation",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ny4mej__The Art and Science of Learning.html",
+    "relativePath": "INTEG/INTEG 120/1249__ny4mej__The Art and Science of Learning.html",
+    "subject": "INTEG",
+    "courseCode": "INTEG 120",
+    "courseName": "The Art and Science of Learning",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 8,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "All course assignments must be in no later than Tuesday, December 10, to receive credit.",
+        "dates": [
+          "2024-12-10"
+        ],
+        "missingDates": [
+          "2024-12-10"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n468e9__Making Collaboration Work _i-Capstone_.html",
+    "relativePath": "INTEG/INTEG 210/1249__n468e9__Making Collaboration Work _i-Capstone_.html",
+    "subject": "INTEG",
+    "courseCode": "INTEG 210",
+    "courseName": "Making Collaboration Work (i-Capstone)",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours : Tuesday 3:30-5:00, Friday 1:00-2:30 & by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nv5veu__Nature of Scientific Knowledge.html",
+    "relativePath": "INTEG/INTEG 220/1249__nv5veu__Nature of Scientific Knowledge.html",
+    "subject": "INTEG",
+    "courseCode": "INTEG 220",
+    "courseName": "Nature of Scientific Knowledge",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npemex__Creativity and Innovation.html",
+    "relativePath": "INTEG/INTEG 251/1249__npemex__Creativity and Innovation.html",
+    "subject": "INTEG",
+    "courseCode": "INTEG 251",
+    "courseName": "Creativity and Innovation",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n8h6bh__Making Collaboration Work _i-Capstone_.html",
+    "relativePath": "INTEG/INTEG 275/1249__n8h6bh__Making Collaboration Work _i-Capstone_.html",
+    "subject": "INTEG",
+    "courseCode": "INTEG 275",
+    "courseName": "Making Collaboration Work (i-Capstone)",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours : Tuesday 3:30-5:00, Friday 1:00-2:30 & by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ncwxsr__The Museum Course_ Research and Design.html",
+    "relativePath": "INTEG/INTEG 320/1249__ncwxsr__The Museum Course_ Research and Design.html",
+    "subject": "INTEG",
+    "courseCode": "INTEG 320",
+    "courseName": "The Museum Course: Research and Design",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5gvv3__Senior Honours Project A.html",
+    "relativePath": "INTEG/INTEG 420A/1249__n5gvv3__Senior Honours Project A.html",
+    "subject": "INTEG",
+    "courseCode": "INTEG 420A",
+    "courseName": "Senior Honours Project A",
+    "parserEventCount": 14,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvz6ys__Introduction to Italian Language 1.html",
+    "relativePath": "ITAL/ITAL 101/1249__nvz6ys__Introduction to Italian Language 1.html",
+    "subject": "ITAL",
+    "courseCode": "ITAL 101",
+    "courseName": "Introduction to Italian Language 1",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours: Mondays and Wednesdays, 9:15 AM – 10:15 AM in SH 2213 (or by appointment)."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzb8a8__Introduction to Italian Language 2.html",
+    "relativePath": "ITAL/ITAL 102/1249__nzb8a8__Introduction to Italian Language 2.html",
+    "subject": "ITAL",
+    "courseCode": "ITAL 102",
+    "courseName": "Introduction to Italian Language 2",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n7rubc__Understanding Modern Italy.html",
+    "relativePath": "ITALST/ITALST 100/1249__n7rubc__Understanding Modern Italy.html",
+    "subject": "ITALST",
+    "courseCode": "ITALST 100",
+    "courseName": "Understanding Modern Italy",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__nn83cw__Italian Culture and Civilization 1.html",
+    "relativePath": "ITALST/ITALST 291/1249__nn83cw__Italian Culture and Civilization 1.html",
+    "subject": "ITALST",
+    "courseCode": "ITALST 291",
+    "courseName": "Italian Culture and Civilization 1",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office hours: Mondays and Wednesdays 11:30 AM - 12:30 PM in SH 2213 /By appointment. Please send me an email to request office hours and you will receive the link for our meeting."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9ynua__Fundamentals of Kinesiology.html",
+    "relativePath": "KIN/KIN 104/1249__n9ynua__Fundamentals of Kinesiology.html",
+    "subject": "KIN",
+    "courseCode": "KIN 104",
+    "courseName": "Fundamentals of Kinesiology",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "Midterm 1 October 4, 2024 9:30 - 10:20 a.m.",
+        "dates": [
+          "2024-10-01"
+        ],
+        "missingDates": [
+          "2024-10-01"
+        ]
+      },
+      {
+        "line": "Midterm 2 November 8, 2024 9:30 - 10:20 a.m.",
+        "dates": [
+          "2024-11-02"
+        ],
+        "missingDates": [
+          "2024-11-02"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8awda__Fundamentals of Kinesiology Laboratory.html",
+    "relativePath": "KIN/KIN 104L/1249__n8awda__Fundamentals of Kinesiology Laboratory.html",
+    "subject": "KIN",
+    "courseCode": "KIN 104L",
+    "courseName": "Fundamentals of Kinesiology Laboratory",
+    "parserEventCount": 14,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "KIN 104L has a practical exam that will be scheduled during your normal lab time on November 25th-29th. (E.g., if you normally have lab on Tuesday from 12:30-2:30 pm, your practical exam will be scheduled for a 20-minute window during that timeframe on November 26th.) More information will be provided on Learn.",
+        "dates": [
+          "2024-11-25",
+          "2024-11-26"
+        ],
+        "missingDates": [
+          "2024-11-25",
+          "2024-11-26"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ncz7ue__Biomechanics of Human Movement.html",
+    "relativePath": "KIN/KIN 121/1249__ncz7ue__Biomechanics of Human Movement.html",
+    "subject": "KIN",
+    "courseCode": "KIN 121",
+    "courseName": "Biomechanics of Human Movement",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Wed 9:30-10:30"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8f683__Biomechanics of Human Movement Laboratory.html",
+    "relativePath": "KIN/KIN 121L/1249__n8f683__Biomechanics of Human Movement Laboratory.html",
+    "subject": "KIN",
+    "courseCode": "KIN 121L",
+    "courseName": "Biomechanics of Human Movement Laboratory",
+    "parserEventCount": 12,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nm6shd__Exercise Physiology and Metabolism.html",
+    "relativePath": "KIN/KIN 202/1249__nm6shd__Exercise Physiology and Metabolism.html",
+    "subject": "KIN",
+    "courseCode": "KIN 202",
+    "courseName": "Exercise Physiology and Metabolism",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nphauw__Exercise Physiology and Metabolism Laboratory.html",
+    "relativePath": "KIN/KIN 202L/1249__nphauw__Exercise Physiology and Metabolism Laboratory.html",
+    "subject": "KIN",
+    "courseCode": "KIN 202L",
+    "courseName": "Exercise Physiology and Metabolism Laboratory",
+    "parserEventCount": 11,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8wsk9__Human Biochemistry.html",
+    "relativePath": "KIN/KIN 217/1249__n8wsk9__Human Biochemistry.html",
+    "subject": "KIN",
+    "courseCode": "KIN 217",
+    "courseName": "Human Biochemistry",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9u8tf__Fundamentals of Neuroscience.html",
+    "relativePath": "KIN/KIN 255/1249__n9u8tf__Fundamentals of Neuroscience.html",
+    "subject": "KIN",
+    "courseCode": "KIN 255",
+    "courseName": "Fundamentals of Neuroscience",
+    "parserEventCount": 11,
+    "sourceDateEntryCount": 9,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours: Tues / Wed - 1:30-2:30 pm"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__ncft6j__Fundamentals of Neuroscience Laboratory.html",
+    "relativePath": "KIN/KIN 255L/1249__ncft6j__Fundamentals of Neuroscience Laboratory.html",
+    "subject": "KIN",
+    "courseCode": "KIN 255L",
+    "courseName": "Fundamentals of Neuroscience Laboratory",
+    "parserEventCount": 12,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nj3zfr__Human Anatomy of the Central Nervous System.html",
+    "relativePath": "KIN/KIN 301/1249__nj3zfr__Human Anatomy of the Central Nervous System.html",
+    "subject": "KIN",
+    "courseCode": "KIN 301",
+    "courseName": "Human Anatomy of the Central Nervous System",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n7czfq__Cardiovascular and Pulmonary Physiology.html",
+    "relativePath": "KIN/KIN 308/1249__n7czfq__Cardiovascular and Pulmonary Physiology.html",
+    "subject": "KIN",
+    "courseCode": "KIN 308",
+    "courseName": "Cardiovascular and Pulmonary Physiology",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Assignment (Due November 15th at 5pm)",
+        "dates": [
+          "2024-11-15"
+        ],
+        "missingDates": [
+          "2024-11-15"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzj4ug__Musculoskeletal Injuries in Sport and Activity.html",
+    "relativePath": "KIN/KIN 340/1249__nzj4ug__Musculoskeletal Injuries in Sport and Activity.html",
+    "subject": "KIN",
+    "courseCode": "KIN 340",
+    "courseName": "Musculoskeletal Injuries in Sport and Activity",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nz369x__Micronutrient Metabolism.html",
+    "relativePath": "KIN/KIN 343/1249__nz369x__Micronutrient Metabolism.html",
+    "subject": "KIN",
+    "courseCode": "KIN 343",
+    "courseName": "Micronutrient Metabolism",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 12,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "This time (EST) denotes the time that is current in Waterloo, Ontario, Canada , on the date of the test that you are writing. Please note that Daylight Savings Time begins Sunday, November 3 rd , 2024, at 1 am, when clocks will be set back 1 hour. If you are studying outside of Waterloo, please check that your times correspond to the time in Waterloo.",
+        "dates": [
+          "2024-11-03"
+        ],
+        "missingDates": [
+          "2024-11-03"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__n6ed8p__Human Nutrition and Metabolism.html",
+    "relativePath": "KIN/KIN 346/1249__n6ed8p__Human Nutrition and Metabolism.html",
+    "subject": "KIN",
+    "courseCode": "KIN 346",
+    "courseName": "Human Nutrition and Metabolism",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4nq8v__Psychology of Physical Activity.html",
+    "relativePath": "KIN/KIN 354/1249__n4nq8v__Psychology of Physical Activity.html",
+    "subject": "KIN",
+    "courseCode": "KIN 354",
+    "courseName": "Psychology of Physical Activity",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Self Evaluation and Course Engagement: The purpose of including this assessment is to provide students with an opportunity to reflect on what they learned in KIN 354 and to have some autonomy over a portion of their final grade. Your self evaluation grade will consist of how well you adhere to the course schedule, engage with in-person class activities, are proactive in requests for clarification, and your overall effort, professionalism, and attitude throughout the term. A student must engage with the majority of in-person active learning activities and group submissions in order to score more than 5/10 on this evaluation. A self-evaluation form will be provided to students. This must be completed between November 25th 8:30 AM and December 2nd 11:59 PM, 2024. If the self-evaluation is not submitted during this time, a student will receive a zero for this portion of the final grade. Importantly, the course instructor will have the final say and ability to modify the self-evaluation mark if the reflection does not match the justification or is inflated based on course progress.",
+        "dates": [
+          "2024-05-10",
+          "2024-11-25",
+          "2024-12-02"
+        ],
+        "missingDates": [
+          "2024-05-10",
+          "2024-11-25",
+          "2024-12-02"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Course Communication Plan Student (Office) Hours: It’s important to know that student hours are dedicated time for you! You are welcome to drop in with any questions you have, whether that be course related or more broadly about university life. I have scheduled time for KIN 354 students on Thursdays from 2:30-3:20 PM (right after our class). However, there is also an open student hour (available for all students across my courses) on Tuesdays from 12:00-12:50 PM, which you are welcome to attend. Student hours will be held weekly in my office (BMH 1056) but if you need to reach me virtually, please feel free to ask. If you need to connect outside of this time or want to discuss a more sensitive matter, please send me an email and we will make alternative arrangements together. Please note that TAs will not be holding regular student hours and will be only by appointment; if you need to meet with your TA, please send them an email to set up a time together."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n8vetn__Motor Learning and Neuroplasticity.html",
+    "relativePath": "KIN/KIN 357/1249__n8vetn__Motor Learning and Neuroplasticity.html",
+    "subject": "KIN",
+    "courseCode": "KIN 357",
+    "courseName": "Motor Learning and Neuroplasticity",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Access to the lecture recordings will occur through LEARN. Lecture recordings will be available to all students enrolled in KIN 357 from Wednesday, September 4th, 2024 to Friday, December 20th, 2024 at the discretion of the instructor (see note about attendance above).",
+        "dates": [
+          "2024-09-04",
+          "2024-12-20"
+        ],
+        "missingDates": [
+          "2024-12-20"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n86zx4__Athletic Injury Practicum.html",
+    "relativePath": "KIN/KIN 400/1249__n86zx4__Athletic Injury Practicum.html",
+    "subject": "KIN",
+    "courseCode": "KIN 400",
+    "courseName": "Athletic Injury Practicum",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ny7w5p__KIN 407_ Cardiovascular Pathophysiology.html",
+    "relativePath": "KIN/KIN 407/1249__ny7w5p__KIN 407_ Cardiovascular Pathophysiology.html",
+    "subject": "KIN",
+    "courseCode": "KIN 407",
+    "courseName": "KIN 407: Cardiovascular Pathophysiology",
+    "parserEventCount": 16,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n4cyu5__Clinical Exercise Physiology.html",
+    "relativePath": "KIN/KIN 414/1249__n4cyu5__Clinical Exercise Physiology.html",
+    "subject": "KIN",
+    "courseCode": "KIN 414",
+    "courseName": "Clinical Exercise Physiology",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njpn2u__Neuromuscular Integration.html",
+    "relativePath": "KIN/KIN 416/1249__njpn2u__Neuromuscular Integration.html",
+    "subject": "KIN",
+    "courseCode": "KIN 416",
+    "courseName": "Neuromuscular Integration",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 13,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5d762__Welcome to _Physical Activity _ Aging_.html",
+    "relativePath": "KIN/KIN 418/1249__n5d762__Welcome to _Physical Activity _ Aging_.html",
+    "subject": "KIN",
+    "courseCode": "KIN 418",
+    "courseName": "Welcome to \"Physical Activity & Aging\"",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nga9v4__Biomechanical Modelling.html",
+    "relativePath": "KIN/KIN 425/1249__nga9v4__Biomechanical Modelling.html",
+    "subject": "KIN",
+    "courseCode": "KIN 425",
+    "courseName": "Biomechanical Modelling",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nycu2s__Low Back Disorders.html",
+    "relativePath": "KIN/KIN 427/1249__nycu2s__Low Back Disorders.html",
+    "subject": "KIN",
+    "courseCode": "KIN 427",
+    "courseName": "Low Back Disorders",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n743hb__Upper Extremity Disorders.html",
+    "relativePath": "KIN/KIN 428/1249__n743hb__Upper Extremity Disorders.html",
+    "subject": "KIN",
+    "courseCode": "KIN 428",
+    "courseName": "Upper Extremity Disorders",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4bfw2__Bone and Joint Health.html",
+    "relativePath": "KIN/KIN 429/1249__n4bfw2__Bone and Joint Health.html",
+    "subject": "KIN",
+    "courseCode": "KIN 429",
+    "courseName": "Bone and Joint Health",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n43evb__Applied Sport Psychology.html",
+    "relativePath": "KIN/KIN 453/1249__n43evb__Applied Sport Psychology.html",
+    "subject": "KIN",
+    "courseCode": "KIN 453",
+    "courseName": "Applied Sport Psychology",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Course Communication Plan Student (Office) Hours: It’s important to know that Student Office Hours are dedicated time for you! You are welcome to drop in with any questions you have, whether that be course related or more broadly about university life. I have scheduled our time for Wednesdays @ 10-11am, directly after our class in my office (BMH 1054). My student hours will be held weekly. If you need to connect outside of this time or want to discuss a more sensitive matter, please send me an email and we will make alternative arrangements together."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n62r5q__Seminar in Kinesiology.html",
+    "relativePath": "KIN/KIN 470/1249__n62r5q__Seminar in Kinesiology.html",
+    "subject": "KIN",
+    "courseCode": "KIN 470",
+    "courseName": "Seminar in Kinesiology",
+    "parserEventCount": 13,
+    "sourceDateEntryCount": 10,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8nrrx__Kinesiology_ Research to Reality.html",
+    "relativePath": "KIN/KIN 470/1249__n8nrrx__Kinesiology_ Research to Reality.html",
+    "subject": "KIN",
+    "courseCode": "KIN 470",
+    "courseName": "Kinesiology: Research to Reality",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njkrpk__Biomechanics of Injury_ Mechanisms_ Prevention_ and Rehabilitation.html",
+    "relativePath": "KIN/KIN 470/1249__njkrpk__Biomechanics of Injury_ Mechanisms_ Prevention_ and Rehabilitation.html",
+    "subject": "KIN",
+    "courseCode": "KIN 470",
+    "courseName": "Biomechanics of Injury: Mechanisms, Prevention, and Rehabilitation",
+    "parserEventCount": 13,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "COURSE COMMUNICATION PLAN Student (Office) Hours: It’s important to know that Student Office Hours are dedicated time for you! You are welcome to drop in with any questions you have, whether that be course related or more broadly about university life. I have scheduled our time for Thursdays 3:00 – 4:00 PM, directly before our class in my office (BMH 1046). My student hours will be held weekly. If you need to connect outside of this time or want to discuss a more sensitive matter, please send me an email and we will make alternative arrangements together."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nnq9ch__Seminar in Kinesiology.html",
+    "relativePath": "KIN/KIN 470/1249__nnq9ch__Seminar in Kinesiology.html",
+    "subject": "KIN",
+    "courseCode": "KIN 470",
+    "courseName": "Seminar in Kinesiology",
+    "parserEventCount": 17,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6g7jf__Clinical Kinesiology - Sports Injuries Assessment.html",
+    "relativePath": "KIN/KIN 491/1249__n6g7jf__Clinical Kinesiology - Sports Injuries Assessment.html",
+    "subject": "KIN",
+    "courseCode": "KIN 491",
+    "courseName": "Clinical Kinesiology - Sports Injuries Assessment",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 7,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nc9drf__Introductory Latin 1.html",
+    "relativePath": "LAT/LAT 101/1249__nc9drf__Introductory Latin 1.html",
+    "subject": "LAT",
+    "courseCode": "LAT 101",
+    "courseName": "Introductory Latin 1",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Instructor's Office Hours: Mondays 1:30-2:30; Wednesdays 10:30-11:30. ML 225"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nybsa6__Introduction to Legal Studies.html",
+    "relativePath": "LS/LS 101/1249__nybsa6__Introduction to Legal Studies.html",
+    "subject": "LS",
+    "courseCode": "LS 101",
+    "courseName": "Introduction to Legal Studies",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrg72y__Conflict Resolution.html",
+    "relativePath": "LS/LS 271/1249__nrg72y__Conflict Resolution.html",
+    "subject": "LS",
+    "courseCode": "LS 271",
+    "courseName": "Conflict Resolution",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 16,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "Conflict Summary due on Friday, September 20.",
+        "dates": [
+          "2024-09-20"
+        ],
+        "missingDates": [
+          "2024-09-20"
+        ]
+      },
+      {
+        "line": "Conflict Summary (Due Friday, September 20, 2024)",
+        "dates": [
+          "2024-09-20"
+        ],
+        "missingDates": [
+          "2024-09-20"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__n8huug__Derivatives.html",
+    "relativePath": "MATBUS/MATBUS 470/1249__n8huug__Derivatives.html",
+    "subject": "MATBUS",
+    "courseCode": "MATBUS 470",
+    "courseName": "Derivatives",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9wyjx__Fixed Income Securities.html",
+    "relativePath": "MATBUS/MATBUS 471/1249__n9wyjx__Fixed Income Securities.html",
+    "subject": "MATBUS",
+    "courseCode": "MATBUS 471",
+    "courseName": "Fixed Income Securities",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  }
+]

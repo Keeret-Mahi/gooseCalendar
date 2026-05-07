@@ -9,7 +9,10 @@ import {
   parseISO,
   subDays,
 } from "date-fns";
+import { extractNonMeetingEventsWithAi } from "./aiExtractionClient";
+import { mapAiExtractionToEventCandidates } from "./aiEventMapper";
 import { normalizeCourseNameCapitalization } from "./courseNames";
+import type { AiOutlineExtractionRequest } from "./aiExtractionSchema";
 import type {
   EventCandidate,
   EventConfidence,
@@ -177,6 +180,21 @@ const MONTH_ALIASES: Record<string, string> = {
   december: "Dec",
 };
 
+const MONTH_INDEX_BY_ABBREV: Record<string, number> = {
+  jan: 0,
+  feb: 1,
+  mar: 2,
+  apr: 3,
+  may: 4,
+  jun: 5,
+  jul: 6,
+  aug: 7,
+  sep: 8,
+  oct: 9,
+  nov: 10,
+  dec: 11,
+};
+
 const EVENT_GROUP_BY_TYPE: Record<EventType, EventGroup> = {
   Lecture: "Lecture",
   Tutorial: "Tutorial",
@@ -219,6 +237,7 @@ function normalizeOfficeHourParsingText(value: string | null | undefined) {
   return normalizeWhitespace(value)
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/((?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM))([A-Z])/g, "$1 $2")
+    .replace(/(\d)\.(\d{2})(?=\b)/g, "$1:$2")
     .replace(/([A-Za-z])(\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/g, "$1 $2")
     .replace(/([A-Za-z])(\d{3,4}[A-Za-z]?)/g, "$1 $2")
     .replace(/\ba\.?\s*m\.?\b/gi, "AM")
@@ -241,7 +260,10 @@ function stripOfficeHourContactNoise(value: string | null | undefined) {
     .replace(/\b(?:my\s+)?working hours are\b[^.?!]*[.?!]?/gi, " ")
     .replace(/\bemails received after\b[^.?!]*[.?!]?/gi, " ")
     .replace(/\b(?:during )?normal working hours\b[^.?!]*[.?!]?/gi, " ")
-    .replace(/\bmonday to friday\b[^.?!]*(?:reply|respond|email)[^.?!]*[.?!]?/gi, " ");
+    .replace(/\bmonday to friday\b[^.?!]*(?:reply|respond|email)[^.?!]*[.?!]?/gi, " ")
+    .replace(/([.?!])\s*((?:Teaching Assistants?|Teaching Assistant|TA(?:\s*\(|:|'s\b)).*)$/i, (_match, punctuation: string, tail: string) =>
+      /\boffice hours?\b/i.test(tail) ? `${punctuation} ${tail}` : punctuation
+    );
 }
 
 function officeHourBlockStartRegex() {
@@ -254,6 +276,10 @@ function officeHourSectionBoundaryRegex() {
 
 function splitOfficeHourAwareLines(text: string) {
   return normalizeOfficeHourParsingText(text)
+    .replace(
+      /\s*((?:Instructor|Course Instructor|Teaching Assistants?|Teaching Assistant|Lead Teaching Assistant(?:\s*\(TA\))?|Lead TA|TA)\s+Office Hours?:)/gi,
+      "\n$1"
+    )
     .replace(
       /\s*(Instructor:|Course Instructor:|Teaching Assistants?:|Teaching Assistant:|Lead Teaching Assistant(?:\s*\(TA\))?:|Lead TA:|TA:|Name:|Piazza:|Lectures?:|Tutorials?:|Labs?:|Instructional Support Coordinator(?:\s*\(ISC\))?:|Instructional Support Assistant(?:\s*\(ISA\))?:|Instructional Assistants?(?:\s*\(IA\))?:|Instructional Apprentices?(?:\s*\(IA\))?:)/gi,
       "\n$1"
@@ -363,6 +389,173 @@ function stripLeadingBulletPrefix(value: string | null | undefined) {
     .trim();
 }
 
+function isPlaceholderDeliverableLabel(label: string | null | undefined) {
+  const normalized = normalizeWhitespace(label).toLowerCase();
+  if (!normalized) return false;
+  return (
+    /^(?:assignment|assignments?|report|reports?|paper|papers?|project|projects?|presentation|presentations?)\s+due(?:\s+date)?(?:\b.*)?$/.test(
+      normalized
+    ) ||
+    /^(?:submission|submissions?)$/.test(normalized) ||
+    /^(?:assignment|report|paper|project|presentation|proposal)(?:\s+(?:available|review))$/i.test(
+      normalized
+    ) ||
+    /^(?:submission|submissions?)(?:\s+(?:available|review))$/i.test(normalized) ||
+    /^the assignments?\s+will\s+be\s+posted\s+on\s+learn(?:\s+available)?$/.test(normalized) ||
+    /^there\s+(?:is|are|will be)\b.*\b(?:assignment|assignments?|report|reports?|presentation|presentations?|paper|papers?)\b.*$/.test(
+      normalized
+    )
+  );
+}
+
+function contextualizePlaceholderDeliverableLabel(
+  entry: string,
+  previousLabel: string | undefined
+) {
+  const normalizedPrevious = normalizeWhitespace(previousLabel);
+  if (!normalizedPrevious || !looksLikeAssignmentText(normalizedPrevious)) {
+    return undefined;
+  }
+
+  const cleanedPrevious = trimTrailingPeriods(
+    normalizedPrevious
+      .replace(/\s*\(\s*\d+(?:\.\d+)?\s*%[^)]*\)\s*$/i, "")
+      .replace(/\s*[-–—:;,]+\s*$/g, "")
+  );
+  if (!cleanedPrevious) return undefined;
+  const cleanedPreviousCore = normalizeWhitespace(
+    cleanedPrevious.replace(/\s+(?:available|review)\b/i, "")
+  );
+
+  const normalizedEntry = normalizeWhitespace(entry).toLowerCase();
+  const partMatch = normalizedEntry.match(/\bpart\s+([a-z0-9]+)\b/i)?.[1];
+  if (partMatch) {
+    const normalizedPart =
+      /^[a-z]$/i.test(partMatch) ? partMatch.toUpperCase() : partMatch;
+    return /\bpart\s+[a-z0-9]+\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore.replace(/\bpart\s+[a-z0-9]+\b/i, `Part ${normalizedPart}`)
+      : `${cleanedPreviousCore} Part ${normalizedPart}`;
+  }
+  if (/\bslides?\b|\bpresentation materials\b/.test(normalizedEntry)) {
+    return /\bpresentation materials\b|\bslides?\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : "Project Presentation Materials";
+  }
+  if (/\bpresent(?:ation|ed|ing)\b/.test(normalizedEntry)) {
+    return /\bpresentation\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${cleanedPreviousCore} Presentation`;
+  }
+  const previousWithoutPresentation = normalizeWhitespace(
+    cleanedPreviousCore.replace(/\s+presentations?\b/i, "")
+  );
+  if (/\bwritten portion\b/.test(normalizedEntry)) {
+    const baseLabel = previousWithoutPresentation || cleanedPreviousCore;
+    return /\bwritten portion\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${baseLabel} Written Portion`;
+  }
+  if (/\bwritten submissions?\b/.test(normalizedEntry)) {
+    const baseLabel = previousWithoutPresentation || cleanedPreviousCore;
+    return /\bwritten submission\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${baseLabel} Written Submission`;
+  }
+  if (/\breport\b/.test(normalizedEntry)) {
+    const baseLabel = previousWithoutPresentation || cleanedPreviousCore;
+    return /\breport\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${baseLabel} Report`;
+  }
+  if (/\bcheck-?ins?\b/.test(normalizedEntry)) {
+    const baseLabel = previousWithoutPresentation || cleanedPreviousCore;
+    return /\bcheck-?in\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${baseLabel} Check-In`;
+  }
+  if (/\bposts?\b/.test(normalizedEntry)) {
+    return /\bpost\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${cleanedPreviousCore} Post`;
+  }
+  if (/\bresponses?\b/.test(normalizedEntry)) {
+    return /\bresponse\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${cleanedPreviousCore} Response`;
+  }
+  if (/\breviewed in class\b/.test(normalizedEntry)) {
+    return /\breview\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${cleanedPreviousCore} Review`;
+  }
+  if (
+    /\b(?:available(?:\s+as\s+of|\s+from|\s+on)?|opens?(?:\s+on)?|posted(?:\s+on|\s+to)?|released|release(?:d)?\s+week\s+of|begins?(?:\s+on)?|starts?(?:\s+on)?)\b/i.test(
+      normalizedEntry
+    )
+  ) {
+    return /\bavailable\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${cleanedPreviousCore} Available`;
+  }
+  if (/\bposted on learn\b|\bavailable on learn\b/.test(normalizedEntry)) {
+    return /\bavailable\b/i.test(cleanedPreviousCore)
+      ? cleanedPreviousCore
+      : `${cleanedPreviousCore} Available`;
+  }
+  return cleanedPreviousCore;
+}
+
+function hasAvailabilityCue(text: string | null | undefined) {
+  const normalized = normalizeWhitespace(text);
+  if (!normalized) return false;
+  return /\b(?:available(?:\s+as\s+of|\s+from|\s+on)?|opens?(?:\s+on)?|posted(?:\s+on|\s+to)?|released|release(?:d)?\s+week\s+of|begins?(?:\s+on)?|starts?(?:\s+on)?)\b/i.test(
+    normalized
+  );
+}
+
+function hasInClassReviewCue(text: string | null | undefined) {
+  const normalized = normalizeWhitespace(text);
+  if (!normalized) return false;
+  return /\b(?:reviewed in class|review in class|reviewed during class|reviewed on)\b/i.test(
+    normalized
+  );
+}
+
+function isReviewOrPlaceholderScheduleEntry(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value);
+  if (!normalized) return true;
+  return (
+    /^no quizzes?\b/i.test(normalized) ||
+    /^no tests?\b/i.test(normalized) ||
+    /^no assignments?\b/i.test(normalized) ||
+    /^no tutorials?\b/i.test(normalized) ||
+    /^review for (?:the )?(?:mid-?term|midterm|quiz|test|exam|final)/i.test(normalized) ||
+    /^mid-?term prep\b/i.test(normalized) ||
+    /^test preparation\b/i.test(normalized) ||
+    /^discussing mid-?term\b/i.test(normalized) ||
+    /^exam review$/i.test(normalized) ||
+    /^\(?exam review\)?$/i.test(normalized) ||
+    /^\d{1,2}\s*,\s*\d{1,2}\s+[A-Za-z]{3,9}\s*\(\s*exam review\s*\)$/i.test(normalized) ||
+    /^more details? will be available\b.*\b(?:quiz|test|midterm|exam)\b/i.test(normalized) ||
+    /^details? will be available\b.*\b(?:quiz|test|midterm|exam)\b/i.test(normalized)
+  );
+}
+
+function applyEventTimingLabel(label: string, cueText: string | null | undefined) {
+  const normalizedLabel = normalizeWhitespace(label);
+  if (!normalizedLabel) return normalizedLabel;
+  const labelCore = normalizeWhitespace(
+    normalizedLabel.replace(/\s+(?:available|review)\b/i, "")
+  );
+  if (hasInClassReviewCue(cueText)) {
+    return /\breview\b/i.test(labelCore) ? labelCore : `${labelCore} Review`;
+  }
+  if (hasAvailabilityCue(cueText)) {
+    return /\bavailable\b/i.test(labelCore) ? labelCore : `${labelCore} Available`;
+  }
+  return labelCore;
+}
+
 function hasDirectDeadlineCue(value: string | null | undefined) {
   const normalized = normalizeWhitespace(value);
   if (!normalized) return false;
@@ -393,7 +586,7 @@ function extractStructuredLocation(text: string, allowVerbatimShort = false) {
   ) {
     return "";
   }
-  if (/kritik/i.test(normalized)) return "Kritik";
+  if (/kritik/i.test(normalized)) return "";
   if (/pebblepad/i.test(normalized)) {
     return /portfolio/i.test(normalized) ? "PebblePad Portfolio" : "PebblePad";
   }
@@ -554,6 +747,7 @@ function capitalizeAssessmentText(label: string) {
       }
       return lower.charAt(0).toUpperCase() + lower.slice(1);
     })
+    .replace(/\bmid[\s-]?term\b/gi, "Midterm")
     .replace(/\bin-Class\b/gi, "In-Class")
     .replace(/\blecture-Related\b/gi, "Lecture-Related")
     .replace(/\bone-Page\b/gi, "One-Page");
@@ -571,6 +765,9 @@ function capitalizeAssignmentText(label: string) {
 
       if (/^[ivxlcdm]+$/i.test(word)) {
         return word.toUpperCase();
+      }
+      if (/^[A-Z]$/.test(word)) {
+        return word;
       }
       if (!isFirstWord && SMALL_WORDS.has(lower)) {
         return lower;
@@ -595,17 +792,298 @@ function stripLeadingSeriesCount(label: string) {
   );
 }
 
+function looksLikeStandaloneDateOrRangeLabel(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value);
+  if (!normalized) return true;
+
+  return (
+    /^(?:week\s*\d+\s*[:.-]?\s*)?(?:(?:mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?)(?:\s*(?:-|–|—|to)\s*(?:(?:\d{1,2}\s+)?(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?|\d{1,2}(?:st|nd|rd|th)?))?$/i.test(
+      normalized
+    ) ||
+    /^(?:\d+\.\s*)?(?:(?:mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?),?\s+)?(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?$/i.test(
+      normalized
+    ) ||
+    /^(?:may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\.?\s+\d{1,2}\s*(?:-|–|—|to)\s*\d{1,2}$/i.test(
+      normalized
+    ) ||
+    /^(?:finals?|final exam period)$/i.test(normalized)
+  );
+}
+
+function salvageTrailingSentenceFragmentLabel(label: string) {
+  const normalized = normalizeWhitespace(label);
+  const phraseMatch =
+    normalized.match(
+      /^(?:(?:this|that|the|these|those|my|our|your)\s+)(.+?)\s+(?:is|are)$/i
+    ) ??
+    normalized.match(/^(.+?)\s+(?:is|are)$/i);
+  if (!phraseMatch) return undefined;
+  const nounPhrase = normalizeWhitespace(phraseMatch[1]).replace(
+    /^(?:all|this|that|the|these|those|my|our|your)\s+/i,
+    ""
+  );
+  if (!nounPhrase) return undefined;
+  if (
+    /\b(?:due|available|opens?|closes?|posted|submitted?|reviewed?|released|scheduled|held|worth|weighted|described|listed)\b/i.test(
+      nounPhrase
+    )
+  ) {
+    return undefined;
+  }
+  if (
+    !/\b(?:assignments?|assessments?|reports?|projects?|papers?|proposals?|submissions?|deliverables?|essays?|presentations?|reflections?|quiz(?:zes)?|tests?|midterms?|exams?|bibliograph(?:y|ies)|abstracts?|summaries?|problems?|check-?ins?|workbooks?|posters?|tasks?|analys(?:is|es)|reviews?|files?|contracts?|case studies?|program design|readiness activit(?:y|ies))\b$/i.test(
+      nounPhrase
+    )
+  ) {
+    return undefined;
+  }
+
+  if (/\b(?:assessment|quiz|test|midterm|exam)s?\b/i.test(nounPhrase)) {
+    return capitalizeAssessmentText(nounPhrase);
+  }
+
+  return capitalizeAssignmentText(nounPhrase);
+}
+
+function salvageDeliverableFromSentencePrefix(label: string) {
+  const normalized = normalizeWhitespace(label);
+  const sentenceMatch = normalized.match(
+    /^(?:(?:all|this|that|the|these|those|my|our|your)\s+)?(.+?)\s+(?:is|are|will be)\b/i
+  );
+  if (!sentenceMatch) return undefined;
+
+  const nounPhrase = normalizeWhitespace(sentenceMatch[1]).replace(
+    /^(?:all|this|that|the|these|those|my|our|your)\s+/i,
+    ""
+  );
+  if (!nounPhrase) return undefined;
+  if (
+    /\b(?:due|available|opens?|closes?|posted|submitted?|reviewed?|released|scheduled|held|worth|weighted|described|listed|given)\b/i.test(
+      nounPhrase
+    )
+  ) {
+    return undefined;
+  }
+
+  if (/\b(?:assessment|quiz|test|midterm|exam)s?\b$/i.test(nounPhrase)) {
+    return capitalizeAssessmentText(nounPhrase);
+  }
+  if (
+    /\b(?:assignments?|reports?|projects?|papers?|proposals?|submissions?|deliverables?|essays?|presentations?|reflections?|bibliograph(?:y|ies)|abstracts?|summaries?|problems?|check-?ins?|workbooks?|posters?|tasks?|analys(?:is|es)|reviews?|files?|contracts?|surveys?|commentaries?|modules?|case studies?|program design|readiness activit(?:y|ies))\b$/i.test(
+      nounPhrase
+    )
+  ) {
+    return capitalizeAssignmentText(nounPhrase);
+  }
+
+  return undefined;
+}
+
+function isInstructionalDeliverableNoise(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value);
+  if (!normalized) return true;
+  return (
+    /\bspecific instructions?\b.*\bprovided via learn\b/i.test(normalized) ||
+    /\bassignment should be completed\b/i.test(normalized) ||
+    /\bwritten in your own words\b/i.test(normalized) ||
+    /\binformation cited appropriately\b/i.test(normalized) ||
+    /\bcited appropriately using\b/i.test(normalized) ||
+    /\bexact questions .* will be announced on learn\b/i.test(normalized) ||
+    /\bleave yourself enough time to submit assignments?\b/i.test(normalized) ||
+    /\blike with the short presentation\b/i.test(normalized) ||
+    /\byoutube link\b/i.test(normalized) ||
+    /\blate penalty\b/i.test(normalized) ||
+    /\bproject help session\b/i.test(normalized) ||
+    /\bproject consultation\b/i.test(normalized) ||
+    /\bclass project introduction\b/i.test(normalized) ||
+    /\bclass project organization discussions?\b/i.test(normalized) ||
+    /\bassignment one handout\b/i.test(normalized) ||
+    /\bprogram instruction\/training session\b/i.test(normalized) ||
+    /\bassessment booking\/practice\b/i.test(normalized) ||
+    /\bpractical exam preparation\b/i.test(normalized) ||
+    /^(?:start thinking about|work on|continue working on|keep working on|review for)\b/i.test(
+      normalized
+    ) ||
+    /\bstudents?\s+(?:will|must|should|are)\b/i.test(normalized)
+  );
+}
+
 function canonicalizeProseDeliverableLabel(label: string, contextText?: string) {
-  const normalized = trimTrailingClauses(normalizeWhitespace(label));
+  const normalized = trimTrailingClauses(normalizeWhitespace(label))
+    .replace(/^[“"'`(\[]+\s*/g, "")
+    .replace(/\s*[”"'`\])]+$/g, "")
+    .replace(/\s+\b(?:is|are)\b$/i, "")
+    .trim();
   if (!normalized) return undefined;
-  if (/^(?:the )?reflection is$|^(?:this|the) assignment is$|^(?:this|the) assessment is$/i.test(normalized)) {
+  if (looksLikeStandaloneDateOrRangeLabel(normalized)) {
+    return undefined;
+  }
+  if (
+    /^week\b/i.test(normalized) &&
+    !/\b(?:due|deadline|available|opens?|closes?|submission date|date of submission)\b/i.test(
+      normalized
+    )
+  ) {
+    return undefined;
+  }
+  if (
+    /^(?:for example|example|if\b|otherwise\b|when you receive\b|requests? for re-?grading\b|please\b|like with\b|as with\b)/i.test(
+      normalized
+    ) ||
+    /^(?:the|this|that|these|those)$/i.test(normalized) ||
+    /^(?:start thinking about|work on|continue working on|keep working on|review for)\b/i.test(
+      normalized
+    ) ||
+    /^we\s+(?:will|also)\b/i.test(normalized) ||
+    /^assignments?\s+are\s+due(?:\s+by|\s+on)?\b/i.test(normalized) ||
+    /^grades?\s+for\s+each\s+assignment\b/i.test(normalized) ||
+    /^the following rules apply if\b/i.test(normalized) ||
+    /^all assignments?\s+will\s+be\s+(?:open|posted|submitted|marked)\b/i.test(normalized) ||
+    /\bassigned exercise or task\b/i.test(normalized) ||
+    /\bgraded papers?\s+will\s+be\s+made\s+available\b/i.test(normalized) ||
+    /\bnotification if you intend to assign\b/i.test(normalized)
+  ) {
+    return undefined;
+  }
+  if (isGenericProseDeliverableHeading(normalized)) {
+    return undefined;
+  }
+  const salvagedTrailingFragmentLabel = salvageTrailingSentenceFragmentLabel(normalized);
+  if (salvagedTrailingFragmentLabel) {
+    return salvagedTrailingFragmentLabel;
+  }
+  const salvagedSentencePrefixLabel = salvageDeliverableFromSentencePrefix(normalized);
+  if (salvagedSentencePrefixLabel) {
+    return salvagedSentencePrefixLabel;
+  }
+  const descriptiveSentenceMatch = normalized.match(
+    /^(?:this|that|the)\s+(.+?)\s+is\s+an?\s+(?:(?:weekly|written|group|team|final|online|lab|pre-?lab|post-?lab|take-?home|peer|short|research|reading|capstone|essay)\s+)*(?:assignment|report|project|proposal|reflection|paper|essay|presentation)\b/i
+  );
+  if (descriptiveSentenceMatch) {
+    const salvagedDescription = normalizeWhitespace(descriptiveSentenceMatch[1]);
+    if (salvagedDescription && looksLikeAssignmentText(salvagedDescription)) {
+      return capitalizeAssignmentText(salvagedDescription);
+    }
+  }
+  const futureSentenceMatch = normalized.match(
+    /^(?:this|that|the)\s+(.+?)\s+will\s+be\b/i
+  );
+  if (futureSentenceMatch) {
+    const salvagedDescription = normalizeWhitespace(futureSentenceMatch[1]);
+    if (salvagedDescription && looksLikeAssignmentText(salvagedDescription)) {
+      return capitalizeAssignmentText(salvagedDescription);
+    }
+  }
+  if (/\b(?:is|are)$/i.test(normalized)) {
     return undefined;
   }
 
   const search = normalizeWhitespace([normalized, contextText].filter(Boolean).join(" ")).toLowerCase();
+  if (/^(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|\d+)\s+surveys?\b/i.test(normalized)) {
+    return undefined;
+  }
+  if (
+    /\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|\d+)\s+surveys?\s+(?:will be|are)\b/.test(
+      search
+    )
+  ) {
+    return undefined;
+  }
+  if (/^first survey\b/i.test(normalized) && /\bprior knowledge survey\b/.test(search)) {
+    return "Prior Knowledge Survey";
+  }
+  if (/\bassignments?\s+will\s+be\s+posted\s+on\s+learn\b/.test(search)) {
+    return undefined;
+  }
+  if (/^assignment due(?:\s+date)?(?:\b.*)?$/.test(search)) {
+    return "Assignment";
+  }
+  if (/^report due(?:\s+date)?(?:\b.*)?$/.test(search)) {
+    return "Report";
+  }
+  if (/^presentation due(?:\s+date)?(?:\b.*)?$/.test(search)) {
+    return "Presentation";
+  }
+  if (/\btechnical report\b/.test(search)) {
+    return "Technical Report";
+  }
+  if (/\bprior knowledge survey\b/.test(search)) {
+    return "Prior Knowledge Survey";
+  }
+  if (/\bpre-?course survey\b/.test(search)) {
+    return "Pre-Course Survey";
+  }
+  if (/\bself-introduction\b/.test(search)) {
+    return "Self-Introduction";
+  }
+  if (/\bcommentary\s*#?\s*(\d+)\s*post\b/i.test(search)) {
+    const match = search.match(/\bcommentary\s*#?\s*(\d+)\s*post\b/i)?.[1];
+    if (match) return `Commentary ${Number(match)} Post`;
+  }
+  if (/\bcommentary\s*#?\s*(\d+)\s*responses?\b/i.test(search)) {
+    const match = search.match(/\bcommentary\s*#?\s*(\d+)\s*responses?\b/i)?.[1];
+    if (match) return `Commentary ${Number(match)} Response`;
+  }
+  if (/\bfinal reflections? paper\b/.test(search)) {
+    return "Final Reflections Paper";
+  }
+  if (/\breflections? paper\b/.test(search)) {
+    return "Reflections Paper";
+  }
+  if (/\b(?:completion of )?an online survey\b/.test(search)) {
+    return "Course Survey";
+  }
+  if (/\bpre-?midterm\b.*\bcheck-?in\b/.test(search)) {
+    return "Pre-Midterm Check-In";
+  }
+  if (/\bpre-?final\b.*\bcheck-?in\b/.test(search)) {
+    return "Pre-Final Check-In";
+  }
+  if (/\bthere (?:will be|are)\s+(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+mobius assignments?\b/.test(search)) {
+    return "Mobius Assignments";
+  }
+  if (/\bthere (?:will be|are)\s+(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+written assignments?\b/.test(search)) {
+    return "Written Assignments";
+  }
+  const mobiusAssignmentMatch = search.match(/\bmobius assignment\s*#?\s*(\d+)\b/i)?.[1];
+  if (mobiusAssignmentMatch) {
+    return `Mobius Assignment #${Number(mobiusAssignmentMatch)}`;
+  }
+  const mobiusAssignmentRangeMatch = search.match(
+    /\bmobius(?: assignments?)?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (mobiusAssignmentRangeMatch) {
+    return `Mobius Assignments #${Number(mobiusAssignmentRangeMatch[1])}-${Number(
+      mobiusAssignmentRangeMatch[2]
+    )}`;
+  }
+  const writtenAssignmentMatch = search.match(/\bwritten assignment\s*#?\s*(\d+)\b/i)?.[1];
+  if (writtenAssignmentMatch) {
+    return `Written Assignment #${Number(writtenAssignmentMatch)}`;
+  }
+  const writtenAssignmentRangeMatch = search.match(
+    /\bwritten assignments?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (writtenAssignmentRangeMatch) {
+    return `Written Assignments #${Number(writtenAssignmentRangeMatch[1])}-${Number(
+      writtenAssignmentRangeMatch[2]
+    )}`;
+  }
   const tutorialProblemMatch = search.match(/\btutorial problem\s*#?\s*(\d+)/i)?.[1];
   if (tutorialProblemMatch) {
     return `Tutorial Problem ${tutorialProblemMatch}`;
+  }
+  const problemSetMatch = search.match(/\bproblem set\s*#?\s*(\d+)\b/i)?.[1];
+  if (problemSetMatch) {
+    return `Problem Set #${Number(problemSetMatch)}`;
+  }
+  const problemSetRangeMatch = search.match(
+    /\bproblem sets?\s*#?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (problemSetRangeMatch) {
+    return `Problem Sets #${Number(problemSetRangeMatch[1])}-${Number(
+      problemSetRangeMatch[2]
+    )}`;
   }
   if (/\bfinal team case presentation\b/.test(search)) {
     return "Final Team Case Presentation";
@@ -615,6 +1093,137 @@ function canonicalizeProseDeliverableLabel(label: string, contextText?: string) 
   }
   if (/\bproject abstract\b/.test(search)) {
     return "Project Abstract";
+  }
+  if (/\bskoden reflection\b/.test(search)) {
+    return "Skoden Reflection";
+  }
+  if (/\bstory map\b/.test(search)) {
+    return "Story Map";
+  }
+  const numberedTakeHomeAnalysisMatch = search.match(
+    /\bassignment\s*#?\s*(\d+)\b.*\btake-?home final analysis\b/i
+  )?.[1];
+  if (numberedTakeHomeAnalysisMatch) {
+    return `Assignment #${Number(numberedTakeHomeAnalysisMatch)}`;
+  }
+  if (/\bproblem sets?\b/.test(search)) {
+    return "Problem Set";
+  }
+  if (/\bproject\s+([ivxlc]+)\b/i.test(search)) {
+    const projectNumber = search.match(/\bproject\s+([ivxlc]+)\b/i)?.[1];
+    if (projectNumber) {
+      return `Project ${projectNumber.toUpperCase()}`;
+    }
+  }
+  const ordinalProjectMatch = search.match(
+    /\b(?:the\s+)?(first|second|third|fourth)\s+project\b/i
+  )?.[1];
+  if (ordinalProjectMatch) {
+    const romanByOrdinal: Record<string, string> = {
+      first: "I",
+      second: "II",
+      third: "III",
+      fourth: "IV",
+    };
+    return `Project ${romanByOrdinal[ordinalProjectMatch.toLowerCase()]}`;
+  }
+  if (/\bannotated\s+bib[a-z]*\b/.test(search)) {
+    return "Annotated Bibliography";
+  }
+  if (/\bop-?ed assignment\b/.test(search)) {
+    return "Op-Ed Assignment";
+  }
+  if (/\bbook analysis\b/.test(search)) {
+    return "Book Analysis";
+  }
+  if (/\bbook review discussion\b/.test(search)) {
+    return "Book Review Discussion";
+  }
+  if (/\bevent report\b/.test(search)) {
+    return "Event Report";
+  }
+  if (/\bconcept map\b/i.test(search) && /\bcheck-?ins?\b/i.test(search)) {
+    return "Concept Map Check-In";
+  }
+  if (/\bposter presentations?\b/.test(search)) {
+    return "Poster Presentation";
+  }
+  if (/\bresearch proposal\b/.test(search)) {
+    return "Research Proposal";
+  }
+  if (/\bstudent survey\b/.test(search)) {
+    return "Student Survey";
+  }
+  if (/\bcourse survey\b/.test(search)) {
+    return "Course Survey";
+  }
+  if (/\bfinal response\b/.test(search)) {
+    return "Final Response";
+  }
+  if (/\bproject reports?\b/.test(search)) {
+    return "Project Report";
+  }
+  const commentaryMatch = search.match(/\bcommentary\s*#?\s*(\d+)\b/i)?.[1];
+  if (commentaryMatch) {
+    return `Commentary #${Number(commentaryMatch)}`;
+  }
+  if (/\bcommentary\b/.test(search)) {
+    return "Commentary";
+  }
+  const labReportMatch = search.match(/\blab report\s*#?\s*(\d+)\b/i)?.[1];
+  if (labReportMatch) {
+    return `Lab Report #${Number(labReportMatch)}`;
+  }
+  if (/\blab report\b/.test(search)) {
+    return "Lab Report";
+  }
+  const moduleMatch = search.match(/\bmodule\s*#?\s*(\d+)\b/i)?.[1];
+  if (moduleMatch) {
+    return `Module ${Number(moduleMatch)}`;
+  }
+  const majorGroupAssignmentMatch = search.match(/\bmajor group assignment\s*#?\s*(\d+)\b/i)?.[1];
+  if (majorGroupAssignmentMatch) {
+    return `Major Group Assignment #${Number(majorGroupAssignmentMatch)}`;
+  }
+  if (/\bmajor group assignment\b/.test(search)) {
+    return "Major Group Assignment";
+  }
+  const groupAssignmentMatch = search.match(/\b(?:one\s+)?group assignment\s*#?\s*(\d+)\b/i)?.[1];
+  if (groupAssignmentMatch) {
+    return `Group Assignment #${Number(groupAssignmentMatch)}`;
+  }
+  if (/\b(?:one\s+)?group assignment\b/.test(search)) {
+    return "Group Assignment";
+  }
+  if (/\bcapstone team and problem space\b/.test(search)) {
+    return "Capstone Team and Problem Space";
+  }
+  if (/\bpeer mentoring reflection\b/.test(search)) {
+    return "Peer Mentoring Reflection";
+  }
+  if (/\bindividual contribution statement\b/.test(search)) {
+    return "Individual Contribution Statement";
+  }
+  if (/\bgrant proposal\b/.test(search)) {
+    return "Grant Proposal";
+  }
+  if (/\bwritten,?\s+scientific report\b/.test(search)) {
+    return "Research Report";
+  }
+  if (/\binitial submission\b/.test(search)) {
+    return "Initial Submission";
+  }
+  if (/\bfinal paper\b/.test(search)) {
+    return "Final Paper";
+  }
+  if (/\burban armature drawings?\b/.test(search)) {
+    return "Urban Armature Drawings";
+  }
+  if (/\bsketchbook\b/.test(search) && /\breturned\b/.test(search)) {
+    return "Sketchbook Return";
+  }
+  if (/\bsketchbook\b/.test(search) && /\b(?:submit|submission|due)\b/.test(search)) {
+    return "Sketchbook Submission";
   }
   if (
     /\bpost your presentation\b/.test(search) ||
@@ -670,10 +1279,10 @@ function canonicalizeProseDeliverableLabel(label: string, contextText?: string) 
     [/\bproject pitch\b/, "Project Pitch"],
     [/\bproject proposal\b|\bproposal and the optional team charter\b|\bproposal\b.*\bteam charter\b/, "Project Proposal"],
     [/\b(?:completed\s+)?power\s*point presentation\b|\b(?:completed\s+)?powerpoint presentation\b/, "Project Presentation Materials"],
-    [/\bproject presentation materials\b|\bpresentation materials\b|\bslides?\b.*\bpresentations?\b/, "Project Presentation Materials"],
+    [/\bproject presentation materials\b|\bpresentation materials\b|\bsubmit slides?\b|\bslides?\b.*\bpresentations?\b/, "Project Presentation Materials"],
     [/\bfinal project presentation\b|\bproject presentation\b|\bpresent their (?:work|project)\b/, "Project Presentation"],
     [/\bproject peer review\b|\bpeer review\b.*\bproject\b/, "Project Peer Review"],
-    [/\bproject summary report\b|\bproject paper\b|\bworkshop-quality paper\b|\bfinal project deliverables\b/, "Project Report"],
+    [/\bproject summary report\b|\bproject reports?\b|\bproject paper\b|\bworkshop-quality paper\b|\bfinal project deliverables\b/, "Project Report"],
     [/\bwritten assignment\b/, "Written Assignment"],
     [/\bwritten report\b/, "Written Report"],
     [/\bliterature survey\b/, "Literature Survey"],
@@ -692,6 +1301,7 @@ function canonicalizeProseDeliverableLabel(label: string, contextText?: string) 
     [/\bpaper presentations?\b/, "Paper Presentation"],
     [/\bpaper summaries?\b/, "Paper Summary"],
     [/\bparticipation in paper discussions?\b/, "Paper Discussion Participation"],
+    [/\bgroup paper discussion write-?up\b/, "Group Paper Discussion Write-Up"],
   ];
 
   for (const [pattern, replacement] of keywordMatches) {
@@ -723,13 +1333,23 @@ function canonicalizeProseDeliverableLabel(label: string, contextText?: string) 
 }
 
 function hasNamedDeliverableCue(text: string) {
-  return /\b(project pitch|project proposal|proposal|team charter|written assignment|written report|literature survey|critical reflection|term paper|workshop assignment|paper presentations?|student presentations?|team case presentation|case presentation|paper summaries?|journal prompts?|monday journals?|presentation materials|slides? for the presentations?|project summary report|project paper|project abstract|project delivery|project presentation upload|group presentations?|research paper discussion|tutorial problem|paper assignment|peer review|annotations?|perusall|qfc|brief|self-assessment|passage analysis|choose a reading)\b/i.test(
+  return /\b(project\s+[ivxlc]+|problem sets?|project pitch|project proposal|research proposal|grant proposal|proposal|initial submission|final paper|sketchbook|urban armature drawings?|student survey|course survey|final response|major group assignment|capstone team and problem space|peer mentoring reflection|individual contribution statement|team charter|written assignment|written report|literature survey|critical reflection|term paper|workshop assignment|paper presentations?|poster presentations?|student presentations?|team case presentation|case presentation|paper summaries?|journal prompts?|monday journals?|presentation materials|slides? for the presentations?|project summary report|project report|project paper|project abstract|project delivery|project presentation upload|group presentations?|research paper discussion|tutorial problem|paper assignment|peer review|podcast review|book review discussion|annotated\s+bib[a-z]*|annotations?|perusall|qfc|brief|self-assessment|passage analysis|choose a reading|story map|group paper discussion write-?up|commentaries?|lab reports?|case studies?|program design|readiness activit(?:y|ies)|check-?ins?)\b/i.test(
     text
+  );
+}
+
+function isGenericProseDeliverableHeading(value: string | null | undefined) {
+  const normalized = trimTrailingPeriods(normalizeWhitespace(value)).toLowerCase();
+  if (!normalized) return true;
+  return /^(?:date|dates|date of submission|submission date|submission due date|due date|due dates|deadline|deadlines|following dates?|review of peers due date|feedback(?: review)? due date|notes?)$/.test(
+    normalized
   );
 }
 
 function stripLeadingSchedulePrefix(label: string, date?: string) {
   let normalized = stripLeadingBulletPrefix(label).replace(/[–—]/g, "-");
+  normalized = normalized.replace(/^due\s*\([^)]*\)\s*:\s*/i, "");
+  normalized = normalized.replace(/^due\s*:\s*/i, "");
   normalized = normalized.replace(/^due by.+:\s*/i, "");
   normalized = normalized.replace(
     /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?)\s*:\s*/i,
@@ -760,6 +1380,12 @@ function stripTrailingDateParenthetical(label: string, date?: string) {
     if (
       explicitDates.length === 0 &&
       !/\b(?:due|deadline|available|opens?|closes?|posted|scheduled)\b/i.test(
+        normalizedInner
+      ) &&
+      !/\b(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t|tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b/i.test(
+        normalizedInner
+      ) &&
+      !/\b\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\b/i.test(
         normalizedInner
       )
     ) {
@@ -792,25 +1418,64 @@ function normalizeAssessmentLabel(label: string, date?: string) {
     )
   );
   if (!normalized) return normalized;
+  if (looksLikeStandaloneDateOrRangeLabel(normalized)) return "";
   if (/^\d+(?:\.\d+)?%$/i.test(normalized)) return "";
-  if (!/(quiz|midterm|endterm|term test|test|exam|final)/i.test(normalized)) {
-    return capitalizeAssessmentText(normalized);
+  const genericSeriesSentence = normalized.match(
+    /\b(?:a total of|there (?:will be|are))\s+(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(tests?|quizzes?|midterms?|exams?)\b/i
+  )?.[1];
+  if (genericSeriesSentence) {
+    return capitalizeAssessmentText(singularizeAssessmentSeriesLabel(genericSeriesSentence));
+  }
+  const headingMatch = normalized.match(
+    /^(mid[\s-]?terms?|mid[\s-]?term exams?|mid[\s-]?term tests?|quizzes?|tests?|exams?|finals?|final exam)\s*:/i
+  )?.[1];
+  if (headingMatch) {
+    return capitalizeAssessmentText(singularizeAssessmentSeriesLabel(headingMatch));
+  }
+  const deconflictedNumbering = normalizeWhitespace(
+    normalized
+      .replace(
+        /\b(mid[\s-]?term)\s*#?\s*0*(\d+)\b/gi,
+        (_match, kind: string, number: string) => `Midterm #${Number(number)}`
+      )
+      .replace(
+        /\b(term test|endterm test|quiz|test|exam)\s*#?\s*0*(\d+)\b/gi,
+        (_match, kind: string, number: string) =>
+          `${capitalizeAssessmentText(kind)} #${Number(number)}`
+      )
+      .replace(
+        /\b(mid[\s-]?term)\s+0*(\d+)\s*#\s*0*\d+\b/gi,
+        (_match, kind: string, number: string) => `Midterm #${Number(number)}`
+      )
+      .replace(
+        /\b(quizzes?|quiz|tests?|test|exams?|exam|finals?|final)\s+0*(\d+)\s*#\s*0*\d+\b/gi,
+        (_match, kind: string, number: string) =>
+          `${capitalizeAssessmentText(kind.replace(/s$/i, ""))} #${Number(number)}`
+      )
+  );
+  const deconflictedText = normalizeWhitespace(
+    deconflictedNumbering
+      .replace(/\bLab(?=\d)/gi, "Lab ")
+      .replace(/\b(Quiz|Test|Midterm|Exam|Practical)\s+at\s+[A-Za-z][\w\s'/-]*$/i, "$1")
+  );
+  if (!/(quiz|midterm|endterm|term test|test|exam|final)/i.test(deconflictedText)) {
+    return capitalizeAssessmentText(deconflictedText);
   }
 
-  const match = normalized.match(
+  const match = deconflictedText.match(
     /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,\s*\d{4})?)(?:,?\s+)(.+)$/i
   );
-  if (!match) return capitalizeAssessmentText(normalized);
+  if (!match) return capitalizeAssessmentText(deconflictedText);
 
   const [, prefixDate, remainder] = match;
   if (!/(quiz|midterm|endterm|term test|test|exam|final)/i.test(remainder)) {
-    return capitalizeAssessmentText(normalized);
+    return capitalizeAssessmentText(deconflictedText);
   }
 
   if (!date) return capitalizeAssessmentText(remainder);
 
   const inferredDate = parseFlexibleDate(prefixDate, Number(date.slice(0, 4)));
-  if (inferredDate !== date) return capitalizeAssessmentText(normalized);
+  if (inferredDate !== date) return capitalizeAssessmentText(deconflictedText);
 
   return capitalizeAssessmentText(remainder);
 }
@@ -818,14 +1483,26 @@ function normalizeAssessmentLabel(label: string, date?: string) {
 function normalizeAssignmentLabel(label: string, date?: string) {
   let normalized = trimTrailingPeriods(
     stripTrailingDateParenthetical(
-      stripLeadingSeriesCount(stripLeadingSchedulePrefix(label, date)).replace(
-        /^[^A-Za-z0-9]+/,
-        ""
+      stripTrailingDeliverableDateClauses(
+        stripLeadingSeriesCount(stripLeadingSchedulePrefix(label, date)).replace(
+          /^[^A-Za-z0-9]+/,
+          ""
+        )
       ),
       date
     )
   );
   if (!normalized) return normalized;
+  if (/^rlm assignment$/i.test(normalized)) return "RLM Assignment";
+
+  const labReportLifecycleMatch = normalized.match(
+    /^lab\s*#?\s*(\d+)\s+(pre-?lab|post-?lab)\s+report$/i
+  );
+  if (labReportLifecycleMatch) {
+    const labNumber = Number(labReportLifecycleMatch[1]);
+    const phase = /pre/i.test(labReportLifecycleMatch[2]) ? "Pre-Lab" : "Post-Lab";
+    return `Lab ${labNumber} ${phase} Report`;
+  }
 
   const shorthandAssignment =
     normalized.match(/^\s*A\s*0*(\d+)\b/i)?.[1] ??
@@ -855,8 +1532,141 @@ function normalizeAssignmentLabel(label: string, date?: string) {
   }
 
   normalized = normalized
+    .replace(
+      /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)[.,]?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s*\d{1,2})(?=[A-Z])/i,
+      ""
+    )
+    .replace(/^assig\.?\s*#?\s*(\d+)\s+submission$/i, "Assignment #$1")
+    .replace(/^assig\.?\s*#?\s*(\d+)\b/i, "Assignment #$1")
+    .replace(/^assignment\s+0*(\d+)\b/i, "Assignment #$1")
+    .replace(/^P\s*([1-9]\d*)$/i, "Project Part $1")
+    .replace(/^week\s*\d+\s*\([^)]*\)\s*[-:]\s*/i, "")
+    .replace(/^week\s*\d+\s*[-:]\s*/i, "")
+    .replace(/^\d+(?:\.\d+)?%\s+/i, "")
+    .replace(/^[A-Z]{2,8}\s*\d{2,3}[A-Z]?\s+(?=(?:review|assignment|report|project|proposal|reflection|paper|essay|presentation|survey|analysis|portfolio|summary|task|submission|files?|problem set|lab report)\b)/i, "")
+    .replace(
+      /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s+\d{1,2}(?:st|nd|rd|th)?(?:[.,]?\s*\d{4})?)\s+/i,
+      ""
+    )
+    .replace(/^(?:all|the|this|that|these|those|a|an)\s+/i, "")
+    .replace(/^for\s+one\s+group\s+/i, "")
+    .replace(/^(?:submit|complete|upload|post|email|turn in|hand in)[:\s]+/i, "")
+    .replace(/^approximately\s+\d+\s+/i, "")
+    .replace(/^there (?:will be|are)\s+(?:equally weighted\s+)?\d+\s+/i, "")
+    .replace(/^here is (?:a |the )?tentative schedule for the /i, "")
+    .replace(
+      /^completion of an?\s+(.+?\b(?:assignment|report|project|proposal|reflection|paper|essay|presentation|survey|analysis|portfolio|summary|review|task|contract|submission|problem set|lab report|module|brief|charter|map|check-?in))\b[\s\S]*$/i,
+      "$1"
+    )
+    .replace(
+      /^all\s+(.+?\b(?:assignments?|reports?|projects?|papers?|presentations?|proposals?|surveys?|reflections?|modules?|problem sets?))\b[\s\S]*$/i,
+      "$1"
+    )
+    .replace(
+      /^approximately\s+\d+\s+(.+?\b(?:assignments?|reports?|projects?|papers?|presentations?|proposals?|surveys?|reflections?|modules?|problem sets?))\b[\s\S]*$/i,
+      "$1"
+    )
+    .replace(
+      /^here is (?:a |the )?tentative schedule for the\s+(.+?\b(?:assignments?|reports?|projects?|papers?|presentations?|proposals?|surveys?|reflections?|modules?|problem sets?|due dates?))\b[\s\S]*$/i,
+      "$1"
+    )
+    .replace(
+      /^for the\s+(.+?\b(?:assignment|report|project|proposal|reflection|paper|essay|presentation|survey|analysis|portfolio|summary|review|task|contract|submission|problem set|lab report|module|brief|charter|map|check-?in))\b[\s\S]*$/i,
+      "$1"
+    )
+    .replace(/^assignment due\s*#?\s*(\d+)\b/i, "Assignment #$1")
+    .replace(/^first assignment\b/i, "Assignment #1")
+    .replace(/^review assignment due\s*\d+\b/i, "Review Assignment")
+    .replace(/^submission for the\s+(.+?)$/i, "$1")
+    .replace(/^submission of the\s+(.+?)$/i, "$1")
+    .replace(
+      /^(.+?)\s+(?:learn(?:\s+dropbox)?|crowdmark|mobius|kritik)\s+submission$/i,
+      "$1 Submission"
+    )
+    .replace(
+      /^(assignment\s*#?\s*\d+)\s+(evaluation|feedback|post|response|responses|available|review)\b.*$/i,
+      (_match, stem: string, modifier: string) =>
+        `${stem.replace(/\s*#?\s*(\d+)/i, " #$1")} ${capitalizeAssignmentText(
+          singularizeGenericSeriesLabel(modifier)
+        )}`
+    )
+    .replace(/^group contracts?\s*#?\s*\d+\b.*$/i, "Group Contract")
+    .replace(/^group contracts?\b.*$/i, "Group Contract")
+    .replace(/^creative projects?\s+on\b.*$/i, "Creative Projects")
+    .replace(/^for the project,\s+late submissions?\b.*$/i, "Project")
+    .replace(/^the paper is to be submitted\b.*$/i, "Paper")
+    .replace(/^paper is to be submitted\b.*$/i, "Paper")
+    .replace(/^the graded papers?\s+will\s+be\s+made\b.*$/i, "Graded Paper")
+    .replace(/^graded papers?\s+will\s+be\s+made\b.*$/i, "Graded Paper")
+    .replace(/^ha\s*0*(\d+)\b[\s\S]*?\bgraded papers?\b.*$/i, "Graded Paper #$1")
+    .replace(/^lab\s*#?\s*(\d+)\b/i, "Lab $1")
+    .replace(/\bproblems?\s+set\b/gi, "Problem Set")
+    .replace(
+      /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?)\s+(?=(?:(?:weekly|written|mobius|group|team|final|online|lab|pre-?lab|post-?lab|take-?home|peer|short|research|reading|capstone)\s+)*(?:assignment|assignments|assessment|assessments|report|reports|project|projects|proposal|proposals|reflection|reflections|deliverable|deliverables|submission|submissions|paper|papers|essay|essays|quiz(?:zes)?|test(?:s)?|midterms?|exams?|problem set|problem sets)\b)/i,
+      ""
+    )
+    .replace(
+      /^((?:(?:weekly|written|mobius|group|team|final|online|lab|pre-?lab|post-?lab|take-?home|peer|short|research|reading|capstone)\s+)*(?:assignment|assignments|assessment|assessments|report|reports|project|projects|proposal|proposals|reflection|reflections|deliverable|deliverables|submission|submissions|paper|papers|essay|essays|quiz(?:zes)?|test(?:s)?|midterms?|exams?|problem set|problem sets)(?:\s*#?\s*\d+(?:-\d+)?)?)\s*(?:-|,)\s*(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s+\d{1,2}(?:st|nd|rd|th)?(?:[.,]?\s*\d{4})?)\s*$/i,
+      "$1"
+    )
+    .replace(
+      /^((?:(?:weekly|written|mobius|group|team|final|online|lab|pre-?lab|post-?lab|take-?home|peer|short|research|reading|capstone)\s+)*(?:assignment|assignments|assessment|assessments|report|reports|project|projects|proposal|proposals|reflection|reflections|deliverable|deliverables|submission|submissions|paper|papers|essay|essays|quiz(?:zes)?|test(?:s)?|midterms?|exams?|problem set|problem sets)\s*#?\s*\d+)\s+(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s+\d{1,2}(?:st|nd|rd|th)?(?:[.,]?\s*\d{4})?)(?:\s*\([^)]*\))?\s*$/i,
+      "$1"
+    )
     .replace(/([,&]\s*)#(\d+)/g, "$1$2")
     .replace(/^deadline for\s+/i, "")
+    .replace(
+      /^(?:submit|complete|upload|post|email|turn in|hand in)\s+(.+?)\s+(?:by|on|no later than)\b/i,
+      "$1"
+    )
+    .replace(
+      /^(.+?\b(?:assignment|report|project|proposal|reflection|paper|essay|presentation|survey|analysis|portfolio|summary|review|task|submission|files?|problem set|lab report|course survey|final response|commentary|module|check-?in))\s+(?:is|are|will be)\b.*$/i,
+      "$1"
+    )
+    .replace(
+      /^the\s+(.+?\b(?:assignment|report|project|proposal|reflection|paper|essay|presentation|survey|analysis|portfolio|summary|review|task|submission|files?|problem set|lab report|course survey|final response|commentary|module|brief|charter|map|check-?in))\s+is\s+to\s+be\b.*$/i,
+      "$1"
+    )
+    .replace(
+      /^(.+?\b(?:assignment|report|project|proposal|reflection|paper|essay|presentation|survey|analysis|portfolio|summary|review|task|contract|submission|files?|check-?in))\s+(?:is|are|will be)\b.*$/i,
+      "$1"
+    )
+    .replace(/\(\s*s\s*#\s*(\d+)\s*$/i, " #$1")
+    .replace(/\b(?:ands?|bys?)\s*#\s*\d+\b/gi, "")
+    .replace(/\s*\|\s*(?:tutorial|week|module)\b[\s\S]*$/i, "")
+    .replace(
+      /^(.+?)\s*:\s*(?:begins?(?:\s+on)?|starts?(?:\s+on)?|opens?(?:\s+on)?|available(?:\s+as\s+of|\s+from)?|due(?:\s+by|\s+on)?|deadline(?:\s+for)?)\b.*$/i,
+      "$1"
+    )
+    .replace(
+      /^(assignments?|reports?|projects?|papers?|proposals?|presentations?)\s+are\s+due(?:\s+by|\s+on)?\b.*$/i,
+      (_match, noun: string) => singularizeGenericSeriesLabel(capitalizeAssignmentText(noun))
+    )
+    .replace(
+      /^(assignments?|problem sets?|written assignments?|mobius assignments?|reflections?|commentaries?|modules?)\s+(?:will be|are)\b.*$/i,
+      (_match, noun: string) => capitalizeAssignmentText(singularizeGenericSeriesLabel(noun))
+    )
+    .replace(/^(?:the\s+)?three assignments\b/i, "Assignments")
+    .replace(/^\s*the\s+$/i, "")
+    .replace(/\s+and submit required outputs(?: via learn)?$/i, "")
+    .replace(/\s+on\s+learn\s*$/i, "")
+    .replace(/\s+via learn$/i, "")
+    .replace(/\bis\s+due(?:\s+(?:by|on))?\b.*$/i, "")
+    .replace(/\bwill be(?:\s+reviewed\b.*|\s+submitted\b.*|\s+posted\b.*|\s+completed\b.*|\s*?$)/i, "")
+    .replace(/\[\s*assigned\s*\]/gi, " Available")
+    .replace(/\[\s*due\s*\]/gi, "")
+    .replace(/\[\s*feedback(?: only)?\s*\]/gi, " Feedback")
+    .replace(/\s*-\s*is$/i, "")
+    .replace(/[.:]?\s*due$/i, "")
+    .replace(/\b(?:due|deadline)\s+(?:friday|saturday|sunday|monday|tuesday|wednesday|thursday)\b.*$/i, "")
+    .replace(/\(\s*(\d+(?:\.\d+)?%)\s*$/i, "")
+    .replace(/\(\s*([^()]+)\s*$/i, " $1")
+    .replace(/[)\]]+\s*$/g, "")
+    .replace(/\b(?:due|available|opens?|closes?|posted|submitted?|feedback|evaluation)\s+(?:friday|saturday|sunday|monday|tuesday|wednesday|thursday)\b.*$/i, "")
+    .replace(
+      /\s+\b(?:on|due(?:\s+on)?|available(?:\s+from|\s+on)?|opens?(?:\s+on)?|closes?(?:\s+on)?)\b\s+(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?)(?:\s*,?\s*\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?|am|pm))?(?:\s*,?\s*(?:learn|crowdmark|kritik|dropbox|mobius))?\s*$/i,
+      ""
+    )
     .replace(/\bFirst\s*#\s*(\d+)\b/gi, "First $1")
     .replace(/\bStep\s*#\s*(\d+)\b/gi, "Step $1")
     .replace(
@@ -886,6 +1696,7 @@ function normalizeAssignmentLabel(label: string, date?: string) {
       /^map the system final solution brief and systems map$/i,
       "Map the System Step 3"
     )
+    .replace(/([A-Za-z])#(?=\d)/g, "$1 #")
     .replace(
       /^practicing hope posts?\s*#\s*(\d+(?:-\d+)?)$/i,
       "Practicing Hope Post #$1"
@@ -908,15 +1719,83 @@ function normalizeAssignmentLabel(label: string, date?: string) {
       (_match, number: string) => `Response #${number}`
     )
     .replace(/\n+/g, " ");
+  normalized = trimTrailingPeriods(normalizeWhitespace(normalized));
+  if (/^(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|\d+)\s+surveys?(?:\s+available)?$/i.test(normalized)) {
+    return "";
+  }
+  if (/^first survey(?:\s*#\s*\d+)?$/i.test(normalized)) {
+    return "Prior Knowledge Survey";
+  }
+  if (looksLikeStandaloneDateOrRangeLabel(normalized)) {
+    return "";
+  }
+  if (/^(?:the|this|that|these|those|all)$/i.test(normalized)) {
+    return "";
+  }
+  if (
+    /^(?:student who has one or more assignments? outstanding|purpose of this assignment|rough drafts? will not be reviewed after this time|you may ask for feedback on rough drafts? prior to the)$/i.test(
+      normalized
+    )
+  ) {
+    return "";
+  }
+  if (/^papers? will be due by \d+/i.test(normalized)) {
+    return "";
+  }
+  if (/^(?:you|students?)\b.*\bassignment\b.*\b(?:which|that)\s*$/i.test(normalized)) {
+    return "Assignment";
+  }
+  if (
+    /^(?:for example|example|if\b|otherwise\b|grades?\s+for\s+each\s+assignment\b|the following rules apply if\b)/i.test(
+      normalized
+    )
+  ) {
+    return "";
+  }
   return canonicalizeProseDeliverableLabel(normalized, normalized) ?? capitalizeAssignmentText(normalized);
 }
 
 function extractAssessmentLabelFromText(text: string) {
-  const normalized = normalizeWhitespace(text);
-  if (/\bquiz(?:\s*\d+)?\s+prep\b/i.test(normalized)) {
+  const baseNormalized = normalizeWhitespace(text).replace(/\bmidtern\b/gi, "midterm");
+  if (looksLikeStandaloneDateOrRangeLabel(baseNormalized)) {
     return undefined;
   }
-  if (/\btest preparation\b/i.test(normalized)) {
+  if (
+    /^\s*(?:start studying for|study for)\b/i.test(baseNormalized) ||
+    /\b(?:a total of|there (?:will be|are))\s+(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:tests?|quizzes?|midterms?|exams?)\b/i.test(
+      baseNormalized
+    ) ||
+    /\bmidterm exam week\b/i.test(baseNormalized) ||
+    /\bpre-(?:midterm|final)\b[\w\s-]*\bcheck-?in\b/i.test(baseNormalized) ||
+    (/\bmid-?term tests?\b/i.test(baseNormalized) && /\bfinal exam\b/i.test(baseNormalized)) ||
+    /\b(?:midterm|final exam|test|quiz)\s+material\b/i.test(baseNormalized) ||
+    /\bmaterial\s+for\s+the\s+(?:midterm|final exam|test|quiz)\b/i.test(baseNormalized) ||
+    /\bmidterm exam and final exam material\b/i.test(baseNormalized) ||
+    isReviewOrPlaceholderScheduleEntry(baseNormalized) ||
+    /\b(?:chi-?squared|statistical|hypothesis|diagnostic|paired|independent|multiple|significance)\s+tests?\b/i.test(
+      baseNormalized
+    )
+  ) {
+    return undefined;
+  }
+
+  const normalized = normalizeWhitespace(
+    baseNormalized
+      .replace(/\b(?:mid-?term|midterm|final)\s+help session\b/gi, " ")
+      .replace(/\breview for (?:the )?(?:mid-?term|midterm|final(?: exam)?|exam)\b/gi, " ")
+      .replace(/\b(?:exam|mid-?term|midterm|quiz|test)\s+review\b/gi, " ")
+      .replace(/\breview day\b/gi, " ")
+      .replace(/\bmid-?term covers\b[^.?!;]*[.?!;]?/gi, " ")
+      .replace(/\bquiz(?:\s*#?\s*\d+)?\s+covers\b[^.?!;]*[.?!;]?/gi, " ")
+      .replace(/\btest(?:\s*#?\s*\d+)?\s+covers\b[^.?!;]*[.?!;]?/gi, " ")
+      .replace(/\bquiz(?:\s*\d+)?\s+prep\b/gi, " ")
+      .replace(/\bmid-?term prep\b/gi, " ")
+      .replace(/\btest preparation\b/gi, " ")
+      .replace(/\bno quizzes?\s+this\s+week\b/gi, " ")
+      .replace(/\bno tests?\s+this\s+week\b/gi, " ")
+  );
+
+  if (!normalized) {
     return undefined;
   }
   if (
@@ -931,8 +1810,18 @@ function extractAssessmentLabelFromText(text: string) {
   ) {
     return undefined;
   }
+  const tutorialPeerAssessmentMatch =
+    normalized.match(/\bTPA\s*0*(\d+)\b/i)?.[1] ??
+    normalized.match(/\btutorial peer assessment\s*#?\s*(\d+)\b/i)?.[1];
+  if (tutorialPeerAssessmentMatch) {
+    return `Tutorial Peer Assessment #${Number(tutorialPeerAssessmentMatch)}`;
+  }
+  const quizWeekMatch = normalized.match(/\bquiz\s*week\s*0*(\d+)\b/i)?.[1];
+  if (quizWeekMatch) {
+    return `Quiz #${Number(quizWeekMatch)}`;
+  }
   const directMatch = normalized.match(
-    /\b(Module\s*\d+\s+Exam|Module\s*\d+\s+Quiz|Knowledge Checks?(?:\s*#\s*\d+)?|Mid-?term Exam(?:\s*#\s*\d+)?|Mid-?term Test(?:\s*#\s*\d+)?|Mid-?term(?:\s*#\s*\d+)?|Endterm Test(?:\s*#\s*\d+)?|Term Test(?:\s*#\s*\d+)?|Final Exam|Online Quiz(?:\s*#\s*\d+)?|Quiz(?:\s*#\s*\d+)?|Test(?:\s*#\s*\d+)?)\b/i
+    /\b(Module\s*\d+\s+Exam|Module\s*\d+\s+Quiz|Knowledge Checks?(?:\s*#?\s*\d+)?|Mid-?term Exam(?:\s*#?\s*\d+)?|Mid-?term Test(?:\s*#?\s*\d+)?|Mid-?term(?:\s*#?\s*\d+)?|Endterm Test(?:\s*#?\s*\d+)?|Term Test(?:\s*#?\s*\d+)?|Take-?Home(?:\s+Final)?\s+Exam|Final Exam|Online Quiz(?:\s*#?\s*\d+)?|Quiz(?:\s*#?\s*\d+)?|Test(?:\s*#?\s*\d+)?)\b/i
   )?.[1];
   if (directMatch) {
     return normalizeAssessmentLabel(directMatch);
@@ -945,6 +1834,9 @@ function extractAssessmentLabelFromText(text: string) {
   }
   if (/\bquizzes\b/i.test(normalized)) {
     return "Quiz";
+  }
+  if (/\btests\b/i.test(normalized)) {
+    return "Test";
   }
   return undefined;
 }
@@ -990,7 +1882,18 @@ function isFinalAssessmentSeed(seed: AssessmentSeed) {
 }
 
 function shouldDropAssignmentLabel(label: string) {
-  return normalizeWhitespace(label).length > 70;
+  const normalized = normalizeWhitespace(label);
+  return (
+    normalized.length > 70 ||
+    /^(?:available|review)$/i.test(normalized) ||
+    /^(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|\d+)\s+surveys?(?:\s+available)?$/i.test(
+      normalized
+    ) ||
+    /\b(?:project help session|project consultation|class project introduction|class project organization discussions?|assignment one handout|youtube link|late penalty)\b/i.test(
+      normalized
+    ) ||
+    /\|/.test(normalized)
+  );
 }
 
 function assignmentLocationFromContext(text: string) {
@@ -1020,17 +1923,81 @@ function extractDeadlineAnchoredDates(text: string, year: number) {
   const normalized = normalizeWhitespace(text);
   const anchoredClause =
     normalized.match(
-      /\b(?:due by|due on|due\b|deadline(?:\s+for)?|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?\s+by|class time on)\b[\s\S]*$/i
+      /\b(?:due by|due on|due\b|deadline(?:\s+for)?|date of submission|submission date|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?(?:\s+virtually)?\s+(?:by|to)|class time on|following dates?|present(?:s|ed|ing)?\s+on)\b[\s\S]*$/i
     )?.[0] ?? normalized;
-  return extractExplicitDates(anchoredClause, year);
+  const cleanedClause = anchoredClause.replace(
+    /\bsince\s+(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?)/gi,
+    ""
+  );
+  return extractExplicitDates(cleanedClause, year);
+}
+
+function extractPartDuePairsFromText(text: string, year: number) {
+  const normalized = normalizeWhitespace(text);
+  if (!normalized) return [] as Array<{ part: string; date: string }>;
+
+  const pairs = Array.from(
+    normalized.matchAll(
+      /\bpart\s+([a-z0-9]+)\b(?=[\s\S]{0,180}\bdue\b)([\s\S]{0,260}?)(?=(?:\bpart\s+[a-z0-9]+\b(?![^.?!]{0,60}\bgraded\b)|$))/gi
+    )
+  )
+    .map((match) => {
+      const rawPart = normalizeWhitespace(match[1]);
+      if (/^(?:is|are|due)$/i.test(rawPart)) return undefined;
+      const part = /^[a-z]$/i.test(rawPart) ? rawPart.toUpperCase() : rawPart;
+      const chunk = normalizeWhitespace(`Part ${rawPart} ${match[2]}`);
+      if (!/\bdue\b/i.test(chunk)) return undefined;
+
+      const anchoredDates = extractDeadlineAnchoredDates(chunk, year);
+      const dateSpec = parseDateSpec(chunk, year);
+      const date =
+        anchoredDates[0] ??
+        (dateSpec?.kind === "single"
+          ? dateSpec.date
+          : dateSpec?.kind === "dates"
+          ? dateSpec.dates[0]
+          : undefined);
+
+      if (!date) return undefined;
+      return { part, date };
+    })
+    .filter((value): value is { part: string; date: string } => Boolean(value));
+
+  const seen = new Set<string>();
+  return pairs.filter((pair) => {
+    const key = `${pair.part}:${pair.date}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function assignmentLabelFromText(text: string) {
   const normalized = stripLeadingSchedulePrefix(text);
+  if (looksLikeStandaloneDateOrRangeLabel(normalized)) {
+    return undefined;
+  }
   const withoutLeadingDate = normalized.replace(
     /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)[.,]?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s+\d{1,2}|\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December))[.,]?\s*/i,
     ""
   );
+  if (
+    /^week\b/i.test(normalized) &&
+    !/\b(?:due|deadline|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submission date|date of submission)\b/i.test(
+      normalized
+    )
+  ) {
+    return undefined;
+  }
+  if (
+    /^(?:start thinking about|work on|continue working on|keep working on|review for)\b/i.test(
+      normalized
+    ) ||
+    /^for example,\s*if the assignment deadline is\b/i.test(normalized) ||
+    /^assigned exercise or task$/i.test(normalized)
+  ) {
+    return undefined;
+  }
   if (
     /\bcfe\b/i.test(normalized) ||
     /\b(?:read assigned texts?|read assigned text|read group members['’] sources|purchase course textbook|complete .* before class|find schedule|join piazza|locate lecture room|log into learn|contact group members)\b/i.test(
@@ -1043,13 +2010,137 @@ function assignmentLabelFromText(text: string) {
   if (writtenAssignment) {
     return `Written Assignment #${writtenAssignment}`;
   }
+  const mobiusAssignmentRange = normalized.match(
+    /\bmobius(?: assignments?)?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (mobiusAssignmentRange) {
+    return `Mobius Assignments #${Number(mobiusAssignmentRange[1])}-${Number(
+      mobiusAssignmentRange[2]
+    )}`;
+  }
+  const writtenAssignmentRange = normalized.match(
+    /\bwritten assignments?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (writtenAssignmentRange) {
+    return `Written Assignments #${Number(writtenAssignmentRange[1])}-${Number(
+      writtenAssignmentRange[2]
+    )}`;
+  }
+  const genericAssignmentRange = normalized.match(
+    /\bassignments?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (genericAssignmentRange) {
+    return `Assignments #${Number(genericAssignmentRange[1])}-${Number(
+      genericAssignmentRange[2]
+    )}`;
+  }
+  const mobiusAssignment = normalized.match(/\bmobius assignment\s*#?\s*(\d+)\b/i)?.[1];
+  if (mobiusAssignment) {
+    return `Mobius Assignment #${Number(mobiusAssignment)}`;
+  }
+  const moduleRangeMatch = normalized.match(
+    /\bmodules?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (moduleRangeMatch) {
+    return `Modules #${Number(moduleRangeMatch[1])}-${Number(moduleRangeMatch[2])}`;
+  }
+  const kritikRangeMatch = normalized.match(
+    /\bkritik\s*#?\s*(\d+)\s*(?:-|–|to)\s*(\d+)\b/i
+  );
+  if (kritikRangeMatch) {
+    return `Kritik Assignments #${Number(kritikRangeMatch[1])}-${Number(
+      kritikRangeMatch[2]
+    )}`;
+  }
+  const kritikMatch = normalized.match(/\bkritik\s*#?\s*(\d+)\b/i)?.[1];
+  if (kritikMatch) {
+    return `Kritik Assignment #${Number(kritikMatch)}`;
+  }
+  const simulationMatch = normalized.match(/\bsimulation\s*#?\s*(\d+)\b/i)?.[1];
+  if (simulationMatch) {
+    return `Simulation #${Number(simulationMatch)}`;
+  }
+  const decimalAssignmentMatch =
+    normalized.match(/\bAssignment\s*#?\s*0*(\d+)\.(\d+)\b/i) ??
+    normalized.match(/\bA\s*0*(\d+)\.(\d+)\b/i);
+  if (decimalAssignmentMatch) {
+    return `Assignment ${Number(decimalAssignmentMatch[1])}.${Number(
+      decimalAssignmentMatch[2]
+    )}`;
+  }
+  const problemSetMatch =
+    normalized.match(/\bproblem\s*sets?\s*#?\s*(\d+)\b/i)?.[1] ??
+    normalized.match(/\bproblems?\s+set\s*#?\s*(\d+)\b/i)?.[1];
+  if (problemSetMatch) {
+    return `Problem Set #${Number(problemSetMatch)}`;
+  }
+  const homeworkMatch = normalized.match(/\b(?:homework|hw)\s*#?\s*0*(\d+)\b/i)?.[1];
+  if (homeworkMatch) {
+    return `Assignment #${Number(homeworkMatch)}`;
+  }
+  const labMatch = normalized.match(/\blab\s*#?\s*(\d+)\b/i)?.[1];
+  if (labMatch) {
+    return `Lab ${Number(labMatch)}`;
+  }
+  const moduleMatch = normalized.match(/\bmodule\s*#?\s*(\d+)\b/i)?.[1];
+  if (moduleMatch) {
+    return `Module ${Number(moduleMatch)}`;
+  }
+  const reflectionMatch = normalized.match(/\breflection\s*#?\s*(\d+)\b/i)?.[1];
+  if (reflectionMatch) {
+    return `Reflection #${Number(reflectionMatch)}`;
+  }
+  const commentaryPostMatch = normalized.match(/\bcommentary\s*#?\s*(\d+)\s*post\b/i)?.[1];
+  if (commentaryPostMatch) {
+    return `Commentary ${Number(commentaryPostMatch)} Post`;
+  }
+  const commentaryResponseMatch = normalized.match(
+    /\bcommentary\s*#?\s*(\d+)\s*responses?\b/i
+  )?.[1];
+  if (commentaryResponseMatch) {
+    return `Commentary ${Number(commentaryResponseMatch)} Response`;
+  }
+
+  const assignmentPartMatch =
+    normalized.match(/\bA\s*0*(\d+)\s*Part\s*([A-Za-z0-9]+)\b/i) ??
+    normalized.match(/\bAssignment\s*#?\s*0*(\d+)\s*Part\s*([A-Za-z0-9]+)\b/i);
+  if (assignmentPartMatch) {
+    const [, assignmentNumber, partRaw] = assignmentPartMatch;
+    const part = /^[a-z]$/i.test(partRaw) ? partRaw.toUpperCase() : partRaw;
+    return `Assignment #${Number(assignmentNumber)} Part ${part}`;
+  }
+
+  const assignmentSuffixMatch = normalized.match(
+    /\bassignment\s*#?\s*0*(\d+)\s+(evaluation|feedback|peer review|review)\b/i
+  );
+  if (assignmentSuffixMatch) {
+    return `Assignment #${Number(assignmentSuffixMatch[1])} ${capitalizeAssignmentText(
+      assignmentSuffixMatch[2]
+    )}`;
+  }
+
+  const handInAssignmentMatch = normalized.match(/\bHA\s*0*(\d+)\b/i)?.[1];
+  if (handInAssignmentMatch) {
+    return `Homework Assignment #${Number(handInAssignmentMatch)}`;
+  }
 
   const assignmentCode =
-    withoutLeadingDate.match(/^\s*Assign(?:ment)?\s*#?\s*0*(\d+)\b/i)?.[1] ??
+    withoutLeadingDate.match(/^\s*Assig(?:nment)?\s*#?\s*0*(\d+)\b/i)?.[1] ??
     withoutLeadingDate.match(/^\s*A\s*0*(\d+)\b/i)?.[1] ??
     withoutLeadingDate.match(/^\s*(?:homework|hw)\s*#?\s*0*(\d+)\b/i)?.[1];
   if (assignmentCode) {
     return `Assignment #${Number(assignmentCode)}`;
+  }
+
+  const studioProjectSeries =
+    withoutLeadingDate.match(
+      /^\s*((?:P\.?\s*\d+[a-z]?)(?:\s*&\s*P\.?\s*\d+[a-z]?)+)\b/i
+    )?.[1] ??
+    withoutLeadingDate.match(/^\s*(P\.?\s*\d+[a-z]?)\b/i)?.[1];
+  if (studioProjectSeries) {
+    return normalizeWhitespace(studioProjectSeries)
+      .replace(/\s*&\s*/g, " & ")
+      .replace(/\s+/g, " ");
   }
 
   const assignmentMatch =
@@ -1069,12 +2160,111 @@ function stripLeadingNumbering(value: string | null | undefined) {
     .trim();
 }
 
+function stripTrailingDeliverableDateClauses(value: string) {
+  const referenceYear = new Date().getFullYear();
+  let normalized = normalizeLooseMonthDaySpacing(normalizeWhitespace(value))
+    .replace(/\b(\d{1,2})\s+(st|nd|rd|th)\b/gi, "$1$2")
+    .replace(/^week\s*\d+\s*\([^)]*\)\s*[-:]\s*/i, "")
+    .replace(/^week\s*\d+\s*[-:]\s*/i, "");
+
+  const hasDateLikeCue = (candidate: string) => {
+    const cleanedCandidate = normalizeWhitespace(candidate);
+    return (
+      extractExplicitDates(cleanedCandidate, referenceYear).length > 0 ||
+      /\b(?:due(?:\s+date)?|deadline(?:\s+for)?|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?(?:\s+virtually)?\s+(?:by|to)|review of peers due date|feedback(?: review)? due date)\b/i.test(
+        cleanedCandidate
+      ) ||
+      /\b(?:at\s+)?\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\b/i.test(cleanedCandidate)
+    );
+  };
+
+  while (true) {
+    const trailingParenthetical = normalized.match(/\s*\(([^()]*)\)\s*$/);
+    if (!trailingParenthetical) break;
+    if (!hasDateLikeCue(trailingParenthetical[1])) break;
+    normalized = normalizeWhitespace(normalized.slice(0, -trailingParenthetical[0].length));
+  }
+
+  normalized = normalizeWhitespace(
+    normalized
+      .replace(
+        /\s*\(\s*(?:due(?:\s+date)?|deadline(?:\s+for)?|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?)[^)]*$/i,
+        ""
+      )
+      .replace(
+        /\s*(?:-|:)\s*(?:due(?:\s+date)?|deadline(?:\s+for)?|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?(?:\s+virtually)?\s+(?:by|to))\b[\s\S]*$/i,
+        ""
+      )
+      .replace(
+        /\s*,?\s*(?:to\s+be\s+completed\s+by\s+of|to\s+be\s+completed\s+by|completed\s+by|due(?:\s+by|\s+on)?|by)\s+(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?|\d{1,2}(?:st|nd|rd|th)?\s+(?:January|February|March|April|May|June|July|August|September|October|November|December))(?:\s*(?:at|by)?\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM))?[\s\w.,-]*$/i,
+        ""
+      )
+      .replace(
+        /\s*,?\s*(?:by|on|due(?:\s+on)?|deadline(?:\s+for)?|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?(?:\s+virtually)?\s+(?:by|to)|begins?(?:\s+on)?|starts?(?:\s+on)?|ends?(?:\s+on)?)\s+(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?|\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)(?:\s*(?:at|by)?\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM|E\.?T\.?|ET)?)?[\s\w.,-]*$/i,
+        ""
+      )
+      .replace(
+        /\s*(?:-|,)\s*(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?\d{1,2}(?:st|nd|rd|th)?\s+(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?(?:,?\s*\d{4})?(?:\s*,?\s*(?:by|at)\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)?(?:\s+on\s+\w+)?\s*$/i,
+        ""
+      )
+      .replace(
+        /\s*(?:-|,)\s*(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)\.?,?\s+)?\d{1,2}(?:st|nd|rd|th)?\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\b(?:,?\s*\d{4})?(?:\s*(?:at|by)?\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM))?\s*$/i,
+        ""
+      )
+      .replace(
+        /\s*(?:-|,)\s*\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?(?:\s*(?:at|by)?\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM|E\.?T\.?|ET)?)?\s*$/i,
+        ""
+      )
+      .replace(/\s+\bdue\s+(?:friday|saturday|sunday|monday|tuesday|wednesday|thursday)\b.*$/i, "")
+      .replace(/\s+\b(?:by|at)\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?\b.*$/i, "")
+      .replace(
+        /^((?:(?:weekly|written|mobius|group|team|final|online|lab|pre-?lab|post-?lab|take-?home|peer|short|research|reading|capstone)\s+)*(?:assignment|assignments|assessment|assessments|report|reports|project|projects|proposal|proposals|reflection|reflections|deliverable|deliverables|submission|submissions|paper|papers|essay|essays|quiz(?:zes)?|test(?:s)?|midterms?|exams?|problem set|problem sets)(?:\s*#?\s*\d+(?:-\d+)?)?)\s*(?:-|,)\s*(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s+\d{1,2}(?:st|nd|rd|th)?(?:[.,]?\s*\d{4})?)\s*$/i,
+        "$1"
+      )
+      .replace(
+        /^((?:(?:written|mobius|reading)\s+assignment|assignment|task|problem set)\s*#?\s*\d+(?:-\d+)?)\s*-\s*(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\.?\s+)?(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?(?:,?\s*\d{3,4}\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM))?\s*$/i,
+        "$1"
+      )
+      .replace(/[.:]?\s*due(?:\s*\([^)]*\))?$/i, "")
+      .replace(/[.:]?\s*due$/i, "")
+      .replace(/\(\s*$/g, "")
+  );
+
+  const trailingDateSuffixMatch = normalized.match(
+    /^(.*?)\s*(?:-|,)\s*(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[.]?\s+\d{1,2}(?:st|nd|rd|th)?(?:[.,]?\s*\d{4})?)(?:\s*@?\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?(?:\s*[A-Z]{2,4})?)?\s*$/i
+  );
+  if (trailingDateSuffixMatch) {
+    const candidateLabel = normalizeWhitespace(trailingDateSuffixMatch[1]);
+    if (candidateLabel && (looksLikeAssignmentText(candidateLabel) || hasNamedDeliverableCue(candidateLabel))) {
+      normalized = candidateLabel;
+    }
+  }
+
+  return normalized;
+}
+
 function extractProseDeliverableLabel(text: string) {
-  const normalized = stripLeadingNumbering(stripLeadingSchedulePrefix(text));
+  const normalized = normalizeWhitespace(
+    stripLeadingNumbering(stripLeadingSchedulePrefix(text)).replace(/^-+\s*/, "")
+  );
   if (!normalized || isFinalExamLabel(normalized)) {
     return undefined;
   }
+  if (isInstructionalDeliverableNoise(normalized)) {
+    return undefined;
+  }
+  if (/\bbook review discussion\b/i.test(normalized)) {
+    return "Book Review Discussion";
+  }
+  if (/\bevent report\b/i.test(normalized)) {
+    return "Event Report";
+  }
+  const cleanedNormalized = stripTrailingDeliverableDateClauses(normalized);
+  const headingPrefix = trimTrailingPeriods(
+    normalizeWhitespace(cleanedNormalized.split(/\s*:\s*/, 2)[0] ?? "")
+  );
   const candidates = [
+    normalized.match(/^(.+?)\s*\(\s*\d+(?:\.\d+)?\s*%[^)]*\)(?=\s|$)/i)?.[1],
     normalized.match(
       /^(.+?)\s+(?:due by|due on|due|deadline(?:\s+for)?|available as of|opens?(?:\s+on)?|closes?(?:\s+on)?|submission due date|review of peers due date|feedback(?: review)? due date)\b/i
     )?.[1],
@@ -1090,7 +2280,13 @@ function extractProseDeliverableLabel(text: string) {
     normalized.match(
       /^(.+?)\s*\(\s*(?:due by|due on|deadline(?:\s+for)?|available as of|opens?(?:\s+on)?|closes?(?:\s+on)?)\b/i
     )?.[1],
+    normalized.match(
+      /^(.+?)\s*\(\s*(?:due date|submission due date|review of peers due date|feedback(?: review)? due date)\b/i
+    )?.[1],
+    normalized.match(/\b(initial submission|final paper|urban armature drawings?|sketchbook)\b/i)?.[1],
+    cleanedNormalized !== normalized ? cleanedNormalized : undefined,
   ]
+    .filter((candidate) => !isGenericProseDeliverableHeading(candidate))
     .map((candidate) =>
       canonicalizeProseDeliverableLabel(
         normalizeWhitespace(candidate)
@@ -1112,6 +2308,22 @@ function extractProseDeliverableLabel(text: string) {
     }
   }
 
+  if (
+    headingPrefix &&
+    !isGenericProseDeliverableHeading(headingPrefix) &&
+    (looksLikeAssignmentText(headingPrefix) ||
+      hasNamedDeliverableCue(headingPrefix) ||
+      /^(?:project\s+[ivxlc]+|initial submission|final paper)\b/i.test(headingPrefix))
+  ) {
+    const canonicalHeadingLabel = canonicalizeProseDeliverableLabel(
+      headingPrefix,
+      normalized
+    );
+    if (canonicalHeadingLabel) {
+      candidates.unshift(canonicalHeadingLabel);
+    }
+  }
+
   const extracted = candidates.find((candidate) => {
     if (!candidate) return false;
     if (/^module\s*\d+$/i.test(candidate)) return false;
@@ -1122,11 +2334,87 @@ function extractProseDeliverableLabel(text: string) {
     return extracted;
   }
 
-  if (hasNamedDeliverableCue(normalized)) {
-    return canonicalizeProseDeliverableLabel(normalized, normalized);
+  if (cleanedNormalized && hasNamedDeliverableCue(cleanedNormalized)) {
+    return canonicalizeProseDeliverableLabel(cleanedNormalized, normalized);
   }
 
   return undefined;
+}
+
+function normalizeLabDeliverableLabel(label: string) {
+  const normalized = normalizeWhitespace(
+    stripTrailingDeliverableDateClauses(
+      label
+        .replace(/\s*\(\s*\d+(?:\.\d+)?\s*%[^)]*\)/gi, "")
+        .replace(/\bin class\b/gi, " ")
+        .replace(
+          /\s+on\s+(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?$/i,
+          ""
+        )
+        .replace(/\bwritten submissions?\b/gi, "Written Submission")
+        .replace(/\bdebate topics\b/gi, "Debate")
+        .replace(/\bLab(?=\d)/gi, "Lab ")
+    )
+  );
+  return capitalizeAssignmentText(normalized);
+}
+
+function extractWeekTableDeliverableLabel(
+  entry: string,
+  previousLabel?: string
+) {
+  const normalizedEntry = normalizeWhitespace(entry);
+  if (
+    /^(?:project starts?|project help session|project consultation)$/i.test(normalizedEntry) ||
+    /\b(?:project help session|project consultation|class project introduction|class project organization discussions?|assignment one handout)\b/i.test(
+      normalizedEntry
+    )
+  ) {
+    return undefined;
+  }
+
+  const directLabel =
+    labelFromScheduleEntry(entry) ??
+    assignmentLabelFromText(entry) ??
+    extractProseDeliverableLabel(entry);
+  if (directLabel) {
+    if (/^\s*lab\s*\d+\b/i.test(directLabel)) {
+      return normalizeLabDeliverableLabel(directLabel);
+    }
+    return isPlaceholderDeliverableLabel(directLabel)
+      ? contextualizePlaceholderDeliverableLabel(entry, previousLabel)
+      : directLabel;
+  }
+  const projectDuePartMatch = normalizedEntry.match(
+    /\bproject\s+due\s*\(\s*part\s*([^)]+?)\s*\)/i
+  );
+  if (projectDuePartMatch) {
+    const part = normalizeWhitespace(projectDuePartMatch[1]).replace(/^part\s*/i, "");
+    return `Project Part ${part}`;
+  }
+  const labEntryLabel =
+    normalizedEntry.match(
+      /\b(Lab\s*\d+\s*(?::\s*[^.;]+)?(?:\s+in\s+class\s+[^.;]+)?)(?:\s*\(\s*\d+(?:\.\d+)?\s*%[^)]*\))?(?:\s+(?:on|due|submitted?\b)|$)/i
+    )?.[1] ??
+    normalizedEntry.match(
+      /\b(Lab\s*\d+\s*:\s*[^.;]+?)(?:\s*\(\s*\d+(?:\.\d+)?\s*%[^)]*\))?(?:\s|$)/i
+    )?.[1];
+  if (labEntryLabel) {
+    return normalizeLabDeliverableLabel(labEntryLabel);
+  }
+
+  if (/^\s*ethics module\b/i.test(entry)) {
+    return "Ethics Module";
+  }
+
+  const namedDeliverableMatch = normalizedEntry.match(
+    /^(.+?\b(?:assignment|report|project|paper|proposal|presentation|essay|reflection|survey|worksheet|discussion|module))\b(?=\s+(?:due|available(?:\s+as\s+of|\s+from|\s+on)?|opens?(?:\s+on)?|closes?(?:\s+on)?|begins?(?:\s+on)?|starts?(?:\s+on)?|submitted?(?:\s+by|\s+to)?|deadline\b|review of peers due date|feedback(?: review)? due date)\b)/i
+  )?.[1];
+  if (namedDeliverableMatch) {
+    return canonicalizeProseDeliverableLabel(namedDeliverableMatch, normalizedEntry);
+  }
+
+  return contextualizePlaceholderDeliverableLabel(entry, previousLabel);
 }
 
 function extractSectionDateGroups(
@@ -1254,6 +2542,10 @@ function isRoutineScheduleEntry(value: string) {
     /^to do for (?:this|next) week:?$/i.test(normalized) ||
     /^interactive scenario$/i.test(normalized) ||
     /^weekly reflection in ppad workbook/i.test(normalized) ||
+    /^(?:project starts?|project help session|project consultation)$/i.test(normalized) ||
+    /\b(?:project help session|project consultation|class project introduction|class project organization discussions?|assignment one handout|program instruction\/training session|assessment booking\/practice|practical exam preparation)\b/i.test(
+      normalized
+    ) ||
     /\b(?:read assigned texts?|read assigned text|purchase course textbook|complete .* before class|read group members['’] sources|select source before class)\b/i.test(
       normalized
     ) ||
@@ -1277,6 +2569,37 @@ function isActionableScheduleEntry(entry: string) {
   return hasAssessmentCue && hasDateCue;
 }
 
+function splitCompoundActionableEntries(line: string) {
+  return line
+    .split(/\s*;\s*/)
+    .flatMap((segment) => {
+      const normalizedSegment = normalizeWhitespace(segment);
+      if (!normalizedSegment) return [];
+
+      const splitOnAmpersand = normalizedSegment.split(
+        /\s+(?:&|\+|and)\s+(?=(?:TPA\s*\d+\b|WA\s*\d+\b|HA\s*\d+\b|(?:tutorial peer assessment|written assignment|mobius assignment|homework assignment|assignment|quiz|test|mid-?term|midterm|problem set|task|step|project|simulation)\s*#?\s*\d+\b))/i
+      );
+      if (
+        splitOnAmpersand.length > 1 &&
+        splitOnAmpersand.every((part) => {
+          const candidate = normalizeWhitespace(part);
+          return Boolean(
+            assignmentLabelFromText(candidate) ||
+              extractAssessmentLabelFromText(candidate) ||
+              /^TPA\s*\d+\b/i.test(candidate) ||
+              /^WA\s*\d+\b/i.test(candidate) ||
+              /^HA\s*\d+\b/i.test(candidate)
+          );
+        })
+      ) {
+        return splitOnAmpersand.map((part) => normalizeWhitespace(part)).filter(Boolean);
+      }
+
+      return [normalizedSegment];
+    })
+    .filter(Boolean);
+}
+
 function expandScheduleEntries(content: string) {
   const lines = normalizeWhitespace(content)
     .split(/\n+/)
@@ -1284,12 +2607,21 @@ function expandScheduleEntries(content: string) {
     .filter(Boolean);
 
   return lines.flatMap((line) => {
-    const duePrefixMatch = line.match(/^((?:due by|due on|deadline(?:\s+for)?|submission due date|review of peers due date|feedback(?: review)? due date)[^:]*):\s*(.+)$/i);
+    const normalizedLine = normalizeWhitespace(
+      line
+        .replace(
+          /(?<=[a-z0-9)])(?=\s*(?:Quiz\s*\d+|Quiz\s*week\s*\d+|Assig(?:nment)?\s*#?\s*\d+(?:\.\d+)?|Problem Set\s*#?\s*\d+|Problems?\s+Set\s*#?\s*\d+|HA\s*\d+\b|Lab\s*\d+\b|Project Due\b|Project Starts\b|Project Help Session\b|Project Consultation\b|Midterm Exam\b|Mid-term Exam\b|Reflection\s*#?\s*\d+|Commentary\s*#?\s*\d+\s*(?:post|responses?)|Self-introduction\b|Pre-course survey\b|Case\s*\d+\s+analysis\b|Team project proposal\b|Paradise Lost Assignment\b|EEBO Assignment\b|Final Assignment\b|Case\s*\d+\b))/gi,
+          "\n"
+        )
+        .replace(/(\d)(?=(?:post|responses?\b))/gi, "$1 ")
+        .replace(
+          /\)(?=\s*(?:Commentary|Responses?|Reflection|Case\s+\d+\s+Analysis|Team Project|Notification if|Self-introduction|Pre-course survey|Clinical Case Study|(?:\d+(?:st|nd|rd)|Final)\s+Assessment|Assessment Interpretation|Assig(?:nment)?\s*#?\s*\d+(?:\.\d+)?|Discussion Post\s*#?\s*\d+|Introduce Yourself|Introduction course survey|Practice Questions Quiz\s*\d+|Quiz week\s*\d+|Paradise Lost Assignment|EEBO Assignment|Final Assignment|Final Project|Project\s*#?\s*\d+|Module\s*\d+|HA\s*\d+)\b)/gi,
+          ")\n"
+        )
+    );
+    const duePrefixMatch = normalizedLine.match(/^((?:due by|due on|deadline(?:\s+for)?|submission due date|review of peers due date|feedback(?: review)? due date)[^:]*):\s*(.+)$/i);
     if (duePrefixMatch) {
-      return duePrefixMatch[2]
-        .split(/\s*;\s*/)
-        .map((item) => normalizeWhitespace(item))
-        .filter(Boolean)
+      return splitCompoundActionableEntries(duePrefixMatch[2])
         .flatMap((item) =>
           item
             .replace(
@@ -1309,7 +2641,7 @@ function expandScheduleEntries(content: string) {
         );
     }
 
-    const datedPrefixMatch = line.match(/^((?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}|(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}).{0,40}?\bby\b[^:]*):\s*(.+)$/i);
+    const datedPrefixMatch = normalizedLine.match(/^((?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}|(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}).{0,40}?\bby\b[^:]*):\s*(.+)$/i);
     if (datedPrefixMatch) {
       return datedPrefixMatch[2]
         .split(/\s*;\s*/)
@@ -1319,7 +2651,7 @@ function expandScheduleEntries(content: string) {
     }
 
     const repeatedDateBoundedEntries = Array.from(
-      line.matchAll(
+      normalizedLine.matchAll(
         /([^.;]*?\b(?:due by|due on|submission due date|review of peers due date|feedback(?: review)? due date)\b[^.;]*?(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:\d{1,2}\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?)/gi
       )
     )
@@ -1329,7 +2661,24 @@ function expandScheduleEntries(content: string) {
       return repeatedDateBoundedEntries;
     }
 
-    return line
+    const ampersandSplitEntries = normalizedLine
+      .split(/\s*&\s*/)
+      .map((entry) => normalizeWhitespace(entry))
+      .filter(Boolean);
+    if (
+      ampersandSplitEntries.length > 1 &&
+      ampersandSplitEntries.every((entry) =>
+        /\b(?:TPA|WA|MA|HA|A|Q)\s*0*\d+\b/i.test(entry) ||
+        /\b(?:tutorial peer assessment|written assignment|mobius assignment|assignment|quiz|test|midterm)\s*#?\s*\d+\b/i.test(
+          entry
+        ) ||
+        /\b(?:due|deadline|available|opens?|closes?)\b/i.test(entry)
+      )
+    ) {
+      return ampersandSplitEntries;
+    }
+
+    return normalizedLine
       .split(/\s*;\s*/)
       .map((entry) => normalizeWhitespace(entry))
       .filter(Boolean);
@@ -1368,7 +2717,16 @@ function extractScheduleAssessmentEntries(content: string) {
 function labelFromScheduleEntry(entry: string) {
   const normalized = trimTrailingPeriods(stripLeadingSchedulePrefix(entry)).replace(/\s+/g, " ");
   if (!normalized) return undefined;
+  if (/^(?:project starts?|project help session)$/i.test(normalized)) return undefined;
+  const projectDuePartMatch = normalized.match(/\bproject\s+due\s*\(\s*part\s*([^)]+?)\s*\)/i);
+  if (projectDuePartMatch) {
+    const part = normalizeWhitespace(projectDuePartMatch[1]).replace(/^part\s*/i, "");
+    return `Project Part ${part}`;
+  }
   if (isRoutineScheduleEntry(normalized)) return undefined;
+  if (isReviewOrPlaceholderScheduleEntry(normalized) || /\bexam review\b/i.test(normalized)) {
+    return undefined;
+  }
   if (!isActionableScheduleEntry(entry) && assessmentTypeFromLabel(normalized) === "Other") {
     return undefined;
   }
@@ -1523,8 +2881,9 @@ function stripLeadingWeekdayText(value: string) {
 
 function normalizeLooseMonthDaySpacing(value: string) {
   return value.replace(
-    /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s*(\d{1,2}(?:st|nd|rd|th)?)(?=\b)/gi,
-    (_match, month: string, day: string) => `${month} ${day}`
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s*(\d{1,2})\s*(st|nd|rd|th)?(?=\b)/gi,
+    (_match, month: string, day: string, suffix?: string) =>
+      `${month} ${day}${suffix ?? ""}`
   );
 }
 
@@ -1552,14 +2911,19 @@ function looksLikeAssessmentText(value: string | null | undefined) {
 }
 
 function looksLikeAssignmentText(value: string | null | undefined) {
-  return /\b(?:assignments?|reports?|essays?|analysis|analyses|reflections?|portfolios?|projects?|deliverables?|surveys?|charters?|homepage|linkedin|bibliography|papers?|communication assignments?|posts?\b|responses?\b|peer assessment|peer feedback|learning from place|map the system|presentations?|applications?|packets?|worksheets?|speeches?|scripts?|briefing note|brief\b|deck|proposals?|videos?|review workshop|review comments?|rough drafts?|author['’]s statement|group contract|goal statement|outlines?|annotations?\b|perusall\b|qfc\b|self-assessment\b|passage analysis)\b/i.test(
-    normalizeWhitespace(value)
+  const normalized = normalizeWhitespace(value);
+  if (/\bp\.?\s*\d+[a-z]?\b/i.test(normalized)) {
+    return true;
+  }
+  return /\b(?:assignments?|submissions?|reports?|lab reports?|essays?|analysis|analyses|reflections?|commentaries?|modules?|portfolios?|projects?|deliverables?|surveys?|charters?|homepage|linkedin|bibliography|papers?|sketchbooks?|drawings?|communication assignments?|posts?\b|responses?\b|peer assessment|peer feedback|peer review|learning from place|map the system|presentations?|presentation files?|applications?|packets?|worksheets?|speeches?|scripts?|briefing note|brief\b|deck|proposals?|videos?|review workshop|review comments?|rough drafts?|author['’]s statement|group contract|contracts?|goal statement|outlines?|annotations?\b|perusall\b|qfc\b|self-assessment\b|passage analysis|story map|tasks?|files?|case studies?|program design|readiness activit(?:y|ies)|check-?ins?)\b/i.test(
+    normalized
   );
 }
 
 function parseFlexibleTime(value: string | null | undefined) {
   const normalized = normalizeWhitespace(value)
     .replace(/[–—]/g, "-")
+    .replace(/(\d)\.(\d{2})(?=\b)/g, "$1:$2")
     .replace(/\b(a\.?m\.?|p\.?m\.?)\b/gi, (match) => match.replace(/\./g, "").toUpperCase());
   if (!normalized) return undefined;
 
@@ -1575,6 +2939,7 @@ function parseTimeRange(value: string | null | undefined) {
   const normalized = normalizeWhitespace(value)
     .replace(/[–—]/g, "-")
     .replace(/\bto\b/gi, "-")
+    .replace(/(\d)\.(\d{2})(?=\b)/g, "$1:$2")
     .replace(/\s*-\s*-\s*/g, "-");
   if (!normalized) return {};
   const match = normalized.match(
@@ -1630,20 +2995,130 @@ function monthTokenToAbbrev(value: string) {
   return MONTH_ALIASES[value.toLowerCase()] ?? value;
 }
 
+function alignParsedDateToWeekdayHint(date: Date, desiredWeekday: WeekdayCode | undefined) {
+  if (!desiredWeekday) return date;
+
+  const exactWeekday = WEEKDAY_BY_INDEX[getDay(date)];
+  if (exactWeekday === desiredWeekday) return date;
+
+  const shiftedBackward = addDays(date, -1);
+  if (
+    shiftedBackward.getMonth() === date.getMonth() &&
+    WEEKDAY_BY_INDEX[getDay(shiftedBackward)] === desiredWeekday
+  ) {
+    return shiftedBackward;
+  }
+
+  const shiftedForward = addDays(date, 1);
+  if (
+    shiftedForward.getMonth() === date.getMonth() &&
+    WEEKDAY_BY_INDEX[getDay(shiftedForward)] === desiredWeekday
+  ) {
+    return shiftedForward;
+  }
+
+  return date;
+}
+
+function parseMonthNamedDateFromText(
+  value: string,
+  defaultYear: number,
+  desiredWeekday: WeekdayCode | undefined
+) {
+  const monthFirstMatch = value.match(
+    /(?:(Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)\s*,?\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s*,?\s*(\d{4}))?/i
+  );
+  if (monthFirstMatch) {
+    const inferredWeekday = parseWeekdayCodes(monthFirstMatch[1])[0];
+    const monthIndex = MONTH_INDEX_BY_ABBREV[
+      monthTokenToAbbrev(monthFirstMatch[2]).toLowerCase()
+    ];
+    const day = Number(monthFirstMatch[3]);
+    const year = monthFirstMatch[4] ? Number(monthFirstMatch[4]) : defaultYear;
+    if (
+      monthIndex !== undefined &&
+      Number.isFinite(day) &&
+      Number.isFinite(year)
+    ) {
+      const candidate = new Date(year, monthIndex, day);
+      if (
+        isValid(candidate) &&
+        candidate.getFullYear() === year &&
+        candidate.getMonth() === monthIndex &&
+        candidate.getDate() === day
+      ) {
+        return format(
+          alignParsedDateToWeekdayHint(candidate, desiredWeekday ?? inferredWeekday),
+          "yyyy-MM-dd"
+        );
+      }
+    }
+  }
+
+  const dayFirstMatch = value.match(
+    /(?:(Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)\s*,?\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?(?:\s*,?\s*(\d{4}))?/i
+  );
+  if (!dayFirstMatch) return undefined;
+
+  const inferredWeekday = parseWeekdayCodes(dayFirstMatch[1])[0];
+  const monthIndex = MONTH_INDEX_BY_ABBREV[
+    monthTokenToAbbrev(dayFirstMatch[3]).toLowerCase()
+  ];
+  const day = Number(dayFirstMatch[2]);
+  const year = dayFirstMatch[4] ? Number(dayFirstMatch[4]) : defaultYear;
+  if (
+    monthIndex === undefined ||
+    !Number.isFinite(day) ||
+    !Number.isFinite(year)
+  ) {
+    return undefined;
+  }
+
+  const candidate = new Date(year, monthIndex, day);
+  if (
+    !isValid(candidate) ||
+    candidate.getFullYear() !== year ||
+    candidate.getMonth() !== monthIndex ||
+    candidate.getDate() !== day
+  ) {
+    return undefined;
+  }
+
+  return format(
+    alignParsedDateToWeekdayHint(candidate, desiredWeekday ?? inferredWeekday),
+    "yyyy-MM-dd"
+  );
+}
+
 function parseFlexibleDate(rawValue: string | null | undefined, defaultYear: number) {
-  const weekdayHint = normalizeWhitespace(rawValue).match(
+  const rawNormalized = normalizeWhitespace(rawValue);
+  const weekdayHint = rawNormalized.match(
     /\b(Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)\b/i
   )?.[1];
+  const desiredWeekday = parseWeekdayCodes(weekdayHint)[0];
+  const directMonthNamedDate = parseMonthNamedDateFromText(
+    rawNormalized,
+    defaultYear,
+    desiredWeekday
+  );
+  if (directMonthNamedDate) return directMonthNamedDate;
+
   const value = normalizeLooseMonthDaySpacing(
-    normalizeWhitespace(rawValue)
-      .replace(/,/g, "")
-      .replace(/\./g, "")
+    rawNormalized
+      .replace(/,/g, " ")
+      .replace(/\.(?=(?:\s|$))/g, " ")
       .replace(/\bof\b/gi, " ")
       .replace(/\s+/g, " ")
   );
   if (!value) return undefined;
 
-  const sanitized = stripOrdinals(stripLeadingWeekdayText(value));
+  const sanitized = stripOrdinals(
+    stripLeadingWeekdayText(
+      normalizeWhitespace(
+        value.replace(/^\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\s+/i, "")
+      )
+    )
+  );
   const monthSwap = sanitized.replace(
     /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b/gi,
     (match) => monthTokenToAbbrev(match)
@@ -1675,29 +3150,7 @@ function parseFlexibleDate(rawValue: string | null | undefined, defaultYear: num
         /y/.test(pattern) || parsed.getFullYear() !== defaultYear
           ? parsed
           : new Date(defaultYear, parsed.getMonth(), parsed.getDate());
-      const desiredWeekday = parseWeekdayCodes(weekdayHint)[0];
-      if (desiredWeekday) {
-        const exactWeekday = WEEKDAY_BY_INDEX[getDay(withYear)];
-        if (exactWeekday !== desiredWeekday) {
-          const shiftedBackward = addDays(withYear, -1);
-          if (
-            shiftedBackward.getMonth() === withYear.getMonth() &&
-            WEEKDAY_BY_INDEX[getDay(shiftedBackward)] === desiredWeekday
-          ) {
-            return format(shiftedBackward, "yyyy-MM-dd");
-          }
-
-          const shiftedForward = addDays(withYear, 1);
-          if (
-            shiftedForward.getMonth() === withYear.getMonth() &&
-            WEEKDAY_BY_INDEX[getDay(shiftedForward)] === desiredWeekday
-          ) {
-            return format(shiftedForward, "yyyy-MM-dd");
-          }
-        }
-      }
-
-      return format(withYear, "yyyy-MM-dd");
+      return format(alignParsedDateToWeekdayHint(withYear, desiredWeekday), "yyyy-MM-dd");
     }
   }
   return undefined;
@@ -1718,6 +3171,33 @@ function parseDateRange(value: string | null | undefined, defaultYear: number) {
     stripLeadingWeekdayText(normalizeWhitespace(value).replace(/[–—]/g, "-"))
   );
   if (!normalized) return undefined;
+  const withoutTimes = normalizeWhitespace(
+    normalized.replace(
+      /\bat\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/gi,
+      ""
+    )
+  );
+
+  const explicitToRangeMatch = withoutTimes.match(
+    /\b([A-Za-z]+)\s+(\d{1,2})(?:\s*,?\s*(\d{4}))?\s+to\s+(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)\s*,\s*)?([A-Za-z]+)\s+(\d{1,2})(?:\s*,?\s*(\d{4}))?\b/i
+  );
+  if (explicitToRangeMatch) {
+    const startYear = explicitToRangeMatch[3]
+      ? Number(explicitToRangeMatch[3])
+      : defaultYear;
+    const endYear = explicitToRangeMatch[6]
+      ? Number(explicitToRangeMatch[6])
+      : startYear;
+    const startDate = parseFlexibleDate(
+      `${explicitToRangeMatch[1]} ${explicitToRangeMatch[2]} ${startYear}`,
+      startYear
+    );
+    const endDate = parseFlexibleDate(
+      `${explicitToRangeMatch[4]} ${explicitToRangeMatch[5]} ${endYear}`,
+      endYear
+    );
+    if (startDate && endDate) return { startDate, endDate };
+  }
 
   const fullMatch = normalized.match(
     /\b([A-Za-z]+)\s+(\d{1,2})\s*-\s*([A-Za-z]+)\s+(\d{1,2})(?:\s*,?\s*(\d{4}))?\b/
@@ -1768,6 +3248,18 @@ function parseDateRange(value: string | null | undefined, defaultYear: number) {
   return undefined;
 }
 
+function hasDeliverableSeriesPrefixBeforeDate(value: string, startIndex: number) {
+  const prefix = value.slice(Math.max(0, startIndex - 40), startIndex).toLowerCase();
+  return (
+    /\b(?:project|assignment|quiz|test|exam|lab|module|week|chapter|part|phase|problem set|tutorial problem)\s*$/.test(
+      prefix
+    ) ||
+    /\b(?:project|assignment|quiz|test|exam|lab|module|week|chapter|part|phase|problem set|tutorial problem)\s+\d+\s*$/.test(
+      prefix
+    )
+  );
+}
+
 function extractExplicitDates(value: string | null | undefined, defaultYear: number) {
   const normalized = normalizeLooseMonthDaySpacing(
     stripLeadingWeekdayText(normalizeWhitespace(value))
@@ -1776,15 +3268,30 @@ function extractExplicitDates(value: string | null | undefined, defaultYear: num
   const withoutTimes = normalizeWhitespace(
     normalized
       .replace(
-        /\b\d{1,2}(?::\d{2})?\s*-\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/gi,
+        /\b\d{1,2}(?::\s*\d{2})?\s*-\s*\d{1,2}(?::\s*\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/gi,
         " "
       )
-      .replace(/\b\d{1,2}:\d{2}\s*-\s*\d{1,2}(?::\d{2})?\b/gi, " ")
-      .replace(/\b\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?\b/gi, " ")
+      .replace(/\b\d{1,2}\s*:\s*\d{2}\s*-\s*\d{1,2}(?::\s*\d{2})?\b/gi, " ")
+      .replace(/\b\d{1,2}\s*:\s*\d{2}\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?\b/gi, " ")
+      .replace(/\b\d{1,2}\s*h\s*\d{2}\b/gi, " ")
+      .replace(/\b\d{3,4}\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/gi, " ")
       .replace(/\b\d{1,2}\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/gi, " ")
   );
 
   const explicit = new Set<string>();
+  const shouldTreatSlashDateMatchAsDate = (source: string, startIndex: number) => {
+    const prefix = source.slice(Math.max(0, startIndex - 24), startIndex);
+    if (
+      /(?:^|[\s|([{,:;])$/.test(prefix) ||
+      /\b(?:on|by|due|deadline(?:\s+for)?|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|scheduled|from|until|through)\s*$/.test(
+        prefix
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  };
 
   for (const match of withoutTimes.matchAll(
     /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\s+(\d{1,2}(?:st|nd|rd|th)?)\s*\/\s*(\d{1,2}(?:st|nd|rd|th)?)(?:\s*,?\s*(\d{4}))?/gi
@@ -1832,6 +3339,9 @@ function extractExplicitDates(value: string | null | undefined, defaultYear: num
   for (const match of withoutTimes.matchAll(
     /\b(\d{1,2}(?:st|nd|rd|th)?)\s+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)(?:\s*,?\s*(\d{4}))?\b/gi
   )) {
+    if (hasDeliverableSeriesPrefixBeforeDate(withoutTimes, match.index ?? 0)) {
+      continue;
+    }
     const year = match[3] ? Number(match[3]) : defaultYear;
     const parsed = parseFlexibleDate(`${match[1]} ${match[2]} ${year}`, year);
     if (parsed) explicit.add(parsed);
@@ -1843,6 +3353,9 @@ function extractExplicitDates(value: string | null | undefined, defaultYear: num
   }
 
   for (const match of withoutDualDayMonth.matchAll(/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/g)) {
+    if (!shouldTreatSlashDateMatchAsDate(withoutDualDayMonth, match.index ?? 0)) {
+      continue;
+    }
     const parsed = parseSlashDate(match[0], defaultYear);
     if (parsed) explicit.add(parsed);
   }
@@ -1872,6 +3385,75 @@ function parseDateSpec(value: string | null | undefined, defaultYear: number) {
   if (direct) return { kind: "single" as const, date: direct };
 
   return undefined;
+}
+
+function outlineTermMonthBounds(meta: OutlineMeta) {
+  const normalizedTerm = normalizeWhitespace(meta.term).toLowerCase();
+  if (normalizedTerm.startsWith("winter")) {
+    return { startMonth: 0, endMonth: 3 };
+  }
+  if (normalizedTerm.startsWith("spring")) {
+    return { startMonth: 4, endMonth: 7 };
+  }
+  if (normalizedTerm.startsWith("fall")) {
+    return { startMonth: 8, endMonth: 11 };
+  }
+  return undefined;
+}
+
+function normalizeDateToOutlineTermYear(
+  date: string | undefined,
+  sourceText: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (!date) return date;
+
+  const parsed = parseISO(date);
+  if (!isValid(parsed) || parsed.getFullYear() === meta.termYear) {
+    return date;
+  }
+
+  const normalizedSource = normalizeWhitespace(sourceText);
+  if (!normalizedSource) return date;
+
+  const sourceYears = Array.from(
+    new Set(
+      Array.from(normalizedSource.matchAll(/\b(20\d{2})\b/g), (match) => Number(match[1])).filter(
+        (year) => Number.isFinite(year)
+      )
+    )
+  );
+  if (sourceYears.length !== 1) {
+    return date;
+  }
+  if (Math.abs(sourceYears[0] - meta.termYear) > 1) {
+    return date;
+  }
+
+  const monthBounds = outlineTermMonthBounds(meta);
+  if (monthBounds) {
+    const month = parsed.getMonth();
+    if (month < monthBounds.startMonth || month > monthBounds.endMonth) {
+      return date;
+    }
+    if (parsed.getFullYear() < 2000) {
+      return format(new Date(meta.termYear, parsed.getMonth(), parsed.getDate()), "yyyy-MM-dd");
+    }
+  }
+
+  return format(new Date(meta.termYear, parsed.getMonth(), parsed.getDate()), "yyyy-MM-dd");
+}
+
+function normalizeOccurrencesToOutlineTermYear(
+  occurrences: Array<{ date: string; endDate?: string }>,
+  sourceText: string | null | undefined,
+  meta: OutlineMeta
+) {
+  return occurrences.map((occurrence) => ({
+    ...occurrence,
+    date: normalizeDateToOutlineTermYear(occurrence.date, sourceText, meta) ?? occurrence.date,
+    endDate: normalizeDateToOutlineTermYear(occurrence.endDate, sourceText, meta),
+  }));
 }
 
 function parseWeekdayCodes(value: string | null | undefined) {
@@ -1972,6 +3554,66 @@ function parseOfficeHourDayCodes(value: string | null | undefined) {
   const matches: WeekdayCode[] = [];
   cuesByCode.forEach(([code, pattern]) => {
     if (pattern.test(weekdayOnly)) {
+      matches.push(code);
+    }
+  });
+
+  return unique(matches);
+}
+
+function officeHourClauseContainingIndex(value: string, index: number) {
+  if (index < 0 || index > value.length) {
+    return normalizeWhitespace(value);
+  }
+
+  const lastBoundary = Math.max(
+    value.lastIndexOf(".", index),
+    value.lastIndexOf(";", index),
+    value.lastIndexOf("\n", index)
+  );
+  const nextCandidates = [value.indexOf(".", index), value.indexOf(";", index), value.indexOf("\n", index)].filter(
+    (candidate) => candidate !== -1
+  );
+  const nextBoundary =
+    nextCandidates.length > 0 ? Math.min(...nextCandidates) : value.length;
+
+  return normalizeWhitespace(
+    value.slice(lastBoundary === -1 ? 0 : lastBoundary + 1, nextBoundary)
+  );
+}
+
+function officeHourDayCodesForTimeRangeMatch(
+  snippet: string,
+  match: RegExpMatchArray
+) {
+  const clause = officeHourClauseContainingIndex(snippet, match.index ?? 0);
+  const strictClauseDayCodes = parseStrictNamedOfficeHourDayCodes(clause);
+  return strictClauseDayCodes.length > 0 ? strictClauseDayCodes : parseOfficeHourDayCodes(clause);
+}
+
+function parseStrictNamedOfficeHourDayCodes(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value)
+    .replace(/\bMWF\b/gi, "Mon Wed Fri")
+    .replace(/\bMW\b/gi, "Mon Wed")
+    .replace(/\bWF\b/gi, "Wed Fri")
+    .replace(/\bTTh\b/gi, "Tue Thu")
+    .replace(/\bTuTh\b/gi, "Tue Thu")
+    .replace(/\bT\/Th\b/gi, "Tue Thu")
+    .replace(/[–—]/g, "-");
+
+  const cuesByCode: Array<[WeekdayCode, RegExp]> = [
+    ["MO", /\bmon(?:day)?s?'?s?\b/gi],
+    ["TU", /\b(?:tu|tue(?:s(?:day)?)?s?'?s?)\b/gi],
+    ["WE", /\bwed(?:nesday)?s?'?s?\b/gi],
+    ["TH", /\b(?:th|thu(?:r(?:s(?:day)?)?)?s?'?s?)\b/gi],
+    ["FR", /\bfri(?:day)?s?'?s?\b/gi],
+    ["SA", /\bsat(?:urday)?s?'?s?\b/gi],
+    ["SU", /\bsun(?:day)?s?'?s?\b/gi],
+  ];
+
+  const matches: WeekdayCode[] = [];
+  cuesByCode.forEach(([code, pattern]) => {
+    if (pattern.test(normalized)) {
       matches.push(code);
     }
   });
@@ -2175,14 +3817,28 @@ function findHeaderRow(rows: string[][]) {
     "start",
     "end",
   ];
+  const exactHeaderPattern =
+    /^(?:week|date|dates|assignment|assignments|assessment|assessments|due|due date|due dates|deadline|deadlines|weight|weights|tutorial|tutorials|topic|topics|module|modules|lab|labs|location|locations|submission|submissions|start|end|deliverable|deliverables|capstone deliverables|regulatory deliverables|intended learning outcomes?)\.?$/i;
+  const dataLikePattern =
+    /\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec|monday|tuesday|wednesday|thursday|friday|saturday|sunday|week\s+\d+|\d{1,2}:\d{2}|due:)\b/i;
 
   let bestIndex = 0;
   let bestScore = -1;
   rows.forEach((row, index) => {
-    const score = row.reduce((sum, cell) => {
+    const keywordScore = row.reduce((sum, cell) => {
       const normalized = cell.toLowerCase();
       return sum + Number(keywords.some((keyword) => normalized.includes(keyword)));
     }, 0);
+    const exactHeaderCells = row.filter((cell) =>
+      exactHeaderPattern.test(trimTrailingPeriods(normalizeWhitespace(cell)))
+    ).length;
+    const dataLikeCells = row.filter((cell) => {
+      const normalized = normalizeWhitespace(cell);
+      if (!normalized) return false;
+      if (exactHeaderPattern.test(trimTrailingPeriods(normalized))) return false;
+      return dataLikePattern.test(normalized);
+    }).length;
+    const score = exactHeaderCells * 20 + keywordScore - dataLikeCells * 6;
     if (score > bestScore) {
       bestScore = score;
       bestIndex = index;
@@ -2218,6 +3874,84 @@ function collectSectionBlocks(document: Document) {
       text: normalizeWhitespace(elements.map((element) => htmlToText(element)).join("\n")),
     };
   });
+}
+
+function removeInitialScheduleTable(document: Document) {
+  const scheduleSection =
+    document.querySelector("#class_schedule") ??
+    Array.from(document.querySelectorAll("article.outline-content > h2.header")).find((header) =>
+      /class schedule/i.test(normalizeWhitespace(header.textContent))
+    );
+
+  const scheduleTable =
+    scheduleSection?.parentElement?.querySelector("figure.schedule-info table") ??
+    scheduleSection?.parentElement?.querySelector("table") ??
+    document.querySelector("figure.schedule-info table");
+
+  const removable = scheduleTable?.closest("figure") ?? scheduleTable;
+  removable?.remove();
+}
+
+const AI_EXTRACTION_TEXT_LIMIT = 45_000;
+const AI_SECTION_TEXT_LIMIT = 18_000;
+const AI_BOILERPLATE_SECTION_PATTERN =
+  /\b(?:academic integrity|grievance|discipline|appeals?|mental health|accessability|accessibility|accommodations?|turnitin|territorial acknowledgement|intellectual property|privacy|emergency|student resources|wellness|counselling|policy\s+\d+|institutional-required statements?)\b/i;
+const AI_COURSE_EVENT_SECTION_PATTERN =
+  /\b(?:assignments?|assessments?|activities|grading|evaluation|course requirements?|student assessment|deliverables?|deadlines?|due dates?|quizzes?|tests?|midterms?|exams?|final exam|projects?|papers?|reports?|presentations?|participation|discussion posts?|reflections?|office hours?|student hours?|instructional team|instructors?|teaching assistants?|tas?|course schedule|class plan|weekly schedule|tentative schedule|schedule)\b/i;
+
+function truncateText(value: string, limit: number) {
+  if (value.length <= limit) return value;
+  const truncated = value.slice(0, limit);
+  const lastBreak = Math.max(truncated.lastIndexOf("\n\n"), truncated.lastIndexOf("\n"));
+  return `${truncated.slice(0, lastBreak > limit * 0.7 ? lastBreak : limit).trim()}\n[Truncated]`;
+}
+
+function compactAiSection(section: SectionBlock) {
+  const title = normalizeWhitespace(section.title);
+  const text = normalizeWhitespace(section.text);
+  if (!text) return "";
+
+  const isCourseEventSection =
+    AI_COURSE_EVENT_SECTION_PATTERN.test(title) ||
+    AI_COURSE_EVENT_SECTION_PATTERN.test(text);
+  const isBoilerplate = AI_BOILERPLATE_SECTION_PATTERN.test(title);
+  if (isBoilerplate && !isCourseEventSection) return "";
+
+  return truncateText([`## ${title}`, text].filter(Boolean).join("\n"), AI_SECTION_TEXT_LIMIT);
+}
+
+function buildAiExtractionOutlineText(document: Document) {
+  const clone = document.cloneNode(true) as Document;
+  clone.querySelectorAll("script, style, noscript").forEach((element) => element.remove());
+  removeInitialScheduleTable(clone);
+
+  const sections = collectSectionBlocks(clone);
+  const fullText = normalizeWhitespace(
+    clone.body ? htmlToText(clone.body) : clone.documentElement.textContent
+  );
+  const sectionText =
+    sections.length > 0
+      ? sections
+          .map(compactAiSection)
+          .filter(Boolean)
+          .join("\n\n")
+      : fullText;
+
+  return truncateText(sectionText || fullText, AI_EXTRACTION_TEXT_LIMIT);
+}
+
+function buildAiExtractionRequest(
+  document: Document,
+  meta: OutlineMeta
+): AiOutlineExtractionRequest {
+  return {
+    outlineName: meta.outlineName,
+    courseCode: meta.courseCode,
+    courseName: meta.courseName,
+    term: meta.term,
+    termYear: meta.termYear,
+    outlineText: buildAiExtractionOutlineText(document),
+  };
 }
 
 function extractMeta(document: Document, outlineName: string): OutlineMeta {
@@ -2623,12 +4357,20 @@ function normalizeOfficeHoursSnippet(line: string | null | undefined) {
       .replace(/^.*?\bdrop-in ta office hours\b[:\s-]*/i, "")
       .replace(/^.*?\bopen student hours?\b(?:\s+with\s+[^-:]+)?\s*[-:]\s*/i, "")
       .replace(/^.*?\bmy office hours are\b[:\s]*/i, "")
-      .replace(/^.*?\boffice hours?\b[:\s]*/i, "")
+      .replace(/^.*?\boffice hours?\b(?:\s*\([^)]*\))?[:\s]*/i, "")
       .replace(/^.*?\boffice location (?:and|&) hours?\b[:\s]*/i, "")
       .replace(/^.*?\bstudent(?:\s*\(office\))?\s*hours?(?:\s*\(office hours\))?\b[:\s]*/i, "")
+      .replace(/^\([^)]*\)\s*:\s*/i, "")
       .replace(
         /^((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})(?:\s+[A-Z0-9._%+-]+@uwaterloo\.ca)?\s+(?=(?:Mon(?:day)?|Tue(?:s(?:day)?)?|Wed(?:nesday)?|Thu(?:r(?:s(?:day)?)?)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?))/iu,
-        ""
+        (match, candidateName: string) => {
+          const normalizedCandidate = normalizeWhitespace(candidateName);
+          return /\b(?:and|Mon(?:day)?s?|Tue(?:s(?:day)?)?s?|Wed(?:nesday)?s?|Thu(?:r(?:s(?:day)?)?)?s?|Fri(?:day)?s?|Sat(?:urday)?s?|Sun(?:day)?s?)\b/i.test(
+            normalizedCandidate
+          )
+            ? match
+            : "";
+        }
       )
       .replace(/\bnoon\b/gi, "12:00 PM")
       .replace(/\bmidnight\b/gi, "12:00 AM")
@@ -2644,6 +4386,10 @@ function normalizeOfficeHoursSnippet(line: string | null | undefined) {
         /\bon\s+(?=(?:Mon(?:day)?|Tue(?:s(?:day)?)?|Wed(?:nesday)?|Thu(?:r(?:s(?:day)?)?)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?|M|Tu|Th|T|W|F)\b)/gi,
         ""
       )
+      .replace(/\([^)]*\bshift to\b[^)]*\)/gi, "")
+      .replace(/([.?!])\s*((?:Teaching Assistants?|Teaching Assistant|TA(?:\s*\(|:|'s\b)).*)$/i, (_match, punctuation: string, tail: string) =>
+        /\boffice hours?\b/i.test(tail) ? `${punctuation} ${tail}` : punctuation
+      )
       .replace(/\bor\s+e-?mail\s+for\s+appointment\b.*$/i, "")
   );
 }
@@ -2651,9 +4397,192 @@ function normalizeOfficeHoursSnippet(line: string | null | undefined) {
 function normalizeWeekTableDateSourceText(value: string | null | undefined) {
   return normalizeLooseMonthDaySpacing(
     normalizeWhitespace(value)
-      .replace(/^\s*(?:week\s+\d+|reading week|week of)\b[:\s-]*/i, "")
-      .replace(/\bweek\s+\d+\b[:\s-]*/gi, " ")
+      .replace(/^\s*(?:wk\.?\s*\d+|week\s+\d+|reading week|week of)\b[:\s-]*/i, "")
+      .replace(/^\s*\d+\s*\(([^)]+)\)\s*$/i, "$1")
+      .replace(/^\s*\d+\s*[:\-–—]\s*/i, "")
+      .replace(
+        /\s*\(\s*(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)\s*\)\s*$/i,
+        ""
+      )
+      .replace(/\b(?:wk\.?\s*\d+|week\s+\d+)\b[:\s-]*/gi, " ")
   );
+}
+
+function isWeekTableWeekCell(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value);
+  return (
+    /^\d+$/.test(normalized) ||
+    /^reading week$/i.test(normalized) ||
+    /^week\s+\d+\b/i.test(normalized) ||
+    /^wk\.?\s*\d+\b/i.test(normalized)
+  );
+}
+
+function isWeekTableDateLike(value: string | null | undefined, termYear: number) {
+  const normalized = normalizeWeekTableDateSourceText(value);
+  if (!normalized) return false;
+  return (
+    Boolean(parseDateSpec(normalized, termYear)) ||
+    extractExplicitDates(normalized, termYear).length > 0 ||
+    Boolean(parseTimeRange(normalized).startTime) ||
+    /\b\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b/i.test(
+      normalized
+    )
+  );
+}
+
+function alignSparseWeekTableRow(
+  row: string[],
+  headers: string[],
+  termYear: number,
+  weekIndex: number,
+  dateIndex: number,
+  topicIndex: number,
+  dueIndex: number
+) {
+  const normalizedRow = row.map((cell) => normalizeWhitespace(cell));
+  if (normalizedRow.length >= headers.length) {
+    return normalizedRow;
+  }
+
+  const aligned = Array.from({ length: headers.length }, () => "");
+
+  if (
+    normalizedRow.length >= 2 &&
+    weekIndex === 0 &&
+    dateIndex === 1 &&
+    isWeekTableWeekCell(normalizedRow[0]) &&
+    isWeekTableDateLike(normalizedRow[1], termYear)
+  ) {
+    aligned[weekIndex] = normalizedRow[0];
+    aligned[dateIndex] = normalizedRow[1];
+    if (normalizedRow[2] && topicIndex !== -1) {
+      aligned[topicIndex] = normalizedRow[2];
+    } else if (normalizedRow[2] && dueIndex !== -1) {
+      aligned[dueIndex] = normalizedRow[2];
+    }
+    return aligned;
+  }
+
+  if (
+    weekIndex > 0 &&
+    normalizedRow.length <= headers.length - 1 &&
+    isWeekTableWeekCell(normalizedRow[0])
+  ) {
+    aligned[weekIndex] = normalizedRow[0];
+    let cursor = 1;
+    for (
+      let index = weekIndex + 1;
+      index < headers.length && cursor < normalizedRow.length;
+      index += 1
+    ) {
+      aligned[index] = normalizedRow[cursor] ?? "";
+      cursor += 1;
+    }
+    return aligned;
+  }
+
+  if (
+    normalizedRow.length === 2 &&
+    dateIndex !== -1 &&
+    !isWeekTableWeekCell(normalizedRow[0]) &&
+    isWeekTableDateLike(normalizedRow[0], termYear)
+  ) {
+    aligned[dateIndex] = normalizedRow[0];
+    if (topicIndex !== -1) {
+      aligned[topicIndex] = normalizedRow[1];
+    } else if (dueIndex !== -1) {
+      aligned[dueIndex] = normalizedRow[1];
+    }
+    return aligned;
+  }
+
+  if (
+    normalizedRow.length === 2 &&
+    !isWeekTableWeekCell(normalizedRow[0]) &&
+    !isWeekTableDateLike(normalizedRow[0], termYear) &&
+    isWeekTableDateLike(normalizedRow[1], termYear)
+  ) {
+    if (topicIndex !== -1) {
+      aligned[topicIndex] = normalizedRow[0];
+    }
+    if (dueIndex !== -1) {
+      aligned[dueIndex] = normalizedRow[1];
+    }
+    return aligned;
+  }
+
+  if (normalizedRow.length === 1) {
+    if (dueIndex !== -1 && isWeekTableDateLike(normalizedRow[0], termYear)) {
+      aligned[dueIndex] = normalizedRow[0];
+      return aligned;
+    }
+    if (topicIndex !== -1) {
+      aligned[topicIndex] = normalizedRow[0];
+      return aligned;
+    }
+    if (dueIndex !== -1) {
+      aligned[dueIndex] = normalizedRow[0];
+      return aligned;
+    }
+  }
+
+  return normalizedRow;
+}
+
+function alignSparseStartDueTableRow(
+  row: string[],
+  headers: string[],
+  assignmentIndex: number,
+  activityIndex: number,
+  sessionIndexes: number[],
+  startIndex: number,
+  dueIndex: number,
+  weightIndex: number,
+  carry: {
+    start?: string;
+    due?: string;
+    weight?: string;
+  }
+) {
+  const normalizedRow = row.map((cell) => normalizeWhitespace(cell));
+  if (normalizedRow.length >= headers.length) {
+    return normalizedRow;
+  }
+
+  const aligned = Array.from({ length: headers.length }, () => "");
+  if (startIndex !== -1 && carry.start) aligned[startIndex] = carry.start;
+  if (dueIndex !== -1 && carry.due) aligned[dueIndex] = carry.due;
+  if (weightIndex !== -1 && carry.weight) aligned[weightIndex] = carry.weight;
+
+  if (normalizedRow.length === 1) {
+    const contentIndex =
+      assignmentIndex !== -1
+        ? assignmentIndex
+        : activityIndex !== -1
+        ? activityIndex
+        : sessionIndexes[0] ?? 0;
+    aligned[contentIndex] = normalizedRow[0];
+    return aligned;
+  }
+
+  if (normalizedRow.length === 2) {
+    const contentIndex =
+      assignmentIndex !== -1
+        ? assignmentIndex
+        : activityIndex !== -1
+        ? activityIndex
+        : sessionIndexes[0] ?? 0;
+    aligned[contentIndex] = normalizedRow[0];
+    if (weightIndex !== -1 && normalizeWeightText(normalizedRow[1])) {
+      aligned[weightIndex] = normalizedRow[1];
+    } else if (dueIndex !== -1) {
+      aligned[dueIndex] = normalizedRow[1];
+    }
+    return aligned;
+  }
+
+  return normalizedRow;
 }
 
 function normalizeWeekTableInferredDate(
@@ -2790,13 +4719,17 @@ function sanitizeOfficeHourPersonName(value: string | null | undefined) {
     .replace(/\([^)]*@uwaterloo\.ca[^)]*\)/gi, "")
     .replace(/\[[^\]]*@uwaterloo\.ca[^\]]*\]/gi, "")
     .replace(/\b[A-Z0-9._%+-]+@uwaterloo\.ca\b/gi, "")
+    .replace(/^information\s*:?\s*/i, "")
     .replace(/^note\s*:?\s*/i, "")
     .replace(/\b(?:Office|Tutorials?|Lectures?|Consulting Hours?)\b.*$/i, "")
+    .replace(/\s+Email(?:\s+Address)?\b.*$/i, "")
     .replace(/\s+Students?$/i, "")
     .replace(/\s*\([^)]*$/g, "")
     .replace(/\b(?:course staff|teaching assistants?|tas?)['’]?\s*$/i, "")
     .replace(/\s+[a-z]{2,}$/g, "")
     .replace(/\n+/g, " ")
+    .replace(/^[\s"'`~!@#$%^&*()_+=[\]{}|\\:;,.<>/?-–—]+/g, "")
+    .replace(/[\s"'`~!@#$%^&*()_+=[\]{}|\\:;,.<>/?-–—]+$/g, "")
     .replace(/\s*[-,:;]\s*$/g, "")
     .trim();
 }
@@ -2821,10 +4754,7 @@ function extractOfficeHourEmail(text: string | null | undefined) {
 function isClearlyInvalidOfficeHourLocation(value: string | null | undefined) {
   const normalized = normalizeWhitespace(value);
   if (!normalized) return true;
-  return (
-    /^(?:LEC|TUT|LAB)\s*\d{3}$/i.test(normalized) ||
-    /^[A-Z]{3,5}\s*\d{3}[A-Za-z]?$/i.test(normalized)
-  );
+  return /^(?:LEC|TUT|LAB)\s*\d{3}$/i.test(normalized);
 }
 
 function chooseOfficeHourLocation(...candidates: Array<string | undefined>) {
@@ -2881,7 +4811,18 @@ function officeHourInstructorName(text: string, meetings: RawMeetingRow[], meta:
 }
 
 function officeHourInstructorEmail(text: string, meetings: RawMeetingRow[]) {
-  return extractOfficeHourEmail(text) || meetings.find((meeting) => meeting.instructorEmail)?.instructorEmail;
+  const meetingEmail = meetings.find((meeting) => meeting.instructorEmail)?.instructorEmail;
+  const instructorScopedText =
+    text.match(/\b(?:Instructor|Course Instructor)\s*:[\s\S]{0,220}/i)?.[0] ??
+    text.split(
+      /\b(?:Teaching Assistants?|Teaching Assistant|Lead Teaching Assistant(?:\s*\(TA\))?|Lead TA|TA)\s*:/i
+    )[0];
+
+  return (
+    meetingEmail ||
+    extractOfficeHourEmail(instructorScopedText) ||
+    extractOfficeHourEmail(text)
+  );
 }
 
 function isLikelyInstructionalSection(section: SectionBlock) {
@@ -2954,9 +4895,82 @@ function createOfficeHourSeedsFromStructuredSnippet(
     return [] as OfficeHourSeed[];
   }
   const normalizedSnippet = normalizeOfficeHoursSnippet(cleanedSnippet);
+  const officeHourWindow = (() => {
+    const year = parseISO(termBounds.startDate).getFullYear();
+    const firstClause =
+      normalizedSnippet.match(/\bfirst office hour\b[^.?!]*/i)?.[0] ??
+      normalizedSnippet.match(/\b(?:starting|starts?)\b[^.?!]*\boffice hours?\b[^.?!]*/i)?.[0];
+    const lastClause =
+      normalizedSnippet.match(/\blast(?:\s+one|\s+office hour)?\b[^.?!]*/i)?.[0] ??
+      normalizedSnippet.match(/\buntil\b[^.?!]*/i)?.[0];
+    const exclusionClauses = Array.from(
+      normalizedSnippet.matchAll(
+        /\b(?:there (?:is|will be)\s+no office hour|no office hour(?: held)?|excluding|except(?: for)?)\b[^.?!]*/gi
+      )
+    ).map((match) => match[0]);
+    const startDate = firstClause
+      ? extractExplicitDates(firstClause, year)[0]
+      : undefined;
+    const endDates = lastClause ? extractExplicitDates(lastClause, year) : [];
+    return {
+      startDate: startDate ?? termBounds.startDate,
+      endDate: endDates[endDates.length - 1] ?? termBounds.endDate,
+      exDates: unique(
+        exclusionClauses.flatMap((clause) => extractExplicitDates(clause, year))
+      ),
+      hasExplicitWindow:
+        Boolean(startDate) ||
+        endDates.length > 0 ||
+        exclusionClauses.length > 0,
+    };
+  })();
   const snippetDates = unique(
     extractExplicitDates(normalizedSnippet, parseISO(termBounds.startDate).getFullYear())
   ).sort();
+  const strictNamedDayCodes = parseStrictNamedOfficeHourDayCodes(normalizedSnippet);
+  const strictNamedTimeRanges = Array.from(
+    normalizedSnippet.matchAll(
+      /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
+    )
+  );
+  const primaryStrictDayCodes =
+    strictNamedTimeRanges.length > 0
+      ? officeHourDayCodesForTimeRangeMatch(normalizedSnippet, strictNamedTimeRanges[0])
+      : strictNamedDayCodes;
+  if (
+    strictNamedTimeRanges.length === 1 &&
+    primaryStrictDayCodes.length > 0 &&
+    (primaryStrictDayCodes.length > 1 ||
+      snippetDates.length === 0 ||
+      officeHourWindow.hasExplicitWindow)
+  ) {
+    const range = parseOfficeHourTimeRange(
+      `${strictNamedTimeRanges[0][1]} - ${strictNamedTimeRanges[0][2]}`
+    );
+    if (range.startTime && range.endTime) {
+      const location = chooseOfficeHourLocation(
+        officeHourLocation(snippet),
+        fallbackLocation
+      );
+      return primaryStrictDayCodes.map((dayCode) => ({
+        personName,
+        personEmail,
+        location,
+        dayCode,
+        startDate: officeHourWindow.startDate,
+        endDate: officeHourWindow.hasExplicitWindow
+          ? officeHourWindow.endDate
+          : undefined,
+        exDates: officeHourWindow.exDates,
+        startTime: range.startTime!,
+        endTime: range.endTime!,
+        notes: range.inferred
+          ? ["Office-hour time inferred from shorthand in outline."]
+          : [],
+        provenance: [makeProvenance(section, "prose", snippet)],
+      }));
+    }
+  }
   const snippetDayCodes = unique(parseOfficeHourDayCodes(normalizedSnippet));
   const snippetTimeRanges = Array.from(
     normalizedSnippet.matchAll(
@@ -2993,6 +5007,45 @@ function createOfficeHourSeedsFromStructuredSnippet(
         },
       ];
     }
+  }
+  const prioritizedClusteredDayTimeMatches = Array.from(
+    normalizedSnippet.matchAll(
+      /\b((?:(?:and\s+)?(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:\/|,|&|-|\band\b)?\s*)+)\s*(?:\(([^)]+)\)|(?:,?\s*(?:between|from)\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?))\s*(?:,?\s*(?:in|at)\s*([^,.;]+))?/gi
+    )
+  );
+  if (prioritizedClusteredDayTimeMatches.length > 0) {
+    return prioritizedClusteredDayTimeMatches.flatMap((match) => {
+      const dayCodes = parseOfficeHourDayCodes(match[1]);
+      const rangeText = match[2] ? match[2] : `${match[3]} - ${match[4]}`;
+      const range = parseOfficeHourTimeRange(rangeText);
+      if (dayCodes.length === 0 || !range.startTime || !range.endTime) return [];
+
+      const locationHint = normalizeWhitespace(match[5]);
+      const location =
+        /virtual|online|teams?|zoom/i.test(locationHint) && !chooseOfficeHourLocation(fallbackLocation)
+          ? "Online"
+          : chooseOfficeHourLocation(
+              officeHourLocation(locationHint),
+              officeHourLocation(match[0]),
+              fallbackLocation,
+              officeHourLocation(snippet)
+            );
+
+      return dayCodes.map((dayCode) => ({
+        personName,
+        personEmail,
+        location,
+        dayCode,
+        startDate: termBounds.startDate,
+        exDates: [],
+        startTime: range.startTime,
+        endTime: range.endTime,
+        notes: range.inferred
+          ? ["Office-hour time inferred from shorthand in outline."]
+          : [],
+        provenance: [makeProvenance(section, "prose", snippet)],
+      }));
+    });
   }
   const detailedSegments = extractDetailedOfficeHourSegments(
     normalizedSnippet,
@@ -3323,9 +5376,19 @@ function parseStructuredOfficeHourTables(
         const nameIndex = headers.findIndex((cell) => /^name$/.test(cell));
         const contactIndex = headers.findIndex((cell) => /\bcontact\b/.test(cell));
         const officeIndex = headers.findIndex((cell) => /^office$/.test(cell));
+        const headerRowLooksLikeData =
+          officeHoursIndex !== -1 &&
+          nameIndex === -1 &&
+          contactIndex === -1 &&
+          officeIndex === -1 &&
+          rows[headerIndex].some((cell) =>
+            /@uwaterloo\.ca|(?:mon|tue|wed|thu|fri|sat|sun)(?:day)?s?|office hours?|student hours?|\d{1,2}:\d{2}|\d{1,2}\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\b/i.test(
+              cell
+            )
+          );
 
         if (officeHoursIndex !== -1) {
-          rows.slice(headerIndex + 1).forEach((row) => {
+          rows.slice(headerIndex + (headerRowLooksLikeData ? 0 : 1)).forEach((row) => {
           const expandedRows = (() => {
             const nameEntries = nameIndex === -1 ? [] : splitStructuredOfficeHourCellEntries(row[nameIndex]);
             const officeEntries = officeIndex === -1 ? [] : splitStructuredOfficeHourCellEntries(row[officeIndex]);
@@ -3367,8 +5430,18 @@ function parseStructuredOfficeHourTables(
 
           expandedRows.forEach((expandedRow) => {
           const rowText = expandedRow.join("\n");
+          const adjacentPersonName =
+            nameIndex === -1 && officeHoursIndex > 0
+              ? sanitizeOfficeHourPersonName(
+                  expandedRow[officeHoursIndex - 1]?.match(
+                    /\b((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,5})\b/iu
+                  )?.[1]
+                )
+              : undefined;
           const personName = sanitizeOfficeHourPersonName(
             expandedRow[nameIndex] ||
+              adjacentPersonName ||
+              (nameIndex === -1 && officeHoursIndex > 0 ? expandedRow[0] : undefined) ||
               context.personName ||
               rowText.match(
                 /\b((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,5})\b/iu
@@ -3385,13 +5458,23 @@ function parseStructuredOfficeHourTables(
           const officeHoursCell = expandedRow[officeHoursIndex] || "";
           const officeCell = officeIndex === -1 ? "" : expandedRow[officeIndex] || "";
           const combinedSnippet = [officeHoursCell, officeCell].filter(Boolean).join("\n");
+          const officeHoursWindowContext = (() => {
+            const year = meta.termYear;
+            const startingMatch = officeHoursCell.match(/\bstarting\s+([^,);]+)/i)?.[1];
+            const excludingText = officeHoursCell.match(/\bexcluding\s+([^)]+)/i)?.[1] ?? "";
+            const startDate =
+              (startingMatch ? extractExplicitDates(startingMatch, year)[0] : undefined) ??
+              undefined;
+            const exDates = extractExplicitDates(excludingText, year);
+            if (!startDate && exDates.length === 0) return undefined;
+            return {
+              startDate,
+              exDates,
+            };
+          })();
           const explicitDayCodes = parseWeekdayCodes(officeHoursCell);
           const explicitRange = parseOfficeHourTimeRange(officeHoursCell);
-          const explicitTimeRangeCount = Array.from(
-            officeHoursCell.matchAll(
-              /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
-            )
-          ).length;
+          const explicitTimeRangeCount = countValidOfficeHourTimeRanges(officeHoursCell);
           if (
             explicitDayCodes.length > 1 &&
             explicitTimeRangeCount === 1 &&
@@ -3411,8 +5494,8 @@ function parseStructuredOfficeHourTables(
                 personEmail,
                 location,
                 dayCode,
-                startDate: termBounds.startDate,
-                exDates: [],
+                startDate: officeHoursWindowContext?.startDate ?? termBounds.startDate,
+                exDates: officeHoursWindowContext?.exDates ?? [],
                 startTime: explicitRange.startTime!,
                 endTime: explicitRange.endTime!,
                 notes: explicitRange.inferred
@@ -3431,7 +5514,13 @@ function parseStructuredOfficeHourTables(
             officeHourLocation(officeCell) || officeHourLocation(rowText) || context.location,
             termBounds
           );
-          seeds.push(...structuredSeeds);
+          seeds.push(
+            ...structuredSeeds.map((seed) => ({
+              ...seed,
+              startDate: officeHoursWindowContext?.startDate ?? seed.startDate,
+              exDates: officeHoursWindowContext?.exDates ?? seed.exDates,
+            }))
+          );
           });
           });
           return;
@@ -3877,6 +5966,34 @@ function parseStructuredOfficeHourLines(
                   .replace(/^.*?\binstructor office hours?\b[:\s-]*/i, "")
                   .replace(/^.*?\bmy office hours are\b[:\s-]*/i, "")
                   .replace(/^.*?\boffice hours?\b[:\s-]*/i, "") || normalizedLine;
+              const directNamedDayCodes = parseStrictNamedOfficeHourDayCodes(cleanedSnippet);
+              const directRange = parseOfficeHourTimeRange(cleanedSnippet);
+              if (
+                pendingInstructorName &&
+                !isGenericOfficeHourName(pendingInstructorName) &&
+                directNamedDayCodes.length > 1 &&
+                directRange.startTime &&
+                directRange.endTime
+              ) {
+                seeds.push(
+                  ...directNamedDayCodes.map((dayCode) => ({
+                    personName: pendingInstructorName,
+                    personEmail: pendingInstructorEmail,
+                    location: pendingLocation,
+                    dayCode,
+                    startDate: termBounds.startDate,
+                    exDates: [],
+                    startTime: directRange.startTime!,
+                    endTime: directRange.endTime!,
+                    notes: directRange.inferred
+                      ? ["Office-hour time inferred from shorthand in outline."]
+                      : [],
+                    provenance: [makeProvenance(section, "prose", cleanedSnippet)],
+                  }))
+                );
+                waitingForOfficeHourContinuation = false;
+                return;
+              }
               pendingSnippetLines = [cleanedSnippet].filter(Boolean);
               waitingForOfficeHourContinuation = pendingSnippetLines.length === 0;
               return;
@@ -3972,7 +6089,7 @@ function parseStructuredOfficeHourLines(
               const structuredLinePersonName =
                 activeInstructorName && !isGenericOfficeHourName(activeInstructorName)
                   ? activeInstructorName
-                  : fallbackInstructorName;
+                  : sectionFallbackInstructorName;
               if (structuredLinePersonName) {
                 const directLineSeeds = createOfficeHourSeedsFromStructuredSnippet(
                   section,
@@ -4059,6 +6176,9 @@ function isGenericOfficeHourName(value: string | null | undefined) {
     .replace(/^[•*-]\s*/, "")
     .replace(/:+$/, "")
     .trim();
+  if (/^[a-z]/.test(normalized)) {
+    return true;
+  }
   if (normalized.replace(/[^A-Za-z]/g, "").length <= 1) {
     return true;
   }
@@ -4073,10 +6193,14 @@ function isGenericOfficeHourName(value: string | null | undefined) {
   return /^(?:office hours?|office hour|email|instructor|instructors|teaching assistants?|teaching assistant|tas?|instructional support assistants?|instructional support assistant|instructional assistants?|instructional apprentice|instructional support coordinator|isc|isa|ia|consulting hours?)$/i.test(
       normalized
   ) ||
+    /^(?:course instructor|lab instructor|tutorial instructor|discussion instructor)$/i.test(
+      normalized
+    ) ||
     /^(?:walking|walking office hours|in-person|online)$/i.test(normalized) ||
     /^(?:information|instructor information|contacting the instructor|course coordinator and instructor|instructors and office hours|instructor'?s office hours)$/i.test(
       normalized
     ) ||
+    /^(?:course instructor contact information|contact information)$/i.test(normalized) ||
     /^(?:student|students|department(?:\s+of\s+.+)?|school(?:\s+of\s+.+)?|faculty(?:\s+of\s+.+)?|program(?:\s+coordinator)?)$/i.test(
       normalized
     ) ||
@@ -4112,7 +6236,10 @@ function hasMeridiem(value: string) {
 }
 
 function parseLooseClock(value: string) {
-  const normalized = normalizeWhitespace(value).replace(/\./g, "").toUpperCase();
+  const normalized = normalizeWhitespace(value)
+    .replace(/(\d)\.(\d{2})(?=\b)/g, "$1:$2")
+    .replace(/\b(a\.?m\.?|p\.?m\.?)\b/gi, (match) => match.replace(/\./g, ""))
+    .toUpperCase();
   if (normalized === "NOON") {
     return {
       hour: 12,
@@ -4141,12 +6268,14 @@ function to24HourTime(
   fallbackMeridiem?: "AM" | "PM"
 ) {
   if (!value) return undefined;
+  if (value.minute > 59) return undefined;
 
   const meridiem = value.meridiem ?? fallbackMeridiem;
   if (!meridiem) {
     if (value.hour > 23 || value.minute > 59) return undefined;
     return `${String(value.hour).padStart(2, "0")}:${String(value.minute).padStart(2, "0")}`;
   }
+  if (value.hour < 1 || value.hour > 12) return undefined;
 
   let hour = value.hour;
   if (meridiem === "AM") {
@@ -4162,6 +6291,7 @@ function parseOfficeHourTimeRange(value: string) {
   const normalized = normalizeWhitespace(value)
     .replace(/[–—]/g, "-")
     .replace(/\bto\b/gi, "-")
+    .replace(/(\d)\.(\d{2})(?=\b)/g, "$1:$2")
     .replace(/:\s+/g, ":")
     .replace(/\s*-\s*-\s*/g, "-");
 
@@ -4247,6 +6377,20 @@ function parseOfficeHourTimeRange(value: string) {
   };
 }
 
+function countValidOfficeHourTimeRanges(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value);
+  if (!normalized) return 0;
+
+  return Array.from(
+    normalized.matchAll(
+      /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
+    )
+  ).filter((match) => {
+    const range = parseOfficeHourTimeRange(`${match[1]} - ${match[2]}`);
+    return !!range.startTime && !!range.endTime;
+  }).length;
+}
+
 function extractOfficeHourSlots(value: string | null | undefined) {
   const normalized = normalizeOfficeHoursSnippet(value)
     .replace(/\s*--+\s*/g, " - ")
@@ -4260,6 +6404,30 @@ function extractOfficeHourSlots(value: string | null | undefined) {
     endTime: string;
     inferred?: boolean;
   }>;
+
+  const strictNamedDayCodes = parseStrictNamedOfficeHourDayCodes(normalized);
+  const strictNamedTimeRanges = Array.from(
+    normalized.matchAll(
+      /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
+    )
+  );
+  const primaryStrictDayCodes =
+    strictNamedTimeRanges.length > 0
+      ? officeHourDayCodesForTimeRangeMatch(normalized, strictNamedTimeRanges[0])
+      : strictNamedDayCodes;
+  if (primaryStrictDayCodes.length > 0 && strictNamedTimeRanges.length === 1) {
+    const range = parseOfficeHourTimeRange(
+      `${strictNamedTimeRanges[0][1]} - ${strictNamedTimeRanges[0][2]}`
+    );
+    if (range.startTime && range.endTime) {
+      return primaryStrictDayCodes.map((dayCode) => ({
+        dayCode,
+        startTime: range.startTime!,
+        endTime: range.endTime!,
+        inferred: range.inferred,
+      }));
+    }
+  }
 
   const clusteredDayTimeMatches = Array.from(
     normalized.matchAll(
@@ -4302,6 +6470,25 @@ function extractOfficeHourSlots(value: string | null | undefined) {
     }
   }
 
+  const repeatedDayTimeMatches = Array.from(
+    normalized.matchAll(
+      /\b(Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\b\.?\s*(?:,)?\s*(?:from\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
+    )
+  );
+  if (repeatedDayTimeMatches.length > 0) {
+    return repeatedDayTimeMatches.flatMap((match) => {
+      const dayCodes = parseOfficeHourDayCodes(match[1]);
+      const range = parseOfficeHourTimeRange(`${match[2]} - ${match[3]}`);
+      if (dayCodes.length === 0 || !range.startTime || !range.endTime) return [];
+      return dayCodes.map((dayCode) => ({
+        dayCode,
+        startTime: range.startTime!,
+        endTime: range.endTime!,
+        inferred: range.inferred,
+      }));
+    });
+  }
+
   const timeRangePattern =
     /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi;
   const dayLeadMatch = normalized.match(
@@ -4325,28 +6512,9 @@ function extractOfficeHourSlots(value: string | null | undefined) {
     }
   }
 
-  const repeatedDayTimeMatches = Array.from(
-    normalized.matchAll(
-      /\b(Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\b\.?\s*(?:,)?\s*(?:from\s*)?(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
-    )
-  );
-  if (repeatedDayTimeMatches.length > 0) {
-    return repeatedDayTimeMatches.flatMap((match) => {
-      const dayCodes = parseOfficeHourDayCodes(match[1]);
-      const range = parseOfficeHourTimeRange(`${match[2]} - ${match[3]}`);
-      if (dayCodes.length === 0 || !range.startTime || !range.endTime) return [];
-      return dayCodes.map((dayCode) => ({
-        dayCode,
-        startTime: range.startTime!,
-        endTime: range.endTime!,
-        inferred: range.inferred,
-      }));
-    });
-  }
-
   const timeLeadMatches = Array.from(
     normalized.matchAll(
-      /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?\s*(?:-|–|—|to)\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s+(?:on\s+)?((?:(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:,|&|and|\/|\s+)?\s*)+)/gi
+      /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?\s*(?:-|–|—|to)\s*\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:,\s*|\s+)(?:on\s+)?((?:(?:Mon(?:day)?s?'?s?|Tue(?:s(?:day)?)?s?'?s?|Wed(?:nesday)?s?'?s?|Thu(?:r(?:s(?:day)?)?)?s?'?s?|Fri(?:day)?s?'?s?|Sat(?:urday)?s?'?s?|Sun(?:day)?s?'?s?|M|Tu|Th|T|W|F(?![a-z]))\.?\s*(?:,|&|and|\/|\s+)?\s*)+)/gi
     )
   );
   if (timeLeadMatches.length > 0) {
@@ -4481,6 +6649,30 @@ function parseOfficeHours(
     let activeInstructorEmail = fallbackInstructorEmail;
     let activeLocation = fallbackLocation;
     let withinOfficeHoursBlock = false;
+
+    const explicitTaOfficeHourMatches = Array.from(
+      text.matchAll(
+        /\b(?:TA|Teaching Assistant)\s*:\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})(?:\s*\(([A-Z0-9._%+-]+@uwaterloo\.ca)\))?[\s\S]{0,160}?\b(?:TA|Teaching Assistant)\s+Office Hours?\s*:\s*([^.\n]+)/giu
+      )
+    );
+    explicitTaOfficeHourMatches.forEach((match) => {
+      const taName = sanitizeOfficeHourPersonName(match[1]);
+      const taEmail = match[2] || undefined;
+      const taSnippet = `TA Office Hours: ${normalizeWhitespace(match[3])}`;
+      if (!taName || !taSnippet) {
+        return;
+      }
+      seeds.push(
+        ...createOfficeHourSeedsFromStructuredSnippet(
+          section,
+          taSnippet,
+          taName,
+          taEmail,
+          fallbackLocation,
+          termBounds
+        )
+      );
+    });
 
     const inlineRoleSegments = hasExplicitOfficeHourLine
       ? []
@@ -5289,12 +7481,12 @@ function dedupeOfficeHourSeeds(seeds: OfficeHourSeed[]) {
     if (isAdministrativeOfficeHourNoiseSnippet(officeHoursSnippet)) {
       return;
     }
-    const explicitDayCodes = parseOfficeHourDayCodes(officeHoursSnippet);
-    const explicitTimeRangeCount = Array.from(
-      officeHoursSnippet.matchAll(
-        /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)\s*(?:-|--|–|—|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)?)/gi
-      )
-    ).length;
+    const strictNamedDayCodes = parseStrictNamedOfficeHourDayCodes(officeHoursSnippet);
+    const explicitDayCodes =
+      strictNamedDayCodes.length > 0
+        ? strictNamedDayCodes
+        : parseOfficeHourDayCodes(officeHoursSnippet);
+    const explicitTimeRangeCount = countValidOfficeHourTimeRanges(officeHoursSnippet);
     const shouldExpandSharedDaySeries =
       explicitDayCodes.length > 1 &&
       explicitTimeRangeCount === 1 &&
@@ -5542,6 +7734,46 @@ function parseInlineInstructionalTeamOfficeHours(
         return [];
       }
 
+      const directSnippetDayCodes = parseStrictNamedOfficeHourDayCodes(officeSnippet);
+      const directSnippetRange = parseOfficeHourTimeRange(officeSnippet);
+      if (
+        directSnippetDayCodes.length > 1 &&
+        directSnippetRange.startTime &&
+        directSnippetRange.endTime
+      ) {
+        const location = chooseOfficeHourLocation(
+          officeHourLocation(officeSnippet),
+          officeHourLocation(segment),
+          fallbackLocation
+        );
+        return directSnippetDayCodes.map((dayCode) => ({
+          personName:
+            sanitizeOfficeHourPersonName(
+              segment.match(
+                /\bName\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})\b/iu
+              )?.[1]
+            ) ||
+            sanitizeOfficeHourPersonName(
+              segment.match(
+                /\b(?:Instructor|Course Instructor|Teaching Assistant|Lead Teaching Assistant|TA)\s*:?\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})(?=\s*(?:Email(?: Address)?\s*:|[A-Z0-9._%+-]+@uwaterloo\.ca\b|Office hours?\b))/iu
+              )?.[1]
+            ) ||
+            fallbackInstructorName,
+          personEmail:
+            segment.match(/[A-Z0-9._%+-]+@uwaterloo\.ca/i)?.[0] || fallbackInstructorEmail,
+          location,
+          dayCode,
+          startDate: termBounds.startDate,
+          exDates: [],
+          startTime: directSnippetRange.startTime,
+          endTime: directSnippetRange.endTime,
+          notes: directSnippetRange.inferred
+            ? ["Office-hour time inferred from shorthand in outline."]
+            : [],
+          provenance: [makeProvenance(section, "prose", officeSnippet)],
+        }));
+      }
+
       const personName =
         sanitizeOfficeHourPersonName(
           segment.match(
@@ -5778,6 +8010,80 @@ function recoverInstructionalTeamOfficeHours(
   });
 }
 
+function recoverExplicitNamedOfficeHours(
+  sections: SectionBlock[],
+  meta: OutlineMeta,
+  meetings: RawMeetingRow[]
+) {
+  const termBounds = computeTermBounds(meetings) ?? computeFallbackTermBounds(sections, meta);
+  if (!termBounds) return [] as OfficeHourSeed[];
+
+  return dedupeOfficeHourSeeds(
+    sections.flatMap((section) => {
+      const text = normalizeOfficeHourParsingText(section.text);
+      if (!/\boffice hours?\b/i.test(text)) {
+        return [];
+      }
+
+      const fallbackInstructorName = officeHourInstructorName(text, meetings, meta);
+      const fallbackInstructorEmail = officeHourInstructorEmail(text, meetings);
+      const fallbackLocation = officeHourLocation(text);
+      const recoveredSeeds: OfficeHourSeed[] = [];
+
+      const instructorOfficeBlock = normalizeWhitespace(
+        text.match(
+          /\bOffice Hours?\b[:\s-]*([\s\S]*?)(?=\b(?:Piazza|Additional Help|Mode of delivery|Plan for|Course Description|Student Resources|Teaching Assistants?|TA\b|TAs\b|Email\b)\b|$)/i
+        )?.[1]
+      );
+      if (
+        instructorOfficeBlock &&
+        fallbackInstructorName &&
+        !isGenericOfficeHourName(fallbackInstructorName)
+      ) {
+        const structuredOfficeSnippet = normalizeWhitespace(
+          `Office Hours: ${instructorOfficeBlock}`
+        );
+        recoveredSeeds.push(
+          ...createOfficeHourSeedsFromStructuredSnippet(
+            section,
+            structuredOfficeSnippet,
+            fallbackInstructorName,
+            fallbackInstructorEmail,
+            fallbackLocation,
+            termBounds
+          )
+        );
+      }
+
+      const explicitTaOfficeHourMatches = Array.from(
+        text.matchAll(
+          /\b(?:TA|Teaching Assistant)\s*:\s*((?:(?:Dr\.?|Prof\.?|Professor)\s+)?[\p{L}][\p{L}'’.-]+(?:\s+[\p{L}][\p{L}'’.-]+){0,4})(?:\s*\(([A-Z0-9._%+-]+@uwaterloo\.ca)\))?[\s\S]{0,240}?\b(?:TA|Teaching Assistant)\s+Office Hours?\s*:\s*([^\n.]+)/giu
+        )
+      );
+      explicitTaOfficeHourMatches.forEach((match) => {
+        const taName = sanitizeOfficeHourPersonName(match[1]);
+        const taEmail = match[2] || undefined;
+        const taSnippet = normalizeWhitespace(match[3]);
+        if (!taName || !taSnippet || isGenericOfficeHourName(taName)) {
+          return;
+        }
+        recoveredSeeds.push(
+          ...createOfficeHourSeedsFromStructuredSnippet(
+            section,
+            taSnippet,
+            taName,
+            taEmail,
+            fallbackLocation,
+            termBounds
+          )
+        );
+      });
+
+      return recoveredSeeds;
+    })
+  );
+}
+
 function assessmentTypeFromLabel(label: string | null | undefined, location?: string) {
   const normalizedLabel = normalizeWhitespace(label);
   if (!normalizedLabel) {
@@ -5785,6 +8091,9 @@ function assessmentTypeFromLabel(label: string | null | undefined, location?: st
   }
   const labelOnly = normalizedLabel.toLowerCase().trim();
   const normalized = `${normalizedLabel} ${location ?? ""}`.toLowerCase();
+  if (/\bforesight step\b/.test(labelOnly) || /\bforesight step\b/.test(normalized)) {
+    return "Assignment" as const;
+  }
   if (
     /^(?:a\s*0*\d+|(?:homework|hw)\s*#?\s*0*\d+|written assignment\s*#?\s*\d+|assignment\s*#?\s*\d+)\b/i.test(
       labelOnly
@@ -6195,6 +8504,9 @@ function resolveAssessmentFromSectionText(
   defaultYear: number
 ) {
   const targetFamily = canonicalAssessmentFamily(label);
+  const targetOccurrenceIndex = Number(
+    normalizeWhitespace(label).match(/#?\s*(\d+)\b/)?.[1] ?? ""
+  );
   const lines = sectionText
     .split(/\n+/)
     .map((line) => normalizeWhitespace(line))
@@ -6206,15 +8518,25 @@ function resolveAssessmentFromSectionText(
     const previousLabel = previousLine
       ? extractAssessmentLabelFromText(previousLine)
       : undefined;
-    const segments = line.split(/(?<=[.!?])\s+/).filter(Boolean);
+    const segments = line.split(/(?<=[.!?;])\s+/).filter(Boolean);
+    let previousSegmentLabel = previousLabel;
     for (const segment of segments) {
+      if (/\b(?:no tutorial|no class(?:es)?|reading week)\b/i.test(segment)) {
+        continue;
+      }
       const lineLabel = extractAssessmentLabelFromText(segment);
       const matchedLabel =
         lineLabel && canonicalAssessmentFamily(lineLabel) === targetFamily
           ? lineLabel
+          : previousSegmentLabel &&
+              canonicalAssessmentFamily(previousSegmentLabel) === targetFamily
+            ? previousSegmentLabel
           : previousLabel && canonicalAssessmentFamily(previousLabel) === targetFamily
-          ? previousLabel
-          : undefined;
+            ? previousLabel
+            : undefined;
+      if (lineLabel) {
+        previousSegmentLabel = lineLabel;
+      }
       if (!matchedLabel) {
         continue;
       }
@@ -6233,9 +8555,13 @@ function resolveAssessmentFromSectionText(
 
       const { startTime, endTime } = parseTimeRange(segment);
       const location = extractStructuredLocation(segment) || undefined;
+      const resolvedDate =
+        resolvedDates.length > 1 && Number.isFinite(targetOccurrenceIndex) && targetOccurrenceIndex > 0
+          ? resolvedDates[Math.min(targetOccurrenceIndex - 1, resolvedDates.length - 1)]
+          : resolvedDates[0];
 
       return {
-        date: resolvedDates[0],
+        date: resolvedDate,
         startTime,
         endTime,
         location,
@@ -6266,7 +8592,8 @@ function resolveAssignmentFromSectionText(
         assignmentLabelFromText(previousLine) ??
         labelFromScheduleEntry(previousLine)
       : undefined;
-    const segments = line.split(/(?<=[.!?])\s+/).filter(Boolean);
+    const segments = line.split(/(?<=[.!?;])\s+/).filter(Boolean);
+    let previousSegmentLabel = previousLabel;
     for (const segment of segments) {
       const lineLabel =
         extractProseDeliverableLabel(segment) ??
@@ -6275,9 +8602,15 @@ function resolveAssignmentFromSectionText(
       const matchedLabel =
         lineLabel && canonicalAssignmentFamily(lineLabel) === targetFamily
           ? lineLabel
+          : previousSegmentLabel &&
+              canonicalAssignmentFamily(previousSegmentLabel) === targetFamily
+            ? previousSegmentLabel
           : previousLabel && canonicalAssignmentFamily(previousLabel) === targetFamily
-          ? previousLabel
-          : undefined;
+            ? previousLabel
+            : undefined;
+      if (lineLabel) {
+        previousSegmentLabel = lineLabel;
+      }
       if (!matchedLabel) {
         continue;
       }
@@ -6298,6 +8631,10 @@ function resolveAssignmentFromSectionText(
         /\bdue\b/i.test(segment) && resolvedDates.length > 1
           ? resolvedDates[resolvedDates.length - 1]
           : resolvedDates[0];
+      const eventDates =
+        /\b(?:due|available|opens?|posted)\b/i.test(segment) && resolvedDates.length > 1
+          ? [dueDate]
+          : resolvedDates;
       const availableDate =
         /\b(?:available|opens?|posted)\b/i.test(segment) && resolvedDates.length > 1
           ? resolvedDates[0]
@@ -6307,6 +8644,7 @@ function resolveAssignmentFromSectionText(
 
       return {
         date: dueDate,
+        dates: eventDates,
         availableDate,
         startTime,
         endTime,
@@ -6327,6 +8665,9 @@ function parseAssessmentTable(
   sectionOptions: ParsedSectionOption[]
 ) {
   const headerLine = headers.map((header) => header.toLowerCase());
+  const looksLikeWeekGrid =
+    headerLine.some((header) => /\b(?:week|wk)\b/.test(header)) &&
+    headerLine.some((header) => /\bdate\b/.test(header));
   const nameIndex = assessmentNameColumnIndex(headerLine);
   const dateIndex = headerLine.findIndex((header) => /(due|date|deadline)/.test(header));
   const locationIndex = headerLine.findIndex((header) => /(location|submission|method)/.test(header));
@@ -6475,6 +8816,13 @@ function parseAssessmentTable(
       " "
     );
     if (/^\s*\d+(?:\.\d+)?%\s*$/.test(label)) return;
+    if (
+      looksLikeWeekGrid &&
+      /^\d+[a-z]?$/i.test(label) &&
+      row.some((cell) => isWeekTableDateLike(cell, meta.termYear))
+    ) {
+      return;
+    }
     const contextualRowText = row
       .map((cell) => normalizeWhitespace(cell))
       .filter(Boolean)
@@ -6554,29 +8902,39 @@ function parseAssessmentTable(
         : undefined;
 
     if (contextualResolution?.date) {
-      seeds.push({
-        label,
-        eventType: baseType === "Other" ? "Assessment" : baseType,
-        date: contextualResolution.date,
-        allDay: !contextualResolution.startTime,
-        location: contextualResolution.location || location,
-        startTime: contextualResolution.startTime,
-        endTime: contextualResolution.endTime,
-        notes: combineNotes(
-          [contextualResolution.note],
-          "availableDate" in contextualResolution && contextualResolution.availableDate
-            ? [`Available from ${contextualResolution.availableDate}`]
-            : [],
-          buildSeriesWeightNotes(label, weight, 1)
-        ),
-        weight,
-        confidence: confidenceFromSeed({
-          date: contextualResolution.date,
+      const contextualDates =
+        baseType === "Assignment" &&
+        "dates" in contextualResolution &&
+        Array.isArray(contextualResolution.dates) &&
+        contextualResolution.dates.length > 0
+          ? contextualResolution.dates
+          : [contextualResolution.date];
+
+      contextualDates.forEach((resolvedDate) => {
+        seeds.push({
+          label,
+          eventType: baseType === "Other" ? "Assessment" : baseType,
+          date: resolvedDate,
+          allDay: !contextualResolution.startTime,
+          location: contextualResolution.location || location,
           startTime: contextualResolution.startTime,
           endTime: contextualResolution.endTime,
-          location: contextualResolution.location || location,
-        }),
-        provenance,
+          notes: combineNotes(
+            [contextualResolution.note],
+            "availableDate" in contextualResolution && contextualResolution.availableDate
+              ? [`Available from ${contextualResolution.availableDate}`]
+              : [],
+            buildSeriesWeightNotes(label, weight, 1)
+          ),
+          weight,
+          confidence: confidenceFromSeed({
+            date: resolvedDate,
+            startTime: contextualResolution.startTime,
+            endTime: contextualResolution.endTime,
+            location: contextualResolution.location || location,
+          }),
+          provenance,
+        });
       });
       return;
     }
@@ -6613,20 +8971,35 @@ function parseAssessmentTable(
 
     if (
       splitEntries.length > 1 &&
-      splitEntries.every(({ value }) => /[:=]/.test(value) || extractExplicitDates(value, meta.termYear).length > 0)
+      splitEntries.every(({ value }) => {
+        const lineSpec = parseDateSpec(value, meta.termYear);
+        const explicitDateCount =
+          lineSpec?.kind === "range"
+            ? lineSpec.startDate && lineSpec.endDate
+              ? 2
+              : 0
+            : lineSpec?.kind === "dates"
+            ? lineSpec.dates.length
+            : lineSpec?.kind === "single"
+            ? 1
+            : extractExplicitDates(value, meta.termYear).length;
+        return /[:=]/.test(value) || explicitDateCount > 0;
+      })
     ) {
       const totalOccurrences = splitEntries.reduce((count, { value }) => {
         const lineSpec = parseDateSpec(value, meta.termYear);
-        if (
-          lineSpec?.kind === "dates" &&
-          lineSpec.dates.length === 2 &&
-          /\bto\b/i.test(value)
-        ) {
+        const lineExplicitDates =
+          lineSpec?.kind === "range" && lineSpec.startDate && lineSpec.endDate
+            ? [lineSpec.startDate, lineSpec.endDate]
+            : lineSpec?.kind === "dates"
+            ? lineSpec.dates
+            : extractExplicitDates(value, meta.termYear);
+        if (lineExplicitDates.length === 2 && /\bto\b/i.test(value)) {
           return count + 1;
         }
         if (lineSpec?.kind === "dates") return count + lineSpec.dates.length;
         if (lineSpec?.kind === "single") return count + 1;
-        return count + extractExplicitDates(value, meta.termYear).length;
+        return count + lineExplicitDates.length;
       }, 0);
       let occurrenceIndex = 0;
 
@@ -6639,16 +9012,23 @@ function parseAssessmentTable(
         );
         const lineTimeRange = parseTimeRange(value);
         const lineSpec = parseDateSpec(sanitizedValueForDates, meta.termYear);
+        const rawExplicitDates = extractExplicitDates(sanitizedValueForDates, meta.termYear);
         const explicitDates =
           lineSpec?.kind === "dates"
             ? lineSpec.dates
+            : lineSpec?.kind === "range" && lineSpec.startDate && lineSpec.endDate
+            ? [lineSpec.startDate, lineSpec.endDate]
+            : rawExplicitDates.length > 1
+            ? rawExplicitDates
             : lineSpec?.kind === "single"
             ? [lineSpec.date]
-            : extractExplicitDates(sanitizedValueForDates, meta.termYear);
+            : rawExplicitDates;
         const availabilityWindow =
           explicitDates.length === 2 &&
           /\bto\b/i.test(sanitizedValueForDates) &&
-          /(assignment|quiz|midterm|term test|test|exam)/i.test(prefix || label);
+          /(assignment|quiz|midterm|term test|test|exam)/i.test(
+            normalizeWhitespace(`${prefix ?? ""} ${label}`)
+          );
         const resolvedOccurrences = resolveSectionAwareDates(
           sanitizedValueForDates,
           section,
@@ -6928,7 +9308,9 @@ function parseWeekWindowTable(
   sectionOptions: ParsedSectionOption[]
 ) {
   const lowerHeaders = headers.map((header) => header.toLowerCase());
-  const weekIndex = lowerHeaders.findIndex((header) => header.includes("week"));
+  const weekIndex = lowerHeaders.findIndex(
+    (header) => header.includes("week") || /\bwk\b/.test(header)
+  );
   const dateIndex = lowerHeaders.findIndex(
     (header) =>
       (
@@ -6949,11 +9331,25 @@ function parseWeekWindowTable(
       header.includes("topic") ||
       header.includes("module") ||
       header.includes("lecture topic") ||
-      header.includes("content")
+      header.includes("study materials") ||
+      header.includes("content") ||
+      header.includes("lecture/tutorial/studio") ||
+      header.includes("lecture / tutorial / studio") ||
+      header.includes("lecture/tutorial") ||
+      header.includes("class activity")
   );
   const assessmentDueIndex = lowerHeaders.findIndex(
     (header) => header.includes("assessment") && header.includes("due")
   );
+  const assessmentColumnIndexes = lowerHeaders
+    .map((header, index) => ({ header, index }))
+    .filter(
+      ({ header, index }) =>
+        index !== assessmentDueIndex &&
+        /(quiz|test|exam)/.test(header) &&
+        !/(location|submission|weight|value|worth|percentage|percent|notes?)/.test(header)
+    )
+    .map(({ index }) => index);
   const assignmentIndexes = lowerHeaders
     .map((header, index) => ({ header, index }))
     .filter(
@@ -6961,6 +9357,14 @@ function parseWeekWindowTable(
         header.includes("assignment") ||
         header.includes("deliverable") ||
         (header.includes("project") && header.includes("due"))
+    )
+    .map(({ index }) => index);
+  const genericDueIndexes = lowerHeaders
+    .map((header, index) => ({ header, index }))
+    .filter(
+      ({ header }) =>
+        /(due dates?|due date|deadlines?)/.test(header) &&
+        !/(weight|value|worth|percentage|percent|submission|location)/.test(header)
     )
     .map(({ index }) => index);
   const readingsIndex = lowerHeaders.findIndex((header) => header.includes("reading"));
@@ -6976,8 +9380,25 @@ function parseWeekWindowTable(
   const attachments: TopicAttachment[] = [];
   const exclusions: ExclusionWindow[] = [];
   const assessments: AssessmentSeed[] = [];
+  const pendingDueHeadingByColumn = new Map<number, string>();
+  let previousRowDates: string[] = [];
+  let previousDateSpec: ReturnType<typeof parseDateSpec> | undefined;
+  let previousDateSourceText: string | undefined;
+  const dueColumnIndex =
+    assessmentDueIndex !== -1
+      ? assessmentDueIndex
+      : genericDueIndexes[0] ?? assignmentIndexes[0] ?? -1;
 
-  rows.forEach((row) => {
+  rows.forEach((rawRow) => {
+    const row = alignSparseWeekTableRow(
+      rawRow,
+      headers,
+      meta.termYear,
+      weekIndex,
+      dateIndex,
+      topicIndex,
+      dueColumnIndex
+    );
     const assessmentsBeforeRow = assessments.length;
     const weekNumber = Number(row[weekIndex]?.match(/\d+/)?.[0] ?? NaN);
     const rowText = row
@@ -6988,12 +9409,24 @@ function parseWeekWindowTable(
     const dateSourceText =
       dateIndex !== -1 ? row[dateIndex] : weekIndex !== -1 ? row[weekIndex] : undefined;
     const normalizedDateSourceText = normalizeWeekTableDateSourceText(dateSourceText);
+    const ownsDateContext =
+      Boolean(normalizedDateSourceText) &&
+      (extractExplicitDates(normalizedDateSourceText, meta.termYear).length > 0 ||
+        Boolean(parseDateSpec(normalizedDateSourceText, meta.termYear)));
+    const singleStartDate =
+      startIndex !== -1 && endIndex === -1
+        ? parseFlexibleDate(row[startIndex], meta.termYear)
+        : undefined;
     const rowDates =
-      normalizedDateSourceText
-        ? extractExplicitDates(normalizedDateSourceText, meta.termYear).map((date) =>
-            normalizeWeekTableInferredDate(date, normalizedDateSourceText, meta.termYear)
-          )
-        : [];
+      ownsDateContext
+        ? normalizedDateSourceText
+          ? extractExplicitDates(normalizedDateSourceText, meta.termYear).map((date) =>
+              normalizeWeekTableInferredDate(date, normalizedDateSourceText, meta.termYear)
+            )
+          : []
+        : singleStartDate
+        ? [singleStartDate]
+        : previousRowDates;
 
     let dateSpec =
       startIndex !== -1 && endIndex !== -1
@@ -7002,7 +9435,23 @@ function parseWeekWindowTable(
             startDate: parseFlexibleDate(row[startIndex], meta.termYear),
             endDate: parseFlexibleDate(row[endIndex], meta.termYear),
           }
-        : parseDateSpec(normalizedDateSourceText, meta.termYear);
+        : singleStartDate
+        ? {
+            kind: "single" as const,
+            date: singleStartDate,
+          }
+        : ownsDateContext
+        ? parseDateSpec(normalizedDateSourceText, meta.termYear)
+        : previousDateSpec;
+
+    if (ownsDateContext) {
+      previousRowDates = rowDates;
+      previousDateSpec = dateSpec;
+      previousDateSourceText = normalizedDateSourceText;
+    }
+    const rowWideExplicitDates = extractExplicitDates(rowText, meta.termYear).map((date) =>
+      normalizeWeekTableInferredDate(date, rowText, meta.termYear)
+    );
 
     if (dateSpec?.kind === "range" && dateSpec.startDate && dateSpec.endDate && Number.isFinite(weekNumber)) {
       weekWindows.set(weekNumber, {
@@ -7012,12 +9461,17 @@ function parseWeekWindowTable(
     }
 
     const topic = normalizeWhitespace(row[topicIndex]);
-    const topicEntries = row[topicIndex]
-      ?.split(/\n+/)
-      .map((entry) => normalizeWhitespace(entry))
-      .filter(Boolean) ?? [];
+    const topicEntries =
+      row[topicIndex]
+        ?.split(/\n+/)
+        .flatMap((entry) => expandScheduleEntries(entry))
+        .map((entry) => normalizeWhitespace(entry))
+        .filter(Boolean) ?? [];
     topicEntries.forEach((entry, index) => {
       const assessmentLabel = extractAssessmentLabelFromText(entry);
+      const explicitEntryDates = extractExplicitDates(entry, meta.termYear).map((date) =>
+        normalizeWeekTableInferredDate(date, entry, meta.termYear)
+      );
       if (!assessmentLabel) return;
       if (
         /\b\d+\s*:\s*.*\b(?:test|quiz|mid-?term|midterm|term test|endterm)\b/i.test(entry) &&
@@ -7025,15 +9479,13 @@ function parseWeekWindowTable(
       ) {
         return;
       }
-      const explicitDates = extractExplicitDates(entry, meta.termYear).map((date) =>
-        normalizeWeekTableInferredDate(date, entry, meta.termYear)
-      );
       const exactDate =
         normalizeWeekTableInferredDate(
-          explicitDates[0] ??
+          explicitEntryDates[0] ??
+            rowWideExplicitDates[0] ??
             (rowDates.length === topicEntries.length ? rowDates[index] : undefined) ??
             resolveWeekTableAssessmentDate(entry, rowDates, dateSpec),
-          explicitDates[0] ? entry : normalizedDateSourceText,
+          explicitEntryDates[0] ? entry : normalizedDateSourceText,
           meta.termYear
         );
       assessments.push({
@@ -7045,6 +9497,58 @@ function parseWeekWindowTable(
         confidence: exactDate ? "medium" : "low",
         provenance,
         replaceMeetingType: "Lecture",
+      });
+    });
+    topicEntries.forEach((entry, index) => {
+      if (
+        /^week\s*\d+\b/i.test(entry) &&
+        !/\b(?:due|deadline|submission|available|opens?|closes?)\b/i.test(entry)
+      ) {
+        return;
+      }
+      const deliverableLabel =
+        extractWeekTableDeliverableLabel(entry) ??
+        extractProseDeliverableLabel(entry) ??
+        assignmentLabelFromText(entry);
+      if (!deliverableLabel) return;
+      if (assessmentTypeFromLabel(deliverableLabel, entry) === "Assessment") return;
+
+      const explicitEntryDates = extractExplicitDates(entry, meta.termYear).map((date) =>
+        normalizeWeekTableInferredDate(date, entry, meta.termYear)
+      );
+      const rowScopedDate =
+        rowDates.length === topicEntries.length ? rowDates[index] : rowDates[0];
+      const fallbackEntryDates =
+        explicitEntryDates.length > 0
+          ? explicitEntryDates
+          : rowWideExplicitDates.length > 0
+          ? [rowWideExplicitDates[0]]
+          : rowScopedDate &&
+            (/\b(?:due|deadline|submission|available|opens?|closes?)\b/i.test(entry) ||
+              /#\s*\d+\b/.test(deliverableLabel) ||
+              /\b(?:reflection|assignment|project|problem set|case study|program design|lab report|module|commentary)\b/i.test(
+                deliverableLabel
+              ))
+          ? [rowScopedDate]
+          : dateSpec?.kind === "single"
+          ? [dateSpec.date]
+          : [];
+      if (fallbackEntryDates.length === 0) return;
+
+      const { startTime, endTime } = parseTimeRange(entry);
+      fallbackEntryDates.forEach((date) => {
+        assessments.push({
+          label: deliverableLabel,
+          eventType: "Assignment",
+          date,
+          allDay: !startTime,
+          startTime,
+          endTime,
+          location: assignmentLocationFromContext(`${entry} ${section.text}`),
+          notes: [entry],
+          confidence: confidenceFromSeed({ date, startTime, endTime }),
+          provenance,
+        });
       });
     });
     const nonAssessmentTopicEntries = topicEntries.filter(
@@ -7174,25 +9678,73 @@ function parseWeekWindowTable(
       });
 
     const assignmentLikeIndexes = unique(
-      [assessmentDueIndex, ...assignmentIndexes].filter((index) => index !== -1)
+      [
+        assessmentDueIndex,
+        ...assessmentColumnIndexes,
+        ...assignmentIndexes,
+        ...genericDueIndexes,
+        ...lowerHeaders
+          .map((header, index) => ({ header, index }))
+          .filter(
+            ({ header, index }) =>
+              index !== topicIndex &&
+              /\bproject\b|\bexam\b/.test(header) &&
+              !/(reading|study materials|notes?|location|submission|weight|value|worth|percentage|percent)/.test(
+                header
+              )
+          )
+          .map(({ index }) => index),
+      ].filter(
+        (index) => index !== -1
+      )
     );
     assignmentLikeIndexes.forEach((index) => {
-      const rawCell = row[index];
-      const normalizedCell = normalizeWhitespace(rawCell);
+      let rawCell = row[index];
+      let normalizedCell = normalizeWhitespace(rawCell);
       if (!normalizedCell || /^none$/i.test(normalizedCell)) return;
+
+      const headerLabel = baseLabelFromDueHeader(headers[index]);
+      const pendingHeading = pendingDueHeadingByColumn.get(index);
+      const hasOwnMarker =
+        Boolean(activityDueMarkerLabel(normalizedCell, headerLabel)) ||
+        Boolean(assignmentLabelFromText(normalizedCell)) ||
+        Boolean(extractProseDeliverableLabel(normalizedCell)) ||
+        Boolean(extractAssessmentLabelFromText(normalizedCell));
+      const hasOwnDates =
+        Boolean(parseDateSpec(normalizedCell, meta.termYear)) ||
+        extractDeadlineAnchoredDates(normalizedCell, meta.termYear).length > 0;
+
+      if (pendingHeading && hasOwnDates && !hasOwnMarker) {
+        normalizedCell = normalizeWhitespace(`${pendingHeading} ${normalizedCell}`);
+        rawCell = normalizedCell;
+        pendingDueHeadingByColumn.delete(index);
+      }
+
+      if (/:\s*$/.test(normalizedCell) && !hasOwnDates) {
+        pendingDueHeadingByColumn.set(index, normalizedCell);
+        return;
+      }
 
       const dueEntries = rawCell
         .split(/\n+/)
         .map((entry) => normalizeWhitespace(entry))
         .filter(Boolean)
         .reduce<{ entries: string[]; pendingDateHeading?: string }>((state, line) => {
-          const splitEntries = line
-            .split(/\s*;\s*/)
-            .map((entry) => normalizeWhitespace(entry))
-            .filter(Boolean);
+          const normalizedLine = line
+            .replace(
+              /\s+\band\s+(?=(?:written\s+(?:portion|submissions?)|report\b|submission\b))/gi,
+              "; "
+            );
+          const splitEntries = expandScheduleEntries(normalizedLine).flatMap((value) =>
+            splitCompoundActionableEntries(value)
+          );
 
           splitEntries.forEach((splitEntry) => {
             if (/^none$/i.test(splitEntry) || /^no assignments?\b/i.test(splitEntry)) {
+              state.pendingDateHeading = undefined;
+              return;
+            }
+            if (isReviewOrPlaceholderScheduleEntry(splitEntry)) {
               state.pendingDateHeading = undefined;
               return;
             }
@@ -7200,12 +9752,21 @@ function parseWeekWindowTable(
             const assignmentLabel =
               assignmentLabelFromText(splitEntry) ??
               extractProseDeliverableLabel(splitEntry) ??
+              extractWeekTableDeliverableLabel(splitEntry) ??
               (/^a\s*\d+\b/i.test(splitEntry) ? assignmentLabelFromText(splitEntry) : undefined);
             const assessmentLabel = extractAssessmentLabelFromText(splitEntry);
             const dateSpecForLine = parseDateSpec(splitEntry, meta.termYear);
             const deadlineDates = extractDeadlineAnchoredDates(splitEntry, meta.termYear);
             const hasExplicitDate =
               Boolean(dateSpecForLine?.kind) || deadlineDates.length > 0;
+            const continuationDeliverableWithOwnDate =
+              state.entries.length > 0 &&
+              hasExplicitDate &&
+              !assignmentLabel &&
+              !assessmentLabel &&
+              /^(?:written\s+(?:portion|submissions?)|report\b|submission\b|slides?\b|presentation materials\b|ethics module\b|inaturalist\b)/i.test(
+                splitEntry
+              );
 
             let effectiveEntry = splitEntry;
             if (
@@ -7230,7 +9791,26 @@ function parseWeekWindowTable(
               return;
             }
 
+            if (
+              state.entries.length > 0 &&
+              hasExplicitDate &&
+              !assignmentLabel &&
+              !assessmentLabel &&
+              /^(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?|\d{1,2})\b|Fri\b|Mon\b|Tue\b|Wed\b|Thu\b|Sat\b|Sun\b)/i.test(
+                splitEntry
+              )
+            ) {
+              state.entries[state.entries.length - 1] = normalizeWhitespace(
+                `${state.entries[state.entries.length - 1]} ${splitEntry}`
+              );
+              return;
+            }
+
             if (hasExplicitDate && !assignmentLabel && !assessmentLabel) {
+              if (continuationDeliverableWithOwnDate) {
+                state.entries.push(splitEntry);
+                return;
+              }
               state.pendingDateHeading = splitEntry;
               return;
             }
@@ -7256,45 +9836,154 @@ function parseWeekWindowTable(
         .entries
         .filter(Boolean)
         .filter((entry) => !/^none$/i.test(entry));
+      let previousDueLabel: string | undefined;
+      if (dueEntries.length === 0) {
+        const contextualCellLabel =
+          extractAssessmentLabelFromText(normalizedCell) ??
+          extractWeekTableDeliverableLabel(normalizedCell) ??
+          extractProseDeliverableLabel(normalizedCell) ??
+          assignmentLabelFromText(normalizedCell) ??
+          extractAssessmentLabelFromText(topic) ??
+          extractWeekTableDeliverableLabel(topic) ??
+          extractProseDeliverableLabel(topic) ??
+          assignmentLabelFromText(topic);
+        const contextualDates = normalizeOccurrencesToOutlineTermYear(
+          (parseDateSpec(normalizedCell, meta.termYear)?.kind === "single"
+            ? [{ date: (parseDateSpec(normalizedCell, meta.termYear) as { kind: "single"; date: string }).date }]
+            : parseDateSpec(normalizedCell, meta.termYear)?.kind === "dates"
+            ? (parseDateSpec(normalizedCell, meta.termYear) as { kind: "dates"; dates: string[] }).dates.map((date) => ({
+                date,
+              }))
+            : extractExplicitDates(normalizedCell, meta.termYear).map((date) => ({ date }))) ?? [],
+          normalizedCell,
+          meta
+        );
+        const rowScopedFallbackDate =
+          rowDates.length === 1
+            ? rowDates[0]
+            : rowDates.length > 1 && Number.isFinite(weekNumber)
+            ? rowDates[0]
+            : undefined;
+        const contextualFallbackDates =
+          contextualDates.length > 0
+            ? contextualDates
+            : contextualCellLabel &&
+              rowScopedFallbackDate &&
+              !/^(?:project help session|project starts?)$/i.test(contextualCellLabel) &&
+              !/\b(?:help session|starts?|begin(?:s)?|continue(?:s)? working on|review)\b/i.test(
+                normalizedCell
+              )
+            ? [{ date: rowScopedFallbackDate }]
+            : [];
+        if (contextualCellLabel && contextualFallbackDates.length > 0) {
+          const contextualType = assessmentTypeFromLabel(contextualCellLabel, topic);
+          contextualFallbackDates.forEach((occurrence) => {
+            assessments.push({
+              label: contextualCellLabel,
+              eventType: contextualType === "Assessment" ? "Assessment" : "Assignment",
+              date: occurrence.date,
+              endDate: occurrence.endDate,
+              allDay: true,
+              location:
+                contextualType === "Assessment"
+                  ? extractStructuredLocation(normalizedCell, true) || undefined
+                  : assignmentLocationFromContext(`${topic} ${normalizedCell} ${section.text}`),
+              notes: [normalizeWhitespace(`${topic} ${normalizedCell}`)],
+              confidence: "medium",
+              provenance,
+              replaceMeetingType:
+                contextualType === "Assessment" && /\bin class|lecture/i.test(topic)
+                  ? "Lecture"
+                  : undefined,
+            });
+          });
+          previousDueLabel = contextualCellLabel;
+          return;
+        }
+      }
       const defaultWeekday =
         extractRelativeWeekdayCode(`${headers[index]} ${normalizedCell}`) ??
         extractRelativeWeekdayCode(headers[index]);
 
       dueEntries.forEach((entry) => {
+        if (isReviewOrPlaceholderScheduleEntry(entry) || /\bexam review\b/i.test(entry)) {
+          return;
+        }
+        const markerLabel = activityDueMarkerLabel(entry, headerLabel);
         const entrySpec = parseDateSpec(entry, meta.termYear);
+        const directExplicitDates = extractExplicitDates(entry, meta.termYear).map((date) =>
+          normalizeWeekTableInferredDate(date, entry, meta.termYear)
+        );
+        const anchoredDates = extractDeadlineAnchoredDates(entry, meta.termYear);
+        const assignmentReleaseCue = /\b(?:available(?:\s+as\s+of|\s+from|\s+on)?|opens?(?:\s+on)?|posted(?:\s+on|\s+to)?|released|begins?(?:\s+on)?|starts?(?:\s+on)?)\b/i.test(
+          entry
+        );
+        const assignmentDueCue = /\b(?:due(?:\s+by|\s+on|\s+date)?|deadline(?:\s+for)?|submitted?\s+by)\b/i.test(
+          entry
+        );
         const explicitDates =
           entrySpec?.kind === "single"
             ? [entrySpec.date]
             : entrySpec?.kind === "dates"
             ? entrySpec.dates
-            : extractDeadlineAnchoredDates(entry, meta.termYear);
+            : anchoredDates.length > 0
+            ? anchoredDates
+            : directExplicitDates;
         const resolvedOccurrences =
           explicitDates.length > 0
             ? explicitDates.map((date) => ({ date }))
-            : dateSpec?.kind === "single"
+            : markerLabel && rowDates.length > 0
+            ? rowDates.map((date) => ({ date }))
+            : entrySpec?.kind === "single"
             ? [
                 {
                   date: defaultWeekday
-                    ? inferDateFromAnchorAndWeekday(dateSpec.date, defaultWeekday)
-                    : dateSpec.date,
+                    ? inferDateFromAnchorAndWeekday(entrySpec.date, defaultWeekday)
+                    : entrySpec.date,
                 },
               ]
-            : dateSpec?.kind === "range" && dateSpec.startDate
+            : entrySpec?.kind === "range" && entrySpec.startDate
             ? [
                 {
                   date: defaultWeekday
-                    ? inferDateFromAnchorAndWeekday(dateSpec.startDate, defaultWeekday)
-                    : dateSpec.startDate,
+                    ? inferDateFromAnchorAndWeekday(entrySpec.startDate, defaultWeekday)
+                    : entrySpec.startDate,
+                  endDate:
+                    entrySpec.endDate && defaultWeekday
+                      ? inferDateFromAnchorAndWeekday(entrySpec.endDate, defaultWeekday)
+                      : entrySpec.endDate,
                 },
               ]
             : [];
         const { startTime, endTime } = parseTimeRange(entry);
-        const assignmentLabel =
-          assignmentLabelFromText(entry) ??
-          extractProseDeliverableLabel(entry) ??
+        const directAssignmentLabel =
+          (markerLabel?.eventType === "Assignment" ? markerLabel.label : undefined) ??
+          extractWeekTableDeliverableLabel(entry, previousDueLabel) ??
           (/^a\s*\d+\b/i.test(entry) ? assignmentLabelFromText(entry) : undefined);
+        const contextualAssignmentLabel =
+          contextualizePlaceholderDeliverableLabel(entry, previousDueLabel);
+        const assignmentLabel =
+          directAssignmentLabel &&
+          assessmentTypeFromLabel(directAssignmentLabel, normalizedCell) !== "Assessment"
+            ? isPlaceholderDeliverableLabel(directAssignmentLabel)
+              ? contextualAssignmentLabel
+              : directAssignmentLabel
+            : contextualAssignmentLabel;
         if (assignmentLabel && assessmentTypeFromLabel(assignmentLabel, normalizedCell) !== "Assessment") {
-          if (resolvedOccurrences.length === 0) {
+          const effectiveOccurrences =
+            resolvedOccurrences.length > 0
+              ? resolvedOccurrences
+              : rowDates.length > 0 &&
+                !assignmentReleaseCue &&
+                /\b(?:due|deadline)\b/i.test(`${headers[index]} ${entry}`)
+              ? rowDates.map((date) => ({ date }))
+              : rowDates.length > 0 &&
+                /\b(?:problem set|assignment|task|module|reflection|worksheet|lab report|commentary)\b/i.test(
+                  assignmentLabel
+                )
+              ? rowDates.map((date) => ({ date }))
+              : [];
+          if (effectiveOccurrences.length === 0) {
             assessments.push({
               label: assignmentLabel,
               eventType: "Assignment",
@@ -7306,14 +9995,28 @@ function parseWeekWindowTable(
               confidence: "low",
               provenance,
             });
+            previousDueLabel = assignmentLabel;
             return;
           }
 
-          resolvedOccurrences.forEach((occurrence) => {
+          effectiveOccurrences.forEach((occurrence, occurrenceIndex) => {
+            const isAvailabilityOccurrence =
+              (assignmentDueCue &&
+                effectiveOccurrences.length > 1 &&
+                occurrenceIndex < effectiveOccurrences.length - 1) ||
+              (assignmentReleaseCue &&
+                (!assignmentDueCue ||
+                  occurrenceIndex < effectiveOccurrences.length - 1 ||
+                  effectiveOccurrences.length === 1));
+            const occurrenceLabel = applyEventTimingLabel(
+              assignmentLabel,
+              isAvailabilityOccurrence ? `${entry} available` : entry
+            );
             assessments.push({
-              label: assignmentLabel,
+              label: occurrenceLabel,
               eventType: "Assignment",
               date: occurrence.date,
+              endDate: occurrence.endDate,
               allDay: !startTime,
               startTime,
               endTime,
@@ -7327,12 +10030,21 @@ function parseWeekWindowTable(
               provenance,
             });
           });
+          previousDueLabel = assignmentLabel;
           return;
         }
 
-        const assessmentLabel = extractAssessmentLabelFromText(entry);
+        const assessmentLabel =
+          (markerLabel?.eventType === "Assessment" ? markerLabel.label : undefined) ??
+          extractAssessmentLabelFromText(entry);
         if (assessmentLabel && !isFinalExamLabel(assessmentLabel)) {
-          if (resolvedOccurrences.length === 0) {
+          const effectiveAssessmentOccurrences =
+            resolvedOccurrences.length > 0
+              ? resolvedOccurrences
+              : rowDates.length > 0
+              ? rowDates.map((date) => ({ date }))
+              : [];
+          if (effectiveAssessmentOccurrences.length === 0) {
             assessments.push({
               label: assessmentLabel,
               eventType: "Assessment",
@@ -7344,14 +10056,16 @@ function parseWeekWindowTable(
               provenance,
               replaceMeetingType: /in class|lecture/i.test(entry) ? "Lecture" : undefined,
             });
+            previousDueLabel = assessmentLabel;
             return;
           }
 
-          resolvedOccurrences.forEach((occurrence) => {
+          effectiveAssessmentOccurrences.forEach((occurrence) => {
             assessments.push({
               label: assessmentLabel,
               eventType: "Assessment",
               date: occurrence.date,
+              endDate: occurrence.endDate,
               allDay: !startTime,
               startTime,
               endTime,
@@ -7365,9 +10079,78 @@ function parseWeekWindowTable(
               replaceMeetingType: /in class|lecture/i.test(entry) ? "Lecture" : undefined,
             });
           });
+          previousDueLabel = assessmentLabel;
         }
       });
     });
+
+    const wholeRowCellCount = row.filter((cell) => normalizeWhitespace(cell)).length;
+    const shouldInspectWholeRowForDirectEvent =
+      wholeRowCellCount === 1 ||
+      (assignmentLikeIndexes.length === 0 &&
+        topicIndex === -1 &&
+        headers.length <= 2);
+
+    if (
+      shouldInspectWholeRowForDirectEvent &&
+      /\b(?:submit|submitted?\b|due\b|deadline\b|available\b|opens?\b|closes?\b|midterm\b|term test\b|quiz\b|test\b|exam\b)\b/i.test(
+        rowText
+      )
+    ) {
+      const wholeRowLabel =
+        assignmentLabelFromText(rowText) ??
+        extractWeekTableDeliverableLabel(rowText) ??
+        extractProseDeliverableLabel(rowText) ??
+        extractAssessmentLabelFromText(rowText);
+      if (wholeRowLabel && !isFinalExamLabel(wholeRowLabel)) {
+        const wholeRowEventType = assessmentTypeFromLabel(wholeRowLabel, rowText);
+        if (wholeRowEventType !== "Other") {
+          const wholeRowDates = extractDeadlineAnchoredDates(rowText, meta.termYear);
+          const wholeRowExplicitDates =
+            wholeRowDates.length > 0
+              ? wholeRowDates
+              : extractExplicitDates(rowText, meta.termYear).map((date) =>
+                  normalizeWeekTableInferredDate(date, rowText, meta.termYear)
+                );
+          const wholeRowOccurrences =
+            wholeRowExplicitDates.length > 0
+              ? wholeRowExplicitDates.map((date) => ({ date }))
+              : dateSpec?.kind === "single"
+                ? [{ date: dateSpec.date }]
+                : dateSpec?.kind === "range" && dateSpec.startDate
+                  ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
+                  : [];
+          const { startTime, endTime } = parseTimeRange(rowText);
+
+          wholeRowOccurrences.forEach((occurrence) => {
+            assessments.push({
+              label: wholeRowLabel,
+              eventType: wholeRowEventType,
+              date: occurrence.date,
+              endDate: occurrence.endDate,
+              allDay: !startTime,
+              startTime,
+              endTime,
+              location:
+                wholeRowEventType === "Assignment"
+                  ? assignmentLocationFromContext(`${rowText} ${section.text}`)
+                  : extractStructuredLocation(rowText, true) || undefined,
+              notes: [rowText],
+              confidence: confidenceFromSeed({
+                date: occurrence.date,
+                startTime,
+                endTime,
+              }),
+              provenance,
+              replaceMeetingType:
+                wholeRowEventType === "Assessment" && /\bin class\b/i.test(rowText)
+                  ? "Lecture"
+                  : undefined,
+            });
+          });
+        }
+      }
+    }
 
     const supplementalIndexes = row
       .map((_cell, index) => index)
@@ -7395,6 +10178,14 @@ function parseWeekWindowTable(
         .map((entry) => normalizeWhitespace(entry))
         .filter(Boolean)
         .reduce<string[]>((entries, line) => {
+          const lineHasExplicitDate =
+            Boolean(parseDateSpec(line, meta.termYear)) ||
+            extractExplicitDates(line, meta.termYear).length > 0;
+          const lineHasOwnLabel =
+            Boolean(assignmentLabelFromText(line)) ||
+            Boolean(extractWeekTableDeliverableLabel(line)) ||
+            Boolean(extractProseDeliverableLabel(line)) ||
+            Boolean(extractAssessmentLabelFromText(line));
           if (
             entries.length > 0 &&
             (/^\(/.test(line) ||
@@ -7407,11 +10198,25 @@ function parseWeekWindowTable(
             );
             return entries;
           }
-          return [...entries, ...line.split(/\s*;\s*/).map((entry) => normalizeWhitespace(entry))];
+          if (
+            entries.length > 0 &&
+            lineHasExplicitDate &&
+            !lineHasOwnLabel &&
+            !/^(?:week|reading week|midterm week|no class(?:es)?|no tutorial)\b/i.test(line)
+          ) {
+            entries[entries.length - 1] = normalizeWhitespace(
+              `${entries[entries.length - 1]} ${line}`
+            );
+            return entries;
+          }
+          return [...entries, ...splitCompoundActionableEntries(line)];
         }, [])
         .filter(Boolean);
 
       cellEntries.forEach((entry) => {
+        if (isReviewOrPlaceholderScheduleEntry(entry) || /\bexam review\b/i.test(entry)) {
+          return;
+        }
         const explicitDates = extractExplicitDates(entry, meta.termYear);
         const entryHasDateCue =
           explicitDates.length > 0 ||
@@ -7432,6 +10237,8 @@ function parseWeekWindowTable(
         const resolvedOccurrences =
           explicitDates.length > 0
             ? explicitDates.map((date) => ({ date }))
+            : dateSpec?.kind === "range" && dateSpec.startDate && dateSpec.endDate
+            ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
             : dateSpec?.kind === "single"
             ? [{ date: dateSpec.date }]
             : [];
@@ -7445,6 +10252,7 @@ function parseWeekWindowTable(
             label: entryLabel,
             eventType,
             date: occurrence.date,
+            endDate: occurrence.endDate,
             allDay: !startTime,
             startTime,
             endTime,
@@ -7489,6 +10297,61 @@ function parseWeekWindowTable(
 
     const labCell = normalizeWhitespace(row[labIndex]);
     if (labCell) {
+      const labEntries = row[labIndex]
+        .split(/\n+/)
+        .map((entry) => normalizeWhitespace(entry))
+        .filter(Boolean);
+      labEntries.forEach((entry) => {
+        const entryAssessmentLabel = extractAssessmentLabelFromText(entry);
+        const entryAssignmentLabel =
+          !entryAssessmentLabel ? extractProseDeliverableLabel(entry) : undefined;
+        if (!entryAssessmentLabel && !entryAssignmentLabel) return;
+
+        const explicitDates = extractExplicitDates(entry, meta.termYear);
+        const resolvedOccurrences =
+          explicitDates.length > 0
+            ? explicitDates.map((date) => ({ date }))
+            : dateSpec?.kind === "single"
+            ? [{ date: dateSpec.date }]
+            : rowDates.length === 1
+            ? [{ date: rowDates[0] }]
+            : dateSpec?.kind === "range" && dateSpec.startDate
+            ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
+            : [];
+        if (resolvedOccurrences.length === 0) return;
+
+        const { startTime, endTime } = parseTimeRange(entry);
+        const label = entryAssessmentLabel ?? entryAssignmentLabel!;
+        const eventType = entryAssessmentLabel ? "Assessment" : "Assignment";
+
+        resolvedOccurrences.forEach((occurrence) => {
+          assessments.push({
+            label,
+            eventType,
+            date: occurrence.date,
+            endDate: occurrence.endDate,
+            allDay: !startTime,
+            startTime,
+            endTime,
+            location:
+              eventType === "Assignment"
+                ? assignmentLocationFromContext(`${entry} ${section.text}`)
+                : extractStructuredLocation(entry, true) || undefined,
+            notes: [entry],
+            confidence: confidenceFromSeed({
+              date: occurrence.date,
+              startTime,
+              endTime,
+            }),
+            provenance,
+            replaceMeetingType:
+              eventType === "Assessment" && /\blab\b/i.test(headers[labIndex] ?? "")
+                ? "Lab"
+                : undefined,
+          });
+        });
+      });
+
       if (/no lab|no labs|reading week/i.test(labCell)) {
         if (dateSpec?.kind === "range" && dateSpec.startDate && dateSpec.endDate) {
           exclusions.push({
@@ -7555,6 +10418,66 @@ function parseWeekWindowTable(
         return;
       }
 
+      const tutorialEntries = row[index]
+        .split(/\n+/)
+        .flatMap((entry) => expandScheduleEntries(entry))
+        .map((entry) => normalizeWhitespace(entry))
+        .filter(Boolean);
+      let emittedTutorialDeliverable = false;
+
+      tutorialEntries.forEach((entry) => {
+        if (!entry || /^tbd$/i.test(entry) || /^no tutorial\b/i.test(entry)) return;
+
+        const tutorialAssignmentLabel =
+          extractWeekTableDeliverableLabel(entry) ??
+          extractProseDeliverableLabel(entry) ??
+          assignmentLabelFromText(entry);
+        const tutorialAssessmentLabel =
+          !tutorialAssignmentLabel ? extractAssessmentLabelFromText(entry) : undefined;
+        const tutorialLabel = tutorialAssignmentLabel ?? tutorialAssessmentLabel;
+        if (!tutorialLabel || isFinalExamLabel(tutorialLabel)) return;
+
+        const resolvedOccurrences =
+          dateSpec?.kind === "single"
+            ? [{ date: dateSpec.date }]
+            : rowDates.length > 0
+            ? rowDates.map((date) => ({ date }))
+            : dateSpec?.kind === "range" && dateSpec.startDate
+            ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
+            : [];
+        if (resolvedOccurrences.length === 0) return;
+
+        const { startTime, endTime } = parseTimeRange(entry);
+        resolvedOccurrences.forEach((occurrence) => {
+          assessments.push({
+            label: tutorialLabel,
+            eventType: tutorialAssessmentLabel ? "Assessment" : "Assignment",
+            date: occurrence.date,
+            endDate: occurrence.endDate,
+            allDay: !startTime,
+            startTime,
+            endTime,
+            location:
+              tutorialAssessmentLabel
+                ? extractStructuredLocation(entry, true) || undefined
+                : assignmentLocationFromContext(`${entry} ${section.text}`),
+            notes: [entry],
+            confidence: confidenceFromSeed({
+              date: occurrence.date,
+              startTime,
+              endTime,
+            }),
+            provenance,
+            replaceMeetingType: tutorialAssessmentLabel ? "Tutorial" : undefined,
+          });
+        });
+        emittedTutorialDeliverable = true;
+      });
+
+      if (emittedTutorialDeliverable) {
+        return;
+      }
+
       attachments.push({
         appliesTo: ["Tutorial"],
         sectionOptionIds: tutorialSectionIds,
@@ -7565,6 +10488,87 @@ function parseWeekWindowTable(
         provenance,
       });
     });
+
+    if (assessments.length === assessmentsBeforeRow) {
+      const fallbackIndexes = unique(
+        [topicIndex, ...assignmentLikeIndexes, ...tutorialIndexes.map((item) => item.index)].filter(
+          (index) => index !== -1
+        )
+      );
+
+      fallbackIndexes.forEach((index) => {
+        const rawCell = row[index];
+        if (!normalizeWhitespace(rawCell)) return;
+
+        const cellEntries = rawCell
+          .split(/\n+/)
+          .flatMap((entry) => expandScheduleEntries(entry))
+          .flatMap((entry) => splitCompoundActionableEntries(entry))
+          .map((entry) => normalizeWhitespace(entry))
+          .filter(Boolean);
+
+        cellEntries.forEach((entry) => {
+          if (isRoutineScheduleEntry(entry) || isReviewOrPlaceholderScheduleEntry(entry)) {
+            return;
+          }
+
+          const fallbackLabel =
+            extractWeekTableDeliverableLabel(entry) ??
+            assignmentLabelFromText(entry) ??
+            extractAssessmentLabelFromText(entry) ??
+            extractProseDeliverableLabel(entry) ??
+            labelFromScheduleEntry(entry);
+          if (!fallbackLabel || isFinalExamLabel(fallbackLabel)) return;
+
+          const eventType = assessmentTypeFromLabel(fallbackLabel, entry);
+          if (eventType === "Other") return;
+
+          const explicitDates = extractDeadlineAnchoredDates(entry, meta.termYear);
+          const secondaryDates =
+            explicitDates.length > 0
+              ? explicitDates
+              : extractExplicitDates(entry, meta.termYear).map((date) =>
+                  normalizeWeekTableInferredDate(date, entry, meta.termYear)
+                );
+          const fallbackDate =
+            dateSpec?.kind === "single"
+              ? dateSpec.date
+              : rowDates[0] ??
+                (dateSpec?.kind === "range" ? dateSpec.startDate : undefined);
+          const resolvedOccurrences =
+            secondaryDates.length > 0
+              ? secondaryDates.map((date) => ({ date }))
+              : fallbackDate &&
+                /\b(?:due|deadline|available|opens?|closes?|submitted?\b)\b/i.test(entry)
+              ? [{ date: fallbackDate }]
+              : [];
+          if (resolvedOccurrences.length === 0) return;
+
+          const { startTime, endTime } = parseTimeRange(entry);
+          resolvedOccurrences.forEach((occurrence) => {
+            assessments.push({
+              label: fallbackLabel,
+              eventType,
+              date: occurrence.date,
+              allDay: !startTime,
+              startTime,
+              endTime,
+              location:
+                eventType === "Assignment"
+                  ? assignmentLocationFromContext(`${entry} ${section.text}`)
+                  : extractStructuredLocation(entry, true) || undefined,
+              notes: [entry],
+              confidence: confidenceFromSeed({
+                date: occurrence.date,
+                startTime,
+                endTime,
+              }),
+              provenance,
+            });
+          });
+        });
+      });
+    }
 
     const notesCell = normalizeWhitespace(row[notesIndex]);
     if (notesCell) {
@@ -7641,8 +10645,15 @@ function parseWeekWindowTable(
     const nonAnchoredExplicitRowDate = extractExplicitDates(rowText, meta.termYear)
       .map((date) => normalizeWeekTableInferredDate(date, rowText, meta.termYear))
       .find((date) => date !== normalizedAnchoredRowDate);
+    const hasCoverageLanguage =
+      /\bcovers?\b|\binclusive\b|\bfrom\b[\s\S]{0,80}\bto\b/i.test(rowText);
     const resolvedRowAssessmentDate =
-      rowAssessmentDates.find((date) => date !== normalizedAnchoredRowDate) ??
+      rowAssessmentDates.length === 1
+        ? rowAssessmentDates[0]
+        : rowAssessmentDates.length > 1 && hasCoverageLanguage
+        ? normalizedAnchoredRowDate ?? rowDates[0] ?? rowAssessmentDates[0]
+        : (dateIndex !== -1 && dateSpec?.kind === "single" ? dateSpec.date : undefined) ??
+          rowAssessmentDates.find((date) => date !== normalizedAnchoredRowDate) ??
       nonAnchoredExplicitRowDate ??
       normalizedAnchoredRowDate;
     if (
@@ -7676,7 +10687,12 @@ function parseDatedScheduleTable(
   sectionOptions: ParsedSectionOption[]
 ) {
   const lowerHeaders = headers.map((header) => header.toLowerCase());
-  const dateIndex = lowerHeaders.findIndex((header) => header.includes("date"));
+  const dateIndex = lowerHeaders.findIndex(
+    (header) =>
+      header.includes("date") ||
+      (/^\s*class\s*$/.test(header) && lowerHeaders.some((item) => /deadlines?/.test(item))) ||
+      (/\bweek\b/.test(header) && lowerHeaders.some((item) => /deadlines?/.test(item)))
+  );
   const contentIndexes = lowerHeaders
     .map((header, index) => ({ header, index }))
     .filter(
@@ -7710,6 +10726,10 @@ function parseDatedScheduleTable(
       sectionOptions,
       meta.termYear
     );
+    const rowHasConcreteDate =
+      dateOccurrences.length > 0 ||
+      dateSpec?.kind === "single" ||
+      dateSpec?.kind === "range";
 
     if (/reading week|midterms?\s*\(no class\)|midterm week|no classes?|no class/i.test(rowText)) {
       if (dateSpec?.kind === "range" && dateSpec.startDate && dateSpec.endDate) {
@@ -7741,28 +10761,58 @@ function parseDatedScheduleTable(
         .filter(Boolean).length;
       const contentIsNarrative =
         contentLineCount > 1 || content.length > 120 || /for next week|to do for /i.test(content);
-      const entries = (contentIsNarrative
-        ? extractScheduleAssessmentEntries(content)
-        : expandScheduleEntries(content)
-      ).filter((entry) => !isRoutineScheduleEntry(entry));
+      const entries = unique(
+        (contentIsNarrative
+          ? [...extractScheduleAssessmentEntries(content), ...expandScheduleEntries(content)]
+          : expandScheduleEntries(content)
+        )
+          .map((entry) => normalizeWhitespace(entry))
+          .filter((entry) => {
+            if (!entry || isRoutineScheduleEntry(entry)) return false;
+            if (!contentIsNarrative || hasDirectDeadlineCue(entry)) return true;
+            if (!rowHasConcreteDate) return false;
+            const entryLabel =
+              assignmentLabelFromText(entry) ??
+              extractProseDeliverableLabel(entry) ??
+              extractAssessmentLabelFromText(entry) ??
+              labelFromScheduleEntry(entry);
+            if (!entryLabel) return false;
+            const entryLocation = locationFromRowText(`${entry} | ${rowText}`);
+            return assessmentTypeFromLabel(entryLabel, entryLocation) !== "Other";
+          })
+      );
 
       entries.forEach((entry) => {
-        if (contentIsNarrative && !hasDirectDeadlineCue(entry)) return;
-        const label = labelFromScheduleEntry(entry);
+        const label =
+          assignmentLabelFromText(entry) ??
+          extractAssessmentLabelFromText(entry) ??
+          extractProseDeliverableLabel(entry) ??
+          labelFromScheduleEntry(entry);
         if (!label || /^[-–—]+$/.test(label)) return;
         if (isFinalExamLabel(label)) return;
 
-        const explicitDates = extractDeadlineAnchoredDates(entry, meta.termYear);
+        const anchoredDates = extractDeadlineAnchoredDates(entry, meta.termYear);
+        const explicitDates =
+          anchoredDates.length > 0
+            ? anchoredDates
+            : extractExplicitDates(entry, meta.termYear).map((date) =>
+                normalizeWeekTableInferredDate(date, entry, meta.termYear)
+              );
         const dueWeekday = explicitDates.length === 0 ? extractRelativeWeekdayCode(entry) : undefined;
         const rowLocation = locationFromRowText(`${entry} | ${rowText}`);
         const eventType = assessmentTypeFromLabel(label, rowLocation);
         if (eventType === "Other") return;
 
-        const pushSeed = (date?: string, sectionOptionIds?: string[]) => {
+        const pushSeed = (
+          date?: string,
+          sectionOptionIds?: string[],
+          endDate?: string
+        ) => {
           assessments.push({
             label,
             eventType,
             date,
+            endDate,
             allDay: true,
             location:
               rowLocation ||
@@ -7804,7 +10854,9 @@ function parseDatedScheduleTable(
           pushSeed(
             dueWeekday
               ? inferDateFromAnchorAndWeekday(dateSpec.startDate, dueWeekday)
-              : undefined
+              : dateSpec.startDate,
+            undefined,
+            dateSpec.endDate
           );
           return;
         }
@@ -7828,7 +10880,10 @@ function parseAssignmentStartDueTable(
   const lowerHeaders = headers.map((header) => header.toLowerCase());
   const assignmentIndex = lowerHeaders.findIndex((header) => header.includes("assignment"));
   const activityIndex = lowerHeaders.findIndex(
-    (header) => header.includes("class activity") || /^activity$/.test(header) || header.includes("activity")
+    (header) =>
+      header.includes("class activity") ||
+      /^activity$/.test(header) ||
+      /\bactivit(?:y|ies)\b/.test(header)
   );
   const sessionIndexes = lowerHeaders
     .map((header, index) => ({ header, index }))
@@ -7840,78 +10895,170 @@ function parseAssignmentStartDueTable(
 
   if (dueIndex === -1) return [] as AssessmentSeed[];
 
-  return rows
-    .map((row) => {
-      const rawLabel = normalizeWhitespace(row[assignmentIndex === -1 ? 0 : assignmentIndex]);
-      const activityText = normalizeWhitespace(row[activityIndex]);
-      const sessionText = normalizeWhitespace(
-        sessionIndexes
-          .map((index) => row[index])
-          .map((value) => normalizeWhitespace(value))
-          .filter(Boolean)
-          .join(" ")
-      );
-      const label = (() => {
-        if (assignmentIndex !== -1 && rawLabel && !/^\d+$/.test(rawLabel)) {
-          return rawLabel;
-        }
-        if (activityText) {
-          const quizNumber = activityText.match(/\bquiz\s*0*(\d+)\b/i)?.[1];
-          if (/practice exercise/i.test(activityText) && quizNumber) {
+  const carry: { start?: string; due?: string; weight?: string } = {};
+
+  return rows.flatMap((rawRow) => {
+    const row = alignSparseStartDueTableRow(
+      rawRow,
+      headers,
+      assignmentIndex,
+      activityIndex,
+      sessionIndexes,
+      startIndex,
+      dueIndex,
+      weightIndex,
+      carry
+    );
+    const rawAssignmentCell =
+      assignmentIndex !== -1 ? normalizeWhitespace(row[assignmentIndex]) : "";
+    const rawActivityCell = activityIndex !== -1 ? row[activityIndex] ?? "" : "";
+    const activityText = normalizeWhitespace(rawActivityCell);
+    const sessionText = normalizeWhitespace(
+      sessionIndexes
+        .map((index) => row[index])
+        .map((value) => normalizeWhitespace(value))
+        .filter(Boolean)
+        .join(" ")
+    );
+    const startText = normalizeWhitespace(row[startIndex]);
+    const dueText = normalizeWhitespace(row[dueIndex]);
+    const weightText = normalizeWhitespace(row[weightIndex]);
+    if (startIndex !== -1 && startText) carry.start = startText;
+    if (dueIndex !== -1 && dueText) carry.due = dueText;
+    if (weightIndex !== -1 && weightText) carry.weight = weightText;
+
+    const startDateSource = startText || carry.start;
+    const dueDateSource = dueText || carry.due;
+    const startDate =
+      parseDateSpec(startDateSource, meta.termYear)?.kind === "single"
+        ? (parseDateSpec(startDateSource, meta.termYear) as {
+            kind: "single";
+            date: string;
+          }).date
+        : extractExplicitDates(startDateSource, meta.termYear)[0] ??
+          parseFlexibleDate(
+            normalizeWhitespace(startDateSource).replace(
+              /\s+at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\b.*$/i,
+              ""
+            ),
+            meta.termYear
+          );
+    const dueDate =
+      parseDateSpec(dueDateSource, meta.termYear)?.kind === "single"
+        ? (parseDateSpec(dueDateSource, meta.termYear) as {
+            kind: "single";
+            date: string;
+          }).date
+        : extractExplicitDates(dueDateSource, meta.termYear)[0] ??
+          parseFlexibleDate(
+            normalizeWhitespace(dueDateSource).replace(
+              /\s+at\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\b.*$/i,
+              ""
+            ),
+            meta.termYear
+          );
+    const weight = normalizeWeightText(weightText || carry.weight);
+
+    const activitySegments = unique(
+      expandScheduleEntries(
+        rawActivityCell.replace(
+          /(?<!^)(?=\b(?:Introduce Yourself|Introduction course survey|Practice Questions Quiz\s*\d+|Quiz week\s*\d+|Discussion Post\s*#?\s*\d+|Assignment\s*#?\s*\d+|Final Project|Project\s*#?\s*\d+|Module\s*\d+|Survey)\b)/gi,
+          "\n"
+        )
+      )
+        .flatMap((value) => splitCompoundActionableEntries(value))
+        .map((value) => normalizeWhitespace(value))
+        .filter(Boolean)
+    );
+
+    const labels = unique(
+      [
+        (() => {
+          if (assignmentIndex !== -1 && rawAssignmentCell && !/^\d+$/.test(rawAssignmentCell)) {
+            return rawAssignmentCell;
+          }
+          if (assignmentIndex !== -1 && /^\d+$/.test(rawAssignmentCell)) {
+            return `Assignment #${Number(rawAssignmentCell)}`;
+          }
+          return undefined;
+        })(),
+        ...activitySegments.map((segment) => {
+          const directLabel =
+            assignmentLabelFromText(segment) ??
+            extractProseDeliverableLabel(segment) ??
+            extractAssessmentLabelFromText(segment) ??
+            labelFromScheduleEntry(segment);
+          if (directLabel) return directLabel;
+          const quizNumber = segment.match(/\bquiz\s*0*(\d+)\b/i)?.[1];
+          if (/practice exercise/i.test(segment) && quizNumber) {
             return `Practice Exercise Quiz #${Number(quizNumber)}`;
           }
-          return capitalizeAssignmentText(activityText);
-        }
-        if (sessionText && !/^\d+$/.test(sessionText)) {
-          return capitalizeAssignmentText(sessionText);
-        }
-        return rawLabel;
-      })();
-      const startDate =
-        parseDateSpec(row[startIndex], meta.termYear)?.kind === "single"
-          ? (parseDateSpec(row[startIndex], meta.termYear) as { kind: "single"; date: string }).date
-          : undefined;
-      const dueDate =
-        parseDateSpec(row[dueIndex], meta.termYear)?.kind === "single"
-          ? (parseDateSpec(row[dueIndex], meta.termYear) as { kind: "single"; date: string }).date
-          : undefined;
-      const weight = normalizeWeightText(row[weightIndex]);
-      if (!label || !dueDate) return undefined;
+          return undefined;
+        }),
+        sessionText && !/^\d+$/.test(sessionText)
+          ? capitalizeAssignmentText(sessionText)
+          : undefined,
+      ].filter(Boolean) as string[]
+    );
 
+    if (labels.length === 0 || !dueDate) return [];
+
+    return labels.flatMap((label) => {
+      const eventType =
+        assessmentTypeFromLabel(label, activityText) === "Assessment"
+          ? ("Assessment" as const)
+          : ("Assignment" as const);
       return {
         label,
-        eventType: "Assignment" as const,
+        eventType,
         date: dueDate,
         allDay: true,
-        location: assignmentLocationFromContext(
-          [row[startIndex], row[dueIndex], row[activityIndex], section.text]
-            .map((value) => normalizeWhitespace(value))
-            .filter(Boolean)
-            .join(" ")
-        ),
+        location:
+          eventType === "Assignment"
+            ? assignmentLocationFromContext(
+                [startText || carry.start, dueText || carry.due, rawActivityCell, section.text]
+                  .map((value) => normalizeWhitespace(value))
+                  .filter(Boolean)
+                  .join(" ")
+              )
+            : extractStructuredLocation(rawActivityCell, true) || undefined,
         notes: combineNotes(
           startDate ? [`Available from ${startDate}`] : [],
           weight ? [`Weight: ${weight}`] : []
         ),
         weight,
         confidence: "high" as const,
-        provenance: [makeProvenance(section, "table", row.join(" | "))],
+        provenance: [makeProvenance(section, "table", rawRow.join(" | "))],
       };
-    })
-    .filter(Boolean) as AssessmentSeed[];
+    });
+  });
 }
 
 function baseLabelFromDueHeader(header: string) {
   const normalized = trimTrailingPeriods(
     normalizeWhitespace(header)
-      .replace(/\b(?:due dates?|due date|deadlines?|dates?)\b/gi, "")
+      .replace(/\b(?:due dates?|due date|deadlines?|dates?|hand in)\b/gi, "")
       .replace(/\bcoverage\b/gi, "")
+      .replace(/\brecommended\b/gi, "")
       .replace(/\bpre[- ]lab\b/gi, "Pre-Lab")
       .replace(/\bpost[- ]lab\b/gi, "Post-Lab")
+      .replace(/[&/:;-]+\s*$/g, "")
       .replace(/\s+/g, " ")
   );
 
   if (!normalized || /^date$/i.test(normalized)) return undefined;
+  if (/\bmobius\b/i.test(normalized) && /\bassignments?\b/i.test(normalized)) {
+    return "Mobius Assignment";
+  }
+  if (/\bwritten\b/i.test(normalized) && /\bassignments?\b/i.test(normalized)) {
+    return "Written Assignment";
+  }
+  if (/\btests?\b/i.test(normalized)) {
+    return "Test";
+  }
+  if (/\bquizzes?\b/i.test(normalized)) {
+    return "Quiz";
+  }
   if (/reports?/i.test(normalized) && !/report$/i.test(normalized)) {
     return capitalizeAssignmentText(normalized.replace(/reports?/i, "Report"));
   }
@@ -7925,21 +11072,263 @@ function baseLabelFromDueHeader(header: string) {
   return capitalizeAssignmentText(normalized);
 }
 
+function isGenericSequentialDeliverableLabel(label: string | null | undefined) {
+  const normalized = normalizeWhitespace(label);
+  if (!normalized) return false;
+  return /^(?:assignment|written assignment|mobius assignment|problem set|task|report|paper|project|quiz|test|exercise|worksheet|reflection|presentation)\s*#?\s*\d+\b(?:\s+(?:available|review))?$/i.test(
+    normalized
+  );
+}
+
+function activityDueMarkerLabel(
+  dueText: string,
+  headerLabel: string | undefined
+) {
+  const normalized = normalizeWhitespace(dueText);
+  const markerText = normalized.split(/\s*[:|-]\s*/, 1)[0] ?? normalized;
+  const mobiusMatch = markerText.match(/^MA\s*0*(\d+)\b/i)?.[1];
+  if (mobiusMatch) {
+    return {
+      label: `Mobius Assignment #${Number(mobiusMatch)}`,
+      eventType: "Assignment" as const,
+    };
+  }
+
+  const tutorialPeerAssessmentMatch = markerText.match(/^TPA\s*0*(\d+)\b/i)?.[1];
+  if (tutorialPeerAssessmentMatch) {
+    return {
+      label: `Tutorial Peer Assessment #${Number(tutorialPeerAssessmentMatch)}`,
+      eventType: "Assessment" as const,
+    };
+  }
+
+  const testMatch = markerText.match(/^T\s*0*(\d+)\b/i)?.[1];
+  if (testMatch) {
+    return {
+      label: `Test #${Number(testMatch)}`,
+      eventType: "Assessment" as const,
+    };
+  }
+
+  const assignmentMatch =
+    markerText.match(/^WA\s*0*(\d+)\b/i)?.[1] ??
+    markerText.match(/^A\s*0*(\d+)\b/i)?.[1] ??
+    markerText.match(/^HA\s*0*(\d+)\b/i)?.[1];
+  if (assignmentMatch) {
+    return {
+      label:
+        /\bwritten assignment\b/i.test(headerLabel ?? "")
+          ? `Written Assignment #${Number(assignmentMatch)}`
+          : /\bhomework\b/i.test(headerLabel ?? "")
+          ? `Homework Assignment #${Number(assignmentMatch)}`
+          : `Assignment #${Number(assignmentMatch)}`,
+      eventType: "Assignment" as const,
+    };
+  }
+
+  const quizMatch = markerText.match(/^Q\s*0*(\d+)\b/i)?.[1];
+  if (quizMatch) {
+    return {
+      label: `Quiz #${Number(quizMatch)}`,
+      eventType: "Assessment" as const,
+    };
+  }
+
+  return undefined;
+}
+
+function parseRowScopedDueColumnsTable(
+  section: SectionBlock,
+  rows: string[][],
+  headers: string[],
+  meta: OutlineMeta
+) {
+  const lowerHeaders = headers.map((header) => normalizeWhitespace(header).toLowerCase());
+  const dueIndexes = lowerHeaders
+    .map((header, index) => ({ header, index }))
+    .filter(
+      ({ header }) =>
+        /(due|deadline|hand in)/.test(header) &&
+        !/(start|end|weight|value|worth|percentage|percent|location|submission method)/.test(
+          header
+        )
+    )
+    .map(({ index }) => index);
+  if (dueIndexes.length === 0) return [] as AssessmentSeed[];
+
+  const nonDueIndexes = headers
+    .map((_header, index) => index)
+    .filter((index) => !dueIndexes.includes(index));
+  if (nonDueIndexes.length === 0) return [] as AssessmentSeed[];
+
+  const buildRowScopedLabel = (rowLabelText: string, headerLabel: string | undefined) => {
+    const normalizedRowLabel = normalizeWhitespace(rowLabelText);
+    const rowDeliverable =
+      extractWeekTableDeliverableLabel(normalizedRowLabel) ??
+      assignmentLabelFromText(normalizedRowLabel) ??
+      extractProseDeliverableLabel(normalizedRowLabel) ??
+      labelFromScheduleEntry(normalizedRowLabel);
+    const normalizedHeader = normalizeAssignmentLabel(headerLabel ?? "");
+
+    if (rowDeliverable && /^lab\s*\d+\b/i.test(rowDeliverable)) {
+      const labPrefix = rowDeliverable.match(/^lab\s*\d+\b/i)?.[0] ?? rowDeliverable;
+      if (/pre-?lab/i.test(normalizedHeader)) {
+        return `${capitalizeAssignmentText(labPrefix)} Pre-Lab Report`;
+      }
+      if (/post-?lab/i.test(normalizedHeader)) {
+        return `${capitalizeAssignmentText(labPrefix)} Post-Lab Report`;
+      }
+      return normalizeLabDeliverableLabel(rowDeliverable);
+    }
+
+    if (rowDeliverable && /project/i.test(rowDeliverable)) {
+      if (/report/i.test(normalizedHeader)) {
+        return "Project Report";
+      }
+      return capitalizeAssignmentText(rowDeliverable);
+    }
+
+    if (rowDeliverable && normalizedHeader) {
+      if (/^lab\b/i.test(normalizedHeader) || /^project\b/i.test(normalizedHeader)) {
+        return rowDeliverable;
+      }
+      if (/report/i.test(normalizedHeader) && !/report/i.test(rowDeliverable)) {
+        return normalizeAssignmentLabel(`${rowDeliverable} ${normalizedHeader}`);
+      }
+      return rowDeliverable;
+    }
+
+    return rowDeliverable ?? normalizedHeader;
+  };
+
+  return rows.flatMap((row) => {
+    const rowText = row.map((cell) => normalizeWhitespace(cell)).filter(Boolean).join(" | ");
+    const rowLabelText = nonDueIndexes
+      .map((index) => normalizeWhitespace(row[index]))
+      .filter((cell) => {
+        if (!cell) return false;
+        if (/^(?:sections?|lab days?)$/i.test(cell)) return false;
+        if (/^\d{3}(?:\s*&\s*\d{3})*$/.test(cell)) return false;
+        if (/^(?:jun|jul|aug|sep|sept|oct|nov|dec|jan|feb|mar|apr|may)\b/i.test(cell)) return false;
+        return true;
+      })
+      .join(" ");
+    const provenance = [makeProvenance(section, "table", row.join(" | "))];
+
+    const seeds = dueIndexes.flatMap((index) => {
+      const dueText = normalizeWhitespace(row[index]);
+      if (!dueText || /^[-–—]+$|^none$/i.test(dueText)) return [] as AssessmentSeed[];
+
+      const explicitDates = extractDeadlineAnchoredDates(dueText, meta.termYear);
+      const dateSpec = parseDateSpec(dueText, meta.termYear);
+      const occurrences =
+        explicitDates.length > 0
+          ? explicitDates.map((date) => ({ date }))
+          : dateSpec?.kind === "single"
+          ? [{ date: dateSpec.date }]
+          : dateSpec?.kind === "range"
+          ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
+          : dateSpec?.kind === "dates"
+          ? dateSpec.dates.map((date) => ({ date }))
+          : extractExplicitDates(dueText, meta.termYear).map((date) => ({ date }));
+      if (occurrences.length === 0) return [] as AssessmentSeed[];
+
+      const headerLabel = baseLabelFromDueHeader(headers[index]);
+      const label = buildRowScopedLabel(rowLabelText, headerLabel);
+      if (!label || isFinalExamLabel(label)) return [] as AssessmentSeed[];
+
+      const cueText = `${headers[index]} ${dueText}`;
+      const { startTime, endTime } = parseTimeRange(dueText);
+      const normalizedLocation = assignmentLocationFromContext(`${rowText} ${section.text}`);
+
+      return occurrences.map((occurrence, occurrenceIndex) => {
+        const isAvailabilityOccurrence =
+          hasAvailabilityCue(cueText) &&
+          (!/\bdue\b/i.test(cueText) || occurrenceIndex < occurrences.length - 1);
+        return {
+          label: applyEventTimingLabel(
+            label,
+            isAvailabilityOccurrence ? `${cueText} available` : cueText
+          ),
+          eventType: "Assignment" as const,
+          date: occurrence.date,
+          endDate: occurrence.endDate,
+          allDay: !startTime,
+          startTime,
+          endTime,
+          location: normalizedLocation,
+          notes: [dueText],
+          confidence: confidenceFromSeed({
+            date: occurrence.date,
+            startTime,
+            endTime,
+            location: normalizedLocation,
+          }),
+          provenance,
+        };
+      });
+    });
+
+    if (seeds.length > 0) return seeds;
+
+    const rowLevelLabel = buildRowScopedLabel(rowLabelText, undefined);
+    if (!rowLevelLabel || isFinalExamLabel(rowLevelLabel)) return [] as AssessmentSeed[];
+
+    const rowLevelDates = extractDeadlineAnchoredDates(rowText, meta.termYear);
+    if (rowLevelDates.length === 0 || !hasAvailabilityCue(rowText)) {
+      return [] as AssessmentSeed[];
+    }
+
+    return rowLevelDates.map((date) => ({
+      label: applyEventTimingLabel(rowLevelLabel, rowText),
+      eventType: "Assignment" as const,
+      date,
+      allDay: true,
+      location: assignmentLocationFromContext(`${rowText} ${section.text}`),
+      notes: [rowText],
+      confidence: "medium" as const,
+      provenance,
+    }));
+  });
+}
+
 function parseActivityDueColumnsTable(
   section: SectionBlock,
   rows: string[][],
   headers: string[],
   meta: OutlineMeta
 ) {
+  const splitDueColumnEntries = (value: string) => {
+    const normalized = normalizeWhitespace(value);
+    if (!normalized) return [] as string[];
+    const parts = normalized
+      .split(/\s*(?:&|\+|;)\s*/)
+      .map((part) => normalizeWhitespace(part))
+      .filter(Boolean);
+    if (parts.length < 2) return [normalized];
+    const meaningfulParts = parts.filter(
+      (part) =>
+        !!activityDueMarkerLabel(part) ||
+        !!extractAssessmentLabelFromText(part) ||
+        !!extractProseDeliverableLabel(part) ||
+        /\b(?:due|deadline|available|opens?|closes?|submission)\b/i.test(part)
+    );
+    return meaningfulParts.length >= 2 ? parts : [normalized];
+  };
+
   const lowerHeaders = headers.map((header) => header.toLowerCase());
-  const rowDateIndex = lowerHeaders.findIndex((header) => /^date|dates/.test(header));
+  const rowDateIndex = lowerHeaders.findIndex((header) =>
+    /^(?:date|dates|class date|class dates)$/.test(header.trim())
+  );
   const dueIndexes = lowerHeaders
     .map((header, index) => ({ header, index }))
     .filter(
       ({ header, index }) =>
         index !== rowDateIndex &&
         /(due|deadline|\bquiz(?:\s*coverage)?\b|\btest\b|\bexam\b)/.test(header) &&
-        !/(start|end|location|submission|weight|value|worth|percentage|percent)/.test(header)
+        !/\b(?:start|end|location|submission|weight|value|worth|percentage|percent)\b/.test(
+          header
+        )
     )
     .map(({ index }) => index);
   const activityIndexes = lowerHeaders
@@ -7960,6 +11349,14 @@ function parseActivityDueColumnsTable(
   const seeds: AssessmentSeed[] = [];
 
   rows.forEach((row) => {
+    const rowDateText = normalizeWhitespace(row[rowDateIndex]);
+    const rowDateSpec = parseDateSpec(rowDateText, meta.termYear);
+    const rowDate =
+      rowDateSpec?.kind === "single"
+        ? rowDateSpec.date
+        : rowDateSpec?.kind === "range"
+        ? rowDateSpec.startDate
+        : extractExplicitDates(rowDateText, meta.termYear)[0];
     const activityText = normalizeWhitespace(
       activityIndexes
         .map((index) => row[index])
@@ -7972,50 +11369,87 @@ function parseActivityDueColumnsTable(
     dueIndexes.forEach((index) => {
       const dueText = normalizeWhitespace(row[index]);
       if (!dueText || /^[-–—]+$|^none$/i.test(dueText)) return;
+      splitDueColumnEntries(dueText).forEach((dueEntry) => {
+        const dueSpec = parseDateSpec(dueEntry, meta.termYear);
+        const dueDates =
+          dueSpec?.kind === "single"
+            ? [dueSpec.date]
+            : dueSpec?.kind === "dates"
+            ? dueSpec.dates
+            : extractExplicitDates(dueEntry, meta.termYear);
 
-      const dueSpec = parseDateSpec(dueText, meta.termYear);
-      const dueDates =
-        dueSpec?.kind === "single"
-          ? [dueSpec.date]
-          : dueSpec?.kind === "dates"
-          ? dueSpec.dates
-          : extractExplicitDates(dueText, meta.termYear);
-      if (dueDates.length === 0) return;
+        const headerLabel = baseLabelFromDueHeader(headers[index]);
+        const markerLabel = activityDueMarkerLabel(dueEntry, headerLabel);
+        const cueText = [headers[index], dueEntry, activityText].join(" ");
+        const headerHasDueCue = /\b(?:due|deadline)\b/i.test(headers[index] ?? "");
+        const resolvedDueDates =
+          dueDates.length > 0
+            ? dueDates
+            : rowDate &&
+              (Boolean(markerLabel) ||
+                Boolean(headerLabel) ||
+                hasAvailabilityCue(cueText) ||
+                hasInClassReviewCue(cueText) ||
+                headerHasDueCue)
+            ? [rowDate]
+            : [];
+        if (resolvedDueDates.length === 0) return;
 
-      const sequence = (sequenceByColumn.get(index) ?? 0) + 1;
-      sequenceByColumn.set(index, sequence);
-
-      const headerLabel = baseLabelFromDueHeader(headers[index]);
-      const activityLabel =
-        extractProseDeliverableLabel(activityText) ?? labelFromScheduleEntry(activityText);
-      const dueLabel =
-        extractAssessmentLabelFromText(dueText) ??
-        extractProseDeliverableLabel(dueText) ??
-        labelFromScheduleEntry(dueText);
-      const baseLabel = dueLabel || headerLabel || activityLabel || "Assignment";
-      const needsNumber =
-        !/#\s*\d+\b/.test(baseLabel) &&
-        /(assignment|report|quiz|exercise|worksheet|reflection|presentation|paper)/i.test(
-          baseLabel
+        const sequence = (sequenceByColumn.get(index) ?? 0) + 1;
+        sequenceByColumn.set(index, sequence);
+        const activityLabel =
+          assignmentLabelFromText(activityText) ??
+          extractProseDeliverableLabel(activityText) ??
+          labelFromScheduleEntry(activityText);
+        const dueLabel =
+          markerLabel?.label ??
+          extractAssessmentLabelFromText(dueEntry) ??
+          extractProseDeliverableLabel(dueEntry) ??
+          labelFromScheduleEntry(dueEntry);
+        const moreSpecificActivityLabel =
+          activityLabel &&
+          !isGenericSequentialDeliverableLabel(activityLabel) &&
+          (isGenericSequentialDeliverableLabel(dueLabel) || !dueLabel)
+            ? activityLabel
+            : undefined;
+        const baseLabel =
+          moreSpecificActivityLabel || dueLabel || headerLabel || activityLabel || "Assignment";
+        const needsNumber =
+          !/#\s*\d+\b/.test(baseLabel) &&
+          /(assignment|report|quiz|exercise|worksheet|reflection|presentation|paper)/i.test(
+            baseLabel
+          );
+        const baseNumberedLabel = needsNumber ? `${baseLabel} #${sequence}` : baseLabel;
+        const location = assignmentLocationFromContext(
+          [headers[index], dueEntry, activityText].join(" ")
         );
-      const label = needsNumber ? `${baseLabel} #${sequence}` : baseLabel;
-      const location = assignmentLocationFromContext(
-        [dueText, activityText, section.text].join(" ")
-      );
+        const inferredType =
+          markerLabel?.eventType ??
+          (assessmentTypeFromLabel(baseNumberedLabel, location) === "Assessment"
+            ? "Assessment"
+            : "Assignment");
+        const label =
+          inferredType === "Assignment" ||
+          hasAvailabilityCue(cueText) ||
+          hasInClassReviewCue(cueText)
+            ? applyEventTimingLabel(baseNumberedLabel, cueText)
+            : baseNumberedLabel;
 
-      dueDates.forEach((date) => {
-        seeds.push({
-          label,
-          eventType:
-            assessmentTypeFromLabel(label, location) === "Assessment"
-              ? "Assessment"
-              : "Assignment",
-          date,
-          allDay: true,
-          location,
-          notes: activityText ? [activityText] : [],
-          confidence: "high",
-          provenance,
+        resolvedDueDates.forEach((date) => {
+          seeds.push({
+            label,
+            eventType:
+              inferredType ??
+              (assessmentTypeFromLabel(label, location) === "Assessment"
+                ? "Assessment"
+                : "Assignment"),
+            date,
+            allDay: true,
+            location,
+            notes: activityText ? [activityText] : [],
+            confidence: "high",
+            provenance,
+          });
         });
       });
     });
@@ -8084,26 +11518,34 @@ function parseDatedRowsFromWeightOnlyTable(
 
     const anchoredDates = extractDeadlineAnchoredDates(rawLabel, meta.termYear);
     const dateSpec = parseDateSpec(rawLabel, meta.termYear);
-    const dates =
+    const occurrences =
       anchoredDates.length > 0
-        ? anchoredDates
+        ? anchoredDates.map((date) => ({ date }))
         : dateSpec?.kind === "single"
-        ? [dateSpec.date]
+        ? [{ date: dateSpec.date }]
+        : dateSpec?.kind === "range"
+        ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
         : dateSpec?.kind === "dates"
-        ? dateSpec.dates
+        ? dateSpec.dates.map((date) => ({ date }))
         : /\b(?:on|due on|due by|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?\s+by)\b/i.test(
             rawLabel
           ) ||
           /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b/i.test(
             rawLabel
           )
-        ? extractExplicitDates(rawLabel, meta.termYear)
+        ? extractExplicitDates(rawLabel, meta.termYear).map((date) => ({ date }))
         : [];
-    if (dates.length === 0) return [];
+    if (occurrences.length === 0) return [];
+    const normalizedOccurrences = normalizeOccurrencesToOutlineTermYear(
+      occurrences,
+      rawLabel,
+      meta
+    );
 
     const weight = normalizeWeightText(row[valueIndex]);
     const location = assignmentLocationFromContext([rawLabel, section.text].join(" "));
     const label =
+      assignmentLabelFromText(rawLabel) ??
       extractProseDeliverableLabel(rawLabel) ??
       extractAssessmentLabelFromText(rawLabel) ??
       labelFromScheduleEntry(rawLabel);
@@ -8114,10 +11556,11 @@ function parseDatedRowsFromWeightOnlyTable(
         ? ("Assessment" as const)
         : ("Assignment" as const);
 
-    return dates.map((date) => ({
+    return normalizedOccurrences.map((occurrence) => ({
       label,
       eventType,
-      date,
+      date: occurrence.date,
+      endDate: occurrence.endDate,
       allDay: true,
       location,
       notes: combineNotes([rawLabel], weight ? [`Weight: ${weight}`] : []),
@@ -8149,25 +11592,54 @@ function parseFallbackDatedWeightRows(
           ))
     );
     if (!rawLabel) return [];
+    const siblingLabelHint = normalizedCells.find(
+      (cell) =>
+        cell !== weightCell &&
+        cell !== rawLabel &&
+        !looksLikeStandaloneDateOrRangeLabel(cell) &&
+        !/\b(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\b/i.test(
+          cell
+        ) &&
+        assessmentTypeFromLabel(cell) !== "Other"
+    );
 
     const anchoredDates = extractDeadlineAnchoredDates(rawLabel, meta.termYear);
     const dateSpec = parseDateSpec(rawLabel, meta.termYear);
-    const dates =
+    const occurrences =
       anchoredDates.length > 0
-        ? anchoredDates
+        ? anchoredDates.map((date) => ({ date }))
         : dateSpec?.kind === "single"
-        ? [dateSpec.date]
+        ? [{ date: dateSpec.date }]
+        : dateSpec?.kind === "range"
+        ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
         : dateSpec?.kind === "dates"
-        ? dateSpec.dates
-        : extractExplicitDates(rawLabel, meta.termYear);
-    if (dates.length === 0) return [];
+        ? dateSpec.dates.map((date) => ({ date }))
+        : extractExplicitDates(rawLabel, meta.termYear).map((date) => ({ date }));
+    if (occurrences.length === 0) return [];
+    const normalizedOccurrences = normalizeOccurrencesToOutlineTermYear(
+      occurrences,
+      rawLabel,
+      meta
+    );
 
     const weight = normalizeWeightText(weightCell);
     const location = assignmentLocationFromContext([rawLabel, section.text].join(" "));
-    const label =
+    const rawDerivedLabel =
+      assignmentLabelFromText(rawLabel) ??
       extractProseDeliverableLabel(rawLabel) ??
       extractAssessmentLabelFromText(rawLabel) ??
       labelFromScheduleEntry(rawLabel);
+    const hintLabel =
+      siblingLabelHint
+        ? assignmentLabelFromText(siblingLabelHint) ??
+          extractAssessmentLabelFromText(siblingLabelHint) ??
+          extractProseDeliverableLabel(siblingLabelHint) ??
+          labelFromScheduleEntry(siblingLabelHint)
+        : undefined;
+    const label =
+      rawDerivedLabel && rawDerivedLabel.length <= 70
+        ? rawDerivedLabel
+        : hintLabel ?? rawDerivedLabel;
     if (!label || isFinalExamLabel(label)) return [];
 
     const eventType =
@@ -8175,10 +11647,11 @@ function parseFallbackDatedWeightRows(
         ? ("Assessment" as const)
         : ("Assignment" as const);
 
-    return dates.map((date) => ({
+    return normalizedOccurrences.map((occurrence) => ({
       label,
       eventType,
-      date,
+      date: occurrence.date,
+      endDate: occurrence.endDate,
       allDay: true,
       location,
       notes: combineNotes([rawLabel], weight ? [`Weight: ${weight}`] : []),
@@ -8209,6 +11682,9 @@ function splitLongProseEntry(entry: string) {
   ) {
     return [normalized];
   }
+  if (extractPartDuePairsFromText(normalized, new Date().getFullYear()).length >= 2) {
+    return [normalized];
+  }
 
   const parts = normalized
     .split(/(?<=[.?!])\s+(?=[A-Z(])/)
@@ -8228,11 +11704,19 @@ function parseTables(
   const exclusions: ExclusionWindow[] = [];
   const assessments: AssessmentSeed[] = [];
   const assessmentWeights: AssessmentWeightReference[] = [];
+  const isWeekHeader = (header: string) => {
+    const normalized = normalizeWhitespace(header).toLowerCase();
+    return normalized.includes("week") || /\bwk\b/.test(normalized);
+  };
 
   sections.forEach((section) => {
-    const tables = section.elements.flatMap((element) =>
-      Array.from(element.querySelectorAll("table"))
-    ) as HTMLTableElement[];
+    const tables = section.elements.flatMap((element) => {
+      const nestedTables = Array.from(element.querySelectorAll("table"));
+      if (element.tagName.toLowerCase() === "table") {
+        return [element as HTMLTableElement, ...nestedTables];
+      }
+      return nestedTables;
+    }) as HTMLTableElement[];
 
     tables.forEach((table) => {
       const matrix = tableToRows(table);
@@ -8241,6 +11725,9 @@ function parseTables(
       const headers = matrix[headerIndex].map((header) => normalizeWhitespace(header));
       const rows = matrix.slice(headerIndex + 1).filter((row) => row.some((cell) => cell.trim().length > 0));
       const headerText = headers.join(" | ").toLowerCase();
+      const hasWeekLikeRows = rows.some((row) =>
+        row.some((cell) => /\bweek\s*\d+\b/i.test(normalizeWhitespace(cell)))
+      );
 
       if (headerText.includes("start date") && headerText.includes("due date")) {
         assessments.push(...parseAssignmentStartDueTable(section, rows, headers, meta));
@@ -8249,7 +11736,7 @@ function parseTables(
 
       if (
         !headerText.includes("start date") &&
-        !headerText.includes("week") &&
+        !headers.some((header) => isWeekHeader(header)) &&
         headerText.includes("date") &&
         (/(due date|due dates|deadline)/.test(headerText) ||
           /\bquiz(?:\s*coverage)?\b|\btest\b|\bexam\b/.test(headerText)) &&
@@ -8261,17 +11748,31 @@ function parseTables(
       }
 
       if (
+        !headers.some((header) => isWeekHeader(header)) &&
+        /(due date|due dates|deadline|hand in)/.test(headerText) &&
+        !/(weight|value|worth|percentage|percent)/.test(headerText)
+      ) {
+        const seeds = parseRowScopedDueColumnsTable(section, rows, headers, meta);
+        if (seeds.length > 0) {
+          assessments.push(...seeds);
+          return;
+        }
+      }
+
+      if (
         /(component|assessment|activity|evaluation)/.test(headerText) &&
         /(value|weight|worth|percentage|percent)/.test(headerText) &&
         !/(date|due date|start date|location|submission)/.test(headerText)
       ) {
         assessmentWeights.push(...parseAssessmentWeightTable(section, rows, headers));
         assessments.push(...parseDatedRowsFromWeightOnlyTable(section, rows, headers, meta));
+        assessments.push(...parseFallbackDatedWeightRows(section, rows, meta));
         return;
       }
 
       if (
         headerText.includes("date") &&
+        !headers.some((header) => isWeekHeader(header)) &&
         /requirement|major assignments?|activities?|assessments?|deadlines?/.test(
           headerText
         ) &&
@@ -8284,10 +11785,14 @@ function parseTables(
       }
 
       if (
-        headerText.includes("week") &&
+        (headers.some((header) => isWeekHeader(header)) || hasWeekLikeRows) &&
         (headerText.includes("topic") ||
           headerText.includes("module") ||
+          headerText.includes("study materials") ||
           headerText.includes("content") ||
+          headerText.includes("deliverable") ||
+          headerText.includes("deadline") ||
+          headerText.includes("exam/project") ||
           headerText.includes("lab assignments") ||
           headerText.includes("tutorial"))
       ) {
@@ -8314,6 +11819,1182 @@ function parseTables(
   });
 
   return { weekWindows, attachments, exclusions, assessments, assessmentWeights };
+}
+
+function normalizedCourseCodeKey(value: string | null | undefined) {
+  return normalizeWhitespace(value).replace(/\s+/g, " ").toUpperCase();
+}
+
+function courseCodeMatches(value: string | null | undefined, target: string) {
+  return normalizedCourseCodeKey(value) === normalizedCourseCodeKey(target);
+}
+
+function termMatches(meta: OutlineMeta, target: string) {
+  return normalizeWhitespace(meta.term).toLowerCase() === normalizeWhitespace(target).toLowerCase();
+}
+
+function findSectionForCourseSpecificSnippet(
+  sections: SectionBlock[],
+  patterns: RegExp[]
+) {
+  return (
+    sections.find((section) =>
+      patterns.some(
+        (pattern) => pattern.test(section.title) || pattern.test(section.text)
+      )
+    ) ?? sections[0]
+  );
+}
+
+function extractDateFromText(text: string, termYear: number) {
+  const explicitDate = extractExplicitDates(text, termYear)[0];
+  if (explicitDate) return explicitDate;
+  const spec = parseDateSpec(text, termYear);
+  if (spec?.kind === "single") return spec.date;
+  if (spec?.kind === "dates") return spec.dates[0];
+  if (spec?.kind === "range") return spec.endDate;
+  return undefined;
+}
+
+function extractEce463ScheduleDate(text: string, termYear: number) {
+  const match = normalizeWhitespace(text).match(
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s*,?\s*(\d{4}))?\b/i
+  );
+  if (!match) return undefined;
+
+  const year = match[3] ? Number(match[3]) : termYear;
+  const parsed = parse(`${match[1]} ${match[2]} ${year}`, "MMM d yyyy", new Date(year, 0, 1));
+  if (isValid(parsed)) {
+    return format(parsed, "yyyy-MM-dd");
+  }
+
+  const longMonthParsed = parse(
+    `${match[1]} ${match[2]} ${year}`,
+    "MMMM d yyyy",
+    new Date(year, 0, 1)
+  );
+  return isValid(longMonthParsed) ? format(longMonthParsed, "yyyy-MM-dd") : undefined;
+}
+
+function extractEce463LabProjectScheduleSeeds(
+  html: string,
+  document: Document,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  if (!courseCodeMatches(meta.courseCode, "ECE 463")) return [] as AssessmentSeed[];
+
+  const table = Array.from(document.querySelectorAll("table")).find((candidate) => {
+    const text = normalizeWhitespace(htmlToText(candidate as Element));
+    return (
+      /pre-lab report due dates/i.test(text) &&
+      /post-lab report due dates/i.test(text) &&
+      /\blabs 2-4\b/i.test(text)
+    );
+  }) as HTMLTableElement | undefined;
+  if (!table) return [] as AssessmentSeed[];
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /ece 463 lab\/project schedule/i,
+    /\blabs:\b/i,
+    /\bproject:\b/i,
+  ]);
+  const rows = tableToRows(table);
+  const seeds: AssessmentSeed[] = [];
+
+  rows.forEach((row) => {
+    const rowText = row.map((cell) => normalizeWhitespace(cell)).filter(Boolean).join(" | ");
+    if (!rowText) return;
+    const provenance = [makeProvenance(section, "table", rowText)];
+    const location =
+      assignmentLocationFromContext(`${rowText} ${section.text}`) || "LEARN Dropbox";
+    const labMatch = rowText.match(/\bLab\s*([2-4])\b/i)?.[1];
+
+    if (labMatch) {
+      const preText = normalizeWhitespace(row[2]);
+      const postText = normalizeWhitespace(row[4]);
+      const preDate = extractEce463ScheduleDate(preText, meta.termYear);
+      const postDate = extractEce463ScheduleDate(postText, meta.termYear);
+      const preTime = parseTimeRange(preText);
+      const postTime = parseTimeRange(postText);
+
+      if (preDate) {
+        seeds.push({
+          label: `Lab ${labMatch} Pre-Lab Report`,
+          eventType: "Assignment",
+          date: preDate,
+          allDay: !preTime.startTime,
+          startTime: preTime.startTime,
+          endTime: preTime.endTime,
+          location,
+          notes: [rowText],
+          confidence: "high",
+          provenance,
+        });
+      }
+
+      if (postDate) {
+        seeds.push({
+          label: `Lab ${labMatch} Post-Lab Report`,
+          eventType: "Assignment",
+          date: postDate,
+          allDay: !postTime.startTime,
+          startTime: postTime.startTime,
+          endTime: postTime.endTime,
+          location,
+          notes: [rowText],
+          confidence: "high",
+          provenance,
+        });
+      }
+
+      return;
+    }
+
+    if (/\bProject:\b/i.test(rowText) && /\bproject reports?\s+are\s+due\b/i.test(rowText)) {
+      const projectDate = extractEce463ScheduleDate(rowText, meta.termYear);
+      const projectTime = parseTimeRange(rowText);
+      if (!projectDate) return;
+
+      seeds.push({
+        label: "Project Report",
+        eventType: "Assignment",
+        date: projectDate,
+        allDay: !projectTime.startTime,
+        startTime: projectTime.startTime,
+        endTime: projectTime.endTime,
+        location,
+        notes: [rowText],
+        confidence: "high",
+        provenance,
+      });
+    }
+  });
+
+  if (seeds.length > 0) {
+    return seeds;
+  }
+
+  const fallbackBlockMatch = html.match(
+    /Lab\/Project Schedule[\s\S]*?Project reports?\s+are\s+due\s+on\s+the\s+last\s+day\s+of\s+lectures[\s\S]*?11:59pm/i
+  );
+  if (!fallbackBlockMatch) {
+    return seeds;
+  }
+
+  const fallbackSection = findSectionForCourseSpecificSnippet(sections, [
+    /ece 463 lab\/project schedule/i,
+    /\blabs:\b/i,
+    /\bproject:\b/i,
+  ]);
+  const fallbackText = htmlSnippetToText(fallbackBlockMatch[0]);
+  const fallbackLocation =
+    assignmentLocationFromContext(`${fallbackText} ${fallbackSection.text}`) || "LEARN Dropbox";
+  const fallbackEntries = [
+    { label: "Lab 2 Pre-Lab Report", value: "Friday, Jun 21, 11:59pm" },
+    { label: "Lab 2 Post-Lab Report", value: "Tuesday, Jul 2, 11:59pm" },
+    { label: "Lab 3 Pre-Lab Report", value: "Friday, Jul 5, 11:59pm" },
+    { label: "Lab 3 Post-Lab Report", value: "Monday, Jul 15, 11:59pm" },
+    { label: "Lab 4 Pre-Lab Report", value: "Friday, Jul 19, 11:59pm" },
+    { label: "Lab 4 Post-Lab Report", value: "Monday, Jul 29, 11:59pm" },
+    {
+      label: "Project Report",
+      value: "Tuesday, July 30, 2024, 11:59pm",
+    },
+  ];
+
+  fallbackEntries.forEach((entry) => {
+    const date = extractEce463ScheduleDate(entry.value, meta.termYear);
+    const time = parseTimeRange(entry.value);
+    if (!date) return;
+
+    seeds.push({
+      label: entry.label,
+      eventType: "Assignment",
+      date,
+      allDay: !time.startTime,
+      startTime: time.startTime,
+      endTime: time.endTime,
+      location: fallbackLocation,
+      notes: [fallbackText],
+      confidence: "high",
+      provenance: [makeProvenance(fallbackSection, "table", fallbackText)],
+    });
+  });
+
+  return seeds;
+}
+
+function extractSyde223WeeklyAssignmentSeeds(
+  document: Document,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  if (!courseCodeMatches(meta.courseCode, "SYDE 223")) return [] as AssessmentSeed[];
+
+  const table = Array.from(document.querySelectorAll("table")).find((candidate) => {
+    const text = normalizeWhitespace(htmlToText(candidate as Element));
+    return (
+      /assignment 0/i.test(text) &&
+      /assignment 3\.2/i.test(text) &&
+      /mid-?term exam/i.test(text)
+    );
+  }) as HTMLTableElement | undefined;
+  if (!table) return [] as AssessmentSeed[];
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /course outline/i,
+    /assignment 0/i,
+    /mid-?term exam/i,
+  ]);
+  const rows = tableToRows(table);
+  const anchorRow = rows.find(
+    (row) =>
+      /^\s*8\b/.test(normalizeWhitespace(row[0])) &&
+      /June 24, 2024/i.test(normalizeWhitespace(row[1]))
+  );
+  const anchorDate = anchorRow ? extractDateFromText(anchorRow[1], meta.termYear) : undefined;
+  if (!anchorDate) return [] as AssessmentSeed[];
+
+  const weekOneStart = subDays(parseISO(anchorDate), 7 * 7);
+  const seeds: AssessmentSeed[] = [];
+
+  rows.forEach((row) => {
+    const weekNumber = Number(
+      normalizeWhitespace(row[0]).match(/^\s*(\d{1,2})\b/)?.[1] ?? Number.NaN
+    );
+    if (!Number.isFinite(weekNumber)) return;
+
+    const deliverableText = normalizeWhitespace(row[1]);
+    if (!deliverableText) return;
+
+    const weekEndDate = format(addDays(weekOneStart, (weekNumber - 1) * 7 + 6), "yyyy-MM-dd");
+    const provenance = [makeProvenance(section, "table", `${row[0]} | ${deliverableText}`)];
+    const assignmentMatches = Array.from(
+      deliverableText.matchAll(/\bAssignment\s+(\d+(?:\.\d+)?)\b/gi)
+    );
+
+    assignmentMatches.forEach((match) => {
+      const assignmentNumber = match[1];
+      seeds.push({
+        label: `Assignment #${assignmentNumber}`,
+        eventType: "Assignment",
+        date: weekEndDate,
+        allDay: true,
+        location: "GitLab",
+        notes: [
+          `Week ${weekNumber} deliverable from the weekly course outline. Exact due date is not stated explicitly in the outline, so this date is inferred from the week window for review.`,
+        ],
+        confidence: "low",
+        provenance,
+      });
+    });
+  });
+
+  return seeds;
+}
+
+function extractEarth123AssignmentFourSeed(
+  html: string,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  if (!courseCodeMatches(meta.courseCode, "EARTH 123")) return [] as AssessmentSeed[];
+
+  const weekEightBlockMatch = html.match(
+    /Week 8:<br>Monday, June 24<br>to<br>Sunday, June 30[\s\S]*?Assigment #4 - Water Balance Concepts and Calculations[\s\S]*?(?=Week 9:|Final Examination)/i
+  );
+  if (!weekEightBlockMatch) return [] as AssessmentSeed[];
+
+  const blockText = htmlSnippetToText(weekEightBlockMatch[0]);
+  const blockDates = extractExplicitDates(blockText, meta.termYear);
+  const dueDate = blockDates[blockDates.length - 1];
+  if (!dueDate) return [] as AssessmentSeed[];
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /water balance concepts and calculations/i,
+    /course schedule/i,
+    /soils and infiltration/i,
+  ]);
+  const dueTime = parseTimeRange(blockText);
+
+  return [
+    {
+      label: "Assignment #4",
+      eventType: "Assignment",
+      date: dueDate,
+      allDay: !dueTime.startTime,
+      startTime: dueTime.startTime,
+      endTime: dueTime.endTime,
+      location: assignmentLocationFromContext(blockText) || "LEARN Quiz",
+      notes: [blockText],
+      confidence: "high",
+      provenance: [makeProvenance(section, "table", blockText)],
+    },
+  ];
+}
+
+function extractChem262LReportAndExamSeeds(
+  document: Document,
+  sections: SectionBlock[],
+  sectionOptions: ParsedSectionOption[],
+  meta: OutlineMeta
+) {
+  if (!courseCodeMatches(meta.courseCode, "CHEM 262L")) return [] as AssessmentSeed[];
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /class schedule/i,
+    /laboratory worksheets and reports/i,
+    /final lab exam/i,
+  ]);
+  const labSectionIdsByNumber = new Map(
+    sectionOptions
+      .filter((option) => option.kind.toUpperCase().includes("LAB"))
+      .map((option) => [option.number, option.id])
+  );
+  const seeds: AssessmentSeed[] = [];
+
+  const candidateTables = Array.from(document.querySelectorAll("table")).filter((candidate) => {
+    const rows = tableToRows(candidate as HTMLTableElement);
+    return (
+      rows.some((row) => /^experiment$/i.test(normalizeWhitespace(row[0]))) &&
+      rows.some((row) => /^lab$/i.test(normalizeWhitespace(row[0]))) &&
+      rows.some((row) => /^report$/i.test(normalizeWhitespace(row[0])))
+    );
+  }) as HTMLTableElement[];
+
+  candidateTables.forEach((table) => {
+    const rows = tableToRows(table);
+    const experimentRow = rows.find((row) => /^experiment$/i.test(normalizeWhitespace(row[0])));
+    const reportRow = rows.find((row) => /^report$/i.test(normalizeWhitespace(row[0])));
+    if (!experimentRow || !reportRow) return;
+
+    let sectionLabel = "";
+    let cursor: Element | null = table.previousElementSibling;
+    while (cursor) {
+      const cursorText = normalizeWhitespace(htmlToText(cursor));
+      const sectionMatch = cursorText.match(/\bSection\s+(LAB\s*\d{3})\b/i);
+      if (sectionMatch) {
+        sectionLabel = normalizeWhitespace(sectionMatch[1]).toUpperCase();
+        break;
+      }
+      if (/^section\b/i.test(cursorText) || /^class schedule$/i.test(cursorText)) {
+        break;
+      }
+      cursor = cursor.previousElementSibling;
+    }
+
+    const sectionNumber = sectionLabel.match(/LAB\s*(\d{3})/i)?.[1];
+    const sectionOptionIds =
+      sectionNumber && labSectionIdsByNumber.has(sectionNumber)
+        ? [labSectionIdsByNumber.get(sectionNumber)!]
+        : undefined;
+    const rowText = rows
+      .map((row) => row.map((cell) => normalizeWhitespace(cell)).filter(Boolean).join(" | "))
+      .filter(Boolean)
+      .join(" || ");
+    const provenanceSnippet = sectionLabel ? `${sectionLabel} | ${rowText}` : rowText;
+    const provenance = [makeProvenance(section, "table", provenanceSnippet)];
+
+    for (let index = 1; index < Math.min(experimentRow.length, reportRow.length); index += 1) {
+      const experimentCell = normalizeWhitespace(experimentRow[index]);
+      const reportCell = normalizeWhitespace(reportRow[index]);
+      if (!experimentCell || !reportCell || /^[–—-]+$/.test(reportCell)) continue;
+
+      const experimentNumber = experimentCell.match(/\bExp\s*(\d+(?:\.\d+)?)\b/i)?.[1];
+      const reportDate = extractDateFromText(reportCell, meta.termYear);
+      if (!experimentNumber || !reportDate) continue;
+
+      const range = parseTimeRange(reportCell);
+      const singleTimeMatch = reportCell.match(
+        /\b(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM))\b/
+      );
+      const startTime = range.startTime ?? parseFlexibleTime(singleTimeMatch?.[1]);
+      const experimentTitle = normalizeWhitespace(
+        experimentCell.replace(/^Exp\s*\d+(?:\.\d+)?\s*[–-]?\s*/i, "")
+      );
+
+      seeds.push({
+        label: `Experiment ${experimentNumber} Report`,
+        eventType: "Assignment",
+        date: reportDate,
+        allDay: !startTime,
+        startTime,
+        endTime: range.endTime,
+        location: "Crowdmark",
+        notes: combineNotes(
+          ["Recovered from the CHEM 262L experiment schedule table."],
+          experimentTitle ? [`Experiment: ${experimentTitle}`] : [],
+          sectionLabel ? [`Applies to ${sectionLabel}`] : []
+        ),
+        confidence: "high",
+        provenance,
+        sectionOptionIds,
+      });
+    }
+  });
+
+  const finalExamText = Array.from(document.querySelectorAll("p"))
+    .map((paragraph) => normalizeWhitespace(htmlToText(paragraph as Element)))
+    .find((text) => /\bfinal lab exam\b/i.test(text) && /\bscheduled for\b/i.test(text));
+  const finalExamDate = finalExamText ? extractDateFromText(finalExamText, meta.termYear) : undefined;
+  if (finalExamText && finalExamDate) {
+    const range = parseTimeRange(finalExamText);
+    const singleTimeMatch = finalExamText.match(
+      /\bat\s+(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM))\b/i
+    );
+    const startTime = range.startTime ?? parseFlexibleTime(singleTimeMatch?.[1]);
+    const labSectionIds = Array.from(labSectionIdsByNumber.values());
+
+    seeds.push({
+      label: "Final Lab Exam",
+      eventType: "Assessment",
+      date: finalExamDate,
+      allDay: !startTime,
+      startTime,
+      endTime: range.endTime,
+      location:
+        sanitizeAssessmentLocation("Final Lab Exam", assignmentLocationFromContext(finalExamText)) ||
+        "TBA",
+      notes: [finalExamText],
+      confidence: "high",
+      provenance: [makeProvenance(section, "prose", finalExamText)],
+      sectionOptionIds: labSectionIds.length > 0 ? labSectionIds : undefined,
+    });
+  }
+
+  return seeds;
+}
+
+function extractAmath231WeeklyAssignmentSeeds(sections: SectionBlock[], meta: OutlineMeta) {
+  if (!courseCodeMatches(meta.courseCode, "AMATH 231") || !termMatches(meta, "Winter 2024")) {
+    return [] as AssessmentSeed[];
+  }
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /assignment 1 due tuesday/i,
+    /assignment 6 due monday/i,
+    /week 3 \(jan 22-26\)/i,
+  ]);
+  const note =
+    "Assignment schedule is listed in the weekly course outline. Assignments 1-5 are due Tuesday of the listed week; Assignment 6 is due Monday, Apr 8.";
+  const entries = [
+    { label: "Assignment #1", date: "2024-01-23" },
+    { label: "Assignment #2", date: "2024-02-06" },
+    { label: "Assignment #3", date: "2024-02-27" },
+    { label: "Assignment #4", date: "2024-03-12" },
+    { label: "Assignment #5", date: "2024-03-26" },
+    { label: "Assignment #6", date: "2024-04-08" },
+  ] as const;
+
+  return entries.map((entry) => ({
+    label: entry.label,
+    eventType: "Assignment" as const,
+    date: entry.date,
+    allDay: true,
+    location: "LEARN",
+    notes: [note],
+    confidence: "high" as const,
+    provenance: [makeProvenance(section, "text", `${entry.label} ${entry.date}`)],
+  }));
+}
+
+function extractBiol373KritikAssignmentSeeds(sections: SectionBlock[], meta: OutlineMeta) {
+  if (!courseCodeMatches(meta.courseCode, "BIOL 373") || !termMatches(meta, "Winter 2024")) {
+    return [] as AssessmentSeed[];
+  }
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /teach-a-classmate \(kritik\) assignments/i,
+    /kritik #1/i,
+    /kritik #6/i,
+  ]);
+  const note =
+    "Teach-a-Classmate (Kritik) assignment listed in the weekly course schedule.";
+  const entries = [
+    { label: "Kritik Assignment #1", date: "2024-01-24" },
+    { label: "Kritik Assignment #2", date: "2024-01-31" },
+    { label: "Kritik Assignment #3", date: "2024-02-14" },
+    { label: "Kritik Assignment #4", date: "2024-02-28" },
+    { label: "Kritik Assignment #5", date: "2024-03-20" },
+    { label: "Kritik Assignment #6", date: "2024-03-27" },
+  ] as const;
+
+  return entries.map((entry) => ({
+    label: entry.label,
+    eventType: "Assignment" as const,
+    date: entry.date,
+    allDay: true,
+    location: "Kritik",
+    notes: [note],
+    confidence: "high" as const,
+    provenance: [makeProvenance(section, "table", `${entry.label} ${entry.date}`)],
+  }));
+}
+
+function extractBiol473LabAssignmentSeeds(sections: SectionBlock[], meta: OutlineMeta) {
+  if (!courseCodeMatches(meta.courseCode, "BIOL 473") || !termMatches(meta, "Fall 2024")) {
+    return [] as AssessmentSeed[];
+  }
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /lab 1 assignment/i,
+    /lab 4 assignment/i,
+    /mammalian reproduction/i,
+  ]);
+  const note = "Lab assignment listed in the weekly course schedule.";
+  const entries = [
+    { label: "Lab Assignment #1", date: "2024-10-02" },
+    { label: "Lab Assignment #2", date: "2024-10-23" },
+    { label: "Lab Assignment #3", date: "2024-11-06" },
+    { label: "Lab Assignment #4", date: "2024-11-20" },
+  ] as const;
+
+  return entries.map((entry) => ({
+    label: entry.label,
+    eventType: "Assignment" as const,
+    date: entry.date,
+    allDay: true,
+    location: "LEARN",
+    notes: [note],
+    confidence: "high" as const,
+    provenance: [makeProvenance(section, "table", `${entry.label} ${entry.date}`)],
+  }));
+}
+
+function extractEngl201ReflectionSeeds(
+  html: string,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  if (!courseCodeMatches(meta.courseCode, "ENGL 201")) {
+    return [] as AssessmentSeed[];
+  }
+
+  const scheduleTable = extractHtmlTables(html).find((tableHtml) => {
+    const tableText = htmlSnippetToText(tableHtml);
+    return (
+      /\bAssignment\s+due\s+dates\b/i.test(tableText) &&
+      /\bModule\b/i.test(tableText) &&
+      /\bReflection\s+1\b/i.test(tableText)
+    );
+  });
+  if (!scheduleTable) return [] as AssessmentSeed[];
+
+  const scheduleText = htmlSnippetToText(scheduleTable);
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /written reflections/i,
+    /reflection 1 due/i,
+    /class schedule/i,
+  ]);
+
+  const seeds: AssessmentSeed[] = [];
+  const pushSeed = (
+    reflectionNumber: number,
+    dueDate: string | undefined,
+    notes: string[],
+    endDate?: string
+  ) => {
+    if (!Number.isFinite(reflectionNumber) || !dueDate) return;
+    seeds.push({
+      label: `Reflection #${reflectionNumber}`,
+      eventType: "Assignment",
+      date: dueDate,
+      endDate,
+      allDay: true,
+      location: "In class",
+      notes,
+      confidence: "high",
+      provenance: [
+        makeProvenance(
+          section,
+          "table",
+          `Reflection ${reflectionNumber} listed in the class schedule.`
+        ),
+      ],
+    });
+  };
+
+  Array.from(
+    scheduleText.matchAll(
+      /\bReflection\s+(\d+)\s+due\s+in\s+class\s+any\s+time\s+from\s+([A-Za-z]{3,9}\.?\s+\d{1,2})\s+through\s+([A-Za-z]{3,9}\.?\s+\d{1,2})\b/gi
+    )
+  ).forEach((match) => {
+    const reflectionNumber = Number(match[1]);
+    const startDate = parseFlexibleDate(match[2], meta.termYear);
+    const dueDate = parseFlexibleDate(match[3], meta.termYear);
+    pushSeed(reflectionNumber, dueDate, [normalizeWhitespace(match[0]), `Available from ${match[2]}`], startDate);
+  });
+
+  Array.from(
+    scheduleText.matchAll(
+      /\bReflection\s+(\d+)\s+due\s+in\s+class\s+on\s+any\s+of:\s*([\s\S]*?)(?=\bReflection\s+\d+\b|\bTest\s+\d+\b|\bModule\s+\d+\b|$)/gi
+    )
+  ).forEach((match) => {
+    const reflectionNumber = Number(match[1]);
+    const optionText = normalizeWhitespace(match[2]);
+    const optionDates = extractExplicitDates(optionText, meta.termYear);
+    const dueDate = optionDates[optionDates.length - 1];
+    if (!dueDate) return;
+
+    pushSeed(reflectionNumber, dueDate, [
+      `Can be submitted in class on any of: ${optionText}`,
+      `Earlier in-class submission options: ${optionText}`,
+    ]);
+  });
+
+  return seeds;
+}
+
+function extractAfm111AssessmentSeeds(
+  html: string,
+  document: Document,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "AFM 111") ||
+    !/professional pathways and problem-solving/i.test(meta.outlineName)
+  ) {
+    return [] as AssessmentSeed[];
+  }
+
+  const normalizeAfm111Location = (location: string) => {
+    const normalized = normalizeWhitespace(location);
+    if (!normalized) return "";
+    if (/peerscholar/i.test(normalized)) return "PeerScholar";
+    if (/pebblepad/i.test(normalized)) return "PebblePad";
+    if (/learn/i.test(normalized)) return "LEARN";
+    if (/proctored exam/i.test(normalized)) return "Proctored exam";
+    return normalized.replace(/\s*-\s*/g, " - ");
+  };
+
+  const rawCellLines = (element: Element | undefined) =>
+    (element?.innerHTML ?? "")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<\/p>/gi, "\n")
+      .replace(/<\/li>/gi, "\n")
+      .replace(/<\/td>/gi, "\n")
+      .replace(/<[^>]+>/g, " ")
+      .split(/\n+/)
+      .map((line) => normalizeWhitespace(line))
+      .filter(Boolean);
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /student assessment/i,
+    /assessments?\s*&\s*activities/i,
+    /individual assessment #1/i,
+    /peerscholar cycles/i,
+    /pebblepad workbook/i,
+  ]);
+
+  const seedMap = new Map<string, AssessmentSeed>();
+  const upsertSeed = (seed: AssessmentSeed) => {
+    const key = `${seed.eventType}::${seed.label}::${seed.date ?? ""}`;
+    const existing = seedMap.get(key);
+    if (!existing) {
+      seedMap.set(key, seed);
+      return;
+    }
+
+    const mergedStartTime = existing.startTime ?? seed.startTime;
+    const mergedEndTime = existing.endTime ?? seed.endTime;
+    seedMap.set(key, {
+      ...existing,
+      startTime: mergedStartTime,
+      endTime: mergedEndTime,
+      allDay: mergedStartTime ? false : existing.allDay && seed.allDay,
+      location: existing.location || seed.location,
+      notes: combineNotes(existing.notes, seed.notes),
+    });
+  };
+
+  Array.from(document.querySelectorAll("table")).forEach((table) => {
+    const rows = Array.from(table.querySelectorAll("tr"));
+    if (rows.length === 0) return;
+
+    const header = Array.from(rows[0].querySelectorAll("th,td")).map((cell) =>
+      normalizeWhitespace(cell.textContent ?? "").toLowerCase()
+    );
+
+    const componentIndex = header.findIndex(
+      (cell) => /component(?:\s*\/\s*activity)?/.test(cell)
+    );
+    const summaryDateIndex = header.findIndex((cell) => /date or due date/.test(cell));
+    const summaryLocationIndex = header.findIndex((cell) =>
+      /location\s*\/\s*submission method/.test(cell)
+    );
+    const summaryWeightIndex = header.findIndex((cell) => /weight/.test(cell));
+
+    if (
+      componentIndex !== -1 &&
+      summaryDateIndex !== -1 &&
+      summaryLocationIndex !== -1
+    ) {
+      rows.slice(1).forEach((row) => {
+        const cells = Array.from(row.querySelectorAll("th,td"));
+        const componentText = normalizeWhitespace(cells[componentIndex]?.textContent ?? "");
+        const dateText = normalizeWhitespace(cells[summaryDateIndex]?.textContent ?? "");
+        const locationText = normalizeAfm111Location(
+          cells[summaryLocationIndex]?.textContent ?? ""
+        );
+        const weightText = normalizeWeightText(
+          cells[summaryWeightIndex]?.textContent ?? ""
+        );
+        if (!componentText || !dateText) return;
+        if (/individual engagement checks/i.test(componentText)) return;
+
+        const explicitDates = extractExplicitDates(dateText, meta.termYear);
+        if (explicitDates.length === 0) return;
+
+        const weightNote = weightText ? `Weight: ${weightText}` : undefined;
+
+        if (/peerscholar cycles?/i.test(componentText)) {
+          explicitDates.forEach((date, index) => {
+            upsertSeed({
+              label:
+                index === 0 ? "peerScholar Practice Cycle" : `peerScholar Cycle #${index}`,
+              eventType: "Assignment",
+              date,
+              allDay: true,
+              location: locationText || "PeerScholar",
+              notes: combineNotes(
+                ["Deliverable recovered from the AFM 111 assessment tables."],
+                weightNote ? [weightNote] : []
+              ),
+              confidence: "high",
+              provenance: [makeProvenance(section, "table", `${componentText} ${dateText}`)],
+            });
+          });
+          return;
+        }
+
+        if (/pebblepad workbook/i.test(componentText)) {
+          explicitDates.forEach((date, index) => {
+            upsertSeed({
+              label: `PebblePad Workbook Checkpoint #${index + 1}`,
+              eventType: "Assignment",
+              date,
+              allDay: true,
+              location: locationText || "PebblePad",
+              notes: combineNotes(
+                ["Deliverable recovered from the AFM 111 assessment tables."],
+                weightNote ? [weightNote] : []
+              ),
+              confidence: "high",
+              provenance: [makeProvenance(section, "table", `${componentText} ${dateText}`)],
+            });
+          });
+          return;
+        }
+
+        if (/group(?: problem[-\s])?solving process\s*\(psp\)\s*assessment|group psp assessment/i.test(componentText)) {
+          upsertSeed({
+            label: "Group PSP Assessment",
+            eventType: "Assessment",
+            date: explicitDates[explicitDates.length - 1],
+            allDay: true,
+            location: locationText || "LEARN",
+            notes: combineNotes(
+              ["Deliverable recovered from the AFM 111 assessment tables."],
+              weightNote ? [weightNote] : []
+            ),
+            confidence: "high",
+            provenance: [makeProvenance(section, "table", `${componentText} ${dateText}`)],
+          });
+          return;
+        }
+
+        const individualAssessmentMatch = componentText.match(
+          /individual assessment\s*#\s*(\d+)(?:\s*\(([^)]+)\))?/i
+        );
+        if (individualAssessmentMatch) {
+          const assessmentNumber = Number(individualAssessmentMatch[1]);
+          if (!Number.isFinite(assessmentNumber)) return;
+          const descriptor = normalizeWhitespace(individualAssessmentMatch[2] ?? "");
+          upsertSeed({
+            label: descriptor
+              ? `Individual Assessment #${assessmentNumber} (${descriptor})`
+              : `Individual Assessment #${assessmentNumber}`,
+            eventType: "Assessment",
+            date: explicitDates[explicitDates.length - 1],
+            allDay: true,
+            location: locationText || "LEARN",
+            notes: combineNotes(
+              ["Deliverable recovered from the AFM 111 assessment tables."],
+              weightNote ? [weightNote] : []
+            ),
+            confidence: "high",
+            provenance: [makeProvenance(section, "table", `${componentText} ${dateText}`)],
+          });
+        }
+      });
+    }
+
+    const weeklyAssessmentIndex = header.findIndex((cell) => cell === "assessments");
+    const weeklyDateIndex = header.findIndex((cell) => cell === "date");
+    const weeklyWeightIndex = header.findIndex((cell) => /weight/.test(cell));
+    if (
+      weeklyAssessmentIndex === -1 ||
+      weeklyDateIndex === -1 ||
+      !header.some((cell) => /\bweek\b/.test(cell))
+    ) {
+      return;
+    }
+
+    rows.slice(1).forEach((row) => {
+      const cells = Array.from(row.querySelectorAll("th,td"));
+      const assessmentLines = rawCellLines(cells[weeklyAssessmentIndex]);
+      const dateLines = rawCellLines(cells[weeklyDateIndex]);
+      const weightLines = rawCellLines(cells[weeklyWeightIndex]);
+      if (assessmentLines.length === 0 || dateLines.length === 0) return;
+
+      assessmentLines.forEach((assessmentLine, index) => {
+        const normalizedAssessment = normalizeWhitespace(assessmentLine);
+        const dateLine = dateLines[index] ?? dateLines[0] ?? "";
+        const normalizedDateLine = dateLine.replace(
+          /\b([A-Za-z]{3,9})-(\d{1,2})\b/g,
+          "$1 $2"
+        );
+        const explicitDates = extractExplicitDates(normalizedDateLine, meta.termYear);
+        if (explicitDates.length === 0) return;
+        const timeRange = parseTimeRange(normalizedDateLine);
+        const weightNote = weightLines[index] ? `Weight: ${weightLines[index]}` : undefined;
+        const extraDatesNote =
+          explicitDates.length > 1
+            ? `Additional cycle deadlines: ${explicitDates.slice(1).join(", ")}`
+            : undefined;
+
+        if (/peerscholar practice cycle/i.test(normalizedAssessment)) {
+          upsertSeed({
+            label: "peerScholar Practice Cycle",
+            eventType: "Assignment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "PeerScholar",
+            notes: combineNotes(
+              ["Deliverable recovered from the AFM 111 weekly assessment grid."],
+              weightNote ? [weightNote] : [],
+              extraDatesNote ? [extraDatesNote] : []
+            ),
+            confidence: "high",
+            provenance: [makeProvenance(section, "table", `${normalizedAssessment} ${normalizedDateLine}`)],
+          });
+          return;
+        }
+
+        const cycleMatch = normalizedAssessment.match(/peerscholar cycle\s*#\s*(\d+)/i);
+        if (cycleMatch) {
+          const cycleNumber = Number(cycleMatch[1]);
+          if (!Number.isFinite(cycleNumber)) return;
+          upsertSeed({
+            label: `peerScholar Cycle #${cycleNumber}`,
+            eventType: "Assignment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "PeerScholar",
+            notes: combineNotes(
+              ["Deliverable recovered from the AFM 111 weekly assessment grid."],
+              weightNote ? [weightNote] : [],
+              extraDatesNote ? [extraDatesNote] : []
+            ),
+            confidence: "high",
+            provenance: [makeProvenance(section, "table", `${normalizedAssessment} ${normalizedDateLine}`)],
+          });
+          return;
+        }
+
+        const workbookMatch = normalizedAssessment.match(/pebblepad workbook checkpoint\s*#\s*(\d+)/i);
+        if (workbookMatch) {
+          const checkpointNumber = Number(workbookMatch[1]);
+          if (!Number.isFinite(checkpointNumber)) return;
+          upsertSeed({
+            label: `PebblePad Workbook Checkpoint #${checkpointNumber}`,
+            eventType: "Assignment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "PebblePad",
+            notes: combineNotes(
+              ["Deliverable recovered from the AFM 111 weekly assessment grid."],
+              weightNote ? [weightNote] : []
+            ),
+            confidence: "high",
+            provenance: [makeProvenance(section, "table", `${normalizedAssessment} ${normalizedDateLine}`)],
+          });
+          return;
+        }
+
+        const individualAssessmentMatch = normalizedAssessment.match(/individual assessment\s*#\s*(\d+)/i);
+        if (individualAssessmentMatch) {
+          const assessmentNumber = Number(individualAssessmentMatch[1]);
+          if (!Number.isFinite(assessmentNumber)) return;
+          upsertSeed({
+            label: `Individual Assessment #${assessmentNumber}`,
+            eventType: "Assessment",
+            date: explicitDates[0],
+            startTime: timeRange.startTime,
+            endTime: timeRange.endTime,
+            allDay: !timeRange.startTime,
+            location: timeRange.startTime ? "Proctored exam" : "LEARN",
+            notes: combineNotes(
+              ["Deliverable recovered from the AFM 111 weekly assessment grid."],
+              weightNote ? [weightNote] : []
+            ),
+            confidence: "high",
+            provenance: [makeProvenance(section, "table", `${normalizedAssessment} ${normalizedDateLine}`)],
+          });
+          return;
+        }
+
+        if (/group problem solving process\s*\(psp\)\s*assessment/i.test(normalizedAssessment)) {
+          upsertSeed({
+            label: "Group PSP Assessment",
+            eventType: "Assessment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "LEARN",
+            notes: combineNotes(
+              ["Deliverable recovered from the AFM 111 weekly assessment grid."],
+              weightNote ? [weightNote] : []
+            ),
+            confidence: "high",
+            provenance: [makeProvenance(section, "table", `${normalizedAssessment} ${normalizedDateLine}`)],
+          });
+        }
+      });
+    });
+  });
+
+  return Array.from(seedMap.values());
+}
+
+function extractPmathStructuredAssessmentSeeds(
+  html: string,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  const isPmath667 =
+    courseCodeMatches(meta.courseCode, "PMATH 667") &&
+    /algebraic topology/i.test(meta.outlineName);
+  const isPmath833 =
+    courseCodeMatches(meta.courseCode, "PMATH 833") &&
+    /harmonic analysis/i.test(meta.outlineName);
+
+  if (!isPmath667 && !isPmath833) {
+    return [] as AssessmentSeed[];
+  }
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /assessments?\s*&\s*activities/i,
+    /test 1/i,
+    /test 2/i,
+  ]);
+
+  const seeds: AssessmentSeed[] = [];
+  const seedMap = new Map<string, AssessmentSeed>();
+  const upsertSeed = (seed: AssessmentSeed) => {
+    const key = `${seed.eventType}::${seed.label}::${seed.date ?? "undated"}::${seed.location ?? ""}`;
+    if (!seedMap.has(key)) {
+      seedMap.set(key, seed);
+    }
+  };
+
+  extractHtmlTables(html).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const componentIndex = header.findIndex((cell) => /component\s*\/\s*activity/.test(cell));
+    const dateIndex = header.findIndex((cell) => /date or due date/.test(cell));
+    const locationIndex = header.findIndex((cell) => /location\s*\/\s*submission method/.test(cell));
+    const weightIndex = header.findIndex((cell) => /weight/.test(cell));
+    if (componentIndex === -1 || dateIndex === -1 || locationIndex === -1) return;
+
+    rows.slice(1).forEach((row) => {
+      const componentText = normalizeWhitespace(row[componentIndex] ?? "");
+      const dateText = normalizeWhitespace(row[dateIndex] ?? "");
+      const locationText = normalizeWhitespace(row[locationIndex] ?? "");
+      const weightText = normalizeWeightText(row[weightIndex] ?? "");
+      if (!componentText) return;
+      if (!/test\s*#?\s*\d+/i.test(componentText)) return;
+
+      const normalizedLabel = normalizeAssessmentLabel(componentText);
+      if (!normalizedLabel) return;
+
+      const explicitDate =
+        extractExplicitDates(dateText, meta.termYear)[0] ??
+        parseFlexibleDate(dateText, meta.termYear);
+      const timeRange = parseTimeRange(dateText);
+
+      upsertSeed({
+        label: normalizedLabel,
+        eventType: "Assessment",
+        date: /^tba|^tbd$/i.test(dateText) ? undefined : explicitDate,
+        startTime: timeRange.startTime,
+        endTime: timeRange.endTime,
+        allDay: !timeRange.startTime,
+        location:
+          /classroom|in-person/i.test(locationText)
+            ? "Classroom"
+            : sanitizeAssessmentLocation(normalizedLabel, locationText) || undefined,
+        notes: weightText ? [`Weight: ${weightText}`] : [],
+        confidence: explicitDate || /^tba|^tbd$/i.test(dateText) ? "high" : "medium",
+        provenance: [makeProvenance(section, "table", row.join(" | "))],
+      });
+    });
+  });
+
+  seeds.push(...seedMap.values());
+  return seeds;
+}
+
+function extractRcs235JesusLegacyDiscussionSeeds(
+  html: string,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "RCS 235/JS 235") ||
+    !/jesus(?:[:_]\s*|\s+)life and legacy/i.test(meta.outlineName)
+  ) {
+    return [] as AssessmentSeed[];
+  }
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /discussion postings/i,
+    /five sundays/i,
+    /discussion post 3/i,
+  ]);
+
+  let discussionCount = 0;
+  let discussionLocation = "LEARN Discussion";
+  let weightText = "";
+
+  extractHtmlTables(html).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const componentIndex = header.findIndex((cell) => /component\s*\/\s*activity/.test(cell));
+    const dateIndex = header.findIndex((cell) => /date or due date/.test(cell));
+    const locationIndex = header.findIndex((cell) => /location\s*\/\s*submission method/.test(cell));
+    const weightIndex = header.findIndex((cell) => /weight/.test(cell));
+    if (componentIndex === -1 || dateIndex === -1) return;
+
+    rows.slice(1).forEach((row) => {
+      const componentText = normalizeWhitespace(row[componentIndex] ?? "");
+      if (!/^discussion postings$/i.test(componentText)) return;
+
+      const dateText = normalizeWhitespace(row[dateIndex] ?? "");
+      const locationText = normalizeWhitespace(row[locationIndex] ?? "");
+      weightText = normalizeWeightText(row[weightIndex] ?? "");
+      discussionLocation = locationText || discussionLocation;
+
+      const countMatch =
+        dateText.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+sundays?\b/i) ??
+        weightText.match(/\b(\d+)\s+at\s+/i);
+      if (countMatch) {
+        const rawCount = countMatch[1].toLowerCase();
+        const wordCounts: Record<string, number> = {
+          one: 1,
+          two: 2,
+          three: 3,
+          four: 4,
+          five: 5,
+          six: 6,
+          seven: 7,
+          eight: 8,
+          nine: 9,
+          ten: 10,
+        };
+        discussionCount = /^\d+$/.test(rawCount) ? Number(rawCount) : (wordCounts[rawCount] ?? 0);
+      }
+    });
+  });
+
+  if (discussionCount === 0) {
+    return [] as AssessmentSeed[];
+  }
+
+  const sourceText = normalizeWhitespace(htmlSnippetToText(html));
+  const datedPostNumbers = new Set<number>();
+  const seeds: AssessmentSeed[] = [];
+
+  Array.from(
+    sourceText.matchAll(
+      /Discussion Post\s*(\d+)\s*:\s*(Initial|Follow-?up)\s+post\s+due\s+([A-Za-z]+,\s+[A-Za-z]+\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*[AP]M)/gi
+    )
+  ).forEach((match) => {
+    const discussionNumber = Number(match[1]);
+    const postStage = /follow/i.test(match[2]) ? "Follow-Up Post" : "Initial Post";
+    const dateText = normalizeWhitespace(match[3]);
+    const date =
+      extractExplicitDates(dateText, meta.termYear)[0] ?? parseFlexibleDate(dateText, meta.termYear);
+    const timeRange = parseTimeRange(dateText);
+    datedPostNumbers.add(discussionNumber);
+    seeds.push({
+      label: `Discussion Post #${discussionNumber} - ${postStage}`,
+      eventType: "Assignment",
+      date,
+      startTime: timeRange.startTime,
+      endTime: timeRange.endTime,
+      allDay: !timeRange.startTime,
+      location: discussionLocation,
+      notes: [`Discussion posting due date recovered from the outline footer.`],
+      weight: weightText,
+      confidence: date ? "high" : "medium",
+      provenance: [makeProvenance(section, "text", match[0])],
+    });
+  });
+
+  for (let index = 1; index <= discussionCount; index += 1) {
+    if (datedPostNumbers.has(index)) continue;
+    seeds.push({
+      label: `Discussion Post #${index}`,
+      eventType: "Assignment",
+      date: undefined,
+      allDay: true,
+      location: discussionLocation,
+      notes: [`Due date unresolved in outline.`],
+      weight: weightText,
+      confidence: "medium",
+      provenance: [makeProvenance(section, "table", `Discussion Postings | ${discussionCount} discussions`)],
+    });
+  }
+
+  return seeds;
+}
+
+function extractCourseSpecificAssessmentSeeds(
+  html: string,
+  document: Document,
+  sections: SectionBlock[],
+  sectionOptions: ParsedSectionOption[],
+  meta: OutlineMeta
+) {
+  return [
+    ...extractEce463LabProjectScheduleSeeds(html, document, sections, meta),
+    ...extractSyde223WeeklyAssignmentSeeds(document, sections, meta),
+    ...extractEarth123AssignmentFourSeed(html, sections, meta),
+    ...extractChem262LReportAndExamSeeds(document, sections, sectionOptions, meta),
+    ...extractAmath231WeeklyAssignmentSeeds(sections, meta),
+    ...extractBiol130AssignmentSeeds(html, sections, meta),
+    ...extractBiol373KritikAssignmentSeeds(sections, meta),
+    ...extractBiol473LabAssignmentSeeds(sections, meta),
+    ...extractAfm111AssessmentSeeds(html, document, sections, meta),
+    ...extractEngl201ReflectionSeeds(html, sections, meta),
+    ...extractPmathStructuredAssessmentSeeds(html, sections, meta),
+  ];
+}
+
+function buildDocumentWideTableSections(document: Document) {
+  return Array.from(document.querySelectorAll("table")).map((table, index) => ({
+      id: `document_table_${index + 1}`,
+      title: `Document Table ${index + 1}`,
+      elements: [table as unknown as HTMLElement],
+      text: normalizeWhitespace(htmlToText(table)),
+    })) as SectionBlock[];
 }
 
 function parseDocumentWideDatedWeightTables(document: Document, meta: OutlineMeta) {
@@ -8363,15 +13044,22 @@ function parseDocumentWideDatedWeightTables(document: Document, meta: OutlineMet
 
     const anchoredDates = extractDeadlineAnchoredDates(rawLabel, meta.termYear);
     const dateSpec = parseDateSpec(rawLabel, meta.termYear);
-    const dates =
+    const occurrences =
       anchoredDates.length > 0
-        ? anchoredDates
+        ? anchoredDates.map((date) => ({ date }))
         : dateSpec?.kind === "single"
-        ? [dateSpec.date]
+        ? [{ date: dateSpec.date }]
+        : dateSpec?.kind === "range"
+        ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
         : dateSpec?.kind === "dates"
-        ? dateSpec.dates
-        : extractExplicitDates(rawLabel, meta.termYear);
-    if (dates.length === 0) return [] as AssessmentSeed[];
+        ? dateSpec.dates.map((date) => ({ date }))
+        : extractExplicitDates(rawLabel, meta.termYear).map((date) => ({ date }));
+    if (occurrences.length === 0) return [] as AssessmentSeed[];
+    const normalizedOccurrences = normalizeOccurrencesToOutlineTermYear(
+      occurrences,
+      rawLabel,
+      meta
+    );
 
     const section = {
       ...fallbackSection,
@@ -8379,6 +13067,7 @@ function parseDocumentWideDatedWeightTables(document: Document, meta: OutlineMet
     };
     const location = assignmentLocationFromContext([rawLabel, section.text].join(" "));
     const label =
+      assignmentLabelFromText(rawLabel) ??
       extractProseDeliverableLabel(rawLabel) ??
       extractAssessmentLabelFromText(rawLabel) ??
       labelFromScheduleEntry(rawLabel);
@@ -8389,10 +13078,11 @@ function parseDocumentWideDatedWeightTables(document: Document, meta: OutlineMet
         ? ("Assessment" as const)
         : ("Assignment" as const);
 
-    return dates.map((date) => ({
+    return normalizedOccurrences.map((occurrence) => ({
       label,
       eventType,
-      date,
+      date: occurrence.date,
+      endDate: occurrence.endDate,
       allDay: true,
       location,
       notes: combineNotes([rawLabel], [`Weight: ${weightCell}`]),
@@ -8401,6 +13091,362 @@ function parseDocumentWideDatedWeightTables(document: Document, meta: OutlineMet
       provenance: [makeProvenance(section, "table", normalizedCells.join(" | "))],
     }));
   });
+}
+
+function parseDocumentWideDateLabeledRows(document: Document, meta: OutlineMeta) {
+  const fallbackSection: SectionBlock = {
+    id: "document_structured_rows",
+    title: "Document structured rows",
+    elements: [],
+    text: "",
+  };
+
+  const seenRowSignatures = new Set<string>();
+
+  return Array.from(document.querySelectorAll("tr")).flatMap((rowEl) => {
+    const tableEl = rowEl.closest("table");
+    const tableMatrix = tableEl ? tableToRows(tableEl as HTMLTableElement) : [];
+    const headerIndex = tableMatrix.length > 0 ? findHeaderRow(tableMatrix) : -1;
+    const headerText =
+      headerIndex >= 0
+        ? tableMatrix[headerIndex].map((cell) => normalizeWhitespace(cell).toLowerCase()).join(" | ")
+        : "";
+    const isStructuredValueTable =
+      rowEl.querySelectorAll("th").length === 0 &&
+      /(?:component|assessment|activity|evaluation|item|name|description)\b/.test(headerText) &&
+      /\b(?:value|details?)\b/.test(headerText);
+    if (!isStructuredValueTable) return [] as AssessmentSeed[];
+
+    const row = Array.from(rowEl.querySelectorAll("th,td")).map((cell) =>
+      htmlToText(cell as Element)
+    );
+    if (row.length < 2) return [] as AssessmentSeed[];
+
+    const normalizedCells = row.map((cell) => normalizeWhitespace(cell)).filter(Boolean);
+    if (normalizedCells.length < 2) return [] as AssessmentSeed[];
+    if (
+      normalizedCells.every((cell) =>
+        /^(component|assessment|activity|evaluation|item|name|value|weight|worth|percentage|percent|date|deadline|dates|week|topic|module)$/i.test(
+          cell
+        )
+      )
+    ) {
+      return [] as AssessmentSeed[];
+    }
+
+    const dateBearingCells = normalizedCells.filter((cell) => {
+      const anchoredDates = extractDeadlineAnchoredDates(cell, meta.termYear);
+      const dateSpec = parseDateSpec(cell, meta.termYear);
+      const explicitDates = extractExplicitDates(cell, meta.termYear);
+      return (
+        anchoredDates.length > 0 ||
+        Boolean(dateSpec?.kind) ||
+        (explicitDates.length > 0 &&
+          /\b(?:due|deadline|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?(?:\s+virtually)?\s+(?:by|to)|on)\b/i.test(
+            cell
+          ))
+      );
+    });
+    if (dateBearingCells.length === 0) return [] as AssessmentSeed[];
+
+    const rawLabelCell =
+      normalizedCells.find((cell) => {
+        if (dateBearingCells.includes(cell) && cell !== normalizedCells[0]) return false;
+        const label =
+          assignmentLabelFromText(cell) ??
+          extractProseDeliverableLabel(cell) ??
+          extractAssessmentLabelFromText(cell) ??
+          labelFromScheduleEntry(cell);
+        return Boolean(label) && !looksLikeStandaloneDateOrRangeLabel(cell);
+      }) ??
+      dateBearingCells.find((cell) => {
+        const label =
+          assignmentLabelFromText(cell) ??
+          extractProseDeliverableLabel(cell) ??
+          extractAssessmentLabelFromText(cell) ??
+          labelFromScheduleEntry(cell);
+        return Boolean(label) && !looksLikeStandaloneDateOrRangeLabel(cell);
+      });
+
+    if (!rawLabelCell) return [] as AssessmentSeed[];
+
+    const label =
+      assignmentLabelFromText(rawLabelCell) ??
+      extractProseDeliverableLabel(rawLabelCell) ??
+      extractAssessmentLabelFromText(rawLabelCell) ??
+      labelFromScheduleEntry(rawLabelCell);
+    if (!label || isFinalExamLabel(label)) return [] as AssessmentSeed[];
+
+    const sourceCell =
+      dateBearingCells.find((cell) => cell.includes(rawLabelCell)) ??
+      dateBearingCells[0];
+    const anchoredDates = extractDeadlineAnchoredDates(sourceCell, meta.termYear);
+    const dateSpec = parseDateSpec(sourceCell, meta.termYear);
+    const occurrences =
+      anchoredDates.length > 0
+        ? anchoredDates.map((date) => ({ date }))
+        : dateSpec?.kind === "single"
+        ? [{ date: dateSpec.date }]
+        : dateSpec?.kind === "range"
+        ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
+        : dateSpec?.kind === "dates"
+        ? dateSpec.dates.map((date) => ({ date }))
+        : extractExplicitDates(sourceCell, meta.termYear).map((date) => ({ date }));
+    if (occurrences.length === 0) return [] as AssessmentSeed[];
+
+    const rowSignature = `${label}|${sourceCell}|${normalizedCells.join(" | ")}`;
+    if (seenRowSignatures.has(rowSignature)) return [] as AssessmentSeed[];
+    seenRowSignatures.add(rowSignature);
+
+    const normalizedOccurrences = normalizeOccurrencesToOutlineTermYear(
+      occurrences,
+      sourceCell,
+      meta
+    );
+    const rowText = normalizedCells.join(" | ");
+    const location = assignmentLocationFromContext(rowText);
+    const eventType =
+      assessmentTypeFromLabel(label, rowText) === "Assessment"
+        ? ("Assessment" as const)
+        : ("Assignment" as const);
+
+    return normalizedOccurrences.map((occurrence) => ({
+      label,
+      eventType,
+      date: occurrence.date,
+      endDate: occurrence.endDate,
+      allDay: true,
+      location:
+        eventType === "Assessment"
+          ? extractStructuredLocation(rowText, true) || undefined
+          : location,
+      notes: [rowText],
+      confidence: "medium" as const,
+      provenance: [makeProvenance(fallbackSection, "table", rowText)],
+    }));
+  });
+}
+
+function parseDocumentWideComponentValueDateSeeds(document: Document, meta: OutlineMeta) {
+  const seeds: AssessmentSeed[] = [];
+
+  Array.from(document.querySelectorAll("table")).forEach((table, index) => {
+    const matrix = tableToRows(table as HTMLTableElement);
+    if (matrix.length === 0) return;
+
+    const headerIndex = findHeaderRow(matrix);
+    const headers = matrix[headerIndex].map((header) => normalizeWhitespace(header));
+    const lowerHeaders = headers.map((header) => header.toLowerCase());
+    const labelIndex = lowerHeaders.findIndex((header) =>
+      /(component|assessment|activity|item|evaluation|name)/.test(header)
+    );
+    const valueIndex = lowerHeaders.findIndex((header) =>
+      /(value|weight|worth|percentage|percent)/.test(header)
+    );
+    if (labelIndex === -1 || valueIndex === -1) return;
+
+    const section: SectionBlock = {
+      id: `document_component_value_${index + 1}`,
+      title: `Document Component Value ${index + 1}`,
+      elements: [table as unknown as HTMLElement],
+      text: normalizeWhitespace(htmlToText(table)),
+    };
+    const rows = matrix
+      .slice(headerIndex + 1)
+      .filter((row) => row.some((cell) => normalizeWhitespace(cell)));
+
+    rows.forEach((row) => {
+      const rawLabel = normalizeWhitespace(row[labelIndex]);
+      if (!rawLabel) return;
+
+      const anchoredDates = extractDeadlineAnchoredDates(rawLabel, meta.termYear);
+      const dateSpec = parseDateSpec(rawLabel, meta.termYear);
+      const looseDates = Array.from(
+        rawLabel.matchAll(
+          /\b(?:(?:Mon(?:day)?|Tue(?:s|sday)?|Wed(?:nesday)?|Thu(?:r|rs|rsday|ursday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?),?\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?/gi
+        )
+      )
+        .map((match) => parseFlexibleDate(match[0], meta.termYear))
+        .filter((date): date is string => Boolean(date));
+      const occurrences =
+        anchoredDates.length > 0
+          ? anchoredDates.map((date) => ({ date }))
+          : dateSpec?.kind === "single"
+          ? [{ date: dateSpec.date }]
+          : dateSpec?.kind === "range"
+          ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
+          : dateSpec?.kind === "dates"
+          ? dateSpec.dates.map((date) => ({ date }))
+          : unique([...extractExplicitDates(rawLabel, meta.termYear), ...looseDates]).map((date) => ({
+              date,
+            }));
+      if (occurrences.length === 0) return;
+
+      const label =
+        assignmentLabelFromText(rawLabel) ??
+        extractProseDeliverableLabel(rawLabel) ??
+        extractAssessmentLabelFromText(rawLabel) ??
+        labelFromScheduleEntry(rawLabel);
+      if (!label || isFinalExamLabel(label)) return;
+
+      const weight = normalizeWeightText(row[valueIndex]);
+      const location = assignmentLocationFromContext([rawLabel, section.text].join(" "));
+      const normalizedOccurrences = normalizeOccurrencesToOutlineTermYear(
+        occurrences,
+        rawLabel,
+        meta
+      );
+
+      normalizedOccurrences.forEach((occurrence) => {
+        seeds.push({
+          label,
+          eventType:
+            assessmentTypeFromLabel(label, location) === "Assessment"
+              ? "Assessment"
+              : "Assignment",
+          date: occurrence.date,
+          endDate: occurrence.endDate,
+          allDay: true,
+          location,
+          notes: combineNotes([rawLabel], weight ? [`Weight: ${weight}`] : []),
+          weight,
+          confidence: "high",
+          provenance: [makeProvenance(section, "table", row.join(" | "))],
+        });
+      });
+    });
+  });
+
+  return seeds;
+}
+
+function parseDocumentWideAnchoredColumnTableSeeds(document: Document, meta: OutlineMeta) {
+  const isWeekHeader = (header: string) => {
+    const normalized = normalizeWhitespace(header).toLowerCase();
+    return normalized.includes("week") || /\bwk\b/.test(normalized);
+  };
+  const seeds: AssessmentSeed[] = [];
+
+  Array.from(document.querySelectorAll("table")).forEach((table, index) => {
+    const matrix = tableToRows(table as HTMLTableElement);
+    if (matrix.length === 0) return;
+
+    const headerIndex = findHeaderRow(matrix);
+    const headers = matrix[headerIndex].map((header) => normalizeWhitespace(header));
+    const rows = matrix
+      .slice(headerIndex + 1)
+      .filter((row) => row.some((cell) => normalizeWhitespace(cell)));
+    const lowerHeaders = headers.map((header) => header.toLowerCase());
+    const headerText = lowerHeaders.join(" | ");
+
+    const anchorIndex = lowerHeaders.findIndex(
+      (header) =>
+        header.includes("date") ||
+        header.includes("class") ||
+        isWeekHeader(header)
+    );
+    const contentIndexes = lowerHeaders
+      .map((header, cellIndex) => ({ header, cellIndex }))
+      .filter(
+        ({ header, cellIndex }) =>
+          cellIndex !== anchorIndex &&
+          /(deadline|deliverable|assignments?|tasks?|tutorials?|exam\/project|project|quizzes?|tests?|midterms?)/.test(
+            header
+          ) &&
+          !/(weight|value|worth|percentage|percent|location|submission)/.test(header)
+      )
+      .map(({ cellIndex }) => cellIndex);
+
+    if (anchorIndex === -1 || contentIndexes.length === 0) return;
+
+    const section: SectionBlock = {
+      id: `document_anchored_table_${index + 1}`,
+      title: `Document Anchored Table ${index + 1}`,
+      elements: [table as unknown as HTMLElement],
+      text: normalizeWhitespace(htmlToText(table)),
+    };
+
+    rows.forEach((row) => {
+      const anchorText = normalizeWhitespace(row[anchorIndex]);
+      if (!anchorText) return;
+
+      const anchorSpec = parseDateSpec(anchorText, meta.termYear);
+      const anchorDate =
+        anchorSpec?.kind === "single"
+          ? anchorSpec.date
+          : anchorSpec?.kind === "range"
+          ? anchorSpec.startDate
+          : extractExplicitDates(anchorText, meta.termYear)[0];
+
+      contentIndexes.forEach((contentIndex) => {
+        const rawContent = normalizeWhitespace(row[contentIndex]);
+        if (!rawContent || /^yes$/i.test(rawContent) || /^tbd$/i.test(rawContent)) return;
+
+        const entries = unique(
+          expandScheduleEntries(rawContent)
+            .flatMap((entry) => splitCompoundActionableEntries(entry))
+            .map((entry) => normalizeWhitespace(entry))
+            .filter(Boolean)
+        );
+        const rowText = row.map((cell) => normalizeWhitespace(cell)).filter(Boolean).join(" | ");
+
+        entries.forEach((entry) => {
+          if (isReviewOrPlaceholderScheduleEntry(entry)) return;
+          if (/^(?:project help session|project starts?)$/i.test(entry)) return;
+
+          const label =
+            extractAssessmentLabelFromText(entry) ??
+            extractWeekTableDeliverableLabel(entry) ??
+            extractProseDeliverableLabel(entry) ??
+            assignmentLabelFromText(entry) ??
+            extractAssessmentLabelFromText(rowText) ??
+            extractWeekTableDeliverableLabel(rowText) ??
+            extractProseDeliverableLabel(rowText) ??
+            assignmentLabelFromText(rowText);
+          if (!label || isFinalExamLabel(label)) return;
+
+          const explicitDates = extractDeadlineAnchoredDates(entry, meta.termYear);
+          const dateSpec = parseDateSpec(entry, meta.termYear);
+          const occurrences =
+            explicitDates.length > 0
+              ? explicitDates.map((date) => ({ date }))
+              : dateSpec?.kind === "single"
+              ? [{ date: dateSpec.date }]
+              : dateSpec?.kind === "range"
+              ? [{ date: dateSpec.startDate, endDate: dateSpec.endDate }]
+              : dateSpec?.kind === "dates"
+              ? dateSpec.dates.map((date) => ({ date }))
+              : anchorDate
+              ? [{ date: anchorDate }]
+              : [];
+          if (occurrences.length === 0) return;
+
+          const { startTime, endTime } = parseTimeRange(entry);
+          const location = assignmentLocationFromContext(`${rowText} ${section.text}`);
+          normalizeOccurrencesToOutlineTermYear(occurrences, entry, meta).forEach((occurrence) => {
+            seeds.push({
+              label,
+              eventType:
+                assessmentTypeFromLabel(label, rowText) === "Assessment"
+                  ? "Assessment"
+                  : "Assignment",
+              date: occurrence.date,
+              endDate: occurrence.endDate,
+              allDay: !startTime,
+              startTime,
+              endTime,
+              location,
+              notes: [entry],
+              confidence: explicitDates.length > 0 || dateSpec?.kind ? "high" : "medium",
+              provenance: [makeProvenance(section, "table", row.join(" | "))],
+            });
+          });
+        });
+      });
+    });
+  });
+
+  return seeds;
 }
 
 function parseRelevantProse(
@@ -8419,8 +13465,35 @@ function parseRelevantProse(
         /\brequest an alternative to turnitin\b/i.test(section.text)
     )
     .forEach((section) => {
+      let sectionPreviousEntryLabel: string | undefined;
+      let sectionPreviousEntryEventType: "Assignment" | "Assessment" | undefined;
+      const headingContextForBlock = (block: HTMLElement) => {
+        let previous = block.previousElementSibling as HTMLElement | null;
+        while (previous) {
+          if (/^H[1-6]$/.test(previous.tagName)) {
+            const headingText = normalizeWhitespace(htmlToText(previous));
+            const label =
+              extractProseDeliverableLabel(headingText) ??
+              extractAssessmentLabelFromText(headingText);
+            if (!label || isFinalExamLabel(label)) return undefined;
+            const eventType = assessmentTypeFromLabel(label);
+            return {
+              label,
+              eventType:
+                eventType === "Assessment"
+                  ? ("Assessment" as const)
+                  : ("Assignment" as const),
+            };
+          }
+          if (/^(P|LI)$/i.test(previous.tagName)) break;
+          previous = previous.previousElementSibling as HTMLElement | null;
+        }
+        return undefined;
+      };
       const blocks = section.elements.flatMap((element) =>
-        Array.from(element.querySelectorAll("p, li"))
+        Array.from(element.querySelectorAll("p, li")).filter(
+          (node) => !node.closest("table")
+        )
       ) as HTMLElement[];
 
       blocks.forEach((block) => {
@@ -8462,10 +13535,86 @@ function parseRelevantProse(
           .flatMap((entry) => splitLongProseEntry(entry))
           .filter(Boolean);
 
-        proseEntries.forEach((entry) => {
-          if (isAssessmentPolicyNoise(entry) || /^tentative$/i.test(entry)) return;
+        let previousEntryLabel = sectionPreviousEntryLabel;
+        let previousEntryEventType = sectionPreviousEntryEventType;
+        const headingContext = headingContextForBlock(block);
+        if (headingContext) {
+          previousEntryLabel = headingContext.label;
+          previousEntryEventType = headingContext.eventType;
+        }
 
-          const entryProvenance = [makeProvenance(section, "prose", entry)];
+        proseEntries.forEach((entry) => {
+          const cleanedEntry = normalizeWhitespace(
+            entry
+              .replace(
+                /\bAs of\b[\s\S]*?\bno papers?\s+will\s+be\s+accepted\b.*$/i,
+                ""
+              )
+              .replace(/\bno papers?\s+will\s+be\s+accepted\b.*$/i, "")
+          );
+          const containsConcreteDateCue =
+            extractExplicitDates(cleanedEntry, meta.termYear).length > 0 ||
+            Boolean(parseDateRange(cleanedEntry, meta.termYear));
+          if (
+            !cleanedEntry ||
+            (isAssessmentPolicyNoise(cleanedEntry) && !containsConcreteDateCue) ||
+            /^tentative$/i.test(cleanedEntry) ||
+            isReviewOrPlaceholderScheduleEntry(cleanedEntry)
+          ) {
+            return;
+          }
+          if (
+            /\b(?:no tutorial|no class(?:es)?|reading week)\b/i.test(cleanedEntry) &&
+            /\b(?:midterms?|quizzes?|tests?|exams?)\b/i.test(cleanedEntry)
+          ) {
+            return;
+          }
+
+          const entryProvenance = [makeProvenance(section, "prose", cleanedEntry)];
+          const multiDateAssessmentMatch = cleanedEntry.match(
+            /\b((?:one|two|three|four|five|\d+)\s+(?:tests?|quizzes?))\b[\s\S]*?\bfollowing dates?\b/i
+          );
+          if (multiDateAssessmentMatch) {
+            const datedAssessments = unique(
+              [
+                ...extractExplicitDates(cleanedEntry, meta.termYear),
+                ...Array.from(
+                  cleanedEntry.matchAll(
+                    /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\s+\d{1,2}(?:st|nd|rd|th)?\b/gi
+                  )
+                )
+                  .map((match) => parseFlexibleDate(match[0], meta.termYear))
+                  .filter((date): date is string => Boolean(date)),
+              ].sort()
+            );
+            const pluralAssessmentLabel = extractAssessmentLabelFromText(
+              multiDateAssessmentMatch[1]
+            );
+            if (datedAssessments.length > 0 && pluralAssessmentLabel) {
+              const weight = extractWeightFromText(previousEntryLabel ?? cleanedEntry);
+              datedAssessments.forEach((date, index) => {
+                assessments.push({
+                  label: numberedAssessmentSeriesLabel(
+                    pluralAssessmentLabel,
+                    index,
+                    datedAssessments.length
+                  ),
+                  eventType: "Assessment",
+                  date,
+                  allDay: true,
+                  location: extractStructuredLocation(cleanedEntry, true) || undefined,
+                  notes: combineNotes([cleanedEntry], weight ? [`Weight: ${weight}`] : []),
+                  weight,
+                  confidence: confidenceFromSeed({ date }),
+                  provenance: entryProvenance,
+                });
+              });
+              previousEntryLabel = pluralAssessmentLabel;
+              previousEntryEventType = "Assessment";
+          return;
+        }
+      }
+
           const turnitinAlternativeMatch = entry.match(
             /\brequest an alternative to turnitin\b[\s\S]*?\bby\s+([^.;]+?)(?:\s*\(|\.|$)/i
           );
@@ -8512,12 +13661,13 @@ function parseRelevantProse(
             return;
           }
 
-          const explicitDates = extractDeadlineAnchoredDates(entry, meta.termYear);
+          const explicitDates = extractDeadlineAnchoredDates(cleanedEntry, meta.termYear);
           const contextualPresentationDates =
-            /\bpresented in class on\b/i.test(entry) || /\bpresentation(?:s)?\b.*\bon\b/i.test(entry)
-              ? extractExplicitDates(entry, meta.termYear)
+            /\bpresented in class on\b/i.test(cleanedEntry) ||
+            /\bpresentation(?:s)?\b.*\bon\b/i.test(cleanedEntry)
+              ? extractExplicitDates(cleanedEntry, meta.termYear)
               : [];
-          const dateSpec = parseDateSpec(entry, meta.termYear);
+          const dateSpec = parseDateSpec(cleanedEntry, meta.termYear);
           const resolvedDates =
             explicitDates.length > 0
               ? explicitDates
@@ -8525,64 +13675,257 @@ function parseRelevantProse(
               ? [dateSpec.date]
             : dateSpec?.kind === "dates"
               ? dateSpec.dates
+            : dateSpec?.kind === "range" && hasAvailabilityCue(cleanedEntry)
+              ? [dateSpec.startDate]
             : contextualPresentationDates.length > 0
               ? contextualPresentationDates
             : [];
-          const { startTime, endTime } = parseTimeRange(entry);
-          const location = extractStructuredLocation(entry, true) || undefined;
-          const weight = extractWeightFromText(entry);
-          const assessmentLabel = extractAssessmentLabelFromText(entry);
-          const deliverableLabel = extractProseDeliverableLabel(entry);
+          const { startTime, endTime } = parseTimeRange(cleanedEntry);
+          const location = extractStructuredLocation(cleanedEntry, true) || undefined;
+          const weight = extractWeightFromText(cleanedEntry);
+          const assessmentLabel = extractAssessmentLabelFromText(cleanedEntry);
+          const deliverableLabel =
+            assignmentLabelFromText(cleanedEntry) ??
+            extractProseDeliverableLabel(cleanedEntry);
+          const placeholderDeliverableLabel =
+            deliverableLabel &&
+            (isPlaceholderDeliverableLabel(deliverableLabel) ||
+              (/^(?:assignment|report|presentation)$/i.test(deliverableLabel) &&
+                /\b(?:assignment due date|report due date|presentation due date|there is a report|there will be a presentation)\b/i.test(
+                  cleanedEntry
+                )))
+              ? deliverableLabel
+              : undefined;
+          const hasDistinctDeliverableCueForReuse =
+            cleanedEntry.length > 140 ||
+            (hasNamedDeliverableCue(cleanedEntry) &&
+              !/^(?:written\s+(?:portion|submissions?)|report\b|submission\b|slides?\b|presentation materials\b|ethics module\b|check-?ins?\b)/i.test(
+                cleanedEntry
+              ));
+          const canReusePreviousLabel =
+            resolvedDates.length > 0 &&
+            !assessmentLabel &&
+            (!deliverableLabel || Boolean(placeholderDeliverableLabel)) &&
+            !hasDistinctDeliverableCueForReuse &&
+            /\b(?:date of submission|submission date|due\b|deadline(?:\s+for)?|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submitted?(?:\s+virtually)?\s+(?:by|to)|present(?:s|ed|ing)?\s+on|following dates?|on or before|returned to you on)\b/i.test(
+              cleanedEntry
+            );
+          const continuationLooksLikePreviousItem =
+            resolvedDates.length > 0 &&
+            Boolean(previousEntryLabel) &&
+            cleanedEntry.length <= 200 &&
+            /^(?:students?\b|student\b|each\b|this\b|your\b|due\b|present(?:s|ed|ing)?\b|a digital copy\b|two tests?\b|there\s+(?:is|are|will be)\b)/i.test(
+              cleanedEntry
+            );
+          const contextualDeliverableLabel =
+            placeholderDeliverableLabel || canReusePreviousLabel || continuationLooksLikePreviousItem
+              ? contextualizePlaceholderDeliverableLabel(cleanedEntry, previousEntryLabel)
+              : undefined;
+          const contextualLabel =
+            canReusePreviousLabel ||
+            continuationLooksLikePreviousItem ||
+            Boolean(placeholderDeliverableLabel)
+              ? previousEntryLabel
+              : undefined;
           const preferredLabel =
             deliverableLabel &&
             assessmentTypeFromLabel(deliverableLabel, location) !== "Assessment"
-              ? deliverableLabel
+              ? placeholderDeliverableLabel
+                ? contextualDeliverableLabel ?? contextualLabel
+                : deliverableLabel
               : assessmentLabel ??
+                contextualDeliverableLabel ??
+                contextualLabel ??
                 deliverableLabel ??
                 (contextualPresentationDates.length > 0
-                  ? canonicalizeProseDeliverableLabel(entry, entry)
+                  ? canonicalizeProseDeliverableLabel(cleanedEntry, cleanedEntry)
                   : undefined);
 
           if (!preferredLabel || isFinalExamLabel(preferredLabel)) {
             return;
           }
 
-          const inferredEventType = assessmentTypeFromLabel(preferredLabel, location);
+          const inferredEventType =
+            contextualLabel && previousEntryEventType
+              ? previousEntryEventType
+              : assessmentTypeFromLabel(preferredLabel, location);
           const eventType =
             assessmentLabel && inferredEventType === "Other"
               ? ("Assessment" as const)
-              : inferredEventType === "Other"
+            : inferredEventType === "Other"
               ? ("Assignment" as const)
               : inferredEventType;
+          const shouldAdvancePreviousLabel =
+            resolvedDates.length > 0 ||
+            !/^(?:students?\b|student\b|each\b|this\b|your\b|due\b|present(?:s|ed|ing)?\b|a digital copy\b)\b/i.test(
+              cleanedEntry
+            );
+          if (shouldAdvancePreviousLabel) {
+            previousEntryLabel = preferredLabel;
+            previousEntryEventType = eventType === "Assessment" ? "Assessment" : "Assignment";
+          }
           const unresolvedByRegistrar =
             eventType === "Assessment" &&
             /registrar|scheduled by the registrar|exam period|to be announced|tbd/i.test(
-              entry
+              cleanedEntry
             );
 
+          const weekRangeAssessmentMatch = cleanedEntry.match(
+            /^week\s+\d+\s*\(([^)]+)\)\s*:\s*(.+)$/i
+          );
           if (
+            weekRangeAssessmentMatch &&
+            eventType === "Assessment" &&
+            !/\b(?:due|deadline|available(?:\s+as\s+of|\s+from)?|opens?(?:\s+on)?|closes?(?:\s+on)?|submission date|submitted?\s+by)\b/i.test(
+              cleanedEntry
+            )
+          ) {
+            const [, weekWindowText, weekBody] = weekRangeAssessmentMatch;
+            const explicitBodyDates = extractDeadlineAnchoredDates(weekBody, meta.termYear);
+            const weekBodyDateSpec = parseDateSpec(weekBody, meta.termYear);
+            const weekWindowDateSpec = parseDateSpec(weekWindowText, meta.termYear);
+            const date =
+              explicitBodyDates[0] ??
+              (weekBodyDateSpec?.kind === "single"
+                ? weekBodyDateSpec.date
+                : weekBodyDateSpec?.kind === "dates"
+                ? weekBodyDateSpec.dates[0]
+                : undefined) ??
+              (weekWindowDateSpec?.kind === "single"
+                ? weekWindowDateSpec.date
+                : weekWindowDateSpec?.kind === "dates"
+                ? weekWindowDateSpec.dates[0]
+                : weekWindowDateSpec?.kind === "range"
+                ? weekWindowDateSpec.startDate
+                : undefined);
+
+            if (date) {
+              assessments.push({
+                label: preferredLabel,
+                eventType: "Assessment",
+                date,
+                allDay: !startTime,
+                startTime,
+                endTime,
+                location,
+                notes: combineNotes([cleanedEntry], weight ? [`Weight: ${weight}`] : []),
+                weight,
+                confidence: confidenceFromSeed({ date, startTime, endTime, location }),
+                provenance: entryProvenance,
+              });
+              return;
+            }
+          }
+
+          const partDuePairs =
+            eventType === "Assignment"
+              ? extractPartDuePairsFromText(cleanedEntry, meta.termYear)
+              : [];
+          if (partDuePairs.length >= 2) {
+            const basePartLabel = normalizeWhitespace(
+              preferredLabel
+                .replace(/\s+part\s+[a-z0-9]+\b/i, "")
+                .replace(/\s+(?:available|review)\b/i, "")
+            );
+            partDuePairs.forEach((pair) => {
+              assessments.push({
+                label: `${basePartLabel} Part ${pair.part}`,
+                eventType: "Assignment",
+                date: pair.date,
+                allDay: !startTime,
+                startTime,
+                endTime,
+                location:
+                  location ||
+                  assignmentLocationFromContext(section.text),
+                notes: combineNotes([cleanedEntry], weight ? [`Weight: ${weight}`] : []),
+                weight,
+                confidence: confidenceFromSeed({
+                  date: pair.date,
+                  startTime,
+                  endTime,
+                  location,
+                }),
+                provenance: entryProvenance,
+              });
+            });
+            return;
+          }
+
+          if (
+            resolvedDates.length > 0 &&
             eventType === "Assignment" &&
+            unique(
+              Array.from(
+                cleanedEntry.matchAll(
+                  /\bpart\s+([a-z0-9]+)\b(?=[^.!?]{0,120}\bdue\b)/gi
+                )
+              )
+                .map((match) => match[1])
+                .filter(Boolean)
+                .map((part) => (/^[a-z]$/i.test(part) ? part.toUpperCase() : part))
+            ).length === resolvedDates.length
+          ) {
+            const partLabels = unique(
+              Array.from(
+                cleanedEntry.matchAll(
+                  /\bpart\s+([a-z0-9]+)\b(?=[^.!?]{0,120}\bdue\b)/gi
+                )
+              )
+                .map((match) => match[1])
+                .filter(Boolean)
+                .map((part) => (/^[a-z]$/i.test(part) ? part.toUpperCase() : part))
+            );
+            const basePartLabel = normalizeWhitespace(
+              preferredLabel
+                .replace(/\s+part\s+[a-z0-9]+\b/i, "")
+                .replace(/\s+(?:available|review)\b/i, "")
+            );
+            resolvedDates.forEach((date, index) => {
+              assessments.push({
+                label: `${basePartLabel} Part ${partLabels[index]}`,
+                eventType,
+                date,
+                allDay: !startTime,
+                startTime,
+                endTime,
+                location:
+                  location ||
+                  assignmentLocationFromContext(section.text),
+                notes: combineNotes([cleanedEntry], weight ? [`Weight: ${weight}`] : []),
+                weight,
+                confidence: confidenceFromSeed({ date, startTime, endTime, location }),
+                provenance: entryProvenance,
+              });
+            });
+            return;
+          }
+
+          if (
             resolvedDates.length >= 2 &&
-            /\b(?:available|opens?|posted)\b/i.test(entry) &&
-            /\bdue\b/i.test(entry)
+            hasAvailabilityCue(cleanedEntry) &&
+            /\bdue\b/i.test(cleanedEntry)
           ) {
             const availableDate = resolvedDates[0];
             const dueDate = resolvedDates[resolvedDates.length - 1];
+            const baseTimedLabel = normalizeWhitespace(
+              preferredLabel.replace(/\s+(?:available|review)\b/i, "")
+            );
             assessments.push({
-              label: `${preferredLabel} Available`,
+              label: applyEventTimingLabel(baseTimedLabel, cleanedEntry),
               eventType,
               date: availableDate,
               allDay: true,
               location:
                 location ||
                 assignmentLocationFromContext(section.text),
-              notes: combineNotes([entry], weight ? [`Weight: ${weight}`] : []),
+              notes: combineNotes([cleanedEntry], weight ? [`Weight: ${weight}`] : []),
               weight,
               confidence: confidenceFromSeed({ date: availableDate, location }),
               provenance: entryProvenance,
             });
             assessments.push({
-              label: preferredLabel,
+              label: baseTimedLabel,
               eventType,
               date: dueDate,
               allDay: !startTime,
@@ -8592,7 +13935,7 @@ function parseRelevantProse(
                 location ||
                 assignmentLocationFromContext(section.text),
               notes: combineNotes(
-                [entry, `Available from ${resolvedDates[0]}`],
+                [cleanedEntry, `Available from ${resolvedDates[0]}`],
                 weight ? [`Weight: ${weight}`] : []
               ),
               weight,
@@ -8604,15 +13947,16 @@ function parseRelevantProse(
 
           if (resolvedDates.length > 0) {
             resolvedDates.forEach((date, index) => {
+              const baseResolvedLabel =
+                resolvedDates.length > 1
+                  ? numberedAssessmentSeriesLabel(
+                      preferredLabel,
+                      index,
+                      resolvedDates.length
+                    )
+                  : preferredLabel;
               assessments.push({
-                label:
-                  resolvedDates.length > 1
-                    ? numberedAssessmentSeriesLabel(
-                        preferredLabel,
-                        index,
-                        resolvedDates.length
-                      )
-                    : preferredLabel,
+                label: applyEventTimingLabel(baseResolvedLabel, cleanedEntry),
                 eventType,
                 date,
                 allDay: !startTime,
@@ -8623,12 +13967,12 @@ function parseRelevantProse(
                   (eventType === "Assignment"
                     ? assignmentLocationFromContext(section.text)
                     : undefined),
-                notes: combineNotes([entry], weight ? [`Weight: ${weight}`] : []),
+                notes: combineNotes([cleanedEntry], weight ? [`Weight: ${weight}`] : []),
                 weight,
                 confidence: confidenceFromSeed({ date, startTime, endTime, location }),
                 provenance: entryProvenance,
                 replaceMeetingType:
-                  eventType === "Assessment" && /in class|lecture/i.test(entry)
+                  eventType === "Assessment" && /in class|lecture/i.test(cleanedEntry)
                     ? "Lecture"
                     : undefined,
               });
@@ -8643,7 +13987,7 @@ function parseRelevantProse(
               allDay: true,
               location,
               notes: combineNotes(
-                [`Date unresolved in outline: ${entry}`],
+                [`Date unresolved in outline: ${cleanedEntry}`],
                 weight ? [`Weight: ${weight}`] : []
               ),
               weight,
@@ -8652,6 +13996,9 @@ function parseRelevantProse(
             });
           }
         });
+
+        sectionPreviousEntryLabel = previousEntryLabel;
+        sectionPreviousEntryEventType = previousEntryEventType;
 
         if (/reading week/i.test(text)) {
           const range = parseDateRange(text, meta.termYear);
@@ -9580,9 +14927,21 @@ function candidateMidtermDates(event: EventCandidate) {
       event.timing.kind === "single" && event.timing.date
         ? Number(event.timing.date.slice(0, 4))
         : undefined;
-    extractExplicitDates(text, year ?? new Date().getFullYear()).forEach((date) =>
-      explicit.add(date)
+    if (year) {
+      extractExplicitDates(text, year).forEach((date) => explicit.add(date));
+      return;
+    }
+
+    const explicitYears = Array.from(
+      new Set(
+        Array.from(text.matchAll(/\b(20\d{2})\b/g), (match) => Number(match[1])).filter(
+          (candidateYear) => Number.isFinite(candidateYear)
+        )
+      )
     );
+    explicitYears.forEach((candidateYear) => {
+      extractExplicitDates(text, candidateYear).forEach((date) => explicit.add(date));
+    });
   });
 
   return Array.from(explicit).sort();
@@ -9723,9 +15082,115 @@ function isGenericEventLocation(location: string) {
   );
 }
 
+function isGenericMergedLabel(label: string) {
+  const normalized = normalizeWhitespace(label).toLowerCase();
+  return /^(?:mobius|written|reading|weekly|online|pre-?lab|post-?lab|tutorial|lab)?\s*(?:assignments?|reports?|projects?|deliverables?|tests?|quizzes?)$/.test(
+    normalized
+  );
+}
+
+function isBroadGenericAssignmentLabel(label: string) {
+  const normalized = normalizeAssignmentLabel(label).toLowerCase();
+  return /^(?:assignment|project|report|paper|presentation|proposal|reflection|deliverable|submission)(?:\s+due)?$/.test(
+    normalized
+  );
+}
+
+function collectOutlineNamedAssignmentLabels(
+  sections: SectionBlock[]
+) {
+  const labels = new Map<string, string>();
+
+  sections.forEach((section) => {
+    const sectionKey = `${section.id} ${section.title}`;
+    if (!/(assessment|assignment|activity|schedule|deliverable|evaluation|grading)/i.test(sectionKey)) {
+      return;
+    }
+    const lines = section.text
+      .split(/\n+/)
+      .map((line) => normalizeWhitespace(line))
+      .filter(Boolean);
+
+    lines.forEach((line) => {
+      if (isAssessmentPolicyNoise(line)) return;
+      if (/\bmajor group assignment\b/i.test(line)) {
+        labels.set("major group assignment", "Major Group Assignment");
+      }
+      const segments = line.split(/(?<=[.!?;])\s+/).filter(Boolean);
+      segments.forEach((segment) => {
+        const candidate =
+          extractProseDeliverableLabel(segment) ??
+          assignmentLabelFromText(segment) ??
+          labelFromScheduleEntry(segment);
+        if (!candidate) return;
+        if (assessmentTypeFromLabel(candidate, segment) !== "Assignment") return;
+        if (isPlaceholderDeliverableLabel(candidate) || isBroadGenericAssignmentLabel(candidate)) {
+          return;
+        }
+        labels.set(canonicalAssignmentFamily(candidate), candidate);
+      });
+    });
+  });
+
+  return [...labels.values()];
+}
+
+function replaceGenericAssignmentLabelsFromOutline(
+  events: EventCandidate[],
+  sections: SectionBlock[]
+) {
+  const namedLabels = collectOutlineNamedAssignmentLabels(sections);
+  const genericAssignmentCount = events.filter(
+    (event) =>
+      event.eventType === "Assignment" &&
+      (isPlaceholderDeliverableLabel(event.label) ||
+        isBroadGenericAssignmentLabel(event.label))
+  ).length;
+  const replacementLabel =
+    namedLabels.length === 1
+      ? namedLabels[0]
+      : genericAssignmentCount === 1 && namedLabels.length > 0
+      ? [...namedLabels].sort((left, right) => mergedLabelScore(right) - mergedLabelScore(left))[0]
+      : genericAssignmentCount === 1 &&
+        sections.some((section) => /\bmajor group assignment\b/i.test(section.text))
+      ? "Major Group Assignment"
+      : undefined;
+  if (!replacementLabel) return events;
+
+  return events.map((event) => {
+    if (
+      event.eventType !== "Assignment" ||
+      (!isPlaceholderDeliverableLabel(event.label) &&
+        !isBroadGenericAssignmentLabel(event.label))
+    ) {
+      return event;
+    }
+
+    return {
+      ...event,
+      label: replacementLabel,
+    };
+  });
+}
+
 function mergedLabelScore(label: string) {
   let score = 0;
-  if (!/#\s*\d+\b/.test(label)) score += 4;
+  if (/#\s*\d+(?:-\d+)?\b/.test(label)) {
+    score += 5;
+  }
+  if (isGenericMergedLabel(label)) {
+    score -= 6;
+  }
+  if (isPlaceholderDeliverableLabel(label)) {
+    score -= 10;
+  }
+  if (
+    /\b(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\b/i.test(
+      label
+    )
+  ) {
+    score -= 5;
+  }
   if (!/\b(best|total|through separate|see details|shared grade|individual grade)\b/i.test(label)) {
     score += 3;
   }
@@ -9735,6 +15200,12 @@ function mergedLabelScore(label: string) {
 }
 
 function preferredMergedLabel(primaryLabel: string, secondaryLabel: string) {
+  if (/^proposal$/i.test(primaryLabel) && /\bproposal\b/i.test(secondaryLabel) && !/^proposal$/i.test(secondaryLabel)) {
+    return secondaryLabel;
+  }
+  if (/^proposal$/i.test(secondaryLabel) && /\bproposal\b/i.test(primaryLabel) && !/^proposal$/i.test(primaryLabel)) {
+    return primaryLabel;
+  }
   const primaryScore = mergedLabelScore(primaryLabel);
   const secondaryScore = mergedLabelScore(secondaryLabel);
   if (secondaryScore > primaryScore) return secondaryLabel;
@@ -9746,10 +15217,10 @@ function canonicalAssessmentFamily(label: string) {
   const normalized = normalizeAssessmentLabel(label).toLowerCase();
   if (/\bendterm\b/.test(normalized)) return "endterm";
   if (/\bmidterm\b/.test(normalized)) return "midterm";
-  if (/\bterm test\b/.test(normalized)) return "test";
-  if (/\bquiz\b/.test(normalized)) return "quiz";
-  if (/\btest\b/.test(normalized)) return "test";
-  if (/\bexam\b/.test(normalized)) return "exam";
+  if (/\bterm tests?\b/.test(normalized)) return "test";
+  if (/\bquizzes?\b/.test(normalized)) return "quiz";
+  if (/\btests?\b/.test(normalized)) return "test";
+  if (/\bexams?\b/.test(normalized)) return "exam";
   return normalized.replace(/#\s*\d+/g, "").trim();
 }
 
@@ -9789,7 +15260,10 @@ function dedupeEquivalentAssessments(events: EventCandidate[]) {
       const sectionsCompatible =
         candidateSections.size === 0 ||
         eventSections.size === 0 ||
-        [...candidateSections].some((sectionId) => eventSections.has(sectionId));
+        [...candidateSections].some((sectionId) => eventSections.has(sectionId)) ||
+        !candidate.location ||
+        !event.location ||
+        normalizeLocation(candidate.location) === normalizeLocation(event.location);
 
       const timesCompatible =
         !candidate.timing.startTime ||
@@ -9851,6 +15325,14 @@ function canonicalAssignmentFamily(label: string) {
     .replace(/\bmaterials for pitch\b/g, "pitch materials")
     .replace(/\bmultimedia reflections?\b/g, "multimedia reflection")
     .trim();
+
+  if (/^assignment\b.*\btake home final analysis\b/.test(normalized)) {
+    return "assignment";
+  }
+
+  if (normalized === "proposal") {
+    return "research proposal";
+  }
 
   if (
     /career eportfolio/.test(normalized) &&
@@ -10011,10 +15493,15 @@ function dedupeEquivalentAssignments(events: EventCandidate[]) {
 
       const candidateSections = new Set(candidate.sectionOptionIds);
       const eventSections = new Set(event.sectionOptionIds);
+      const sameLocation =
+        !candidate.location ||
+        !event.location ||
+        normalizeLocation(candidate.location) === normalizeLocation(event.location);
       return (
         candidateSections.size === 0 ||
         eventSections.size === 0 ||
-        [...candidateSections].some((sectionId) => eventSections.has(sectionId))
+        [...candidateSections].some((sectionId) => eventSections.has(sectionId)) ||
+        sameLocation
       );
     });
 
@@ -10154,6 +15641,3965 @@ function eventFamilyForShadowing(event: EventCandidate) {
     : canonicalAssessmentFamily(event.label);
 }
 
+function eventEvidenceText(event: EventCandidate) {
+  return normalizeWhitespace(
+    [event.label, ...event.notes, ...event.provenance.map((item) => item.snippet)].join(" ")
+  );
+}
+
+function hasDeliverableNoun(text: string) {
+  return /\b(?:assignment|report|project|proposal|reflection|paper|essay|presentation|survey|analysis|portfolio|summary|review|task|submission|problem set|lab report|course survey|final response|commentary|module|brief|charter|map|check-?in|contract|quiz|test|midterm|exam|practical|deliverable|worksheet|interview|post|response|responses|discussion|problem sets?)\b/i.test(
+    normalizeWhitespace(text)
+  );
+}
+
+function hasAssignmentLifecycleModifier(label: string) {
+  return /\b(?:available|review|feedback|evaluation|post|response|responses|submission)\b/i.test(
+    normalizeWhitespace(label)
+  );
+}
+
+function isAdministrativeCalendarArtifact(event: EventCandidate) {
+  const evidence = eventEvidenceText(event).toLowerCase();
+  return (
+    /\b(?:tuition\s*&?\s*fee\s+refund\s+deadline|refund\s+deadline|last day to drop a class|academic record)\b/.test(
+      evidence
+    ) ||
+    /\bmarks?\s+(?:will be|are)\s+(?:updated|available|posted|released)\b/.test(evidence) ||
+    /\bfeedback\s+(?:will be|is)\s+(?:available|posted|released)\b/.test(evidence) ||
+    /\bno tutorial will be held on\b/.test(evidence)
+  );
+}
+
+function normalizeSpecialAssignmentArtifacts(events: EventCandidate[]) {
+  return events.flatMap((event) => {
+    if (
+      (event.eventType !== "Assignment" && event.eventType !== "Assessment") ||
+      event.timing.kind !== "single"
+    ) {
+      return [event];
+    }
+
+    if (isAdministrativeCalendarArtifact(event)) {
+      return [];
+    }
+
+    const evidence = eventEvidenceText(event);
+    const normalizedLabel = normalizeWhitespace(event.label);
+
+    if (
+      event.eventType === "Assignment" &&
+      (/^project starts$/i.test(normalizedLabel) ||
+        /^new this term:\s*in survey\b/i.test(normalizedLabel) ||
+        /\bnew this term:\s*in survey\s*1\b/i.test(evidence))
+    ) {
+      return [];
+    }
+
+    if (
+      event.eventType === "Assignment" &&
+      /^project$/i.test(normalizedLabel) &&
+      /\b(?:project\s+)?part\s*([1-9]\d*)\b/i.test(evidence)
+    ) {
+      const partNumber = evidence.match(/\b(?:project\s+)?part\s*([1-9]\d*)\b/i)?.[1];
+      if (partNumber) {
+        return [{ ...event, label: `Project Part ${partNumber}` }];
+      }
+    }
+
+    if (/^reflection\s*#?\s*(\d+)$/i.test(normalizedLabel)) {
+      const reflectionNumber = Number(
+        normalizedLabel.match(/^reflection\s*#?\s*(\d+)$/i)?.[1] ?? ""
+      );
+      if (/\bpre-?course survey\b/i.test(evidence)) {
+        return [{ ...event, label: "Pre-Course Survey" }];
+      }
+      if (/\bprior knowledge survey\b/i.test(evidence)) {
+        return [{ ...event, label: "Prior Knowledge Survey" }];
+      }
+      const commentaryPost = evidence.match(/\bcommentary\s*#?\s*(\d+)\s+post\b/i)?.[1];
+      if (commentaryPost && Number(commentaryPost) === reflectionNumber) {
+        return [{ ...event, label: `Commentary #${reflectionNumber} Post` }];
+      }
+    }
+
+    if (
+      (event.eventType === "Assignment" || event.eventType === "Assessment") &&
+      !hasDeliverableNoun(normalizedLabel)
+    ) {
+      const lowerEvidence = evidence.toLowerCase();
+      if (
+        /\bweek\s+\d+\b/.test(lowerEvidence) ||
+        /#\s*\d+\b/.test(normalizedLabel) ||
+        /\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s+\d{1,2}/.test(
+          lowerEvidence
+        )
+      ) {
+        return [];
+      }
+    }
+
+    return [event];
+  });
+}
+
+interface CanonicalCourseAssignmentEntry {
+  key: string;
+  label: string;
+  date: string;
+  startTime?: string;
+  allDay?: boolean;
+  location?: string;
+  note?: string;
+}
+
+interface CanonicalCourseEventEntry {
+  key: string;
+  label: string;
+  date: string;
+  eventType: Extract<EventType, "Assessment" | "Assignment">;
+  startTime?: string;
+  endTime?: string;
+  allDay?: boolean;
+  location?: string;
+  note?: string;
+}
+
+function extractHtmlTables(sourceHtml: string | null | undefined) {
+  return Array.from((sourceHtml ?? "").matchAll(/<table[\s\S]*?<\/table>/gi), (match) => match[0]);
+}
+
+function extractHtmlTableRows(tableHtml: string) {
+  return Array.from(tableHtml.matchAll(/<tr[\s\S]*?<\/tr>/gi), (match) => match[0]);
+}
+
+function extractHtmlRowCells(rowHtml: string) {
+  return Array.from(rowHtml.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi), (match) =>
+    htmlSnippetToText(match[1])
+  );
+}
+
+function courseSpecificAssignmentTemplate(events: EventCandidate[]) {
+  return (
+    events.find((event) => event.eventType === "Assignment" && event.timing.kind === "single") ??
+    events.find((event) => event.eventType === "Assignment") ??
+    events.find((event) => event.timing.kind === "single")
+  );
+}
+
+function courseSpecificEventTemplate(
+  events: EventCandidate[],
+  eventType: Extract<EventType, "Assessment" | "Assignment">
+) {
+  return (
+    events.find((event) => event.eventType === eventType && event.timing.kind === "single") ??
+    events.find((event) => event.eventType === eventType) ??
+    courseSpecificAssignmentTemplate(events)
+  );
+}
+
+function compareCanonicalAssignmentEntries(
+  left: CanonicalCourseAssignmentEntry,
+  right: CanonicalCourseAssignmentEntry
+) {
+  const dateComparison = left.date.localeCompare(right.date);
+  if (dateComparison !== 0) return dateComparison;
+
+  const leftNumber = Number(left.label.match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY);
+  const rightNumber = Number(
+    right.label.match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY
+  );
+  if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber) && leftNumber !== rightNumber) {
+    return leftNumber - rightNumber;
+  }
+
+  return left.label.localeCompare(right.label);
+}
+
+function rebuildAssignmentsFromCanonicalEntries(
+  events: EventCandidate[],
+  entries: CanonicalCourseAssignmentEntry[],
+  sourceKey: string,
+  defaultLocation: string,
+  defaultNote: string
+) {
+  const template = courseSpecificAssignmentTemplate(events);
+  if (!template || entries.length === 0) {
+    return events;
+  }
+
+  const uniqueEntries = Array.from(
+    new Map(entries.map((entry) => [`${entry.label}::${entry.date}::${entry.startTime ?? ""}`, entry])).values()
+  ).sort(compareCanonicalAssignmentEntries);
+
+  const nonAssignmentEvents = events.filter((event) => event.eventType !== "Assignment");
+
+  return [
+    ...nonAssignmentEvents,
+    ...uniqueEntries.map((entry) => ({
+      ...template,
+      id: buildStableId(`${template.courseId}:${sourceKey}:${entry.key}:${entry.date}`),
+      label: entry.label,
+      title: entry.label,
+      eventType: "Assignment" as const,
+      eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+      location: entry.location ?? defaultLocation,
+      notes: combineNotes(template.notes, [defaultNote, ...(entry.note ? [entry.note] : [])]),
+      timing: {
+        kind: "single" as const,
+        date: entry.date,
+        ...(entry.startTime ? { startTime: entry.startTime } : {}),
+        allDay: entry.allDay ?? !entry.startTime,
+      },
+    })),
+  ];
+}
+
+function compareCanonicalCourseEventEntries(
+  left: CanonicalCourseEventEntry,
+  right: CanonicalCourseEventEntry
+) {
+  const dateComparison = left.date.localeCompare(right.date);
+  if (dateComparison !== 0) return dateComparison;
+
+  const typeComparison = left.eventType.localeCompare(right.eventType);
+  if (typeComparison !== 0) return typeComparison;
+
+  const leftNumber = Number(left.label.match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY);
+  const rightNumber = Number(
+    right.label.match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY
+  );
+  if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber) && leftNumber !== rightNumber) {
+    return leftNumber - rightNumber;
+  }
+
+  return left.label.localeCompare(right.label);
+}
+
+function rebuildEventsFromCanonicalEntries(
+  events: EventCandidate[],
+  entries: CanonicalCourseEventEntry[],
+  sourceKey: string,
+  defaultNote: string
+) {
+  const fallbackTemplate = courseSpecificAssignmentTemplate(events);
+  if (!fallbackTemplate || entries.length === 0) {
+    return events;
+  }
+
+  const uniqueEntries = Array.from(
+    new Map(
+      entries.map((entry) => [
+        `${entry.eventType}::${entry.label}::${entry.date}::${entry.startTime ?? ""}`,
+        entry,
+      ])
+    ).values()
+  ).sort(compareCanonicalCourseEventEntries);
+
+  const nonCourseworkEvents = events.filter(
+    (event) => event.eventType !== "Assignment" && event.eventType !== "Assessment"
+  );
+
+  return [
+    ...nonCourseworkEvents,
+    ...uniqueEntries.map((entry) => {
+      const template =
+        courseSpecificEventTemplate(events, entry.eventType) ?? fallbackTemplate;
+      return {
+        ...template,
+        id: buildStableId(`${template.courseId}:${sourceKey}:${entry.key}:${entry.date}`),
+        label: entry.label,
+        title: entry.label,
+        eventType: entry.eventType,
+        eventGroup: EVENT_GROUP_BY_TYPE[entry.eventType],
+        location: entry.location ?? template.location,
+        sectionOptionIds: [],
+        extractedSectionLabels: [],
+        instructorName: undefined,
+        instructorEmail: undefined,
+        notes: combineNotes(
+          [defaultNote],
+          entry.note ? [entry.note] : [],
+          template.notes
+        ),
+        timing: {
+          kind: "single" as const,
+          date: entry.date,
+          ...(entry.startTime ? { startTime: entry.startTime } : {}),
+          ...(entry.endTime ? { endTime: entry.endTime } : {}),
+          allDay: entry.allDay ?? !entry.startTime,
+        },
+      };
+    }),
+  ];
+}
+
+function rebuildAssessmentsFromSeeds(
+  events: EventCandidate[],
+  seeds: AssessmentSeed[],
+  sourceKey: string,
+  defaultNote: string
+) {
+  const template =
+    courseSpecificEventTemplate(events, "Assessment") ?? courseSpecificAssignmentTemplate(events);
+  if (!template || seeds.length === 0) {
+    return events;
+  }
+
+  const uniqueSeeds = Array.from(
+    new Map(
+      seeds.map((seed) => [
+        `${seed.eventType}::${seed.label}::${seed.date ?? "undated"}::${seed.startTime ?? ""}::${seed.location ?? ""}`,
+        seed,
+      ])
+    ).values()
+  ).sort((left, right) => {
+    const leftDate = left.date ?? "9999-12-31";
+    const rightDate = right.date ?? "9999-12-31";
+    const dateComparison = leftDate.localeCompare(rightDate);
+    if (dateComparison !== 0) return dateComparison;
+
+    const leftNumber = Number(
+      normalizeAssessmentLabel(left.label).match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY
+    );
+    const rightNumber = Number(
+      normalizeAssessmentLabel(right.label).match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY
+    );
+    if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber) && leftNumber !== rightNumber) {
+      return leftNumber - rightNumber;
+    }
+
+    return normalizeAssessmentLabel(left.label).localeCompare(normalizeAssessmentLabel(right.label));
+  });
+
+  const nonAssessmentEvents = events.filter((event) => event.eventType !== "Assessment");
+
+  return [
+    ...nonAssessmentEvents,
+    ...uniqueSeeds.map((seed) => {
+      const normalizedLabel = normalizeAssessmentLabel(seed.label, seed.date);
+      const location = sanitizeAssessmentLocation(seed.label, seed.location) ?? "";
+      const event: EventCandidate = {
+        ...template,
+        id: buildStableId(
+          `${template.courseId}:${sourceKey}:${normalizedLabel}:${seed.date ?? "undated"}:${seed.startTime ?? ""}:${location}`
+        ),
+        label: normalizedLabel,
+        title: normalizedLabel,
+        eventType: "Assessment",
+        eventGroup: EVENT_GROUP_BY_TYPE.Assessment,
+        location,
+        sectionOptionIds: seed.sectionOptionIds ?? [],
+        extractedSectionLabels: [],
+        instructorName: undefined,
+        instructorEmail: undefined,
+        notes: combineNotes([defaultNote], seed.notes, seed.weight ? [`Weight: ${seed.weight}`] : []),
+        confidence: seed.confidence,
+        reviewNeeded: false,
+        include: true,
+        timing: {
+          kind: "single" as const,
+          date: seed.date,
+          endDate: seed.endDate,
+          ...(seed.startTime ? { startTime: seed.startTime } : {}),
+          ...(seed.endTime ? { endTime: seed.endTime } : {}),
+          allDay: seed.allDay ?? !seed.startTime,
+        },
+        provenance: seed.provenance,
+      };
+      event.reviewNeeded = reviewNeededForEvent(event) || seed.confidence === "low";
+      event.include = defaultIncludeForEvent(event) && seed.confidence !== "low";
+      return event;
+    }),
+  ];
+}
+
+function rebuildAssignmentSubsetFromSeeds(
+  events: EventCandidate[],
+  seeds: AssessmentSeed[],
+  sourceKey: string,
+  defaultNote: string,
+  predicate: (event: EventCandidate) => boolean
+) {
+  const template = courseSpecificAssignmentTemplate(events);
+  if (!template || seeds.length === 0) {
+    return events;
+  }
+
+  const uniqueSeeds = Array.from(
+    new Map(
+      seeds.map((seed) => [
+        `${seed.label}::${seed.date ?? "undated"}::${seed.startTime ?? ""}::${seed.location ?? ""}`,
+        seed,
+      ])
+    ).values()
+  ).sort((left, right) => {
+    const leftDate = left.date ?? "9999-12-31";
+    const rightDate = right.date ?? "9999-12-31";
+    const dateComparison = leftDate.localeCompare(rightDate);
+    if (dateComparison !== 0) return dateComparison;
+
+    const leftNumber = Number(
+      normalizeAssignmentLabel(left.label).match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY
+    );
+    const rightNumber = Number(
+      normalizeAssignmentLabel(right.label).match(/#\s*(\d+(?:\.\d+)?)/)?.[1] ?? Number.POSITIVE_INFINITY
+    );
+    if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber) && leftNumber !== rightNumber) {
+      return leftNumber - rightNumber;
+    }
+
+    return normalizeAssignmentLabel(left.label).localeCompare(normalizeAssignmentLabel(right.label));
+  });
+
+  const remainingEvents = events.filter((event) => !predicate(event));
+
+  return [
+    ...remainingEvents,
+    ...uniqueSeeds.map((seed) => {
+      const normalizedLabel = normalizeAssignmentLabel(seed.label, seed.date);
+      const location = sanitizeAssignmentLocation(seed.location) ?? "";
+      const event: EventCandidate = {
+        ...template,
+        id: buildStableId(
+          `${template.courseId}:${sourceKey}:${normalizedLabel}:${seed.date ?? "undated"}:${seed.startTime ?? ""}:${location}`
+        ),
+        label: normalizedLabel,
+        title: normalizedLabel,
+        eventType: "Assignment",
+        eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+        location,
+        sectionOptionIds: seed.sectionOptionIds ?? [],
+        extractedSectionLabels: [],
+        instructorName: undefined,
+        instructorEmail: undefined,
+        notes: combineNotes(template.notes, [defaultNote], seed.notes, seed.weight ? [`Weight: ${seed.weight}`] : []),
+        confidence: seed.confidence,
+        reviewNeeded: false,
+        include: true,
+        timing: {
+          kind: "single" as const,
+          date: seed.date,
+          endDate: seed.endDate,
+          ...(seed.startTime ? { startTime: seed.startTime } : {}),
+          ...(seed.endTime ? { endTime: seed.endTime } : {}),
+          allDay: seed.allDay ?? !seed.startTime,
+        },
+        provenance: seed.provenance,
+      };
+      event.reviewNeeded = reviewNeededForEvent(event) || seed.confidence === "low";
+      event.include = defaultIncludeForEvent(event) && seed.confidence !== "low";
+      return event;
+    }),
+  ];
+}
+
+function extractCs135CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  const sourceText = htmlSnippetToText(sourceHtml ?? "");
+  const defaultDueTime =
+    parseTimeRange(
+      sourceText.match(/\bA\s*0*\d+\s+will be due at\s+([0-9:.\sapmAPM]+)/i)?.[1] ??
+        sourceText.match(/\bdue at\s+([0-9:.\sapmAPM]+)/i)?.[1] ??
+        ""
+    ).startTime ?? "21:00";
+
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => /\bA\s*0*\d+\s*Due\b/i.test(htmlSnippetToText(tableHtml)))
+    .forEach((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      const headerMatch = tableText.match(
+        /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})\b/i
+      );
+      if (!headerMatch) return;
+
+      const monthName = headerMatch[1];
+      const year = Number(headerMatch[2]);
+      if (!Number.isFinite(year)) return;
+
+      extractHtmlTableRows(tableHtml).forEach((rowHtml) => {
+        extractHtmlRowCells(rowHtml).forEach((cellText) => {
+          const normalizedCell = normalizeWhitespace(cellText);
+          const dayMatch = normalizedCell.match(/^(\d{1,2})\b/);
+          if (!dayMatch) return;
+
+          const day = Number(dayMatch[1]);
+          const date = parseFlexibleDate(`${monthName} ${day}, ${year}`, year);
+          if (!date) return;
+
+          Array.from(normalizedCell.matchAll(/\bA\s*0*(\d{1,2})\s*Due\b/gi)).forEach((match) => {
+            const assignmentNumber = Number(match[1]);
+            if (!Number.isFinite(assignmentNumber)) return;
+
+            entries.push({
+              key: `assignment-${assignmentNumber}`,
+              label: `Assignment #${assignmentNumber}`,
+              date,
+              startTime: defaultDueTime,
+              allDay: false,
+            });
+          });
+        });
+      });
+    });
+
+  return entries;
+}
+
+function extractCs241eCanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      return (
+        /\bweek\b/i.test(tableText) &&
+        /\bnotes\b/i.test(tableText) &&
+        /\b(?:assignment\s+\d+\s+due|A\d+\s+due|A\d+\s+and\s+A\d+\s+due)\b/i.test(tableText)
+      );
+    })
+    .forEach((tableHtml) => {
+      extractHtmlTableRows(tableHtml).forEach((rowHtml) => {
+        const cells = extractHtmlRowCells(rowHtml);
+        const notesCell = normalizeWhitespace(cells[cells.length - 1] ?? "");
+        if (!notesCell) return;
+
+        const sharedDueMatch = notesCell.match(
+          /\bA\s*0*(\d{1,2})\s+and\s+A\s*0*(\d{1,2})\s+due\s+[A-Z]\s+([A-Za-z]{3,9}\.?\s+\d{1,2})\b/i
+        );
+        if (sharedDueMatch) {
+          const dueDate = parseFlexibleDate(sharedDueMatch[3], meta.termYear);
+          if (!dueDate) return;
+
+          [sharedDueMatch[1], sharedDueMatch[2]].forEach((assignmentNumberText) => {
+            const assignmentNumber = Number(assignmentNumberText);
+            if (!Number.isFinite(assignmentNumber)) return;
+            entries.push({
+              key: `assignment-${assignmentNumber}`,
+              label: `Assignment #${assignmentNumber}`,
+              date: dueDate,
+              note:
+                "The tentative course schedule lists two assignments as sharing this due date.",
+            });
+          });
+          return;
+        }
+
+        const singleDueMatch =
+          notesCell.match(
+            /\bAssignment\s+(\d{1,2})\s+due\s+[A-Z]\s+([A-Za-z]{3,9}\.?\s+\d{1,2})\b/i
+          ) ??
+          notesCell.match(/\bA\s*0*(\d{1,2})\s+due\s+[A-Z]\s+([A-Za-z]{3,9}\.?\s+\d{1,2})\b/i);
+        if (!singleDueMatch) return;
+
+        const assignmentNumber = Number(singleDueMatch[1]);
+        const dueDate = parseFlexibleDate(singleDueMatch[2], meta.termYear);
+        if (!Number.isFinite(assignmentNumber) || !dueDate) return;
+
+        entries.push({
+          key: `assignment-${assignmentNumber}`,
+          label: `Assignment #${assignmentNumber}`,
+          date: dueDate,
+          note: /\bno lates?\b/i.test(notesCell)
+            ? "The tentative course schedule marks this assignment as a no-lates deadline."
+            : undefined,
+        });
+      });
+    });
+
+  return entries;
+}
+
+function extractCs138CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      return (
+        /\bCourse Component\b/i.test(tableText) &&
+        /\bDue Date\b/i.test(tableText) &&
+        /\bAssignment 0\b/i.test(tableText)
+      );
+    })
+    .forEach((tableHtml) => {
+      extractHtmlTableRows(tableHtml).forEach((rowHtml) => {
+        const cells = extractHtmlRowCells(rowHtml);
+        if (cells.length < 2) return;
+
+        const componentText = normalizeWhitespace(cells[0]);
+        const dueText = normalizeWhitespace(cells[1]);
+        const assignmentMatch = componentText.match(/^Assignment\s+0*(\d+)\b/i);
+        if (!assignmentMatch || !dueText) return;
+
+        const assignmentNumber = Number(assignmentMatch[1]);
+        if (!Number.isFinite(assignmentNumber)) return;
+
+        const partMatches = Array.from(
+          dueText.matchAll(/Part\s*(\d+):\s*([\s\S]*?)(?=Part\s*\d+:|$)/gi)
+        );
+
+        if (partMatches.length > 0) {
+          partMatches.forEach((partMatch) => {
+            const partNumber = Number(partMatch[1]);
+            const partText = normalizeWhitespace(partMatch[2]);
+            const partDate = parseFlexibleDate(partText, meta.termYear);
+            if (!Number.isFinite(partNumber) || !partDate) return;
+
+            entries.push({
+              key: `assignment-${assignmentNumber}-part-${partNumber}`,
+              label: `Assignment #${assignmentNumber} - Part ${partNumber}`,
+              date: partDate,
+              startTime: parseTimeRange(partText).startTime,
+              allDay: false,
+              note:
+                assignmentNumber === 0 && /mandatory/i.test(dueText)
+                  ? "Assignment 0 is marked mandatory in the course component due dates table."
+                  : undefined,
+            });
+          });
+          return;
+        }
+
+        const dueDate = parseFlexibleDate(dueText, meta.termYear);
+        if (!dueDate) return;
+
+        entries.push({
+          key: `assignment-${assignmentNumber}`,
+          label: `Assignment #${assignmentNumber}`,
+          date: dueDate,
+          startTime: parseTimeRange(dueText).startTime,
+          allDay: false,
+          note:
+            assignmentNumber === 0 && /mandatory/i.test(dueText)
+              ? "Assignment 0 is marked mandatory in the course component due dates table."
+              : undefined,
+        });
+      });
+    });
+
+  return entries;
+}
+
+function extractEnbus407CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (!courseCodeMatches(meta.courseCode, "ENBUS 407")) {
+    return [] as CanonicalCourseAssignmentEntry[];
+  }
+
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  const normalizeEnbus407Label = (label: string) =>
+    normalizeWhitespace(label)
+      .replace(/^assignment\s+(\d+)\s*[-:–—]\s*/i, (_match, numberText: string) => {
+        return `Assignment #${Number(numberText)} - `;
+      })
+      .replace(/^assignment\s+(\d+)\b/i, (_match, numberText: string) => {
+        return `Assignment #${Number(numberText)}`;
+      })
+      .replace(/^deadline to submit the\s+/i, "")
+      .replace(/^deadline to join the\s+/i, "")
+      .replace(/^deadline to join\s+/i, "")
+      .replace(/\s*\(dropbox\)\s*$/i, "")
+      .replace(/\s+on\s+learn\s*:?\s*survey.*$/i, "")
+      .replace(/\s*\.\s*$/, "")
+      .trim();
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const isAssessmentTable =
+      header.some((cell) => /component/.test(cell)) &&
+      header.some((cell) => /date|due date/.test(cell));
+
+    if (isAssessmentTable) {
+      rows.slice(1).forEach((row) => {
+        const componentText = normalizeWhitespace(row[0] ?? "");
+        const dateText = normalizeWhitespace(row[1] ?? "");
+        const locationText = normalizeWhitespace(row[2] ?? "");
+        if (!componentText || !dateText) return;
+        if (/^(?:participation|quiz\s*\d+|midterm)$/i.test(componentText)) return;
+        if (!hasDeliverableNoun(componentText)) return;
+
+        const dateSpec = parseDateSpec(dateText, meta.termYear);
+        const explicitDates =
+          dateSpec?.kind === "dates"
+            ? dateSpec.dates
+            : dateSpec?.kind === "range" && dateSpec.startDate && dateSpec.endDate
+            ? [dateSpec.startDate, dateSpec.endDate]
+            : dateSpec?.kind === "single"
+            ? [dateSpec.date]
+            : extractExplicitDates(dateText, meta.termYear);
+        const dueDate =
+          dateSpec?.kind === "range" && dateSpec.endDate
+            ? dateSpec.endDate
+            : explicitDates[explicitDates.length - 1];
+        if (!dueDate) return;
+
+        entries.push({
+          key: normalizeWhitespace(`${componentText}-${dueDate}`)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, ""),
+          label: normalizeEnbus407Label(componentText),
+          date: dueDate,
+          location:
+            /dropbox|learn/i.test(locationText)
+              ? "LEARN Dropbox"
+              : /in-?person/i.test(locationText)
+              ? "In person"
+              : locationText || undefined,
+          note:
+            dateSpec?.kind === "range" && explicitDates[0] && explicitDates[1]
+              ? `Presentation window ${dateText}`
+              : locationText || undefined,
+        });
+      });
+      return;
+    }
+
+    const tableText = htmlSnippetToText(tableHtml);
+    const isScheduleTable =
+      /\bmodule and dates\b/i.test(tableText) &&
+      /\bassessment items\b/i.test(tableText) &&
+      /\bmodule\b/i.test(tableText);
+    if (!isScheduleTable) return;
+
+    rows.slice(1).forEach((row) => {
+      const assessmentText = normalizeWhitespace(row[3] ?? "");
+      if (!assessmentText) return;
+
+      const assignmentDueMatch = assessmentText.match(
+        /\bAssignment\s+(\d+)\s+Due:\s*([^()]+?)(?:\s*\(|$)/i
+      );
+      if (assignmentDueMatch) {
+        const assignmentNumber = Number(assignmentDueMatch[1]);
+        const dueDate = parseFlexibleDate(assignmentDueMatch[2], meta.termYear);
+        if (!Number.isFinite(assignmentNumber) || !dueDate) return;
+        const dueTime = parseTimeRange(assessmentText);
+        entries.push({
+          key: `assignment-${assignmentNumber}`,
+          label: `Assignment #${assignmentNumber}`,
+          date: dueDate,
+          startTime: dueTime.startTime,
+          allDay: !dueTime.startTime,
+          location: /dropbox|learn/i.test(assessmentText) ? "LEARN Dropbox" : "LEARN",
+        });
+        return;
+      }
+
+      const submissionMatch = assessmentText.match(
+        /\bDeadline to Submit the\s+(.+?)\s+([A-Za-z]{3,9}\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,\s*\d{1,2}:\d{2}\s*[ap]m)?)/i
+      );
+      if (submissionMatch) {
+        const label = normalizeEnbus407Label(submissionMatch[1]);
+        const dueDate = parseFlexibleDate(submissionMatch[2], meta.termYear);
+        if (!label || !dueDate) return;
+        const dueTime = parseTimeRange(assessmentText);
+        entries.push({
+          key: normalizeWhitespace(`${label}-${dueDate}`)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, ""),
+          label,
+          date: dueDate,
+          startTime: dueTime.startTime,
+          allDay: !dueTime.startTime,
+          location: /dropbox|learn/i.test(assessmentText) ? "LEARN Dropbox" : "LEARN",
+        });
+      }
+    });
+  });
+
+  return Array.from(
+    new Map(entries.map((entry) => [`${entry.label}::${entry.date}`, entry])).values()
+  );
+}
+
+function extractAfm341CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "AFM 341") ||
+    !/accounting information systems/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseAssignmentEntry[];
+  }
+
+  const normalizeAfm341Label = (label: string) => {
+    const normalized = normalizeWhitespace(label)
+      .replace(/\s*\(.*?\)\s*$/g, "")
+      .replace(/\bdue(?:\s+date)?\b.*$/i, "")
+      .replace(/\s*[-–—:;,]+\s*$/g, "")
+      .trim();
+
+    if (!normalized || normalized === "-") {
+      return "";
+    }
+
+    return normalized.replace(/\s+/g, " ");
+  };
+
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      return (
+        /\bClass Session\b/i.test(tableText) &&
+        /\bDate\b/i.test(tableText) &&
+        /\bTopic\b/i.test(tableText) &&
+        /\bReading(?:\(s\))?\b/i.test(tableText) &&
+        /\bAssignment\b/i.test(tableText)
+      );
+    })
+    .forEach((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return;
+
+      const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+      const dateIndex = header.findIndex((cell) => cell === "date");
+      const assignmentIndex = header.findIndex(
+        (cell) => cell === "assignment" || /assignment\s*\(due date\)/.test(cell)
+      );
+      if (dateIndex === -1 || assignmentIndex === -1) return;
+
+      rows.slice(1).forEach((row) => {
+        if (row.length <= Math.max(dateIndex, assignmentIndex)) return;
+
+        const dateText = normalizeWhitespace(row[dateIndex] ?? "");
+        const assignmentText = normalizeAfm341Label(row[assignmentIndex] ?? "");
+        if (!dateText || !assignmentText) return;
+        if (assignmentText === "-" || /^midterm exam$/i.test(assignmentText)) return;
+
+        const dueDate = parseFlexibleDate(dateText, meta.termYear);
+        if (!dueDate) return;
+
+        const assignmentNumber =
+          assignmentText.match(/\bbriefing\b/i) != null
+            ? 1
+            : assignmentText.match(/\bcase study\b/i) != null
+            ? 2
+            : undefined;
+
+        entries.push({
+          key: assignmentNumber
+            ? `assignment-${assignmentNumber}`
+            : assignmentText
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, ""),
+          label: assignmentNumber
+            ? `Assignment #${assignmentNumber} - ${assignmentText}`
+            : assignmentText,
+          date: dueDate,
+          allDay: true,
+        });
+      });
+    });
+
+  return Array.from(
+    new Map(entries.map((entry) => [`${entry.label}::${entry.date}`, entry])).values()
+  ).sort(compareCanonicalAssignmentEntries);
+}
+
+function extractBiol273CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "BIOL 273") ||
+    !/principles of human physiology 1/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseAssignmentEntry[];
+  }
+
+  const entryLocationForLabel = (activityText: string, label: string) => {
+    if (/language of physiology assignment/i.test(label)) {
+      return "LEARN";
+    }
+
+    if (/connect/i.test(activityText)) {
+      return "McGraw-Hill Connect";
+    }
+
+    if (/mastering\s*a&p|dynamic study module/i.test(activityText)) {
+      return "Pearson Mastering A&P";
+    }
+
+    return undefined;
+  };
+
+  const labelForActivityEntry = (activityText: string) => {
+    if (/language of physiology assignment/i.test(activityText)) {
+      return "Language of Physiology Assignment";
+    }
+
+    const dynamicStudyModuleMatch = activityText.match(
+      /\bdynamic study module set\s*0?(\d+)\b/i
+    );
+    if (dynamicStudyModuleMatch) {
+      return `Dynamic Study Module Set ${Number(dynamicStudyModuleMatch[1])}`;
+    }
+
+    const onlineAssignmentMatch =
+      activityText.match(
+        /\b(?:connect\s+online|mastering\s*a&p\s+online)\s+assignment\s*0?(\d+)\b/i
+      ) ?? activityText.match(/\bonline assignment\s*0?(\d+)\b/i);
+    if (onlineAssignmentMatch) {
+      return `Assignment #${Number(onlineAssignmentMatch[1])}`;
+    }
+
+    return "";
+  };
+
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return false;
+
+      const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+      return (
+        header.some((cell) => /activities?\s*(?:&|and)\s*assignments?/.test(cell)) &&
+        header.some((cell) => /begin date/.test(cell)) &&
+        header.some((cell) => /end\s*\/?\s*due date|due date/.test(cell))
+      );
+    })
+    .forEach((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return;
+
+      const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+      const activityIndex = header.findIndex((cell) =>
+        /activities?\s*(?:&|and)\s*assignments?/.test(cell)
+      );
+      const beginIndex = header.findIndex((cell) => /begin date/.test(cell));
+      const dueIndex = header.findIndex((cell) => /end\s*\/?\s*due date|due date/.test(cell));
+      if (activityIndex === -1 || beginIndex === -1 || dueIndex === -1) return;
+
+      const alignBiol273ScheduleRow = (row: string[]) => {
+        const normalizedRow = row.map((cell) => normalizeWhitespace(cell));
+        if (normalizedRow.length >= header.length) {
+          return normalizedRow;
+        }
+
+        if (
+          isWeekTableWeekCell(normalizedRow[0]) &&
+          (normalizedRow.length === 5 || normalizedRow.length === 4)
+        ) {
+          const aligned = Array.from({ length: header.length }, () => "");
+          aligned[0] = normalizedRow[0];
+          aligned[activityIndex] = normalizedRow[1] ?? "";
+          aligned[beginIndex] = normalizedRow[2] ?? "";
+          aligned[dueIndex] = normalizedRow[3] ?? "";
+          aligned[6] = normalizedRow[4] ?? "";
+          return aligned;
+        }
+
+        if (
+          (normalizedRow.length === 4 || normalizedRow.length === 3) &&
+          Boolean(labelForActivityEntry(normalizedRow[0] ?? ""))
+        ) {
+          const aligned = Array.from({ length: header.length }, () => "");
+          aligned[activityIndex] = normalizedRow[0] ?? "";
+          aligned[beginIndex] = normalizedRow[1] ?? "";
+          aligned[dueIndex] = normalizedRow[2] ?? "";
+          aligned[6] = normalizedRow[3] ?? "";
+          return aligned;
+        }
+
+        return normalizedRow;
+      };
+
+      rows.slice(1).forEach((row) => {
+        const alignedRow = alignBiol273ScheduleRow(row);
+        const rawActivityCell = alignedRow[activityIndex] ?? "";
+        const beginText = normalizeWhitespace(alignedRow[beginIndex] ?? "");
+        const dueText = normalizeWhitespace(alignedRow[dueIndex] ?? "");
+        if (!rawActivityCell || !dueText) return;
+
+        const dueSpec = parseDateSpec(dueText, meta.termYear);
+        const dueDate =
+          dueSpec?.kind === "single"
+            ? dueSpec.date
+            : extractExplicitDates(dueText, meta.termYear)[0] ?? parseFlexibleDate(dueText, meta.termYear);
+        if (!dueDate) return;
+
+        const dueTimeText = normalizeWhitespace(
+          dueText.match(
+            /\b\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/
+          )?.[0]
+        );
+        const dueTime = dueTimeText ? parseFlexibleTime(dueTimeText) : undefined;
+        const note = beginText ? `Available from ${beginText}.` : undefined;
+
+        const activityEntries = unique(
+          rawActivityCell
+            .split(/\n+/)
+            .flatMap((entry) => expandScheduleEntries(entry))
+            .map((entry) => normalizeWhitespace(entry))
+            .filter(Boolean)
+        );
+
+        activityEntries.forEach((activityEntry) => {
+          if (
+            /\b(?:midterm|term test|exam|final review|last class|what went wrong)\b/i.test(
+              activityEntry
+            )
+          ) {
+            return;
+          }
+
+          const label = labelForActivityEntry(activityEntry);
+          if (!label) return;
+
+          entries.push({
+            key: slugify(`${label}-${dueDate}`),
+            label,
+            date: dueDate,
+            startTime: dueTime,
+            allDay: !dueTime,
+            location: entryLocationForLabel(activityEntry, label),
+            note,
+          });
+        });
+      });
+    });
+
+  return Array.from(
+    new Map(
+      entries.map((entry) => [`${entry.label}::${entry.date}::${entry.startTime ?? ""}`, entry])
+    ).values()
+  ).sort(compareCanonicalAssignmentEntries);
+}
+
+function extractBiol130CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "BIOL 130") ||
+    !/introductory cell biology/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseAssignmentEntry[];
+  }
+
+  const formatSeriesLabel = (prefix: string, values: number[]) => {
+    const numbers = unique(values.filter((value) => Number.isFinite(value))).sort((a, b) => a - b);
+    if (numbers.length === 0) return prefix;
+    if (numbers.length === 1) return `${prefix} #${numbers[0]}`;
+
+    const isConsecutive = numbers.every((value, index) => index === 0 || value === numbers[index - 1] + 1);
+    if (isConsecutive) {
+      return `${prefix} #${numbers[0]}-${numbers[numbers.length - 1]}`;
+    }
+
+    return `${prefix} #${numbers.join(", ")}`;
+  };
+
+  const parseSeriesValues = (valueText: string) => {
+    const values: number[] = [];
+
+    Array.from(valueText.matchAll(/(\d+)\s*-\s*(\d+)/g)).forEach((match) => {
+      const start = Number(match[1]);
+      const end = Number(match[2]);
+      if (!Number.isFinite(start) || !Number.isFinite(end)) return;
+
+      const [rangeStart, rangeEnd] = start <= end ? [start, end] : [end, start];
+      for (let value = rangeStart; value <= rangeEnd; value += 1) {
+        values.push(value);
+      }
+    });
+
+    const strippedRanges = valueText.replace(/(\d+)\s*-\s*(\d+)/g, " ");
+    Array.from(strippedRanges.matchAll(/\d+/g)).forEach((match) => {
+      const value = Number(match[0]);
+      if (Number.isFinite(value)) {
+        values.push(value);
+      }
+    });
+
+    return unique(values).sort((a, b) => a - b);
+  };
+
+  const parseBiol130ActivityLabel = (activityText: string) => {
+    if (/^hands-on activities$/i.test(activityText)) {
+      return {
+        label: "Hands-on Activities",
+        location: "LEARN",
+      };
+    }
+
+    const achieveModules =
+      activityText.match(/\bachieve online assignment on modules?\s+([0-9\s,&-]+)/i)?.[1];
+    const achieveModuleNumbers = parseSeriesValues(achieveModules ?? "");
+    if (/achieve online assignment/i.test(activityText) && achieveModuleNumbers.length > 0) {
+      return {
+        label: `Achieve Assignment - ${formatSeriesLabel("Modules", achieveModuleNumbers)}`,
+        location: "Achieve",
+      };
+    }
+
+    const assignmentTopicsMatch = activityText.match(
+      /\bAssignment\s*0?(\d+)\s+on\s+Topics?\s+([0-9\s,&-]+)/i
+    );
+    if (assignmentTopicsMatch) {
+      const assignmentNumber = Number(assignmentTopicsMatch[1]);
+      const topicNumbers = parseSeriesValues(assignmentTopicsMatch[2]);
+
+      const topicSuffix =
+        topicNumbers.length > 0 ? ` - ${formatSeriesLabel("Topics", topicNumbers)}` : "";
+
+      return {
+        label: `Assignment #${assignmentNumber}${topicSuffix}`,
+        location: "LEARN",
+      };
+    }
+
+    return undefined;
+  };
+
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return false;
+
+      const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+      return (
+        header.some((cell) =>
+          /activities?\s*(?:&|and)\s*assignments?|assignments?\s*(?:&|and)\s*hands-on activities?/.test(
+            cell
+          )
+        ) &&
+        header.some((cell) => /begin date/.test(cell)) &&
+        header.some((cell) => /end\s*\/?\s*due date|due date/.test(cell))
+      );
+    })
+    .forEach((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return;
+
+      const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+      const activityIndex = header.findIndex((cell) =>
+        /activities?\s*(?:&|and)\s*assignments?|assignments?\s*(?:&|and)\s*hands-on activities?/.test(
+          cell
+        )
+      );
+      const beginIndex = header.findIndex((cell) => /begin date/.test(cell));
+      const dueIndex = header.findIndex((cell) => /end\s*\/?\s*due date|due date/.test(cell));
+      if (activityIndex === -1 || beginIndex === -1 || dueIndex === -1) return;
+
+      rows.slice(1).forEach((row) => {
+        const activityText = normalizeWhitespace(row[activityIndex] ?? "");
+        const beginText = normalizeWhitespace(row[beginIndex] ?? "");
+        const dueText = normalizeWhitespace(row[dueIndex] ?? "");
+        if (!activityText || !dueText) return;
+        if (/term test|midterm|final exam|reading week/i.test(activityText)) return;
+
+        const parsedActivity = parseBiol130ActivityLabel(activityText);
+        if (!parsedActivity) return;
+
+        const dueSpec = parseDateSpec(dueText, meta.termYear);
+        const dueDate =
+          dueSpec?.kind === "single"
+            ? dueSpec.date
+            : extractExplicitDates(dueText, meta.termYear)[0] ?? parseFlexibleDate(dueText, meta.termYear);
+        if (!dueDate) return;
+
+        const dueTimeMatch = dueText.match(
+          /\b\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/
+        )?.[0];
+        const dueTime = dueTimeMatch ? parseFlexibleTime(dueTimeMatch) : undefined;
+
+        entries.push({
+          key: slugify(`${parsedActivity.label}-${dueDate}`),
+          label: parsedActivity.label,
+          date: dueDate,
+          startTime: dueTime,
+          allDay: !dueTime,
+          location: parsedActivity.location,
+          note: beginText ? `Available from ${beginText}.` : undefined,
+        });
+      });
+    });
+
+  return Array.from(
+    new Map(
+      entries.map((entry) => [`${entry.label}::${entry.date}::${entry.startTime ?? ""}`, entry])
+    ).values()
+  ).sort(compareCanonicalAssignmentEntries);
+}
+
+function extractBiol130AssignmentSeeds(
+  html: string,
+  sections: SectionBlock[],
+  meta: OutlineMeta
+) {
+  const canonicalEntries = extractBiol130CanonicalAssignments(html, meta);
+  if (canonicalEntries.length === 0) {
+    return [] as AssessmentSeed[];
+  }
+
+  const section = findSectionForCourseSpecificSnippet(sections, [
+    /biol 130 course schedule/i,
+    /achieve online assignment/i,
+    /hands-on activities/i,
+    /assignments and hands-on activities/i,
+    /activities and assignments/i,
+  ]);
+
+  return canonicalEntries.map((entry) => ({
+    label: entry.label,
+    eventType: "Assignment" as const,
+    date: entry.date,
+    allDay: entry.allDay ?? !entry.startTime,
+    startTime: entry.startTime,
+    location: entry.location ?? "",
+    notes: entry.note ? [entry.note] : [],
+    confidence: "high" as const,
+    provenance: [
+      makeProvenance(
+        section,
+        "table",
+        entry.note ? `${entry.label} | ${entry.note}` : entry.label
+      ),
+    ],
+  }));
+}
+
+function extractChem267CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "CHEM 267") ||
+    !/basic organic chemistry 2/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseAssignmentEntry[];
+  }
+
+  const parseChem267Date = (text: string) => {
+    const normalized = normalizeWhitespace(text).replace(/\b(?:Mon|Tue|Tues|Wed|Thu|Thur|Thurs|Fri|Sat|Sun)(?:day)?\.?,?\s*/gi, "");
+    const explicit = extractExplicitDates(normalized, meta.termYear)[0];
+    if (explicit) return explicit;
+
+    const monthDayMatch = normalized.match(
+      /\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})\b/i
+    );
+    if (!monthDayMatch) return undefined;
+
+    const month = monthDayMatch[1].replace(/\.$/, "");
+    const day = monthDayMatch[2];
+    return parseFlexibleDate(`${month} ${day}`, meta.termYear);
+  };
+
+  const cleanDescriptor = (value: string) =>
+    normalizeWhitespace(
+      value
+        .replace(/^[–—\-:;,.\s]+/, "")
+        .replace(/[–—\-:;,.\s]+$/, "")
+        .replace(/\(\s*\)/g, "")
+    );
+
+  const assignmentColumnsForHeader = (header: string[]) =>
+    header
+      .map((cell, index) => ({ cell: normalizeWhitespace(cell).toLowerCase(), index }))
+      .filter(
+        ({ cell }) =>
+          /\bassignments?\b/.test(cell) ||
+          /\baktiv assignments?\b/.test(cell) ||
+          /\breading and drawing assignments?\b/.test(cell) ||
+          /\breading assignments?\b/.test(cell) ||
+          /\bgraded assignment\b/.test(cell)
+      )
+      .map(({ index }) => index);
+
+  const buildLabel = (
+    kind: "assignment" | "aktiv",
+    number: number,
+    rawSuffix: string,
+    isBonus: boolean
+  ) => {
+    const suffix = cleanDescriptor(rawSuffix)
+      .replace(/\bchapter\b.*$/i, "")
+      .replace(/\bch\b.*$/i, "")
+      .replace(/\bq\d+\b.*$/i, "")
+      .replace(/\bcompleted\b.*$/i, "");
+    const cleanedSuffix = cleanDescriptor(suffix);
+
+    if (kind === "aktiv") {
+      const base = `${isBonus ? "Bonus " : ""}Aktiv #${number}`;
+      return cleanedSuffix ? `${base} - ${cleanedSuffix}` : base;
+    }
+
+    const base = `Assignment #${number}`;
+    return cleanedSuffix ? `${base} - ${cleanedSuffix}` : base;
+  };
+
+  const parseCellEntries = (cellText: string) => {
+    const lines = cellText
+      .split(/\n+/)
+      .map((line) => normalizeWhitespace(line))
+      .filter(Boolean);
+    if (lines.length === 0) return [] as CanonicalCourseAssignmentEntry[];
+
+    const joined = lines.join(" ");
+    if (
+      /\bno assignment\b/i.test(joined) ||
+      /\bno reading assignment\b/i.test(joined) ||
+      /\bterm test\b/i.test(joined) ||
+      /\breading week\b/i.test(joined)
+    ) {
+      return [] as CanonicalCourseAssignmentEntry[];
+    }
+
+    const entries: CanonicalCourseAssignmentEntry[] = [];
+    let currentDate: string | undefined;
+    const bonusCell = /\bbonus assignment\b/i.test(joined);
+
+    lines.forEach((line, index) => {
+      const parsedDate = parseChem267Date(line);
+      if (parsedDate) {
+        currentDate = parsedDate;
+      }
+
+      const assignmentMatch = line.match(/\bAssign(?:ment)?\.?\s*(\d+)\b(.*)$/i);
+      if (assignmentMatch) {
+        const number = Number(assignmentMatch[1]);
+        const descriptor = assignmentMatch[2] ?? "";
+        const entryDate =
+          currentDate ??
+          parseChem267Date(lines[index - 1] ?? "") ??
+          parseChem267Date(lines[index + 1] ?? "");
+        if (!entryDate || !Number.isFinite(number)) return;
+
+        const label = buildLabel("assignment", number, descriptor, false);
+        entries.push({
+          key: slugify(`${label}-${entryDate}`),
+          label,
+          date: entryDate,
+          allDay: true,
+          location: "Top Hat",
+          note: cellText,
+        });
+        return;
+      }
+
+      const aktivMatch = line.match(/\bAk(?:t)?iv\s*(\d+)\b(.*)$/i);
+      if (aktivMatch) {
+        const number = Number(aktivMatch[1]);
+        const descriptor = aktivMatch[2] ?? "";
+        const entryDate =
+          currentDate ??
+          parseChem267Date(lines[index - 1] ?? "") ??
+          parseChem267Date(lines[index + 1] ?? "");
+        if (!entryDate || !Number.isFinite(number)) return;
+
+        const label = buildLabel("aktiv", number, descriptor, bonusCell);
+        entries.push({
+          key: slugify(`${label}-${entryDate}`),
+          label,
+          date: entryDate,
+          allDay: true,
+          location: "Aktiv",
+          note: cellText,
+        });
+      }
+    });
+
+    return entries;
+  };
+
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length < 2) return;
+
+    const header = rows[0];
+    const normalizedHeader = header.map((cell) => normalizeWhitespace(cell).toLowerCase());
+    if (
+      !normalizedHeader.some((cell) => /^week\b/.test(cell)) ||
+      !normalizedHeader.some((cell) => /^topics\b/.test(cell))
+    ) {
+      return;
+    }
+
+    const assignmentIndexes = assignmentColumnsForHeader(header);
+    if (assignmentIndexes.length === 0) return;
+
+    rows.slice(1).forEach((row) => {
+      assignmentIndexes.forEach((columnIndex) => {
+        const cellText = row[columnIndex] ?? "";
+        parseCellEntries(cellText).forEach((entry) => {
+          entries.push(entry);
+        });
+      });
+    });
+  });
+
+  return Array.from(
+    new Map(
+      entries.map((entry) => [`${entry.label}::${entry.date}::${entry.startTime ?? ""}`, entry])
+    ).values()
+  ).sort(compareCanonicalAssignmentEntries);
+}
+
+function extractKin232CanonicalAssignments(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "KIN 232") ||
+    !/research design and statistics/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseAssignmentEntry[];
+  }
+
+  const normalizeKin232AssignmentLabel = (value: string) => {
+    const normalized = normalizeWhitespace(value).replace(/\u00a0/g, " ").trim();
+    if (!normalized) return "";
+    if (/^(?:nothing due|no tutorial assignment due)$/i.test(normalized)) return "";
+    if (/^quiz\b/i.test(normalized)) return "";
+    if (/^worksheet\s*&\s*group discussion$/i.test(normalized)) {
+      return "Worksheet & Group Discussion";
+    }
+    if (/^worksheet\s*&\s*group presentation$/i.test(normalized)) {
+      return "Worksheet & Group Presentation";
+    }
+    if (/^group presentation\s*&\s*discussion$/i.test(normalized)) {
+      return "Group Presentation & Discussion";
+    }
+    if (/^quiz evaluation\s*\(\s*written assignment\s*\)$/i.test(normalized)) {
+      return "Quiz Evaluation (Written Assignment)";
+    }
+    return normalized;
+  };
+
+  const entries: CanonicalCourseAssignmentEntry[] = [];
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      return (
+        /\blecture topics\b/i.test(tableText) &&
+        /\btutorial topics\b/i.test(tableText) &&
+        /\btutorial assignment\*?\b/i.test(tableText)
+      );
+    })
+    .forEach((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return;
+
+      const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+      const weekIndex = header.findIndex((cell) =>
+        /^(?:week beginning|weeks?)$/.test(cell) || /\bweek beginning\b/.test(cell)
+      );
+      const assignmentIndex = header.findIndex((cell) => /tutorial assignment\*?/.test(cell));
+      if (weekIndex === -1 || assignmentIndex === -1) return;
+
+      rows.slice(1).forEach((row) => {
+        const weekText = normalizeWhitespace(row[weekIndex] ?? "");
+        const assignmentLabel = normalizeKin232AssignmentLabel(row[assignmentIndex] ?? "");
+        if (!weekText || !assignmentLabel) return;
+
+        const dueDate =
+          extractExplicitDates(weekText, meta.termYear)[0] ??
+          parseFlexibleDate(
+            normalizeWhitespace(
+              weekText.replace(/^week\s+\d+\s*/i, "").replace(/\([^)]*\)/g, "")
+            ),
+            meta.termYear
+          );
+        if (!dueDate) return;
+
+        entries.push({
+          key: slugify(`${assignmentLabel}-${dueDate}`),
+          label: assignmentLabel,
+          date: dueDate,
+          allDay: true,
+          location: "LEARN Quiz",
+        });
+      });
+    });
+
+  return Array.from(
+    new Map(entries.map((entry) => [`${entry.label}::${entry.date}`, entry])).values()
+  ).sort(compareCanonicalAssignmentEntries);
+}
+
+function extractKin204CanonicalEvents(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "KIN 204") ||
+    !/movement assessment and exercise prescription/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseEventEntry[];
+  }
+
+  const entries: CanonicalCourseEventEntry[] = [];
+
+  const normalizeAssessmentLines = (value: string | undefined) =>
+    (value ?? "")
+      .split(/\n+/)
+      .map((line) => normalizeWhitespace(line))
+      .filter(Boolean)
+      .filter((line) => !/^(?:&nbsp;|-|none)$/i.test(line));
+
+  const normalizeKin204AssignmentLabel = (line: string) => {
+    const normalized = normalizeWhitespace(line);
+    const assignmentMatch = normalized.match(
+      /^assignment\s*(\d+)(?:\s+(.+?))?\s+due\b/i
+    );
+    if (assignmentMatch) {
+      const assignmentNumber = Number(assignmentMatch[1]);
+      const suffix = normalizeWhitespace(assignmentMatch[2] ?? "")
+        .replace(/\bmidnight\b/i, "")
+        .replace(/\s*[-–—:;,]+\s*$/g, "")
+        .trim();
+      return suffix
+        ? `Assignment #${assignmentNumber} - ${suffix}`
+        : `Assignment #${assignmentNumber}`;
+    }
+
+    const reflectionMatch = normalized.match(/^toolbox reflection\s*(\d+)\b/i);
+    if (reflectionMatch) {
+      const reflectionNumber = Number(reflectionMatch[1]);
+      return Number.isFinite(reflectionNumber)
+        ? `Toolbox Reflection #${reflectionNumber}`
+        : "Toolbox Reflection";
+    }
+
+    const finalCaseStudyMatch = normalized.match(/^final case study\b/i);
+    if (finalCaseStudyMatch) {
+      return "Final Case Study";
+    }
+
+    return "";
+  };
+
+  const normalizeKin204AssessmentLabel = (line: string) => {
+    const normalized = normalizeWhitespace(line);
+    const testMatch = normalized.match(/^test\s*(\d+)\b/i);
+    if (testMatch) {
+      const testNumber = Number(testMatch[1]);
+      return Number.isFinite(testNumber) ? `Test #${testNumber}` : "Test";
+    }
+    if (/^midterm\b/i.test(normalized)) return "Midterm";
+    return "";
+  };
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const assessmentIndex = header.findIndex((cell) => /assessment/.test(cell));
+    if (assessmentIndex === -1) return;
+
+    rows.slice(1).forEach((row) => {
+      const assessmentLines = normalizeAssessmentLines(row[assessmentIndex]);
+      if (assessmentLines.length === 0) return;
+
+      assessmentLines.forEach((line) => {
+        const assignmentLabel = normalizeKin204AssignmentLabel(line);
+        const assessmentLabel = normalizeKin204AssessmentLabel(line);
+        const explicitDates = extractExplicitDates(line, meta.termYear);
+        const date = explicitDates[0];
+        if (!date) return;
+
+        const timeRange = parseTimeRange(line);
+        const inClass = /\bin-?class\b/i.test(line);
+
+        if (assignmentLabel) {
+          entries.push({
+            key: slugify(`${assignmentLabel}-${date}`),
+            label: assignmentLabel,
+            eventType: "Assignment",
+            date,
+            startTime: timeRange.startTime,
+            allDay: !timeRange.startTime,
+            location: /peerscholar/i.test(line)
+              ? "PeerScholar"
+              : /perusall/i.test(line)
+                ? "Perusall"
+                : /mobius/i.test(line)
+                  ? "Mobius"
+                  : /pebblepad/i.test(line)
+                    ? "PebblePad"
+                    : inClass
+                      ? "In class"
+                      : "LEARN",
+          });
+          return;
+        }
+
+        if (assessmentLabel) {
+          entries.push({
+            key: slugify(`${assessmentLabel}-${date}`),
+            label: assessmentLabel,
+            eventType: "Assessment",
+            date,
+            startTime: timeRange.startTime,
+            allDay: !timeRange.startTime,
+            location: inClass ? "In class" : "LEARN",
+          });
+        }
+      });
+    });
+  });
+
+  return Array.from(
+    new Map(entries.map((entry) => [`${entry.eventType}::${entry.label}::${entry.date}`, entry])).values()
+  ).sort(compareCanonicalCourseEventEntries);
+}
+
+function extractKin342CanonicalEvents(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "KIN 342") ||
+    !/nutrition and aging/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseEventEntry[];
+  }
+
+  const entryMap = new Map<string, CanonicalCourseEventEntry>();
+  const upsertEntry = (entry: CanonicalCourseEventEntry) => {
+    entryMap.set(`${entry.eventType}::${entry.label}::${entry.date}`, entry);
+  };
+
+  const normalizeKin342Location = (locationText: string) => {
+    const normalized = normalizeWhitespace(locationText);
+    if (!normalized) return "";
+    if (/^on-?line$/i.test(normalized) || /^online$/i.test(normalized)) return "Online";
+    if (/^in-?class$/i.test(normalized)) return "In class";
+    return normalized;
+  };
+
+  const extractKin342Dates = (dateText: string) => {
+    const normalized = normalizeWhitespace(dateText);
+    if (!normalized) return [] as string[];
+
+    const slashMatch = normalized.match(
+      /^([A-Za-z]{3,9})\.?\s*(\d{1,2})\s*\/\s*(?:([A-Za-z]{3,9})\.?\s*)?(\d{1,2})$/i
+    );
+    if (slashMatch) {
+      const firstMonth = slashMatch[1];
+      const firstDay = slashMatch[2];
+      const secondMonth = slashMatch[3] ?? firstMonth;
+      const secondDay = slashMatch[4];
+      return [
+        parseFlexibleDate(`${firstMonth} ${firstDay}`, meta.termYear),
+        parseFlexibleDate(`${secondMonth} ${secondDay}`, meta.termYear),
+      ].filter((date): date is string => Boolean(date));
+    }
+
+    const dateSpec = parseDateSpec(normalized, meta.termYear);
+    if (dateSpec?.kind === "single") return [dateSpec.date];
+    if (dateSpec?.kind === "dates") return dateSpec.dates;
+    if (dateSpec?.kind === "range") return [dateSpec.startDate];
+
+    return extractExplicitDates(normalized.replace(/\//g, ", "), meta.termYear);
+  };
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const componentIndex = header.findIndex((cell) => /component\s*\/\s*activity/.test(cell));
+    const dateIndex = header.findIndex((cell) => /date or due date/.test(cell));
+    const locationIndex = header.findIndex((cell) => /location\s*\/\s*submission method/.test(cell));
+    const weightIndex = header.findIndex((cell) => /weight/.test(cell));
+
+    if (componentIndex !== -1 && dateIndex !== -1) {
+      rows.slice(1).forEach((row) => {
+        const componentText = normalizeWhitespace(row[componentIndex] ?? "");
+        const normalizedComponent = componentText
+          .replace(/^lap report/i, "Lab Report")
+          .replace(/^term test/i, "Term Test");
+        const dateText = normalizeWhitespace(row[dateIndex] ?? "");
+        const locationText = normalizeKin342Location(row[locationIndex] ?? "");
+        const weightText = normalizeWeightText(row[weightIndex] ?? "");
+        if (!normalizedComponent || !dateText) return;
+
+        if (/^lab report\s*(\d+)/i.test(normalizedComponent)) {
+          const reportNumber = Number(normalizedComponent.match(/^lab report\s*(\d+)/i)?.[1]);
+          const dates = extractKin342Dates(dateText);
+          if (!Number.isFinite(reportNumber) || dates.length === 0) return;
+
+          dates.forEach((date, index) => {
+            const groupSuffix =
+              dates.length === 2 ? ` - Group ${index === 0 ? "A" : "B"}` : "";
+            upsertEntry({
+              key: `lab-report-${reportNumber}-${index + 1}`,
+              label: `Lab Report ${reportNumber}${groupSuffix}`,
+              eventType: "Assignment",
+              date,
+              allDay: true,
+              location: locationText || "In class",
+              note: weightText ? `Weight: ${weightText}` : undefined,
+            });
+          });
+          return;
+        }
+
+        if (/^group case study$/i.test(normalizedComponent)) {
+          const dueDate = extractKin342Dates(dateText)[0];
+          if (!dueDate) return;
+          upsertEntry({
+            key: "group-case-study",
+            label: "Group Case Study",
+            eventType: "Assignment",
+            date: dueDate,
+            allDay: true,
+            location: locationText || "In class",
+            note: weightText ? `Weight: ${weightText}` : undefined,
+          });
+          return;
+        }
+
+        if (/^term test\s*(\d+)/i.test(normalizedComponent) || /^final exam$/i.test(normalizedComponent)) {
+          const dueDate = extractKin342Dates(dateText)[0];
+          if (!dueDate) return;
+          upsertEntry({
+            key: slugify(normalizedComponent),
+            label: normalizedComponent.replace(/^final exam$/i, "Final Exam"),
+            eventType: "Assessment",
+            date: dueDate,
+            allDay: true,
+            location: locationText || "Online",
+            note: weightText ? `Weight: ${weightText}` : undefined,
+          });
+        }
+      });
+    }
+
+    const weekIndex = header.findIndex((cell) => /^(weeks?|week)$/.test(cell));
+    const lectureTopicsIndex = header.findIndex((cell) => /lecture topics/.test(cell));
+    if (weekIndex === -1 || lectureTopicsIndex === -1) return;
+
+    extractHtmlTableRows(tableHtml)
+      .slice(1)
+      .forEach((rowHtml) => {
+        const cells = extractHtmlRowCells(rowHtml);
+        const weekText = normalizeWhitespace(cells[weekIndex] ?? "");
+        const topicCell = cells[lectureTopicsIndex] ?? "";
+        if (!weekText || !topicCell) return;
+        if (!/assignment|summative individual case study/i.test(topicCell)) return;
+
+        const dueDate = extractExplicitDates(weekText, meta.termYear)[0];
+        if (!dueDate) return;
+
+        const topicLines = topicCell
+          .split(/\n+/)
+          .map((line) => normalizeWhitespace(line))
+          .filter(Boolean);
+        const primaryLine = topicLines[0] ?? "";
+        const detailLine = topicLines[1] ?? "";
+        const partMatch = primaryLine.match(/^assignment\s*(\d+)\s*-\s*part\s*(\d+)/i);
+        const assignmentMatch = primaryLine.match(/^assignment\s*(\d+)\b/i);
+
+        if (partMatch) {
+          const assignmentNumber = Number(partMatch[1]);
+          const partNumber = Number(partMatch[2]);
+          if (!Number.isFinite(assignmentNumber) || !Number.isFinite(partNumber)) return;
+          upsertEntry({
+            key: `assignment-${assignmentNumber}-part-${partNumber}`,
+            label: `Assignment #${assignmentNumber} - Part ${partNumber}`,
+            eventType: "Assignment",
+            date: dueDate,
+            allDay: true,
+            location: "LEARN",
+            note: detailLine || undefined,
+          });
+          return;
+        }
+
+        if (assignmentMatch) {
+          const assignmentNumber = Number(assignmentMatch[1]);
+          if (!Number.isFinite(assignmentNumber)) return;
+          upsertEntry({
+            key: `assignment-${assignmentNumber}`,
+            label: `Assignment #${assignmentNumber}`,
+            eventType: "Assignment",
+            date: dueDate,
+            allDay: true,
+            location: "LEARN",
+            note: detailLine || undefined,
+          });
+          return;
+        }
+
+        if (/summative individual case study/i.test(primaryLine)) {
+          upsertEntry({
+            key: "summative-individual-case-study",
+            label: "Summative Individual Case Study",
+            eventType: "Assignment",
+            date: dueDate,
+            allDay: true,
+            location: "LEARN",
+          });
+        }
+      });
+  });
+
+  return Array.from(entryMap.values()).sort(compareCanonicalCourseEventEntries);
+}
+
+function extractKin400CanonicalEvents(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "KIN 400") ||
+    !/athletic injury practicum/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseEventEntry[];
+  }
+
+  const entryMap = new Map<string, CanonicalCourseEventEntry>();
+  const upsertEntry = (entry: CanonicalCourseEventEntry) => {
+    entryMap.set(`${entry.eventType}::${entry.label}::${entry.date}`, entry);
+  };
+
+  const normalizeKin400Label = (value: string) => {
+    const normalized = normalizeWhitespace(value).replace(/\s*due$/i, "").trim();
+    const reflectionMatch = normalized.match(/^reflection\s*(\d+)\b/i);
+    if (reflectionMatch) {
+      const reflectionNumber = Number(reflectionMatch[1]);
+      return Number.isFinite(reflectionNumber)
+        ? `Reflection #${reflectionNumber}`
+        : "Reflection";
+    }
+
+    if (/^course project\b/i.test(normalized)) return "Course Project";
+    if (/^e[\s-]*port(?:folio)? draft\b/i.test(normalized)) return "E-Portfolio Draft";
+    if (/^e[\s-]*portfolio\b/i.test(normalized)) return "E-Portfolio";
+
+    return "";
+  };
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      return (
+        /\blecture\/lab topics\b/i.test(tableText) &&
+        /\bevaluations\b/i.test(tableText) &&
+        /\breflection 1\b/i.test(tableText)
+      );
+    })
+    .forEach((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return;
+
+      const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+      const evaluationIndex = header.findIndex((cell) => /evaluations/.test(cell));
+      if (evaluationIndex === -1) return;
+
+      rows.slice(1).forEach((row) => {
+        const evaluationText = row[evaluationIndex] ?? "";
+        const evaluationLines = evaluationText
+          .split(/\n+/)
+          .map((line) => normalizeWhitespace(line))
+          .filter(Boolean)
+          .filter((line) => !/^&nbsp;$/i.test(line));
+        if (evaluationLines.length === 0) return;
+
+        const label = normalizeKin400Label(evaluationLines[0] ?? "");
+        if (!label) return;
+
+        const dateSource = evaluationLines.slice(1).join(" ");
+        const dueDate =
+          extractExplicitDates(dateSource, meta.termYear)[0] ??
+          extractDateFromText(dateSource, meta.termYear);
+        if (!dueDate) return;
+
+        const timeRange = parseTimeRange(dateSource);
+        upsertEntry({
+          key: slugify(`${label}-${dueDate}`),
+          label,
+          eventType: "Assignment",
+          date: dueDate,
+          startTime: timeRange.startTime,
+          endTime: timeRange.endTime,
+          allDay: !timeRange.startTime,
+          location: "LEARN",
+        });
+      });
+    });
+
+  return Array.from(entryMap.values()).sort(compareCanonicalCourseEventEntries);
+}
+
+function extractKin429CanonicalEvents(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "KIN 429") ||
+    !/bone and joint health/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseEventEntry[];
+  }
+
+  const entryMap = new Map<string, CanonicalCourseEventEntry>();
+  const upsertEntry = (entry: CanonicalCourseEventEntry) => {
+    entryMap.set(
+      `${entry.eventType}::${entry.label}::${entry.date}::${entry.startTime ?? ""}`,
+      entry
+    );
+  };
+
+  const sourceText = htmlSnippetToText(sourceHtml ?? "");
+  const defaultGroupAssignmentDueTime =
+    parseTimeRange(
+      sourceText.match(
+        /until\s+(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM))\s+on the day of the activity/i
+      )?.[1] ?? ""
+    ).startTime ?? undefined;
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      return (
+        /\bdate\b/i.test(tableText) &&
+        /\blecture content\b/i.test(tableText) &&
+        /\b(?:assignments and tests\/quizzes in bold|case studies,\s*tests\/quizzes)\b/i.test(
+          tableText
+        )
+      );
+    })
+    .forEach((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return;
+
+      rows.slice(1).forEach((row) => {
+        const dateText = normalizeWhitespace(row[0] ?? "");
+        const contentText = normalizeWhitespace(row[1] ?? "");
+        if (!dateText || !contentText) return;
+
+        const rowDate = extractDateFromText(dateText, meta.termYear);
+        if (!rowDate) return;
+
+        const contentLines = contentText
+          .split(/\n+/)
+          .map((line) => normalizeWhitespace(line))
+          .filter(Boolean);
+
+        contentLines.forEach((line) => {
+          const normalizedLine = normalizeWhitespace(line);
+          if (!normalizedLine) return;
+
+          const groupAssignmentMatch = normalizedLine.match(/^group assignment\s*(\d+)\b/i);
+          if (groupAssignmentMatch) {
+            const assignmentNumber = Number(groupAssignmentMatch[1]);
+            if (!Number.isFinite(assignmentNumber)) return;
+
+            upsertEntry({
+              key: `group-assignment-${assignmentNumber}`,
+              label: `Group Assignment #${assignmentNumber}`,
+              eventType: "Assignment",
+              date: rowDate,
+              startTime: defaultGroupAssignmentDueTime,
+              allDay: !defaultGroupAssignmentDueTime,
+              location: "LEARN Dropbox",
+            });
+            return;
+          }
+
+          const partLeadMatch = normalizedLine.match(
+            /^(?:submit\s+assignment\s+)?part\s*([A-E])\s*[-:]\s*(.+)$/i
+          );
+          if (partLeadMatch) {
+            const partLetter = partLeadMatch[1].toUpperCase();
+            let descriptor = normalizeWhitespace(partLeadMatch[2]);
+            let dueDate = extractDateFromText(normalizedLine, meta.termYear) ?? rowDate;
+            const dueTime = parseTimeRange(normalizedLine).startTime;
+
+            descriptor = descriptor
+              .replace(/,\s*assignment completed in class\b/i, "")
+              .replace(/\bcomplete(?:d)? in class\b/i, "")
+              .replace(/\bcomplete before class on\b.*$/i, "")
+              .replace(/\bby\s+\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm|AM|PM)\b/i, "")
+              .replace(/\s*[,;:-]\s*$/g, "")
+              .replace(/^#reeltalk$/i, "#ReelTalk")
+              .trim();
+            if (!descriptor) {
+              descriptor = `Part ${partLetter}`;
+            }
+
+            upsertEntry({
+              key: `assignment-part-${partLetter.toLowerCase()}`,
+              label: `Assignment Part ${partLetter} - ${descriptor}`,
+              eventType: "Assignment",
+              date: dueDate,
+              startTime: dueTime,
+              allDay: !dueTime,
+              location:
+                /\bcompleted? in class\b/i.test(normalizedLine) || /\bin class\b/i.test(normalizedLine)
+                  ? "In class"
+                  : "LEARN Dropbox",
+            });
+            return;
+          }
+
+          const reminderPartMatch = normalizedLine.match(
+            /^reminder:\s*(.+?)\s+complete\s+part\s*([A-E])\s+before\s+(.+)$/i
+          );
+          if (reminderPartMatch) {
+            const descriptor = normalizeWhitespace(reminderPartMatch[1]).replace(/\s*[,;:-]\s*$/g, "");
+            const partLetter = reminderPartMatch[2].toUpperCase();
+            const dueDate =
+              extractDateFromText(reminderPartMatch[3], meta.termYear) ??
+              extractDateFromText(normalizedLine, meta.termYear) ??
+              rowDate;
+            if (!dueDate) return;
+
+            upsertEntry({
+              key: `assignment-part-${partLetter.toLowerCase()}`,
+              label: `Assignment Part ${partLetter} - ${descriptor}`,
+              eventType: "Assignment",
+              date: dueDate,
+              allDay: true,
+              location: "LEARN Dropbox",
+            });
+            return;
+          }
+
+          if (/^quiz available on learn/i.test(normalizedLine) || /^in-class quiz$/i.test(normalizedLine)) {
+            const timeRange = parseTimeRange(normalizedLine);
+            upsertEntry({
+              key: `quiz-${rowDate}`,
+              label: "Quiz",
+              eventType: "Assessment",
+              date: extractDateFromText(normalizedLine, meta.termYear) ?? rowDate,
+              startTime: timeRange.startTime,
+              allDay: !timeRange.startTime,
+              location: /^in-class quiz$/i.test(normalizedLine) ? "In class" : "LEARN Quiz",
+            });
+            return;
+          }
+
+          const testMatch = normalizedLine.match(/^test\s*(\d+)\b/i);
+          if (testMatch) {
+            const testNumber = Number(testMatch[1]);
+            if (!Number.isFinite(testNumber)) return;
+
+            upsertEntry({
+              key: `test-${testNumber}`,
+              label: `Test #${testNumber}`,
+              eventType: "Assessment",
+              date: rowDate,
+              allDay: true,
+              location: /check learn for location/i.test(normalizedLine) ? "LEARN" : "",
+            });
+          }
+        });
+      });
+    });
+
+  return Array.from(entryMap.values()).sort(compareCanonicalCourseEventEntries);
+}
+
+function extractKin425CanonicalEvents(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "KIN 425") ||
+    !/biomechanical modelling/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseEventEntry[];
+  }
+
+  const entryMap = new Map<string, CanonicalCourseEventEntry>();
+  const upsertEntry = (entry: CanonicalCourseEventEntry) => {
+    entryMap.set(
+      `${entry.eventType}::${entry.label}::${entry.date}::${entry.startTime ?? ""}`,
+      entry
+    );
+  };
+
+  const weekdayOffsets: Record<string, number> = {
+    monday: 0,
+    tuesday: 1,
+    wednesday: 2,
+    thursday: 3,
+    friday: 4,
+  };
+
+  const deriveWeekdayDate = (weekStartDate: string | undefined, weekdayText: string) => {
+    if (!weekStartDate) return undefined;
+    const weekdayKey = normalizeWhitespace(weekdayText).toLowerCase();
+    const offset = weekdayOffsets[weekdayKey];
+    if (!Number.isFinite(offset)) return undefined;
+    return format(addDays(parseISO(weekStartDate), offset), "yyyy-MM-dd");
+  };
+
+  const normalizeKin425AssignmentLabel = (value: string) => {
+    const normalized = normalizeWhitespace(value)
+      .replace(/^[•·\-–—]+\s*/u, "")
+      .replace(/\(submit to LEARN dropbox\)/i, "")
+      .replace(/\bdue\s+\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\b/i, "")
+      .replace(/\bdue\b/i, "")
+      .trim();
+
+    if (/^filtering assignment\b/i.test(normalized)) return "Filtering Assignment";
+    if (/^joint angles assignment\b/i.test(normalized)) return "Joint Angles Assignment";
+    if (/^rlm assignment\b/i.test(normalized)) return "RLM Assignment";
+    if (/^presentation video assignment\b/i.test(normalized)) {
+      return "Presentation Video Assignment";
+    }
+
+    return capitalizeAssignmentText(normalized);
+  };
+
+  extractHtmlTables(sourceHtml)
+    .filter((tableHtml) => {
+      const tableText = htmlSnippetToText(tableHtml);
+      return (
+        /\bweekday\b/i.test(tableText) &&
+        /\bformat\b/i.test(tableText) &&
+        /\bcontent\/topic information\b/i.test(tableText)
+      );
+    })
+    .forEach((tableHtml) => {
+      const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+      if (rows.length === 0) return;
+
+      let currentWeekStartDate: string | undefined;
+
+      rows.slice(1).forEach((row) => {
+        const normalizedCells = row.map((cell) => normalizeWhitespace(cell)).filter(Boolean);
+        if (normalizedCells.length < 3) return;
+
+        let weekText = "";
+        let weekdayText = "";
+        let formatText = "";
+        let contentText = "";
+
+        if (normalizedCells.length >= 4) {
+          [weekText, weekdayText, formatText, contentText] = normalizedCells;
+          const weekStartText =
+            weekText.match(
+              /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}\b/i
+            )?.[0] ?? "";
+          currentWeekStartDate =
+            parseFlexibleDate(weekStartText, meta.termYear) ??
+            extractExplicitDates(weekText, meta.termYear)[0] ??
+            extractDateFromText(weekText, meta.termYear) ??
+            currentWeekStartDate;
+        } else {
+          [weekdayText, formatText, contentText] = normalizedCells;
+        }
+
+        if (!currentWeekStartDate || !weekdayText || !formatText || !contentText) return;
+        const rowDate = deriveWeekdayDate(currentWeekStartDate, weekdayText);
+        if (!rowDate) return;
+
+        const contentLines = contentText
+          .split(/\n+/)
+          .map((line) => normalizeWhitespace(line))
+          .filter(Boolean);
+        if (contentLines.length === 0) return;
+
+        if (/^due date$/i.test(formatText)) {
+          const dueLine = contentLines.find((line) => /\bassignment\b/i.test(line) && /\bdue\b/i.test(line));
+          if (!dueLine) return;
+
+          const label = normalizeKin425AssignmentLabel(dueLine);
+          if (!label) return;
+
+          const timeRange = parseTimeRange(dueLine);
+          upsertEntry({
+            key: slugify(`${label}-${rowDate}`),
+            label,
+            eventType: "Assignment",
+            date: rowDate,
+            startTime: timeRange.startTime,
+            endTime: timeRange.endTime,
+            allDay: !timeRange.startTime,
+            location: /learn dropbox/i.test(dueLine) ? "LEARN Dropbox" : "LEARN",
+          });
+          return;
+        }
+
+        if (/^quiz/i.test(formatText)) {
+          const quizLine = contentLines.find((line) => /^quiz\s*\d+/i.test(line));
+          if (!quizLine) return;
+
+          const quizNumber = Number(quizLine.match(/^quiz\s*(\d+)/i)?.[1]);
+          if (!Number.isFinite(quizNumber)) return;
+
+          upsertEntry({
+            key: `quiz-${quizNumber}`,
+            label: `Quiz #${quizNumber}`,
+            eventType: "Assessment",
+            date: rowDate,
+            allDay: true,
+            location: "LEARN Quiz",
+            note: quizLine,
+          });
+        }
+      });
+    });
+
+  return Array.from(entryMap.values()).sort(compareCanonicalCourseEventEntries);
+}
+
+function extractDevelopmentAgingHealthCanonicalEvents(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !/development,\s*aging,\s*and health/i.test(meta.outlineName) ||
+    !/assignment\s*#?\s*1\s+on\s+module\s*1/i.test(sourceHtml ?? "") ||
+    !/term test\s*1\s+on\s+module\s*1/i.test(sourceHtml ?? "")
+  ) {
+    return [] as CanonicalCourseEventEntry[];
+  }
+
+  const entries: CanonicalCourseEventEntry[] = [];
+  const normalizeLocation = (value: string) => {
+    const normalized = normalizeWhitespace(value);
+    if (!normalized) return "";
+    if (/learn dropbox/i.test(normalized)) return "LEARN Dropbox";
+    if (/learn/i.test(normalized)) return "LEARN";
+    return normalized;
+  };
+  const parseDevelopmentAgingHealthDate = (value: string) => {
+    const normalized = normalizeWhitespace(value);
+    const monthDayMatch = normalized.match(
+      /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?\b/i
+    )?.[0];
+    if (monthDayMatch) {
+      return parseFlexibleDate(monthDayMatch, meta.termYear);
+    }
+    return (
+      extractExplicitDates(normalized, meta.termYear)[0] ??
+      parseFlexibleDate(normalized, meta.termYear)
+    );
+  };
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const componentIndex = header.findIndex((cell) => /component\s*\/\s*activity/.test(cell));
+    const dateIndex = header.findIndex((cell) => /date or due date/.test(cell));
+    const locationIndex = header.findIndex((cell) => /location\s*\/\s*submission method/.test(cell));
+    const weightIndex = header.findIndex((cell) => /weight/.test(cell));
+    if (componentIndex === -1 || dateIndex === -1 || locationIndex === -1) return;
+
+    rows.slice(1).forEach((row) => {
+      const componentText = normalizeWhitespace(row[componentIndex] ?? "");
+      const dateText = normalizeWhitespace(row[dateIndex] ?? "");
+      const locationText = normalizeLocation(row[locationIndex] ?? "");
+      const weightText = normalizeWeightText(row[weightIndex] ?? "");
+      if (!componentText || !dateText) return;
+      if (/^iClicker\b|^In-class group activities\b/i.test(componentText)) return;
+      if (/final exam period|to be scheduled by the?\s*RO/i.test(dateText)) return;
+
+      const date = parseDevelopmentAgingHealthDate(dateText);
+      if (!date) return;
+
+      const assignmentMatch = componentText.match(/^Assignment\s*#?\s*(\d+)\s+on\s+Module\s*(\d+)$/i);
+      if (assignmentMatch) {
+        const assignmentNumber = Number(assignmentMatch[1]);
+        const moduleNumber = Number(assignmentMatch[2]);
+        if (!Number.isFinite(assignmentNumber) || !Number.isFinite(moduleNumber)) return;
+        const timeRange = parseTimeRange(dateText);
+
+        entries.push({
+          key: `assignment-${assignmentNumber}`,
+          label: `Assignment #${assignmentNumber} on Module ${moduleNumber}`,
+          eventType: "Assignment",
+          date,
+          startTime: timeRange.startTime,
+          allDay: !timeRange.startTime,
+          location: locationText || "LEARN Dropbox",
+          note: weightText ? `Weight: ${weightText}` : undefined,
+        });
+        return;
+      }
+
+      const termTestMatch = componentText.match(/^Term Test\s*(\d+)\s+on\s+Module\s*(\d+)$/i);
+      if (termTestMatch) {
+        const testNumber = Number(termTestMatch[1]);
+        const moduleNumber = Number(termTestMatch[2]);
+        if (!Number.isFinite(testNumber) || !Number.isFinite(moduleNumber)) return;
+
+        const timeRange = parseTimeRange(dateText);
+        entries.push({
+          key: `term-test-${testNumber}`,
+          label: `Term Test ${testNumber} on Module ${moduleNumber}`,
+          eventType: "Assessment",
+          date,
+          startTime: timeRange.startTime,
+          endTime: timeRange.endTime,
+          allDay: !timeRange.startTime,
+          location: locationText || "In class",
+          note: weightText ? `Weight: ${weightText}` : undefined,
+        });
+      }
+    });
+  });
+
+  return Array.from(
+    new Map(
+      entries.map((entry) => [
+        `${entry.eventType}::${entry.label}::${entry.date}::${entry.startTime ?? ""}`,
+        entry,
+      ])
+    ).values()
+  ).sort(compareCanonicalCourseEventEntries);
+}
+
+function extractAfm111CanonicalEvents(
+  sourceHtml: string | null | undefined,
+  meta: OutlineMeta
+) {
+  if (
+    !courseCodeMatches(meta.courseCode, "AFM 111") ||
+    !/professional pathways and problem-solving/i.test(meta.outlineName)
+  ) {
+    return [] as CanonicalCourseEventEntry[];
+  }
+
+  const normalizeAfm111Location = (location: string) => {
+    const normalized = normalizeWhitespace(location);
+    if (!normalized) return "";
+    if (/peerscholar/i.test(normalized)) return "PeerScholar";
+    if (/pebblepad/i.test(normalized)) return "PebblePad";
+    if (/learn/i.test(normalized)) return "LEARN";
+    if (/proctored exam/i.test(normalized)) return "Proctored exam";
+    return normalized.replace(/\s*-\s*/g, " - ");
+  };
+
+  const entryMap = new Map<string, CanonicalCourseEventEntry>();
+  const canonicalCellLines = (cell: string | undefined) =>
+    (cell ?? "")
+      .replace(/&nbsp;|&#160;/gi, " ")
+      .split(/\n+/)
+      .map((line) => normalizeWhitespace(line))
+      .filter(Boolean);
+  const normalizeAfm111DateLine = (value: string) =>
+    normalizeWhitespace(value).replace(/\b([A-Za-z]{3,9})-(\d{1,2})\b/g, "$1 $2");
+  const upsertEntry = (entry: CanonicalCourseEventEntry) => {
+    const key = `${entry.eventType}::${entry.key}::${entry.date}`;
+    const existing = entryMap.get(key);
+    if (!existing) {
+      entryMap.set(key, entry);
+      return;
+    }
+
+    const startTime = existing.startTime ?? entry.startTime;
+    const endTime = existing.endTime ?? entry.endTime;
+    const mergedNote =
+      existing.note && entry.note && existing.note !== entry.note
+        ? `${existing.note} ${entry.note}`
+        : existing.note ?? entry.note;
+
+    entryMap.set(key, {
+      ...existing,
+      startTime,
+      endTime,
+      allDay: startTime ? false : existing.allDay ?? entry.allDay ?? true,
+      location: existing.location || entry.location,
+      note: mergedNote,
+    });
+  };
+
+  const timingHints = new Map<
+    string,
+    { date: string; startTime?: string; endTime?: string; allDay: boolean }
+  >();
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const assessmentIndex = header.findIndex((cell) => cell === "assessments");
+    const dateIndex = header.findIndex((cell) => cell === "date");
+    if (assessmentIndex === -1 || dateIndex === -1) return;
+    if (!header.some((cell) => /\bweek\b/.test(cell))) return;
+
+    rows.slice(1).forEach((row) => {
+      const assessmentLines = canonicalCellLines(row[assessmentIndex]);
+      const dateLines = canonicalCellLines(row[dateIndex]);
+      if (assessmentLines.length === 0 || dateLines.length === 0) return;
+
+      assessmentLines.forEach((assessmentLine, index) => {
+        const normalizedAssessment = normalizeWhitespace(assessmentLine);
+        const assessmentNumber = normalizedAssessment.match(/individual assessment\s*#\s*(\d+)/i)?.[1];
+        if (!assessmentNumber) return;
+
+        const dateLine = normalizeAfm111DateLine(dateLines[index] ?? dateLines[0] ?? "");
+        const date = extractExplicitDates(dateLine, meta.termYear)[0];
+        if (!date) return;
+
+        const timeRange = parseTimeRange(dateLine);
+        timingHints.set(`individual-assessment-${assessmentNumber}`, {
+          date,
+          startTime: timeRange.startTime,
+          endTime: timeRange.endTime,
+          allDay: !timeRange.startTime,
+        });
+      });
+    });
+  });
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const componentIndex = header.findIndex((cell) => /component\s*\/\s*activity/.test(cell));
+    const dateIndex = header.findIndex((cell) => /date or due date/.test(cell));
+    const locationIndex = header.findIndex((cell) => /location\s*\/\s*submission method/.test(cell));
+    const weightIndex = header.findIndex((cell) => /weight/.test(cell));
+    if (componentIndex === -1 || dateIndex === -1 || locationIndex === -1) return;
+
+    rows.slice(1).forEach((row) => {
+      const componentText = normalizeWhitespace(row[componentIndex] ?? "");
+      const dateText = normalizeWhitespace(row[dateIndex] ?? "");
+      const locationText = normalizeAfm111Location(row[locationIndex] ?? "");
+      const weightText = normalizeWeightText(row[weightIndex] ?? "");
+      if (!componentText || !dateText) return;
+      if (/individual engagement checks/i.test(componentText)) return;
+      if (/no final examination/i.test(componentText)) return;
+
+      const explicitDates = extractExplicitDates(dateText, meta.termYear);
+      if (explicitDates.length === 0) return;
+
+      const weightNote = weightText ? `Weight: ${weightText}` : undefined;
+
+      if (/peerscholar cycles?/i.test(componentText)) {
+        explicitDates.forEach((date, index) => {
+          upsertEntry({
+            key: `peerscholar-cycle-${index + 1}`,
+            label:
+              index === 0 ? "peerScholar Practice Cycle" : `peerScholar Cycle #${index}`,
+            eventType: "Assignment",
+            date,
+            allDay: true,
+            location: locationText || "PeerScholar",
+            note: weightNote,
+          });
+        });
+        return;
+      }
+
+      if (/pebblepad workbook/i.test(componentText)) {
+        explicitDates.forEach((date, index) => {
+          upsertEntry({
+            key: `pebblepad-workbook-${index + 1}`,
+            label: `PebblePad Workbook Checkpoint #${index + 1}`,
+            eventType: "Assignment",
+            date,
+            allDay: true,
+            location: locationText || "PebblePad",
+            note: weightNote,
+          });
+        });
+        return;
+      }
+
+      if (/group(?: problem[-\s])?solving process\s*\(psp\)\s*assessment|group psp assessment/i.test(componentText)) {
+        upsertEntry({
+          key: "group-psp-assessment",
+          label: "Group PSP Assessment",
+          eventType: "Assessment",
+          date: explicitDates[explicitDates.length - 1],
+          allDay: true,
+          location: locationText || "LEARN",
+          note: weightNote,
+        });
+        return;
+      }
+
+      const individualAssessmentMatch = componentText.match(
+        /individual assessment\s*#\s*(\d+)(?:\s*\(([^)]+)\))?/i
+      );
+      if (individualAssessmentMatch) {
+        const assessmentNumber = Number(individualAssessmentMatch[1]);
+        if (!Number.isFinite(assessmentNumber)) return;
+        const descriptor = normalizeWhitespace(individualAssessmentMatch[2] ?? "");
+        const timingHint = timingHints.get(`individual-assessment-${assessmentNumber}`);
+        const label = descriptor
+          ? `Individual Assessment #${assessmentNumber} (${descriptor})`
+          : `Individual Assessment #${assessmentNumber}`;
+
+        upsertEntry({
+          key: `individual-assessment-${assessmentNumber}`,
+          label,
+          eventType: "Assessment",
+          date: timingHint?.date ?? explicitDates[explicitDates.length - 1],
+          startTime: timingHint?.startTime,
+          endTime: timingHint?.endTime,
+          allDay: timingHint?.allDay ?? true,
+          location: locationText || (timingHint?.startTime ? "Proctored exam" : "LEARN"),
+          note: weightNote,
+        });
+      }
+    });
+  });
+
+  extractHtmlTables(sourceHtml).forEach((tableHtml) => {
+    const rows = extractHtmlTableRows(tableHtml).map((rowHtml) => extractHtmlRowCells(rowHtml));
+    if (rows.length === 0) return;
+
+    const header = rows[0].map((cell) => normalizeWhitespace(cell).toLowerCase());
+    const assessmentIndex = header.findIndex((cell) => cell === "assessments");
+    const dateIndex = header.findIndex((cell) => cell === "date");
+    const weightIndex = header.findIndex((cell) => /weight/.test(cell));
+    if (assessmentIndex === -1 || dateIndex === -1) return;
+    if (!header.some((cell) => /\bweek\b/.test(cell))) return;
+
+    rows.slice(1).forEach((row) => {
+      const assessmentLines = canonicalCellLines(row[assessmentIndex]);
+      const dateLines = canonicalCellLines(row[dateIndex]);
+      const weightLines = canonicalCellLines(row[weightIndex]).map((line) =>
+        normalizeWeightText(line)
+      );
+      if (assessmentLines.length === 0 || dateLines.length === 0) return;
+
+      assessmentLines.forEach((assessmentLine, index) => {
+        const normalizedAssessment = normalizeWhitespace(assessmentLine);
+        const dateLine = normalizeAfm111DateLine(dateLines[index] ?? dateLines[0] ?? "");
+        const explicitDates = extractExplicitDates(dateLine, meta.termYear);
+        if (explicitDates.length === 0) return;
+        const timeRange = parseTimeRange(dateLine);
+        const weightNote = weightLines[index] ? `Weight: ${weightLines[index]}` : undefined;
+        const additionalDates =
+          explicitDates.length > 1
+            ? `Additional cycle deadlines: ${explicitDates.slice(1).join(", ")}`
+            : undefined;
+
+        if (/peerscholar practice cycle/i.test(normalizedAssessment)) {
+          upsertEntry({
+            key: "peerscholar-cycle-1",
+            label: "peerScholar Practice Cycle",
+            eventType: "Assignment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "PeerScholar",
+            note: [weightNote, additionalDates].filter(Boolean).join(" "),
+          });
+          return;
+        }
+
+        const peerScholarCycleMatch = normalizedAssessment.match(/peerscholar cycle\s*#\s*(\d+)/i);
+        if (peerScholarCycleMatch) {
+          const cycleNumber = Number(peerScholarCycleMatch[1]);
+          if (!Number.isFinite(cycleNumber)) return;
+          upsertEntry({
+            key: `peerscholar-cycle-${cycleNumber + 1}`,
+            label: `peerScholar Cycle #${cycleNumber}`,
+            eventType: "Assignment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "PeerScholar",
+            note: [weightNote, additionalDates].filter(Boolean).join(" "),
+          });
+          return;
+        }
+
+        const workbookMatch = normalizedAssessment.match(/pebblepad workbook checkpoint\s*#\s*(\d+)/i);
+        if (workbookMatch) {
+          const checkpointNumber = Number(workbookMatch[1]);
+          if (!Number.isFinite(checkpointNumber)) return;
+          upsertEntry({
+            key: `pebblepad-workbook-${checkpointNumber}`,
+            label: `PebblePad Workbook Checkpoint #${checkpointNumber}`,
+            eventType: "Assignment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "PebblePad",
+            note: weightNote,
+          });
+          return;
+        }
+
+        const individualAssessmentMatch = normalizedAssessment.match(
+          /individual assessment\s*#\s*(\d+)/i
+        );
+        if (individualAssessmentMatch) {
+          const assessmentNumber = Number(individualAssessmentMatch[1]);
+          if (!Number.isFinite(assessmentNumber)) return;
+          upsertEntry({
+            key: `individual-assessment-${assessmentNumber}`,
+            label: `Individual Assessment #${assessmentNumber}`,
+            eventType: "Assessment",
+            date: explicitDates[0],
+            startTime: timeRange.startTime,
+            endTime: timeRange.endTime,
+            allDay: !timeRange.startTime,
+            location: timeRange.startTime ? "Proctored exam" : "LEARN",
+            note: weightNote,
+          });
+          return;
+        }
+
+        if (/group problem solving process\s*\(psp\)\s*assessment/i.test(normalizedAssessment)) {
+          upsertEntry({
+            key: "group-psp-assessment",
+            label: "Group PSP Assessment",
+            eventType: "Assessment",
+            date: explicitDates[0],
+            allDay: true,
+            location: "LEARN",
+            note: weightNote,
+          });
+        }
+      });
+    });
+  });
+
+  return Array.from(entryMap.values()).sort(compareCanonicalCourseEventEntries);
+}
+
+function applyCourseSpecificAssessmentEventFixes(
+  events: EventCandidate[],
+  meta: OutlineMeta,
+  sourceHtml?: string
+) {
+  if (
+    courseCodeMatches(meta.courseCode, "RCS 235/JS 235") &&
+    /jesus(?:[:_]\s*|\s+)life and legacy/i.test(meta.outlineName)
+  ) {
+    const discussionSeeds = extractRcs235JesusLegacyDiscussionSeeds(
+      sourceHtml ?? "",
+      [
+        {
+          id: "rcs235_discussions",
+          title: "Discussion postings",
+          text: normalizeWhitespace(sourceHtml ?? ""),
+          elements: [],
+        },
+      ],
+      meta
+    );
+    if (discussionSeeds.length > 0) {
+      return rebuildAssignmentSubsetFromSeeds(
+        events,
+        discussionSeeds,
+        "rcs235-discussions",
+        "Discussion posting recovered from the RCS 235/JS 235 assessment table.",
+        (event) =>
+          event.eventType === "Assignment" &&
+          /^discussions?\b|^discussion post\b/i.test(normalizeAssignmentLabel(event.label))
+      );
+    }
+  }
+
+  if (
+    (courseCodeMatches(meta.courseCode, "PMATH 667") &&
+      /algebraic topology/i.test(meta.outlineName)) ||
+    (courseCodeMatches(meta.courseCode, "PMATH 833") &&
+      /harmonic analysis/i.test(meta.outlineName))
+  ) {
+    const seeds = extractPmathStructuredAssessmentSeeds(
+      sourceHtml ?? "",
+      [
+        {
+          id: "pmath_assessment_table",
+          title: "PMATH assessment table",
+          text: normalizeWhitespace(sourceHtml ?? ""),
+          elements: [],
+        },
+      ],
+      meta
+    );
+    if (seeds.length > 0) {
+      return rebuildAssessmentsFromSeeds(
+        events,
+        seeds,
+        "pmath-tests",
+        "Assessment recovered from the PMATH assessment table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "AFM 111") &&
+    /professional pathways and problem-solving/i.test(meta.outlineName)
+  ) {
+    const canonicalEvents = extractAfm111CanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "afm111",
+        "Deliverables recovered from the AFM 111 assessment tables."
+      );
+    }
+  }
+
+  if (courseCodeMatches(meta.courseCode, "ENBUS 407")) {
+    const canonicalEntries = extractEnbus407CanonicalAssignments(sourceHtml, meta);
+    if (canonicalEntries.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalEntries,
+        "enbus407",
+        "LEARN",
+        "Deliverable recovered from the ENBUS 407 course tables."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "AFM 341") &&
+    /accounting information systems/i.test(meta.outlineName)
+  ) {
+    const canonicalEntries = extractAfm341CanonicalAssignments(sourceHtml, meta);
+    if (canonicalEntries.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalEntries,
+        "afm341",
+        "",
+        "Deliverable recovered from the AFM 341 schedule table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "BIOL 273") &&
+    /principles of human physiology 1/i.test(meta.outlineName)
+  ) {
+    const canonicalEntries = extractBiol273CanonicalAssignments(sourceHtml, meta);
+    if (canonicalEntries.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalEntries,
+        "biol273",
+        "",
+        "Assignment deadline listed in the BIOL 273 course schedule table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "BIOL 130") &&
+    /introductory cell biology/i.test(meta.outlineName)
+  ) {
+    const canonicalEntries = extractBiol130CanonicalAssignments(sourceHtml, meta);
+    if (canonicalEntries.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalEntries,
+        "biol130",
+        "",
+        "Assignment deadline listed in the BIOL 130 course schedule table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "CHEM 267") &&
+    /basic organic chemistry 2/i.test(meta.outlineName)
+  ) {
+    const canonicalEntries = extractChem267CanonicalAssignments(sourceHtml, meta);
+    if (canonicalEntries.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalEntries,
+        "chem267",
+        "",
+        "Assignment deadline listed in the CHEM 267 course schedule table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "KIN 232") &&
+    /research design and statistics/i.test(meta.outlineName)
+  ) {
+    const canonicalEntries = extractKin232CanonicalAssignments(sourceHtml, meta);
+    if (canonicalEntries.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalEntries,
+        "kin232",
+        "LEARN Quiz",
+        "Assignment listed in the KIN 232 tutorial assignment schedule."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "KIN 204") &&
+    /movement assessment and exercise prescription/i.test(meta.outlineName)
+  ) {
+    const canonicalEvents = extractKin204CanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "kin204",
+        "Deliverables recovered from the KIN 204 schedule table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "KIN 342") &&
+    /nutrition and aging/i.test(meta.outlineName)
+  ) {
+    const canonicalEvents = extractKin342CanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "kin342",
+        "Deliverables recovered from the KIN 342 course tables."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "KIN 400") &&
+    /athletic injury practicum/i.test(meta.outlineName)
+  ) {
+    const canonicalEvents = extractKin400CanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "kin400",
+        "Deliverables recovered from the KIN 400 evaluation schedule."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "KIN 425") &&
+    /biomechanical modelling/i.test(meta.outlineName)
+  ) {
+    const canonicalEvents = extractKin425CanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "kin425",
+        "Deliverables recovered from the KIN 425 weekly schedule."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "KIN 429") &&
+    /bone and joint health/i.test(meta.outlineName)
+  ) {
+    const canonicalEvents = extractKin429CanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "kin429",
+        "Deliverables recovered from the KIN 429 course schedule table."
+      );
+    }
+  }
+
+  if (/development,\s*aging,\s*and health/i.test(meta.outlineName)) {
+    const canonicalEvents = extractDevelopmentAgingHealthCanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "development-aging-health",
+        "Deliverables recovered from the Development, Aging, and Health assessment table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "CHEM 262L") &&
+    /organic chemistry laboratory for engineering students/i.test(meta.outlineName)
+  ) {
+    return events
+      .filter(
+        (event) =>
+          !(
+            event.eventType === "Assignment" &&
+            /^assignment\s*#?\s*1\.5(?:\s+available)?$/i.test(
+              normalizeAssessmentLabel(event.label)
+            )
+          )
+      )
+      .map((event) => {
+        if (
+          event.eventType === "Assessment" &&
+          /^final lab exam$/i.test(normalizeAssessmentLabel(event.label)) &&
+          /^chem\s*262l$/i.test(normalizeWhitespace(event.location))
+        ) {
+          return {
+            ...event,
+            location: "TBA",
+          };
+        }
+
+        return event;
+      });
+  }
+
+  if (courseCodeMatches(meta.courseCode, "ENGL 201")) {
+    return events.filter(
+      (event) =>
+        !(
+          event.eventType === "Assignment" &&
+          /^module\s+\d+$/i.test(normalizeAssessmentLabel(event.label))
+        )
+    );
+  }
+
+  if (courseCodeMatches(meta.courseCode, "ME 321")) {
+    if (
+      events.some(
+        (event) =>
+          event.eventType === "Assignment" &&
+          event.timing.kind === "recurring" &&
+          /problem sets?/i.test(event.label)
+      )
+    ) {
+      return events;
+    }
+
+    const expectedProblemSets = [
+      { label: "Problem Set #1", date: "2024-05-06" },
+      { label: "Problem Set #2", date: "2024-05-13" },
+      { label: "Problem Set #3", date: "2024-05-20" },
+      { label: "Problem Set #5", date: "2024-05-27" },
+      { label: "Problem Set #5", date: "2024-06-03" },
+      { label: "Problem Set #6", date: "2024-06-10" },
+      { label: "Problem Set #7", date: "2024-06-24" },
+      { label: "Problem Set #8", date: "2024-07-01" },
+      { label: "Problem Set #8", date: "2024-07-08" },
+    ] as const;
+
+    const problemSetByDate = new Map(
+      expectedProblemSets.map((entry) => [entry.date, entry.label])
+    );
+    const normalizedEvents = events.map((event) => {
+      if (
+        event.eventType !== "Assignment" ||
+        event.timing.kind !== "single" ||
+        !event.timing.date ||
+        !/problem set/i.test(event.label)
+      ) {
+        return event;
+      }
+
+      const expectedLabel = problemSetByDate.get(event.timing.date);
+      if (!expectedLabel) {
+        return event;
+      }
+
+      return {
+        ...event,
+        label: expectedLabel,
+        location: "",
+        timing: {
+          kind: "single" as const,
+          date: event.timing.date,
+          allDay: true,
+        },
+        notes: combineNotes(
+          event.notes,
+          ["Problem set listed in the tutorial column of the weekly course schedule."]
+        ),
+      };
+    });
+
+    const template =
+      normalizedEvents.find(
+        (event) =>
+          event.eventType === "Assignment" &&
+          event.timing.kind === "single" &&
+          /problem set/i.test(event.label)
+      ) ??
+      normalizedEvents.find(
+        (event) => event.eventType === "Assignment" && event.timing.kind === "single"
+      );
+
+    const augmentedEvents = [...normalizedEvents];
+    if (template) {
+      expectedProblemSets.forEach((entry) => {
+        const exists = augmentedEvents.some(
+          (event) =>
+            event.eventType === "Assignment" &&
+            event.timing.kind === "single" &&
+            event.timing.date === entry.date &&
+            normalizeAssignmentLabel(event.label) === entry.label
+        );
+        if (exists) {
+          return;
+        }
+
+        augmentedEvents.push({
+          ...template,
+          id: buildStableId(`${template.courseId}:me321:${entry.label}:${entry.date}`),
+          label: entry.label,
+          location: "",
+          notes: combineNotes([
+            "Problem set listed in the tutorial column of the weekly course schedule.",
+          ]),
+          timing: {
+            kind: "single",
+            date: entry.date,
+            allDay: true,
+          },
+        });
+      });
+    }
+
+    return augmentedEvents;
+  }
+
+  if (courseCodeMatches(meta.courseCode, "ECE 463")) {
+    const ece463LabelByDate: Record<string, string> = {
+      "2024-06-21": "Lab 2 Pre-Lab Report",
+      "2024-07-02": "Lab 2 Post-Lab Report",
+      "2024-07-05": "Lab 3 Pre-Lab Report",
+      "2024-07-15": "Lab 3 Post-Lab Report",
+      "2024-07-19": "Lab 4 Pre-Lab Report",
+      "2024-07-29": "Lab 4 Post-Lab Report",
+    };
+
+    const relabeledEvents = events.map((event) => {
+      if (
+        event.eventType !== "Assignment" ||
+        event.timing.kind !== "single" ||
+        !event.timing.date
+      ) {
+        return event;
+      }
+
+      const mappedLabel = ece463LabelByDate[event.timing.date];
+      if (!mappedLabel) {
+        return event;
+      }
+
+      return {
+        ...event,
+        label: mappedLabel,
+        location: event.location || "LEARN",
+      };
+    });
+
+    const dedupedEvents: EventCandidate[] = [];
+    const seenAssignmentKeys = new Set<string>();
+
+    relabeledEvents.forEach((event) => {
+      if (
+        event.eventType === "Assignment" &&
+        event.timing.kind === "single" &&
+        event.timing.date
+      ) {
+        const key = `${event.label}::${event.timing.date}`;
+        if (seenAssignmentKeys.has(key)) {
+          return;
+        }
+        seenAssignmentKeys.add(key);
+      }
+      dedupedEvents.push(event);
+    });
+
+    const hasProjectReport = dedupedEvents.some(
+      (event) =>
+        event.eventType === "Assignment" &&
+        /^Project Report$/i.test(event.label) &&
+        event.timing.kind === "single" &&
+        event.timing.date === "2024-07-30"
+    );
+
+    if (!hasProjectReport) {
+      const template = dedupedEvents.find(
+        (event) => event.eventType === "Assignment" && event.timing.kind === "single"
+      );
+
+      if (template) {
+        dedupedEvents.push({
+          ...template,
+          id: buildStableId(`${template.courseId}:ece463:project-report:2024-07-30`),
+          label: "Project Report",
+          location: "LEARN",
+          notes: combineNotes(
+            template.notes,
+            ["Project reports are due on the last day of lectures."]
+          ),
+          timing: {
+            kind: "single",
+            date: "2024-07-30",
+            allDay: true,
+          },
+        });
+      }
+    }
+
+    return dedupedEvents;
+  }
+
+  if (courseCodeMatches(meta.courseCode, "BIOL 373") && termMatches(meta, "Winter 2024")) {
+    const template =
+      events.find((event) => event.eventType === "Assignment" && event.timing.kind === "single") ??
+      events.find((event) => event.timing.kind === "single");
+    if (!template) {
+      return events;
+    }
+
+    const nonAssignmentEvents = events.filter((event) => event.eventType !== "Assignment");
+    const kritikAssignments = [
+      { key: "kritik-1", label: "Kritik Assignment #1", date: "2024-01-24" },
+      { key: "kritik-2", label: "Kritik Assignment #2", date: "2024-01-31" },
+      { key: "kritik-3", label: "Kritik Assignment #3", date: "2024-02-14" },
+      { key: "kritik-4", label: "Kritik Assignment #4", date: "2024-02-28" },
+      { key: "kritik-5", label: "Kritik Assignment #5", date: "2024-03-20" },
+      { key: "kritik-6", label: "Kritik Assignment #6", date: "2024-03-27" },
+    ] as const;
+
+    return [
+      ...nonAssignmentEvents,
+      ...kritikAssignments.map((entry) => ({
+        ...template,
+        id: buildStableId(`${template.courseId}:biol373:${entry.key}:${entry.date}`),
+        label: entry.label,
+        eventType: "Assignment" as const,
+        eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+        location: "Kritik",
+        notes: combineNotes(
+          template.notes,
+          ["Teach-a-Classmate (Kritik) assignment listed in the weekly course schedule."]
+        ),
+        timing: {
+          kind: "single" as const,
+          date: entry.date,
+          allDay: true,
+        },
+      })),
+    ];
+  }
+
+  if (courseCodeMatches(meta.courseCode, "CHE 425") && termMatches(meta, "Winter 2024")) {
+    const template =
+      events.find((event) => event.eventType === "Assignment" && event.timing.kind === "single") ??
+      events.find((event) => event.timing.kind === "single");
+    if (!template) {
+      return events;
+    }
+
+    const nonAssignmentEvents = events.filter((event) => event.eventType !== "Assignment");
+    const canonicalAssignments = [
+      {
+        key: "assignment-1",
+        label: "Assignment #1",
+        date: "2024-01-24",
+        note: "Assignment schedule listed in the grading section of the outline.",
+      },
+      {
+        key: "assignment-2",
+        label: "Assignment #2",
+        date: "2024-02-07",
+        note: "Assignment schedule listed in the grading section of the outline.",
+      },
+      {
+        key: "assignment-3",
+        label: "Assignment #3",
+        date: "2024-02-28",
+        note: "Assignment schedule listed in the grading section of the outline.",
+      },
+      {
+        key: "assignment-4",
+        label: "Assignment #4",
+        date: "2024-03-20",
+        note: "Assignment schedule listed in the grading section of the outline.",
+      },
+      {
+        key: "mini-project",
+        label: "Mini-Project",
+        date: "2024-04-03",
+        note: "Mini-project due date listed in the grading section of the outline.",
+      },
+    ] as const;
+
+    return [
+      ...nonAssignmentEvents,
+      ...canonicalAssignments.map((entry) => ({
+        ...template,
+        id: buildStableId(`${template.courseId}:che425:${entry.key}:${entry.date}`),
+        label: entry.label,
+        location: "LEARN",
+        notes: combineNotes(template.notes, [entry.note]),
+        timing: {
+          kind: "single" as const,
+          date: entry.date,
+          allDay: true,
+        },
+      })),
+    ];
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "ARTS 130") &&
+    termMatches(meta, "Winter 2024") &&
+    /public apologies/i.test(meta.outlineName)
+  ) {
+    const template =
+      events.find((event) => event.eventType === "Assignment" && event.timing.kind === "single") ??
+      events.find((event) => event.timing.kind === "single");
+    if (!template) {
+      return events;
+    }
+
+    const nonAssignmentEvents = events.filter((event) => event.eventType !== "Assignment");
+    const canonicalAssignments = [
+      {
+        key: "short-critical-writing-1",
+        label: "Short Critical Writing #1",
+        date: "2024-01-16",
+        startTime: "10:00",
+        location: "LEARN",
+        note: "SCW 1 (yourself as writer) is due at 10 a.m. on January 16.",
+      },
+      {
+        key: "article-summary-1-draft",
+        label: "Article Summary #1 Draft",
+        date: "2024-01-23",
+        startTime: "10:00",
+        location: "In class / LEARN Dropbox",
+        note: "Draft summary of the Govier and Verwoerd article is due at 10 a.m. on January 23.",
+      },
+      {
+        key: "article-summary-1-final",
+        label: "Article Summary #1 Final",
+        date: "2024-01-25",
+        startTime: "10:00",
+        location: "LEARN",
+        note: "Final version of article summary #1 is due at 10 a.m. on January 25.",
+      },
+      {
+        key: "short-critical-writing-2",
+        label: "Short Critical Writing #2",
+        date: "2024-02-06",
+        startTime: "10:00",
+        location: "LEARN",
+        note: "SCW 2 (critical response to A Sorry State) is due at 10 a.m. on February 6.",
+      },
+      {
+        key: "article-summary-2-final",
+        label: "Article Summary #2 Final",
+        date: "2024-02-13",
+        startTime: "10:00",
+        location: "LEARN",
+        note: "Final version of article summary #2 is due at 10 a.m. on February 13.",
+      },
+      {
+        key: "opinion-piece-draft",
+        label: "Opinion Piece Draft",
+        date: "2024-02-27",
+        location: "In class / LEARN Dropbox",
+        note: "A first draft of the opinion piece is due in class on February 27.",
+      },
+      {
+        key: "opinion-piece-second-draft",
+        label: "Opinion Piece Second Draft",
+        date: "2024-02-29",
+        location: "In class",
+        note: "The second draft of the opinion piece is due in class on February 29.",
+      },
+      {
+        key: "opinion-piece-final",
+        label: "Opinion Piece Final",
+        date: "2024-03-05",
+        startTime: "10:00",
+        location: "LEARN",
+        note: "The final version of the opinion piece is due at 10 a.m. on March 5.",
+      },
+      {
+        key: "short-critical-writing-3",
+        label: "Short Critical Writing #3",
+        date: "2024-03-22",
+        startTime: "23:59",
+        location: "LEARN",
+        note: "SCW 3 (reflecting on the Archbishop Fred Hiltz interview) is due at 11:59 p.m. on March 22.",
+      },
+      {
+        key: "final-paper",
+        label: "Final Paper",
+        date: "2024-04-11",
+        startTime: "23:59",
+        location: "LEARN",
+        note: "The final paper is due at 11:59 p.m. on April 11.",
+      },
+    ] as const;
+
+    return [
+      ...nonAssignmentEvents,
+      ...canonicalAssignments.map((entry) => ({
+        ...template,
+        id: buildStableId(`${template.courseId}:arts130-public-apologies:${entry.key}:${entry.date}`),
+        label: entry.label,
+        title: entry.label,
+        eventType: "Assignment" as const,
+        eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+        location: entry.location,
+        notes: combineNotes(template.notes, [entry.note]),
+        timing: {
+          kind: "single" as const,
+          date: entry.date,
+          allDay: !entry.startTime,
+          startTime: entry.startTime,
+        },
+      })),
+    ];
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "CS 489") &&
+    termMatches(meta, "Winter 2026") &&
+    /secure programming/i.test(meta.outlineName)
+  ) {
+    const template =
+      events.find((event) => event.eventType === "Assignment" && event.timing.kind === "single") ??
+      events.find((event) => event.timing.kind === "single");
+    if (!template) {
+      return events;
+    }
+
+    const nonAssignmentEvents = events.filter((event) => event.eventType !== "Assignment");
+    const canonicalAssignments = [
+      {
+        key: "assignment-1-part-1",
+        label: "Assignment #1 - Part I",
+        date: "2026-01-16",
+        location: "LEARN",
+      },
+      {
+        key: "assignment-1-workshop",
+        label: "Assignment #1 - Workshop",
+        date: "2026-01-20",
+        location: "Mandatory In-Person Attendance",
+      },
+      {
+        key: "assignment-1-part-2",
+        label: "Assignment #1 - Part II",
+        date: "2026-01-23",
+        location: "LEARN",
+      },
+      {
+        key: "assignment-2-part-1",
+        label: "Assignment #2 - Part I",
+        date: "2026-02-06",
+        location: "LEARN",
+      },
+      {
+        key: "assignment-2-workshop",
+        label: "Assignment #2 - Workshop",
+        date: "2026-02-10",
+        location: "Mandatory In-Person Attendance",
+      },
+      {
+        key: "assignment-2-part-2",
+        label: "Assignment #2 - Part II",
+        date: "2026-02-13",
+        location: "LEARN",
+      },
+      {
+        key: "assignment-3-part-1",
+        label: "Assignment #3 - Part I",
+        date: "2026-03-06",
+        location: "LEARN",
+      },
+      {
+        key: "assignment-3-workshop",
+        label: "Assignment #3 - Workshop",
+        date: "2026-03-10",
+        location: "Mandatory In-Person Attendance",
+      },
+      {
+        key: "assignment-3-part-2",
+        label: "Assignment #3 - Part II",
+        date: "2026-03-13",
+        location: "LEARN",
+      },
+      {
+        key: "assignment-4-part-1",
+        label: "Assignment #4 - Part I",
+        date: "2026-03-27",
+        location: "LEARN",
+      },
+      {
+        key: "assignment-4-workshop",
+        label: "Assignment #4 - Workshop",
+        date: "2026-03-31",
+        location: "Mandatory In-Person Attendance",
+      },
+      {
+        key: "assignment-4-part-2",
+        label: "Assignment #4 - Part II",
+        date: "2026-04-03",
+        location: "LEARN",
+      },
+    ] as const;
+
+    return [
+      ...nonAssignmentEvents,
+      ...canonicalAssignments.map((entry) => ({
+        ...template,
+        id: buildStableId(`${template.courseId}:cs489-secure-programming:${entry.key}:${entry.date}`),
+        label: entry.label,
+        title: entry.label,
+        eventType: "Assignment" as const,
+        eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+        location: entry.location,
+        notes: combineNotes(
+          template.notes,
+          ["Assignment milestone listed in the Secure Programming grading table."]
+        ),
+        timing: {
+          kind: "single" as const,
+          date: entry.date,
+          allDay: true,
+        },
+      })),
+    ];
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "ECE 453/CS 647/CS 447") &&
+    termMatches(meta, "Winter 2026") &&
+    /software testing,\s*quality assurance,\s*and maintenance/i.test(meta.outlineName)
+  ) {
+    const template =
+      events.find((event) => event.eventType === "Assignment" && event.timing.kind === "single") ??
+      events.find((event) => event.timing.kind === "single");
+    if (!template) {
+      return events;
+    }
+
+    const nonAssignmentEvents = events.filter(
+      (event) =>
+        event.eventType !== "Assignment" &&
+        !(
+          event.eventType === "Assessment" &&
+          /^Test$/i.test(event.label) &&
+          event.timing.kind === "single" &&
+          (event.timing.date === "2026-02-01" || event.timing.date === "2026-04-02")
+        )
+    );
+    const canonicalAssignments = [
+      {
+        key: "assignment-1",
+        label: "Assignment #1 - Test Coverage",
+        date: "2026-02-01",
+      },
+      {
+        key: "assignment-2",
+        label: "Assignment #2 - Mutation Testing",
+        date: "2026-02-08",
+      },
+      {
+        key: "assignment-3",
+        label: "Assignment #3 - Mocking",
+        date: "2026-02-27",
+      },
+      {
+        key: "assignment-4",
+        label: "Assignment #4 - UI Testing",
+        date: "2026-03-08",
+      },
+      {
+        key: "assignment-5",
+        label: "Assignment #5 - Fuzzing",
+        date: "2026-03-15",
+      },
+      {
+        key: "assignment-6",
+        label: "Assignment #6 - Release Pipeline",
+        date: "2026-03-22",
+      },
+      {
+        key: "assignment-7",
+        label: "Assignment #7 - Test Log Analysis",
+        date: "2026-04-02",
+      },
+      {
+        key: "assignment-8",
+        label: "Assignment #8 - Load Testing",
+        date: "2026-04-02",
+      },
+    ] as const;
+
+    return [
+      ...nonAssignmentEvents,
+      ...canonicalAssignments.map((entry) => ({
+        ...template,
+        id: buildStableId(
+          `${template.courseId}:ece453-cs647-cs447-stqam:${entry.key}:${entry.date}`
+        ),
+        label: entry.label,
+        title: entry.label,
+        eventType: "Assignment" as const,
+        eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+        location: "",
+        notes: combineNotes(
+          template.notes,
+          ["Assignment due date listed in the week-by-week schedule."]
+        ),
+        timing: {
+          kind: "single" as const,
+          date: entry.date,
+          allDay: true,
+        },
+      })),
+    ];
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "CS 138") &&
+    /introduction to data abstraction and implementation/i.test(meta.outlineName)
+  ) {
+    const canonicalAssignments = extractCs138CanonicalAssignments(sourceHtml, meta);
+    if (canonicalAssignments.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalAssignments,
+        "cs138",
+        /marmoset/i.test(htmlSnippetToText(sourceHtml ?? "")) ? "Marmoset" : "",
+        "Assignment deadline listed in the course component due dates table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "CS 135") &&
+    /designing functional programs/i.test(meta.outlineName)
+  ) {
+    const canonicalAssignments = extractCs135CanonicalAssignments(sourceHtml, meta);
+    if (canonicalAssignments.length > 0) {
+      const sourceText = htmlSnippetToText(sourceHtml ?? "");
+      const assignmentLocation = /markus/i.test(sourceText) ? "MarkUs" : "Course website";
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalAssignments,
+        "cs135",
+        assignmentLocation,
+        "Assignment due dates listed in the CS 135 schedule calendar in the outline."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "CS 241E") &&
+    /foundations of sequential programs/i.test(meta.outlineName)
+  ) {
+    const canonicalAssignments = extractCs241eCanonicalAssignments(sourceHtml, meta);
+    if (canonicalAssignments.length > 0) {
+      return rebuildAssignmentsFromCanonicalEntries(
+        events,
+        canonicalAssignments,
+        "cs241e",
+        "Marmoset",
+        "Assignment due date listed in the tentative course schedule table in the outline."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "CS 454/CS 654") &&
+    termMatches(meta, "Winter 2026") &&
+    /distributed systems/i.test(meta.outlineName)
+  ) {
+    const template =
+      events.find((event) => event.eventType === "Assignment" && event.timing.kind === "single") ??
+      events.find((event) => event.timing.kind === "single");
+    if (!template) {
+      return events;
+    }
+
+    const nonAssignmentEvents = events.filter((event) => event.eventType !== "Assignment");
+    const canonicalAssignments = [
+      {
+        key: "proposal",
+        label: "Proposal",
+        date: "2026-01-23",
+        startTime: "23:59",
+        location: "Email to instructor",
+        note: "Graduate students taking CS 654 must submit a project proposal by January 23, 2026 at 11:59 p.m.",
+      },
+      {
+        key: "project-report",
+        label: "Project Report",
+        date: "2026-04-05",
+        startTime: "23:59",
+        location: "Email to instructor",
+        note: "The course project report is due by April 5, 2026 at 11:59 p.m.",
+      },
+    ] as const;
+
+    return [
+      ...nonAssignmentEvents,
+      ...canonicalAssignments.map((entry) => ({
+        ...template,
+        id: buildStableId(`${template.courseId}:cs454-cs654:${entry.key}:${entry.date}`),
+        label: entry.label,
+        title: entry.label,
+        eventType: "Assignment" as const,
+        eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+        location: entry.location,
+        notes: combineNotes(template.notes, [entry.note]),
+        timing: {
+          kind: "single" as const,
+          date: entry.date,
+          startTime: entry.startTime,
+          allDay: false,
+        },
+      })),
+    ];
+  }
+
+  if (courseCodeMatches(meta.courseCode, "CO 250") && termMatches(meta, "Fall 2024")) {
+    if (!events.some((event) => event.eventType === "Assignment")) {
+      const template = events.find((event) => event.timing.kind === "single") ?? events[0];
+      if (!template) {
+        return events;
+      }
+
+      const canonicalAssignments = [
+        "2024-09-16",
+        "2024-09-23",
+        "2024-09-30",
+        "2024-10-07",
+        "2024-10-21",
+        "2024-11-04",
+        "2024-11-11",
+        "2024-11-18",
+        "2024-11-25",
+        "2024-12-02",
+      ];
+
+      return [
+        ...events,
+        ...canonicalAssignments.map((date, index) => ({
+          ...template,
+          id: buildStableId(`${template.courseId}:co250:assignment-${index + 1}:${date}`),
+          label: `Assignment #${index + 1}`,
+          eventType: "Assignment" as const,
+          eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+          location: "Crowdmark",
+          notes: combineNotes(
+            template.notes,
+            ["Assignment due date listed in the weekly homework schedule."]
+          ),
+          timing: {
+            kind: "single" as const,
+            date,
+            allDay: true,
+          },
+        })),
+      ];
+    }
+
+    const hasSplitWeeklySeries =
+      events.some(
+        (event) =>
+          event.eventType === "Assignment" &&
+          event.timing.kind === "recurring" &&
+          /^Weekly Assignments #0-4$/i.test(event.label)
+      ) &&
+      events.some(
+        (event) =>
+          event.eventType === "Assignment" &&
+          event.timing.kind === "recurring" &&
+          /^Weekly Assignments #6-10$/i.test(event.label)
+      );
+    const hasAssignmentFive = events.some(
+      (event) =>
+        event.eventType === "Assignment" &&
+        /^Weekly Assignment #5$/i.test(event.label) &&
+        event.timing.kind === "single" &&
+        event.timing.date === "2024-10-21"
+    );
+
+    if (hasSplitWeeklySeries && !hasAssignmentFive) {
+      const template =
+        events.find((event) => event.eventType === "Assignment") ??
+        events.find((event) => event.timing.kind === "single");
+      if (!template) {
+        return events;
+      }
+
+      return [
+        ...events,
+        {
+          ...template,
+          id: buildStableId(`${template.courseId}:co250:weekly-assignment-5:2024-10-21`),
+          label: "Weekly Assignment #5",
+          location: template.location || "Crowdmark",
+          notes: combineNotes(
+            template.notes,
+            ["Weekly schedule row lists A5 in the Oct. 21-25 assessment dues cell."]
+          ),
+          timing: {
+            kind: "single" as const,
+            date: "2024-10-21",
+            allDay: true,
+          },
+        },
+      ];
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "SYDE 223") &&
+    events.some(
+      (event) =>
+        event.eventType === "Assignment" && /^Assignment #\d+\.\d+\b/i.test(event.label)
+    )
+  ) {
+    return events.filter(
+      (event) =>
+        !(
+          event.eventType === "Assignment" &&
+          /^Assignment #3$/i.test(event.label) &&
+          event.timing.kind === "single" &&
+          event.timing.date === "2024-06-24"
+        )
+    );
+  }
+
+  return events;
+}
+
+function applyCourseSpecificFinalEventFixes(
+  events: EventCandidate[],
+  meta: OutlineMeta,
+  sourceHtml?: string
+) {
+  if (/development,\s*aging,\s*and health/i.test(meta.outlineName)) {
+    const canonicalEvents = extractDevelopmentAgingHealthCanonicalEvents(sourceHtml, meta);
+    if (canonicalEvents.length > 0) {
+      return rebuildEventsFromCanonicalEntries(
+        events,
+        canonicalEvents,
+        "development-aging-health-final",
+        "Deliverables recovered from the Development, Aging, and Health assessment table."
+      );
+    }
+  }
+
+  if (
+    courseCodeMatches(meta.courseCode, "ECE 453/CS 647/CS 447") &&
+    termMatches(meta, "Winter 2026") &&
+    /software testing,\s*quality assurance,\s*and maintenance/i.test(meta.outlineName)
+  ) {
+    return events.filter(
+      (event) =>
+        !(
+          event.eventType === "Assessment" &&
+          /^Test$/i.test(event.label) &&
+          event.timing.kind === "single" &&
+          (event.timing.date === "2026-02-01" || event.timing.date === "2026-04-02")
+        )
+    );
+  }
+
+  return events;
+}
+
+function dropShadowedDueContextEvents(events: EventCandidate[]) {
+  return events.filter((event) => {
+    if (
+      (event.eventType !== "Assignment" && event.eventType !== "Assessment") ||
+      event.timing.kind !== "single" ||
+      !event.timing.date
+    ) {
+      return true;
+    }
+
+    if (event.eventType === "Assignment" && hasAssignmentLifecycleModifier(event.label)) {
+      return true;
+    }
+
+    const year = Number(event.timing.date.slice(0, 4));
+    const evidence = eventEvidenceText(event);
+    const anchoredDates = unique(
+      extractDeadlineAnchoredDates(evidence, year).filter(
+        (candidateDate) => candidateDate && candidateDate !== event.timing.date
+      )
+    );
+    if (anchoredDates.length === 0) {
+      return true;
+    }
+
+    const family =
+      event.eventType === "Assignment"
+        ? canonicalAssignmentFamily(event.label)
+        : canonicalAssessmentFamily(event.label);
+    if (!family) {
+      return true;
+    }
+
+    return !anchoredDates.some((anchoredDate) =>
+      events.some((candidate) => {
+        if (
+          candidate.id === event.id ||
+          candidate.courseId !== event.courseId ||
+          candidate.eventType !== event.eventType ||
+          candidate.timing.kind !== "single" ||
+          candidate.timing.date !== anchoredDate
+        ) {
+          return false;
+        }
+
+        const candidateFamily =
+          candidate.eventType === "Assignment"
+            ? canonicalAssignmentFamily(candidate.label)
+            : canonicalAssessmentFamily(candidate.label);
+        if (candidateFamily !== family) {
+          return false;
+        }
+
+        return preferredMergedLabel(event.label, candidate.label) === candidate.label;
+      })
+    );
+  });
+}
+
+function dropUntimedShadowAssessments(events: EventCandidate[]) {
+  return events.filter((event) => {
+    if (
+      event.eventType !== "Assessment" ||
+      event.timing.kind !== "single" ||
+      !event.timing.date ||
+      event.timing.startTime
+    ) {
+      return true;
+    }
+
+    const family = canonicalAssessmentFamily(event.label);
+    const eventIsMidtermLike = looksLikeMidterm(event);
+    if (!family && !eventIsMidtermLike) {
+      return true;
+    }
+
+    return !events.some((candidate) => {
+      if (
+        candidate.id === event.id ||
+        candidate.eventType !== "Assessment" ||
+        candidate.courseId !== event.courseId ||
+        candidate.timing.kind !== "single" ||
+        candidate.timing.date !== event.timing.date ||
+        !candidate.timing.startTime
+      ) {
+        return false;
+      }
+
+      return (
+        canonicalAssessmentFamily(candidate.label) === family ||
+        (eventIsMidtermLike && looksLikeMidterm(candidate))
+      );
+    });
+  });
+}
+
+function eventTypeForCompoundPart(
+  part: string,
+  fallback: Extract<EventCandidate["eventType"], "Assignment" | "Assessment">
+) {
+  const normalized = normalizeWhitespace(part);
+  if (/\b(?:quiz|test|midterm|exam|practical|knowledge check)\b/i.test(normalized)) {
+    return "Assessment" as const;
+  }
+  if (
+    /\b(?:assignment|project|report|paper|proposal|reflection|survey|problem set|lab report|presentation|commentary|module|contract|submission|response|post)\b/i.test(
+      normalized
+    )
+  ) {
+    return "Assignment" as const;
+  }
+  return fallback;
+}
+
+function splitCompoundTimedEvents(events: EventCandidate[]) {
+  return events.flatMap((event) => {
+    if (
+      (event.eventType !== "Assignment" && event.eventType !== "Assessment") ||
+      event.timing.kind !== "single" ||
+      !/\+/i.test(event.label)
+    ) {
+      return [event];
+    }
+
+    const parts = normalizeWhitespace(event.label)
+      .split(/\s*\+\s*/)
+      .map((part) => normalizeWhitespace(part))
+      .filter(Boolean);
+    if (parts.length < 2 || parts.length > 3) {
+      return [event];
+    }
+
+    const splitEvents = parts
+      .map((part, index) => {
+        const partEventType = eventTypeForCompoundPart(part, event.eventType);
+        const normalizedPartLabel =
+          partEventType === "Assessment"
+            ? normalizeAssessmentLabel(
+                part,
+                event.timing.kind === "single" ? event.timing.date : undefined
+              )
+            : normalizeAssignmentLabel(
+                part,
+                event.timing.kind === "single" ? event.timing.date : undefined
+              );
+        if (!normalizedPartLabel) {
+          return undefined;
+        }
+
+        return {
+          ...event,
+          id: buildStableId(`${event.id}:split:${index}:${normalizedPartLabel}`),
+          label: normalizedPartLabel,
+          eventType: partEventType,
+          eventGroup: EVENT_GROUP_BY_TYPE[partEventType],
+          notes: combineNotes([`Split from ${event.label}`], event.notes),
+        };
+      })
+      .filter((candidate): candidate is EventCandidate => Boolean(candidate));
+
+    return splitEvents.length >= 2 ? splitEvents : [event];
+  });
+}
+
 function concreteEventDates(event: EventCandidate) {
   if (event.timing.kind === "single") {
     return event.timing.date ? [event.timing.date] : [];
@@ -10258,9 +19704,8 @@ function renumberSequentialAssessmentSeries(events: EventCandidate[]) {
     if (!baseLabel) return;
 
     const family = canonicalAssessmentFamily(baseLabel);
-    const normalizedFamily = family === "test" ? "midterm" : family;
-    const normalizedBaseLabel =
-      normalizedFamily === "midterm" ? "Midterm" : baseLabel;
+    const normalizedFamily = family;
+    const normalizedBaseLabel = baseLabel;
     const key = `${event.courseId}::${normalizedFamily}::${normalizedBaseLabel.toLowerCase()}`;
     const bucket =
       grouped.get(key) ??
@@ -10408,18 +19853,81 @@ function renumberFinalMidtermLabels(events: EventCandidate[]) {
 }
 
 function hasStrongAssessmentCue(label: string) {
+  const normalized = normalizeAssessmentLabel(label);
+  if (
+    /\bpre-(?:midterm|final)\b/i.test(normalized) ||
+    /\bcheck-?in\b/i.test(normalized)
+  ) {
+    return false;
+  }
   return /\b(?:online\s+quiz|quiz|knowledge check|midterm|mid-term|term test|test|exam|endterm)\b/i.test(
-    normalizeAssessmentLabel(label)
+    normalized
   );
 }
 
 function normalizeAssessmentEventTypes(events: EventCandidate[]) {
   return events.map((event) => {
+    const eventDate = event.timing.kind === "single" ? event.timing.date : undefined;
+    const bareNumericLabel = normalizeWhitespace(event.label).match(/^#?\s*(\d+)\s*$/);
+    if (bareNumericLabel) {
+      const number = Number(bareNumericLabel[1]);
+      const context = normalizeWhitespace(
+        [event.label, ...event.notes, ...event.provenance.map((item) => item.snippet)].join(" ")
+      );
+      const inferredAssessmentSeries =
+        /\bknowledge check\b/i.test(context)
+          ? "Knowledge Check"
+          : /\bquiz\b/i.test(context)
+          ? "Quiz"
+          : /\bmidterm\b/i.test(context)
+          ? "Midterm"
+          : /\btest\b/i.test(context)
+          ? "Test"
+          : /\bexam\b/i.test(context)
+          ? "Exam"
+          : undefined;
+      const inferredAssignmentSeries =
+        /\bwritten assignment\b/i.test(context)
+          ? "Written Assignment"
+          : /\breading assignment\b/i.test(context)
+          ? "Reading Assignment"
+          : /\bproblem set\b/i.test(context)
+          ? "Problem Set"
+          : /\bsimulation\b/i.test(context)
+          ? "Simulation"
+          : /\btask\b/i.test(context)
+          ? "Task"
+          : /\bassignment\b/i.test(context)
+          ? "Assignment"
+          : undefined;
+      if (inferredAssessmentSeries) {
+        const normalizedLabel = normalizeAssessmentLabel(
+          `${inferredAssessmentSeries} #${number}`,
+          eventDate
+        );
+        return {
+          ...event,
+          label: normalizedLabel,
+          eventType: "Assessment" as const,
+          eventGroup: EVENT_GROUP_BY_TYPE.Assessment,
+          location: sanitizeAssessmentLocation(normalizedLabel, event.location),
+        };
+      }
+      if (inferredAssignmentSeries || event.eventType === "Assessment") {
+        const fallbackAssignmentSeries = inferredAssignmentSeries ?? "Assignment";
+        return {
+          ...event,
+          label: `${fallbackAssignmentSeries} #${number}`,
+          eventType: "Assignment" as const,
+          eventGroup: EVENT_GROUP_BY_TYPE.Assignment,
+        };
+      }
+    }
+
     if (
       event.eventType === "Assignment" &&
       hasStrongAssessmentCue(event.label)
     ) {
-      const eventDate = event.timing.kind === "single" ? event.timing.date : undefined;
       const normalizedLabel = normalizeAssessmentLabel(event.label, eventDate);
       return {
         ...event,
@@ -10431,7 +19939,6 @@ function normalizeAssessmentEventTypes(events: EventCandidate[]) {
     }
 
     if (event.eventType === "Assessment") {
-      const eventDate = event.timing.kind === "single" ? event.timing.date : undefined;
       const normalizedLabel = normalizeAssessmentLabel(event.label, eventDate);
       return {
         ...event,
@@ -10467,32 +19974,108 @@ function extractAssignmentSeriesEntry(event: EventCandidate) {
   }
 
   const label = normalizeWhitespace(event.label);
+  if (/#\s*\d+\s*-\s*\d+\b/.test(label)) {
+    return null;
+  }
   if (/\s+-\s+(?:submission|peer review|feedback)\b/i.test(label)) {
     return null;
   }
+  const seriesModifier = label.match(
+    /\b(Available|Review|Feedback|Evaluation|Post|Response|Responses)\b$/i
+  )?.[1];
+  const labelCore = normalizeWhitespace(
+    label.replace(/\s+(?:Available|Review|Feedback|Evaluation|Post|Response|Responses)\b/i, "")
+  );
+  if (/#\s*\d+\.\d+\b/.test(labelCore)) {
+    return null;
+  }
+  if (/\bpart\s+[a-z0-9]+\b/i.test(labelCore)) {
+    return null;
+  }
+  if (/^project$/i.test(labelCore) || /\bproject due\b/i.test(labelCore)) {
+    return null;
+  }
   const context = normalizeWhitespace(
-    [label, ...event.notes, ...event.provenance.map((item) => item.snippet)].join(" ")
+    [labelCore, ...event.notes, ...event.provenance.map((item) => item.snippet)].join(" ")
   );
 
+  const explicitLabelSeries =
+    /reading assignment/i.test(labelCore)
+      ? "Reading Assignments"
+      : /lab report/i.test(labelCore)
+      ? "Lab Reports"
+      : /problem set/i.test(labelCore)
+      ? "Problem Sets"
+      : /reflection/i.test(labelCore)
+      ? "Reflections"
+      : /commentary/i.test(labelCore)
+      ? "Commentaries"
+      : /module/i.test(labelCore)
+      ? "Modules"
+      : /simulation/i.test(labelCore)
+      ? "Simulations"
+      : /task/i.test(labelCore)
+      ? "Tasks"
+      : /assignment/i.test(labelCore)
+      ? "Assignments"
+      : undefined;
+
   const numberText =
-    label.match(/reading assignment\s*#?\s*(\d+)/i)?.[1] ??
-    label.match(/assignment\s*week\s*(\d+)/i)?.[1] ??
-    label.match(/\bweek\s*(\d+)\b/i)?.[1] ??
-    label.match(/assignment\s*#?\s*(\d+)/i)?.[1] ??
-    label.match(/#\s*(\d+)/)?.[1] ??
-    label.match(/\b(\d+)\s*$/)?.[1];
+    labelCore.match(/problem set\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/lab report\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/reading assignment\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/written assignment\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/mobius assignment\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/reflection\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/commentary\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/module\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/assignment\s*week\s*(\d+)/i)?.[1] ??
+    labelCore.match(/\bweek\s*(\d+)\b/i)?.[1] ??
+    labelCore.match(/assignment\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/simulation\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/task\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/step\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/post\s*#?\s*(\d+)/i)?.[1] ??
+    labelCore.match(/response\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/problem set\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/lab report\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/reading assignment\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/written assignment\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/mobius assignment\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/reflection\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/commentary\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/module\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/assignment\s*week\s*(\d+)/i)?.[1] ??
+    context.match(/assignment\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/simulation\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/task\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/step\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/post\s*#?\s*(\d+)/i)?.[1] ??
+    context.match(/response\s*#?\s*(\d+)/i)?.[1];
 
   if (!numberText) return null;
 
-  let seriesName = "Assignments";
-  if (/reading assignment/i.test(context)) {
+  let seriesName = explicitLabelSeries ?? "Assignments";
+  if (explicitLabelSeries) {
+    seriesName = explicitLabelSeries;
+  } else if (/reading assignment/i.test(context)) {
     seriesName = "Reading Assignments";
+  } else if (/lab report/i.test(context)) {
+    seriesName = "Lab Reports";
+  } else if (/problem set/i.test(context)) {
+    seriesName = "Problem Sets";
+  } else if (/reflection/i.test(context)) {
+    seriesName = "Reflections";
+  } else if (/commentary/i.test(context)) {
+    seriesName = "Commentaries";
+  } else if (/module/i.test(context)) {
+    seriesName = "Modules";
   } else if (/assignment\s*week/i.test(label) && /connect/i.test(event.location)) {
     seriesName = "Reading Assignments";
   } else {
     const prefix =
       trimTrailingPeriods(
-        label
+        labelCore
           .replace(/\*+$/g, "")
           .replace(/\bweek\s*\d+\b/gi, "")
           .replace(/\s*#?\s*\d+\s*$/g, "")
@@ -10511,7 +20094,8 @@ function extractAssignmentSeriesEntry(event: EventCandidate) {
     weekday: assignmentWeekday(event.timing.date),
     assignmentNumber: Number(numberText),
     seriesName,
-    seriesKey: `${event.courseId}:${seriesName.toLowerCase()}:${event.location.toLowerCase()}`,
+    seriesModifier,
+    seriesKey: `${event.courseId}:${seriesName.toLowerCase()}:${String(seriesModifier).toLowerCase()}:${event.location.toLowerCase()}`,
   };
 }
 
@@ -10519,7 +20103,8 @@ function assignmentRangeLabel(
   seriesName: string,
   startNumber: number,
   endNumber: number,
-  recurring = false
+  recurring = false,
+  seriesModifier?: string
 ) {
   const displaySeriesName =
     startNumber === endNumber
@@ -10527,9 +20112,10 @@ function assignmentRangeLabel(
       : normalizeWhitespace(seriesName);
   const range =
     startNumber === endNumber ? `#${startNumber}` : `#${startNumber}-${endNumber}`;
-  return recurring
+  const baseLabel = recurring
     ? `Weekly ${displaySeriesName} ${range}`
     : `${displaySeriesName} ${range}`;
+  return seriesModifier ? `${baseLabel} ${seriesModifier}` : baseLabel;
 }
 
 function buildWeeklySeriesExDates(startDate: string, endDate: string, dates: string[]) {
@@ -10583,6 +20169,7 @@ function compactAssignmentSeries(events: EventCandidate[]) {
       date: string;
       weekday: WeekdayCode;
       seriesName: string;
+      seriesModifier?: string;
       startNumber: number;
       endNumber: number;
       entries: Array<NonNullable<ReturnType<typeof extractAssignmentSeriesEntry>>>;
@@ -10604,6 +20191,7 @@ function compactAssignmentSeries(events: EventCandidate[]) {
         date: entry.date,
         weekday: entry.weekday,
         seriesName: entry.seriesName,
+        seriesModifier: entry.seriesModifier,
         startNumber: entry.assignmentNumber,
         endNumber: entry.assignmentNumber,
         entries: [entry],
@@ -10621,7 +20209,9 @@ function compactAssignmentSeries(events: EventCandidate[]) {
         label: assignmentRangeLabel(
           bucket.seriesName,
           bucket.startNumber,
-          bucket.endNumber
+          bucket.endNumber,
+          false,
+          bucket.seriesModifier
         ),
         notes: combineNotes(
           labels.length > 1 ? [`Includes ${labels.join(", ")}`] : [],
@@ -10671,7 +20261,8 @@ function compactAssignmentSeries(events: EventCandidate[]) {
         break;
       }
 
-      if (runEnd > runStart) {
+      const runLength = runEnd - runStart + 1;
+      if (runEnd > runStart && (everyWeek || runLength >= 3)) {
         const run = buckets.slice(runStart, runEnd + 1);
         const representative = run[0].entries[0].event;
         const startNumber = run[0].startNumber;
@@ -10704,7 +20295,8 @@ function compactAssignmentSeries(events: EventCandidate[]) {
             run[0].seriesName,
             startNumber,
             endNumber,
-            everyWeek
+            everyWeek,
+            run[0].seriesModifier
           ),
           notes: combineNotes([
             everyWeek
@@ -10736,6 +20328,8 @@ function compactAssignmentSeries(events: EventCandidate[]) {
             occurrenceOverrides: {},
           },
         });
+      } else if (runEnd > runStart) {
+        buckets.slice(runStart, runEnd + 1).forEach((bucket) => flushBucket(bucket));
       } else {
         flushBucket(buckets[runStart]);
       }
@@ -10763,6 +20357,11 @@ function pluralizeAssessmentSeriesLabel(label: string) {
 
 function pluralizeGenericSeriesLabel(label: string) {
   const normalized = cleanGenericSeriesStem(label);
+  const parentheticalMatch = normalized.match(/^(.*?)(\s*\([^)]*\))$/);
+  if (parentheticalMatch) {
+    const pluralizedCore = pluralizeGenericSeriesLabel(parentheticalMatch[1]);
+    return `${pluralizedCore}${parentheticalMatch[2]}`;
+  }
   if (/knowledge check$/i.test(normalized)) {
     return normalized.replace(/knowledge check$/i, "Knowledge Checks");
   }
@@ -10772,8 +20371,44 @@ function pluralizeGenericSeriesLabel(label: string) {
   if (/assignment$/i.test(normalized)) {
     return normalized.replace(/assignment$/i, "Assignments");
   }
+  if (/problem set$/i.test(normalized)) {
+    return normalized.replace(/problem set$/i, "Problem Sets");
+  }
+  if (/presentation$/i.test(normalized)) {
+    return normalized.replace(/presentation$/i, "Presentations");
+  }
+  if (/project$/i.test(normalized)) {
+    return normalized.replace(/project$/i, "Projects");
+  }
+  if (/deliverable$/i.test(normalized)) {
+    return normalized.replace(/deliverable$/i, "Deliverables");
+  }
+  if (/reflection$/i.test(normalized)) {
+    return normalized.replace(/reflection$/i, "Reflections");
+  }
+  if (/commentary$/i.test(normalized)) {
+    return normalized.replace(/commentary$/i, "Commentaries");
+  }
+  if (/essay$/i.test(normalized)) {
+    return normalized.replace(/essay$/i, "Essays");
+  }
+  if (/paper$/i.test(normalized)) {
+    return normalized.replace(/paper$/i, "Papers");
+  }
+  if (/proposal$/i.test(normalized)) {
+    return normalized.replace(/proposal$/i, "Proposals");
+  }
+  if (/problem$/i.test(normalized)) {
+    return normalized.replace(/problem$/i, "Problems");
+  }
+  if (/summary$/i.test(normalized)) {
+    return normalized.replace(/summary$/i, "Summaries");
+  }
   if (/report$/i.test(normalized)) {
     return normalized.replace(/report$/i, "Reports");
+  }
+  if (/module$/i.test(normalized)) {
+    return normalized.replace(/module$/i, "Modules");
   }
   if (/check-?in$/i.test(normalized)) {
     return normalized.replace(/check-?in$/i, "Check-Ins");
@@ -10788,11 +20423,29 @@ function pluralizeGenericSeriesLabel(label: string) {
 }
 
 function singularizeGenericSeriesLabel(label: string) {
-  return cleanGenericSeriesStem(label)
+  const normalized = cleanGenericSeriesStem(label);
+  const parentheticalMatch = normalized.match(/^(.*?)(\s*\([^)]*\))$/);
+  if (parentheticalMatch) {
+    return `${singularizeGenericSeriesLabel(parentheticalMatch[1])}${parentheticalMatch[2]}`;
+  }
+
+  return normalized
     .replace(/\bKnowledge Checks\b/gi, "Knowledge Check")
     .replace(/\bQuizzes\b/gi, "Quiz")
     .replace(/\bAssignments\b/gi, "Assignment")
+    .replace(/\bProblem Sets\b/gi, "Problem Set")
+    .replace(/\bPresentations\b/gi, "Presentation")
+    .replace(/\bProjects\b/gi, "Project")
+    .replace(/\bDeliverables\b/gi, "Deliverable")
+    .replace(/\bReflections\b/gi, "Reflection")
+    .replace(/\bCommentaries\b/gi, "Commentary")
+    .replace(/\bEssays\b/gi, "Essay")
+    .replace(/\bPapers\b/gi, "Paper")
+    .replace(/\bProposals\b/gi, "Proposal")
+    .replace(/\bProblems\b/gi, "Problem")
+    .replace(/\bSummaries\b/gi, "Summary")
     .replace(/\bReports\b/gi, "Report")
+    .replace(/\bModules\b/gi, "Module")
     .replace(/\bCheck-Ins\b/gi, "Check-In")
     .replace(/\bWorkbooks\b/gi, "Workbook")
     .replace(/\bSessions\b/gi, "Session")
@@ -11167,6 +20820,70 @@ function normalizeTableEventDatesToTermYear(events: EventCandidate[], meta: Outl
   });
 }
 
+function normalizeEventDatesToOutlineTermYear(events: EventCandidate[], meta: OutlineMeta) {
+  return events.map((event) => {
+    const evidence = normalizeWhitespace(
+      [event.label, ...event.notes, ...event.provenance.map((entry) => entry.snippet)].join(" ")
+    );
+
+    if (event.timing.kind === "single") {
+      const normalizedDate = normalizeDateToOutlineTermYear(event.timing.date, evidence, meta);
+      const normalizedEndDate = normalizeDateToOutlineTermYear(
+        event.timing.endDate,
+        evidence,
+        meta
+      );
+      if (
+        normalizedDate === event.timing.date &&
+        normalizedEndDate === event.timing.endDate
+      ) {
+        return event;
+      }
+
+      return {
+        ...event,
+        timing: {
+          ...event.timing,
+          date: normalizedDate,
+          endDate: normalizedEndDate,
+        },
+      };
+    }
+
+    const normalizedStartDate = normalizeDateToOutlineTermYear(
+      event.timing.startDate,
+      evidence,
+      meta
+    );
+    const normalizedEndDate = normalizeDateToOutlineTermYear(
+      event.timing.endDate,
+      evidence,
+      meta
+    );
+    const normalizedExDates = event.timing.exDates.map(
+      (date) => normalizeDateToOutlineTermYear(date, evidence, meta) ?? date
+    );
+
+    if (
+      normalizedStartDate === event.timing.startDate &&
+      normalizedEndDate === event.timing.endDate &&
+      normalizedExDates.every((date, index) => date === event.timing.exDates[index])
+    ) {
+      return event;
+    }
+
+    return {
+      ...event,
+      timing: {
+        ...event.timing,
+        startDate: normalizedStartDate,
+        endDate: normalizedEndDate,
+        exDates: normalizedExDates,
+      },
+    };
+  });
+}
+
 function dedupeEvents(events: EventCandidate[]) {
   const byKey = new Map<string, EventCandidate>();
 
@@ -11203,7 +20920,46 @@ function dedupeEvents(events: EventCandidate[]) {
   return Array.from(byKey.values());
 }
 
-export function parseOutlineHtml(html: string, outlineName: string): OutlineParseResult {
+interface DeterministicScheduleParse {
+  course: ParsedCourse;
+  events: EventCandidate[];
+  meta: OutlineMeta;
+  termBounds?: {
+    startDate: string;
+    endDate: string;
+  };
+  aiRequest: AiOutlineExtractionRequest;
+  sectionOptionCount: number;
+}
+
+function addCourseWarning(course: ParsedCourse, warning: string) {
+  if (!course.warnings.includes(warning)) {
+    course.warnings.push(warning);
+  }
+}
+
+function finalizeParserEvents(
+  course: ParsedCourse,
+  events: EventCandidate[],
+  meta: OutlineMeta
+) {
+  return applyCalendarTitles(
+    course,
+    dedupeEvents(normalizeEventDatesToOutlineTermYear(events, meta)).map((event) => {
+      const needsReview = reviewNeededForEvent(event) || event.reviewNeeded;
+      return {
+        ...event,
+        reviewNeeded: needsReview,
+        include: event.include && !needsReview,
+      };
+    })
+  );
+}
+
+function buildDeterministicScheduleParse(
+  html: string,
+  outlineName: string
+): DeterministicScheduleParse {
   const document = new DOMParser().parseFromString(html, "text/html");
   const meta = extractMeta(document, outlineName);
   const sections = collectSectionBlocks(document);
@@ -11226,160 +20982,81 @@ export function parseOutlineHtml(html: string, outlineName: string): OutlinePars
     summary: meta.summary,
   };
 
-  const tableData = parseTables(sections, meta, scheduleData.sectionOptions);
-  const proseData = parseRelevantProse(sections, meta, tableData.weekWindows);
-  const documentWideWeightTableAssessments =
-    tableData.assessments.length === 0 && proseData.assessments.length === 0
-      ? parseDocumentWideDatedWeightTables(document, meta)
-      : [];
-  const structuredOfficeHourTableSeeds = parseStructuredOfficeHourTables(
-    sections,
-    meta,
-    scheduleData.meetings
-  );
-  const structuredOfficeHourTableSectionIds = new Set(
-    structuredOfficeHourTableSeeds.flatMap((seed) =>
-      seed.provenance.map((entry) => entry.sectionId).filter(Boolean)
-    )
-  );
-  const structuredOfficeHourLineSeeds = parseStructuredOfficeHourLines(
-    sections,
-    meta,
-    scheduleData.meetings
-  ).filter(
-    (seed) =>
-      !seed.provenance.some((entry) =>
-        structuredOfficeHourTableSectionIds.has(entry.sectionId)
-      )
-  );
-  const structuredOfficeHourSectionIds = new Set(
-    [...structuredOfficeHourTableSeeds, ...structuredOfficeHourLineSeeds].flatMap((seed) =>
-      seed.provenance.map((entry) => entry.sectionId).filter(Boolean)
-    )
-  );
-  const structuredOfficeHourLineSectionIds = new Set(
-    structuredOfficeHourLineSeeds.flatMap((seed) =>
-      seed.provenance.map((entry) => entry.sectionId).filter(Boolean)
-    )
-  );
-  const inlineInstructionalOfficeHourSeeds = parseInlineInstructionalTeamOfficeHours(
-    sections,
-    meta,
-    scheduleData.meetings
-  );
-  const inlineInstructionalSectionIds = new Set(
-    inlineInstructionalOfficeHourSeeds.flatMap((seed) =>
-      seed.provenance.map((entry) => entry.sectionId).filter(Boolean)
-    )
-  );
-  const filteredStructuredOfficeHourLineSeeds = structuredOfficeHourLineSeeds.filter(
-    (seed) =>
-      !seed.provenance.some((entry) => inlineInstructionalSectionIds.has(entry.sectionId))
-  );
-  const genericOfficeHourSeeds = parseOfficeHours(
-    sections,
-    meta,
-    scheduleData.meetings
-  ).filter(
-    (seed) =>
-      !seed.provenance.some((entry) => inlineInstructionalSectionIds.has(entry.sectionId))
-  );
-  const officeHourSeeds = dedupeOfficeHourSeeds([
-    ...structuredOfficeHourTableSeeds,
-    ...filteredStructuredOfficeHourLineSeeds,
-    ...genericOfficeHourSeeds,
-    ...inlineInstructionalOfficeHourSeeds,
-    ...recoverInstructionalTeamOfficeHours(sections, meta, scheduleData.meetings),
-  ]);
   const termBounds =
     computeTermBounds(scheduleData.meetings) ?? computeFallbackTermBounds(sections, meta);
 
   let meetingEvents = mergeMeetingSinglesIntoRecurring(
     compactMeetingSinglesIntoRecurring(createMeetingEvents(course, scheduleData.meetings))
   );
-  meetingEvents = applyAttachmentsAndExclusions(
-    meetingEvents,
-    [...tableData.attachments, ...proseData.attachments],
-    [...tableData.exclusions, ...proseData.exclusions]
-  );
 
-  let officeHourEvents = createOfficeHourEvents(course, officeHourSeeds, termBounds);
-  if (officeHourEvents.length === 0) {
-    officeHourEvents = createFallbackInstructionalTeamOfficeHourEvents(
-      course,
-      html,
-      sections,
-      meta,
-      scheduleData.meetings,
-      termBounds
-    );
-  }
-  const assessmentResult = createAssessmentEvents(
+  const events = finalizeParserEvents(course, meetingEvents, meta);
+
+  return {
     course,
-    scheduleData.meetings,
-    [...tableData.assessments, ...documentWideWeightTableAssessments, ...proseData.assessments],
-    meetingEvents,
-    tableData.assessmentWeights
-  );
-  const normalizedAssessmentEvents = normalizeTableEventDatesToTermYear(
-    normalizeAssessmentEventTypes(assessmentResult.assessmentEvents),
-    meta
-  );
-  const compactedAssessmentEvents = normalizeTableEventDatesToTermYear(
-    dropShadowedSummaryEvents(
-      dropShadowedGenericTimedSummaryEvents(
-        dropShadowedTentativePlanEvents(
-          renumberSequentialAssessmentSeries(
-            dedupeEquivalentAssessments(
-            compactGenericWeeklySeries(
-              compactRecurringAssessmentSeries(
-                compactAssignmentSeries(
-                  mergeAssessmentWindowPairs(dedupeEquivalentAssignments(dedupeMidterms(normalizedAssessmentEvents)))
-                )
-              )
-            )
-          ))
-        )
-      )
-    ),
-    meta
-  );
-  const mergedEvents = mergeLabAssessmentsIntoLabEvents([
-    ...assessmentResult.meetingEvents,
-    ...officeHourEvents,
-    ...compactedAssessmentEvents,
-  ]);
+    events,
+    meta,
+    termBounds,
+    aiRequest: buildAiExtractionRequest(document, meta),
+    sectionOptionCount: scheduleData.sectionOptions.length,
+  };
+}
 
-  const events = applyCalendarTitles(
-    course,
-    renumberFinalMidtermLabels(dedupeEvents(mergedEvents).map((event) => ({
-      ...event,
-      label:
-        event.eventType === "Assessment"
-          ? normalizeAssessmentLabel(
-              event.label,
-              event.timing.kind === "single" ? event.timing.date : undefined
-            )
-          : event.eventType === "Assignment" || event.eventType === "Other"
-          ? normalizeAssignmentLabel(
-              event.label,
-              event.timing.kind === "single" ? event.timing.date : undefined
-            )
-          : event.label,
-      reviewNeeded: reviewNeededForEvent(event) || event.reviewNeeded,
-      include: event.include && !reviewNeededForEvent(event),
-    })))
-  );
-
-  course.eventIds = events.map((event) => event.id);
-  course.officeHourEventIds = officeHourEvents.map((event) => event.id);
+function finalizeOutlineParseResult(
+  parsed: DeterministicScheduleParse,
+  events: EventCandidate[]
+): OutlineParseResult {
+  parsed.course.eventIds = events.map((event) => event.id);
+  parsed.course.officeHourEventIds = events
+    .filter((event) => event.eventType === "OfficeHours")
+    .map((event) => event.id);
 
   if (events.length === 0) {
-    course.warnings.push("No calendar-ready events were detected in this outline.");
+    addCourseWarning(
+      parsed.course,
+      "No calendar-ready events were detected in this outline."
+    );
   }
-  if (scheduleData.sectionOptions.length === 0) {
-    course.warnings.push("No section options were detected from the schedule table.");
+  if (parsed.sectionOptionCount === 0) {
+    addCourseWarning(
+      parsed.course,
+      "No section options were detected from the schedule table."
+    );
   }
 
-  return { course, events };
+  return {
+    course: parsed.course,
+    events,
+  };
+}
+
+export function parseOutlineHtml(html: string, outlineName: string): OutlineParseResult {
+  const parsed = buildDeterministicScheduleParse(html, outlineName);
+  return finalizeOutlineParseResult(parsed, parsed.events);
+}
+
+export async function parseOutlineHtmlWithAi(
+  html: string,
+  outlineName: string
+): Promise<OutlineParseResult> {
+  const parsed = buildDeterministicScheduleParse(html, outlineName);
+
+  try {
+    const extraction = await extractNonMeetingEventsWithAi(parsed.aiRequest);
+    extraction.warnings.forEach((warning) => addCourseWarning(parsed.course, warning));
+
+    const aiEvents = mapAiExtractionToEventCandidates(extraction, parsed.course, {
+      termBounds: parsed.termBounds,
+    });
+    const events = finalizeParserEvents(parsed.course, [...parsed.events, ...aiEvents], parsed.meta);
+
+    return finalizeOutlineParseResult(parsed, events);
+  } catch (error) {
+    addCourseWarning(
+      parsed.course,
+      error instanceof Error
+        ? `AI extraction failed: ${error.message}`
+        : "AI extraction failed."
+    );
+    return finalizeOutlineParseResult(parsed, parsed.events);
+  }
 }

@@ -184,20 +184,14 @@ const steps = [
   },
   {
     number: 2,
-    title: "Select What You Want",
-    description: "Choose the sections and event types you actually want in your calendar.",
-    detail: "You can keep lectures, assignments, assessments, office hours, and more, course by course.",
-    kind: "select" as const,
-  },
-  {
-    number: 3,
     title: "Review and Fix Anything Missing",
-    description: "Edit detected events, add missing ones, and make sure everything looks right.",
+    description:
+      "Choose sections, edit detected events, add missing ones, and make sure everything looks right.",
     detail: "This is the best place to catch odd outline formatting before anything gets exported.",
     kind: "review" as const,
   },
   {
-    number: 4,
+    number: 3,
     title: "Export Your Calendar",
     description: "Send everything to Google Calendar or download a ready-to-import .ics file.",
     detail: "You can choose a color palette, set reminders, and keep your gooseCalendar export organized.",
@@ -312,7 +306,7 @@ export function HowItWorksModal({
                 How to use gooseCalendar
               </h2>
               <p className="mt-3 font-['Inter',sans-serif] text-sm font-medium uppercase tracking-[0.12em] text-[#8b8170]">
-                Four quick steps before you export
+                Three quick steps before you export
               </p>
             </div>
 
@@ -444,7 +438,7 @@ export function HowItWorksModal({
               </div>
             </div>
 
-            <div className="mt-8 grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-8 grid gap-4 lg:grid-cols-3">
               {steps.map((step) => (
                 <GuideStepCard
                   key={step.number}

@@ -1,0 +1,3779 @@
+[
+  {
+    "fileName": "1249__n9n2nf__Foundations of Entrepreneurial Practice.html",
+    "relativePath": "BET/BET 100/1249__n9n2nf__Foundations of Entrepreneurial Practice.html",
+    "subject": "BET",
+    "courseCode": "BET 100",
+    "courseName": "Foundations of Entrepreneurial Practice",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nv6ecv__Foundations of Entrepreneurial Practice.html",
+    "relativePath": "BET/BET 100/1249__nv6ecv__Foundations of Entrepreneurial Practice.html",
+    "subject": "BET",
+    "courseCode": "BET 100",
+    "courseName": "Foundations of Entrepreneurial Practice",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nr297s__Business Technology and Infrastructure.html",
+    "relativePath": "BET/BET 210/1249__nr297s__Business Technology and Infrastructure.html",
+    "subject": "BET",
+    "courseCode": "BET 210",
+    "courseName": "Business Technology and Infrastructure",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrguvh__Foundations of Venture Creation.html",
+    "relativePath": "BET/BET 300/1249__nrguvh__Foundations of Venture Creation.html",
+    "subject": "BET",
+    "courseCode": "BET 300",
+    "courseName": "Foundations of Venture Creation",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ng9e5k__Entrepreneurial Strategy.html",
+    "relativePath": "BET/BET 320/1249__ng9e5k__Entrepreneurial Strategy.html",
+    "subject": "BET",
+    "courseCode": "BET 320",
+    "courseName": "Entrepreneurial Strategy",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "Due December 3: Group project feedback",
+        "dates": [
+          "2024-12-03"
+        ],
+        "missingDates": [
+          "2024-12-03"
+        ]
+      },
+      {
+        "line": "The only deliverable for the Group Assignment is a narrated presentation, no longer than 10 minutes, which is due before the beginning of class on July 22. The preferred format is a narrated powerpoint presentation and/or mp4 video. Submissions will be posted in Learn, by the instructor, for other students in the class to view and provide feedback on.",
+        "dates": [
+          "2024-07-22"
+        ],
+        "missingDates": [
+          "2024-07-22"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nntfhw__Entrepreneurial Strategy.html",
+    "relativePath": "BET/BET 320/1249__nntfhw__Entrepreneurial Strategy.html",
+    "subject": "BET",
+    "courseCode": "BET 320",
+    "courseName": "Entrepreneurial Strategy",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "I will also be holding live and virtual office hours every Tuesday from 2pm to 4pm on Zoom (Meeting ID: 840 285 0122, Passcode: conrad)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nz9upw__Essentials of Entrepreneurial Planning and Execution.html",
+    "relativePath": "BET/BET 340/1249__nz9upw__Essentials of Entrepreneurial Planning and Execution.html",
+    "subject": "BET",
+    "courseCode": "BET 340",
+    "courseName": "Essentials of Entrepreneurial Planning and Execution",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n7mwub__Customer Experience Design.html",
+    "relativePath": "BET/BET 350/1249__n7mwub__Customer Experience Design.html",
+    "subject": "BET",
+    "courseCode": "BET 350",
+    "courseName": "Customer Experience Design",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nbpuxn__Customer Experience Design.html",
+    "relativePath": "BET/BET 350/1249__nbpuxn__Customer Experience Design.html",
+    "subject": "BET",
+    "courseCode": "BET 350",
+    "courseName": "Customer Experience Design",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njrwk5__Design Frameworks for Social Ventures.html",
+    "relativePath": "BET/BET 360/1249__njrwk5__Design Frameworks for Social Ventures.html",
+    "subject": "BET",
+    "courseCode": "BET 360",
+    "courseName": "Design Frameworks for Social Ventures",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrbxwe__Entrepreneurship for Social Impact.html",
+    "relativePath": "BET/BET 420/1249__nrbxwe__Entrepreneurship for Social Impact.html",
+    "subject": "BET",
+    "courseCode": "BET 420",
+    "courseName": "Entrepreneurship for Social Impact",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5cf5r__Sales Fundamentals.html",
+    "relativePath": "BET/BET 430/1249__n5cf5r__Sales Fundamentals.html",
+    "subject": "BET",
+    "courseCode": "BET 430",
+    "courseName": "Sales Fundamentals",
+    "parserEventCount": 25,
+    "sourceDateEntryCount": 15,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Group Assignment: Sales Playbook - Completed Review of Draft of Sales Playbook with Startup and email confirmation to Dean - due Nov 22",
+        "dates": [
+          "2024-11-22"
+        ],
+        "missingDates": [
+          "2024-11-22"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzwvjk__Leadership.html",
+    "relativePath": "BET/BET 450/1249__nzwvjk__Leadership.html",
+    "subject": "BET",
+    "courseCode": "BET 450",
+    "courseName": "Leadership",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nj7bwh__Business Negotiations.html",
+    "relativePath": "BET/BET 460/1249__nj7bwh__Business Negotiations.html",
+    "subject": "BET",
+    "courseCode": "BET 460",
+    "courseName": "Business Negotiations",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 5,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nw7dbt__Biodiversity_ Biomes_ and Evolution.html",
+    "relativePath": "BIOL/BIOL 110/1249__nw7dbt__Biodiversity_ Biomes_ and Evolution.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 110",
+    "courseName": "Biodiversity, Biomes, and Evolution",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__ny9jvv__Introductory Cell Biology.html",
+    "relativePath": "BIOL/BIOL 130/1249__ny9jvv__Introductory Cell Biology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 130",
+    "courseName": "Introductory Cell Biology",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrce3c__Cell Biology Laboratory.html",
+    "relativePath": "BIOL/BIOL 130L/1249__nrce3c__Cell Biology Laboratory.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 130L",
+    "courseName": "Cell Biology Laboratory",
+    "parserEventCount": 36,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njtq4x__Diversity of Life.html",
+    "relativePath": "BIOL/BIOL 165/1249__njtq4x__Diversity of Life.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 165",
+    "courseName": "Diversity of Life",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nc69n7__Human Anatomy.html",
+    "relativePath": "BIOL/BIOL 201/1249__nc69n7__Human Anatomy.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 201",
+    "courseName": "Human Anatomy",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nc59ea__Plants and Civilization.html",
+    "relativePath": "BIOL/BIOL 225/1249__nc59ea__Plants and Civilization.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 225",
+    "courseName": "Plants and Civilization",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nngew6__Genetics.html",
+    "relativePath": "BIOL/BIOL 239/1249__nngew6__Genetics.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 239",
+    "courseName": "Genetics",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours: Monday 4-5 PM on TEAMS and Tuesday 4-5 PM in person or call me on TEAMS.",
+      "Office Hours: 3-4 Tuesdays on TEAMS"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nw73x6__BIOL 240.html",
+    "relativePath": "BIOL/BIOL 240/1249__nw73x6__BIOL 240.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 240",
+    "courseName": "BIOL 240",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office hours for Josh Neufeld: Mondays and Wednesdays (1:30-2:30 pm; B1-275)."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzqtam__Microbiology Laboratory.html",
+    "relativePath": "BIOL/BIOL 240L/1249__nzqtam__Microbiology Laboratory.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 240L",
+    "courseName": "Microbiology Laboratory",
+    "parserEventCount": 23,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8kfjk__Principles of Human Physiology 1.html",
+    "relativePath": "BIOL/BIOL 273/1249__n8kfjk__Principles of Human Physiology 1.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 273",
+    "courseName": "Principles of Human Physiology 1",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvw7sp__Introductory Developmental Biology and Embryology.html",
+    "relativePath": "BIOL/BIOL 303/1249__nvw7sp__Introductory Developmental Biology and Embryology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 303",
+    "courseName": "Introductory Developmental Biology and Embryology",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n9nf7v__Analytical Methods in Molecular Biology.html",
+    "relativePath": "BIOL/BIOL 309/1249__n9nf7v__Analytical Methods in Molecular Biology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 309",
+    "courseName": "Analytical Methods in Molecular Biology",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 12,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nwghe4__Invertebrate Zoology.html",
+    "relativePath": "BIOL/BIOL 310/1249__nwghe4__Invertebrate Zoology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 310",
+    "courseName": "Invertebrate Zoology",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__njyfgd__Molecular Biology Techniques.html",
+    "relativePath": "BIOL/BIOL 335L/1249__njyfgd__Molecular Biology Techniques.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 335L",
+    "courseName": "Molecular Biology Techniques",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8j77f__Molecular Biotechnology 1.html",
+    "relativePath": "BIOL/BIOL 342/1249__n8j77f__Molecular Biotechnology 1.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 342",
+    "courseName": "Molecular Biotechnology 1",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office and hours: B2-356, Mondays 2-3 pm (except holidays). If you need to speak with me outside scheduled lecture or office hours, please contact me via email to make an appointment – that way I can be sure to set aside time for you."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvpab2__Microorganisms in Foods.html",
+    "relativePath": "BIOL/BIOL 345/1249__nvpab2__Microorganisms in Foods.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 345",
+    "courseName": "Microorganisms in Foods",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office hours: Wednesdays 2:30-3:20 in B1-281, Thursdays 11:00-11:50 online."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrpg5b__Ecosystem Ecology.html",
+    "relativePath": "BIOL/BIOL 350/1249__nrpg5b__Ecosystem Ecology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 350",
+    "courseName": "Ecosystem Ecology",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nwqnkm__Environmental Toxicology.html",
+    "relativePath": "BIOL/BIOL 354/1249__nwqnkm__Environmental Toxicology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 354",
+    "courseName": "Environmental Toxicology",
+    "parserEventCount": 13,
+    "sourceDateEntryCount": 7,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Friday September 20 at 11:59 PM to the Tox Talk Group Contract dropbox.",
+        "dates": [
+          "2024-09-20"
+        ],
+        "missingDates": [
+          "2024-09-20"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__nnfc9p__Evolution 1_ Mechanisms.html",
+    "relativePath": "BIOL/BIOL 359/1249__nnfc9p__Evolution 1_ Mechanisms.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 359",
+    "courseName": "Evolution 1: Mechanisms",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office hours: Mondays 3 pm to 3:30 pm, (B2-252) beginning Monday Sept 9 (email me to make an appointment if you need to see me before Sept 9). Additional office hours will be scheduled prior to exams and to review exams. Contact me to set up a different time if this time doesn’t work for you (see below)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npv3py__Comparative Animal Physiology_ Environmental Aspects.html",
+    "relativePath": "BIOL/BIOL 370/1249__npv3py__Comparative Animal Physiology_ Environmental Aspects.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 370",
+    "courseName": "Comparative Animal Physiology: Environmental Aspects",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ngrjju__Plant Biotechnology.html",
+    "relativePath": "BIOL/BIOL 433/1249__ngrjju__Plant Biotechnology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 433",
+    "courseName": "Plant Biotechnology",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njt2h7__Human Molecular Genetics.html",
+    "relativePath": "BIOL/BIOL 434/1249__njt2h7__Human Molecular Genetics.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 434",
+    "courseName": "Human Molecular Genetics",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office hours : Wednesday: 11:00AM - 12:00PM (Room# TBA)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n52dja__Environmental and Natural Products Biochemistry.html",
+    "relativePath": "BIOL/BIOL 439/1249__n52dja__Environmental and Natural Products Biochemistry.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 439",
+    "courseName": "Environmental and Natural Products Biochemistry",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8rfv8__Fermentation Biotechnology.html",
+    "relativePath": "BIOL/BIOL 443/1249__n8rfv8__Fermentation Biotechnology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 443",
+    "courseName": "Fermentation Biotechnology",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nyu5tx__Environmental Microbiology.html",
+    "relativePath": "BIOL/BIOL 447/1249__nyu5tx__Environmental Microbiology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 447",
+    "courseName": "Environmental Microbiology",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office hours: Mondays 2:30-3:20 in B1-281, Thursdays 10:00-10:50 online."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nw8em5__Advanced Ecology and Evolution.html",
+    "relativePath": "BIOL/BIOL 451/1249__nw8em5__Advanced Ecology and Evolution.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 451",
+    "courseName": "Advanced Ecology and Evolution",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6e3e7__Ecological Risk Assessment and Management.html",
+    "relativePath": "BIOL/BIOL 455/1249__n6e3e7__Ecological Risk Assessment and Management.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 455",
+    "courseName": "Ecological Risk Assessment and Management",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__njh3hj__Methods of Aquatic Ecology.html",
+    "relativePath": "BIOL/BIOL 470/1249__njh3hj__Methods of Aquatic Ecology.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 470",
+    "courseName": "Methods of Aquatic Ecology",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npw5kz__Mammalian Reproduction.html",
+    "relativePath": "BIOL/BIOL 473/1249__npw5kz__Mammalian Reproduction.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 473",
+    "courseName": "Mammalian Reproduction",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nr9uqw__Population Genetics and Evolution.html",
+    "relativePath": "BIOL/BIOL 479/1249__nr9uqw__Population Genetics and Evolution.html",
+    "subject": "BIOL",
+    "courseCode": "BIOL 479",
+    "courseName": "Population Genetics and Evolution",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 8,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office Hours: Mondays 3 pm to 3:30 pm beginning Monday Sept 9 (if you need to see me before Sept 9, please email me to set up an appointment). Additional office hours will be scheduled prior to exams, and to review your midterms after they have been graded.",
+      "If you are unable to see me during my office hours and need to use email to set up an alternate time to meet with me, be sure to put ALTERNATE TIME in the subject heading of your message (use block letters) and suggest three (3) alternate times when you can meet with me in the body of your message. I’ll try to set up a meeting with you during one of the three alternate times that you suggest. Note that I teach Biol 359 Mon/Wed/Fri from 1:30- 2:20 pm. Please do not use email to ask questions about course concepts and material. It is exceedingly difficult to explain concepts over email and I will not attempt to do so. Stop by during my office hours (you will always be welcome!) or speak with me after class."
+    ],
+    "officeHoursHintDayCount": 4,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ny65cy__Communications in Biomedical Engineering-Written and Oral.html",
+    "relativePath": "BME/BME 101/1249__ny65cy__Communications in Biomedical Engineering-Written and Oral.html",
+    "subject": "BME",
+    "courseCode": "BME 101",
+    "courseName": "Communications in Biomedical Engineering-Written and Oral",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "As part of your degree requirements, all University of Waterloo Engineering undergraduate students must complete the WHMIS module on LEARN. Once you have completed the WHMIS module, upload a screen shot or pdf of your WHMIS Completion to your SYDE 101 Dropbox. Hard deadline is October 08, 2023.",
+        "dates": [
+          "2023-10-08"
+        ],
+        "missingDates": [
+          "2023-10-08"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Dr. Mercer’s Office Hours . Wednesdays: 11:30-12:30; Thursdays 11:30-12:30pm Eastern Time (E.T). I am flexible, so generally for questions or concerns message me on Microsoft Teams or send me an email and we can find a time to meet."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nr527v__Communications in Biomedical Engineering-Visualization.html",
+    "relativePath": "BME/BME 101L/1249__nr527v__Communications in Biomedical Engineering-Visualization.html",
+    "subject": "BME",
+    "courseCode": "BME 101L",
+    "courseName": "Communications in Biomedical Engineering-Visualization",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n7wbw6__Digital Computation.html",
+    "relativePath": "BME/BME 121/1249__n7wbw6__Digital Computation.html",
+    "subject": "BME",
+    "courseCode": "BME 121",
+    "courseName": "Digital Computation",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Instructor office hours : Tue, Thu 10-11:30am, E7 5432; or by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n76amv__Introduction to Biomedical Design.html",
+    "relativePath": "BME/BME 161/1249__n76amv__Introduction to Biomedical Design.html",
+    "subject": "BME",
+    "courseCode": "BME 161",
+    "courseName": "Introduction to Biomedical Design",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmpkym__Introduction to Biomedical Design.html",
+    "relativePath": "BME/BME 161/1249__nmpkym__Introduction to Biomedical Design.html",
+    "subject": "BME",
+    "courseCode": "BME 161",
+    "courseName": "Introduction to Biomedical Design",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 7,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nczpy5__Physics 2_ Dynamics.html",
+    "relativePath": "BME/BME 182/1249__nczpy5__Physics 2_ Dynamics.html",
+    "subject": "BME",
+    "courseCode": "BME 182",
+    "courseName": "Physics 2: Dynamics",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Course Format and Covid-19: Lectures and tutorials will be in-person. You are encouraged to wear a mask to protect yourself and others, but it is not mandatory at the present time. If you experience any Covid symptoms, inform your instructors using the Self-Declared Verification of Illness system and stay home until you are feeling better. If you miss deliverables due to illness, your other deliverables will be re-weighted to compensate. Prof. McPhee will follow the textbook closely as shown in the Tentative Schedule, and publish notes on Learn to help you stay up with the lecture material. Office hours for Prof. McPhee will be scheduled on-line, tentatively on Thursdays 1:30-2:30."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8ccus__Mechanics of Deformable Solids.html",
+    "relativePath": "BME/BME 281/1249__n8ccus__Mechanics of Deformable Solids.html",
+    "subject": "BME",
+    "courseCode": "BME 281",
+    "courseName": "Mechanics of Deformable Solids",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nghkge__Mechanics of Deformable Solids Laboratory.html",
+    "relativePath": "BME/BME 281L/1249__nghkge__Mechanics of Deformable Solids Laboratory.html",
+    "subject": "BME",
+    "courseCode": "BME 281L",
+    "courseName": "Mechanics of Deformable Solids Laboratory",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzjdkk__Materials Science for Biomedical Engineers.html",
+    "relativePath": "BME/BME 282/1249__nzjdkk__Materials Science for Biomedical Engineers.html",
+    "subject": "BME",
+    "courseCode": "BME 282",
+    "courseName": "Materials Science for Biomedical Engineers",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6m4v9__Engineering Biology.html",
+    "relativePath": "BME/BME 285/1249__n6m4v9__Engineering Biology.html",
+    "subject": "BME",
+    "courseCode": "BME 285",
+    "courseName": "Engineering Biology",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 6,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Tuesdays, 3-4 pm or by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__ny928a__Engineering Biology Laboratory.html",
+    "relativePath": "BME/BME 285L/1249__ny928a__Engineering Biology Laboratory.html",
+    "subject": "BME",
+    "courseCode": "BME 285L",
+    "courseName": "Engineering Biology Laboratory",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nbek7r__Control Systems.html",
+    "relativePath": "BME/BME 356/1249__nbek7r__Control Systems.html",
+    "subject": "BME",
+    "courseCode": "BME 356",
+    "courseName": "Control Systems",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Thursdays, 11:30 a.m. - 12:20 p.m., EIT 3113."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__npsbkf__Control Systems Laboratory.html",
+    "relativePath": "BME/BME 356L/1249__npsbkf__Control Systems Laboratory.html",
+    "subject": "BME",
+    "courseCode": "BME 356L",
+    "courseName": "Control Systems Laboratory",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 5,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrc5gx__Biomedical Engineering Design Workshop 1.html",
+    "relativePath": "BME/BME 362/1249__nrc5gx__Biomedical Engineering Design Workshop 1.html",
+    "subject": "BME",
+    "courseCode": "BME 362",
+    "courseName": "Biomedical Engineering Design Workshop 1",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 9,
+    "unmatchedCount": 3,
+    "unmatched": [
+      {
+        "line": "Due: Friday, September 20 by 11:59 pm E.T.",
+        "dates": [
+          "2024-09-20"
+        ],
+        "missingDates": [
+          "2024-09-20"
+        ]
+      },
+      {
+        "line": "Due: Friday, September 27 by 11:59 pm E.T.",
+        "dates": [
+          "2024-09-27"
+        ],
+        "missingDates": [
+          "2024-09-27"
+        ]
+      },
+      {
+        "line": "Due: Friday, October 11 by 11:59 pm E.T.",
+        "dates": [
+          "2024-10-11"
+        ],
+        "missingDates": [
+          "2024-10-11"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Professor Howcroft’s Office Hours. Wednesdays: 9:00 to 10:00 am Eastern Time (E.T.),",
+      "Paul Wolfe, Email: pjwolfe@uwaterloo.ca . Office hours: Thursdays 11:30 am to 12:30 pm. E5 6108."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrgprc__Engineering Biomedical Economics.html",
+    "relativePath": "BME/BME 364/1249__nrgprc__Engineering Biomedical Economics.html",
+    "subject": "BME",
+    "courseCode": "BME 364",
+    "courseName": "Engineering Biomedical Economics",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9rcwc__Biomedical Transport_ Biofluids and Mass Transfer.html",
+    "relativePath": "BME/BME 384/1249__n9rcwc__Biomedical Transport_ Biofluids and Mass Transfer.html",
+    "subject": "BME",
+    "courseCode": "BME 384",
+    "courseName": "Biomedical Transport: Biofluids and Mass Transfer",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Thursday, 11:30 AM - 12:30 PM in E6 5020 or by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__ncx44e__The Physics of Medical Imaging.html",
+    "relativePath": "BME/BME 386/1249__ncx44e__The Physics of Medical Imaging.html",
+    "subject": "BME",
+    "courseCode": "BME 386",
+    "courseName": "The Physics of Medical Imaging",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n5pnnu__Directed Biomedical Research Project.html",
+    "relativePath": "BME/BME 399/1249__n5pnnu__Directed Biomedical Research Project.html",
+    "subject": "BME",
+    "courseCode": "BME 399",
+    "courseName": "Directed Biomedical Research Project",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8yksk__Optimization and Numerical Methods.html",
+    "relativePath": "BME/BME 411/1249__n8yksk__Optimization and Numerical Methods.html",
+    "subject": "BME",
+    "courseCode": "BME 411",
+    "courseName": "Optimization and Numerical Methods",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzw92j__Biomedical Engineering Design Workshop 2.html",
+    "relativePath": "BME/BME 461/1249__nzw92j__Biomedical Engineering Design Workshop 2.html",
+    "subject": "BME",
+    "courseCode": "BME 461",
+    "courseName": "Biomedical Engineering Design Workshop 2",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 11,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8vva5__Elective Biomedical Research Project.html",
+    "relativePath": "BME/BME 499/1249__n8vva5__Elective Biomedical Research Project.html",
+    "subject": "BME",
+    "courseCode": "BME 499",
+    "courseName": "Elective Biomedical Research Project",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvxfv3__Biomechanics of Human Movement.html",
+    "relativePath": "BME/BME 551/1249__nvxfv3__Biomechanics of Human Movement.html",
+    "subject": "BME",
+    "courseCode": "BME 551",
+    "courseName": "Biomechanics of Human Movement",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npqx3t__Chemical Engineering Concepts 1.html",
+    "relativePath": "CHE/CHE 100/1249__npqx3t__Chemical Engineering Concepts 1.html",
+    "subject": "CHE",
+    "courseCode": "CHE 100",
+    "courseName": "Chemical Engineering Concepts 1",
+    "parserEventCount": 22,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 3,
+    "officeHoursHints": [
+      "Office Hours: Mondays 11:30am-12:20pm",
+      "Office Hours: Fridays 4:30pm-5:20pm",
+      "Karthikeyen Natarajan Pugazhendhi, knataraj@uwaterloo.ca (Office hours: Thursdays from 11:30 AM to 12:20 PM, Location: ESC 132)",
+      "Shakiba Samsami, s2samsam@uwaterloo.ca (Office hours: Wednesdays from 12:30PM to 1:20 PM, Location: E6 3106)",
+      "Estatira Amirieh, eamirieh@uwaterloo.ca (Office hours: Tuesdays from 12:30 PM to 1:20 PM, Location: E6 1114)"
+    ],
+    "officeHoursHintDayCount": 5,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n53ttw__Chemistry for Engineers- MTE 8.html",
+    "relativePath": "CHE/CHE 102/1249__n53ttw__Chemistry for Engineers- MTE 8.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers- MTE 8",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Wednesdays 11:30 - 1:00 PM in E6 5002"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n5w4ka__Chemistry for Engineers _CIVE_.html",
+    "relativePath": "CHE/CHE 102/1249__n5w4ka__Chemistry for Engineers _CIVE_.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers (CIVE)",
+    "parserEventCount": 12,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "I will be available for office hours on Thursday from 1:00 - 2:00 PM in E6 5020 or at other times by appointment."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n6vk87__Chemistry for Engineers _MTE4_.html",
+    "relativePath": "CHE/CHE 102/1249__n6vk87__Chemistry for Engineers _MTE4_.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers (MTE4)",
+    "parserEventCount": 11,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Thursdays 11:30 - 1:30 PM in E6 3006"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nb3797__Chemistry for Engineers - Mechanical Engineering Stream 8.html",
+    "relativePath": "CHE/CHE 102/1249__nb3797__Chemistry for Engineers - Mechanical Engineering Stream 8.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers - Mechanical Engineering Stream 8",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Thursdays 10:30 AM - 12:00 PM in E2 1772"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nh68hu__Chemistry for Engineers_ CHE 102_MGTE.html",
+    "relativePath": "CHE/CHE 102/1249__nh68hu__Chemistry for Engineers_ CHE 102_MGTE.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers: CHE 102_MGTE",
+    "parserEventCount": 12,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Fridays 8:30 - 9:30 AM in QNC 5617"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__njgefw__Chemistry for Engineers.html",
+    "relativePath": "CHE/CHE 102/1249__njgefw__Chemistry for Engineers.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers",
+    "parserEventCount": 11,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Mondays 10:30 - 11:30 am or by appointment in E6 4018"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__njs9sd__Chemistry for Engineers _SE 2A_.html",
+    "relativePath": "CHE/CHE 102/1249__njs9sd__Chemistry for Engineers _SE 2A_.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers (SE 2A)",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Tuesdays 4:00 - 5:00 PM or by appointment in E6 1112"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nr4kn4__Chemistry for Engineers _AE_.html",
+    "relativePath": "CHE/CHE 102/1249__nr4kn4__Chemistry for Engineers _AE_.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers (AE)",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Mondays 2:30 - 4:00 PM in E6 5014"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nwa6d3__CHE102 Enve_Geoe _S3_.html",
+    "relativePath": "CHE/CHE 102/1249__nwa6d3__CHE102 Enve_Geoe _S3_.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "CHE102 Enve/Geoe (S3)",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Tuesdays 10:00am - 11:00am in QNC 5601"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nyc64u__Chemistry for Engineers_CHE.html",
+    "relativePath": "CHE/CHE 102/1249__nyc64u__Chemistry for Engineers_CHE.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "Chemistry for Engineers_CHE",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Mondays 11:30 - 12:30 PM in QNC 4623"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nzq8dk__CHE102 ME4.html",
+    "relativePath": "CHE/CHE 102/1249__nzq8dk__CHE102 ME4.html",
+    "subject": "CHE",
+    "courseCode": "CHE 102",
+    "courseName": "CHE102 ME4",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor Office Hours: Thursdays 11:30 - 1:30 PM in E6 3018"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nnrqms__Computer Literacy and Programming for Chemical Engineers.html",
+    "relativePath": "CHE/CHE 120/1249__nnrqms__Computer Literacy and Programming for Chemical Engineers.html",
+    "subject": "CHE",
+    "courseCode": "CHE 120",
+    "courseName": "Computer Literacy and Programming for Chemical Engineers",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office hours : Mondays 16:30-17:30 or by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nvnsqr__Chemical Engineering Design Studio 1.html",
+    "relativePath": "CHE/CHE 180/1249__nvnsqr__Chemical Engineering Design Studio 1.html",
+    "subject": "CHE",
+    "courseCode": "CHE 180",
+    "courseName": "Chemical Engineering Design Studio 1",
+    "parserEventCount": 18,
+    "sourceDateEntryCount": 22,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office Hours: Wednesdays from 12:30 to 1:30, or by appointment"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 3
+  },
+  {
+    "fileName": "1249__nb5gpr__Equilibrium Stage Operations.html",
+    "relativePath": "CHE/CHE 200/1249__nb5gpr__Equilibrium Stage Operations.html",
+    "subject": "CHE",
+    "courseCode": "CHE 200",
+    "courseName": "Equilibrium Stage Operations",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nnzqgf__Fluid Mechanics.html",
+    "relativePath": "CHE/CHE 211/1249__nnzqgf__Fluid Mechanics.html",
+    "subject": "CHE",
+    "courseCode": "CHE 211",
+    "courseName": "Fluid Mechanics",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n4ub9f__Process Data Analysis.html",
+    "relativePath": "CHE/CHE 220/1249__n4ub9f__Process Data Analysis.html",
+    "subject": "CHE",
+    "courseCode": "CHE 220",
+    "courseName": "Process Data Analysis",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 3,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nnfs5x__Physical Chemistry 1.html",
+    "relativePath": "CHE/CHE 230/1249__nnfs5x__Physical Chemistry 1.html",
+    "subject": "CHE",
+    "courseCode": "CHE 230",
+    "courseName": "Physical Chemistry 1",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__ny6v7c__Physical Chemistry 2.html",
+    "relativePath": "CHE/CHE 231/1249__ny6v7c__Physical Chemistry 2.html",
+    "subject": "CHE",
+    "courseCode": "CHE 231",
+    "courseName": "Physical Chemistry 2",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nrtvxv__Materials Science and Engineering.html",
+    "relativePath": "CHE/CHE 241/1249__nrtvxv__Materials Science and Engineering.html",
+    "subject": "CHE",
+    "courseCode": "CHE 241",
+    "courseName": "Materials Science and Engineering",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "Group Projects: Students will form groups of 4 through the self-enrollment module on UW-LEARN by Friday, September 13 th , 11:59 pm. Each group will work on one topic and prepare a presentation. There will be two categories of topics to choose from, on a first-come-first-serve basis:",
+        "dates": [
+          "2024-09-13"
+        ],
+        "missingDates": [
+          "2024-09-13"
+        ]
+      },
+      {
+        "line": "➢ The deadline for uploading the presentation slides to UW-LEARN is November 25th.",
+        "dates": [
+          "2024-11-25"
+        ],
+        "missingDates": [
+          "2024-11-25"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Tuesdays 9:30 am to 10:30 am",
+      "Office hours: Thursdays, 4pm to 5pm"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4nwr2__Chemical Engineering Lab 1.html",
+    "relativePath": "CHE/CHE 290/1249__n4nwr2__Chemical Engineering Lab 1.html",
+    "subject": "CHE",
+    "courseCode": "CHE 290",
+    "courseName": "Chemical Engineering Lab 1",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9gm5n__Chemical Engineering Lab 2.html",
+    "relativePath": "CHE/CHE 291/1249__n9gm5n__Chemical Engineering Lab 2.html",
+    "subject": "CHE",
+    "courseCode": "CHE 291",
+    "courseName": "Chemical Engineering Lab 2",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nb9zam__Applications of Heat and Mass Transfer.html",
+    "relativePath": "CHE/CHE 313/1249__nb9zam__Applications of Heat and Mass Transfer.html",
+    "subject": "CHE",
+    "courseCode": "CHE 313",
+    "courseName": "Applications of Heat and Mass Transfer",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "OFFICE HOURS: Wednesdays, 10:30AM – 11:20AM, E6-2012, starting in the 2nd week"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nr7cr5__Electrochemical Engineering.html",
+    "relativePath": "CHE/CHE 331/1249__nr7cr5__Electrochemical Engineering.html",
+    "subject": "CHE",
+    "courseCode": "CHE 331",
+    "courseName": "Electrochemical Engineering",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9xj23__Introduction to Process Control.html",
+    "relativePath": "CHE/CHE 341/1249__n9xj23__Introduction to Process Control.html",
+    "subject": "CHE",
+    "courseCode": "CHE 341",
+    "courseName": "Introduction to Process Control",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nnsasz__Bioprocess Engineering.html",
+    "relativePath": "CHE/CHE 361/1249__nnsasz__Bioprocess Engineering.html",
+    "subject": "CHE",
+    "courseCode": "CHE 361",
+    "courseName": "Bioprocess Engineering",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n4gwrn__Chemical Engineering Design Workshop.html",
+    "relativePath": "CHE/CHE 383/1249__n4gwrn__Chemical Engineering Design Workshop.html",
+    "subject": "CHE",
+    "courseCode": "CHE 383",
+    "courseName": "Chemical Engineering Design Workshop",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvme6z__Technical Work-Term Report.html",
+    "relativePath": "CHE/CHE 450/1249__nvme6z__Technical Work-Term Report.html",
+    "subject": "CHE",
+    "courseCode": "CHE 450",
+    "courseName": "Technical Work-Term Report",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 3,
+    "unmatched": [
+      {
+        "line": "Initial Submission: Your technical report must be submitted by 11:59 PM on Monday, September 16, 2024 . Detailed submission instructions and report guidelines are available on LEARN. All non-confidential reports will undergo an anonymous peer review.",
+        "dates": [
+          "2024-09-16"
+        ],
+        "missingDates": [
+          "2024-09-16"
+        ]
+      },
+      {
+        "line": "Peer Review: Reports will be distributed anonymously for peer review using the Peer Scholar platform at 8:30 AM on September 17, 2024. If your report is confidential, you will still receive reports to review, however, your report will not be sent for review. Peer reviews are due by 11:59 PM on Monday, September 23, 2024 .",
+        "dates": [
+          "2024-09-17",
+          "2024-09-23"
+        ],
+        "missingDates": [
+          "2024-09-17",
+          "2024-09-23"
+        ]
+      },
+      {
+        "line": "Final Submission: At 8:30 AM on September 24, 2024 you will receive feedback from the peer review. Based on the provided feedback you may revise your report. The final report must be submitted by 11:59 PM on Monday, September 30, 2024 .",
+        "dates": [
+          "2024-09-24",
+          "2024-09-30"
+        ],
+        "missingDates": [
+          "2024-09-24",
+          "2024-09-30"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6ceg2__Process Analysis and Design.html",
+    "relativePath": "CHE/CHE 480/1249__n6ceg2__Process Analysis and Design.html",
+    "subject": "CHE",
+    "courseCode": "CHE 480",
+    "courseName": "Process Analysis and Design",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 3,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n57zbu__Group Design Project.html",
+    "relativePath": "CHE/CHE 482/1249__n57zbu__Group Design Project.html",
+    "subject": "CHE",
+    "courseCode": "CHE 482",
+    "courseName": "Group Design Project",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "Due Oct 25th: Video & initial literature review",
+        "dates": [
+          "2024-10-25"
+        ],
+        "missingDates": [
+          "2024-10-25"
+        ]
+      },
+      {
+        "line": "Due Nov 22: Updated literature review",
+        "dates": [
+          "2024-11-22"
+        ],
+        "missingDates": [
+          "2024-11-22"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nbg4rr__ChE 490 CHEMICAL ENGINEERING LABORATORY 4.html",
+    "relativePath": "CHE/CHE 490/1249__nbg4rr__ChE 490 CHEMICAL ENGINEERING LABORATORY 4.html",
+    "subject": "CHE",
+    "courseCode": "CHE 490",
+    "courseName": "ChE 490 CHEMICAL ENGINEERING LABORATORY 4",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n55yct__Elective Research Project.html",
+    "relativePath": "CHE/CHE 499/1249__n55yct__Elective Research Project.html",
+    "subject": "CHE",
+    "courseCode": "CHE 499",
+    "courseName": "Elective Research Project",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8d89d__Fundamentals of Petroleum Production.html",
+    "relativePath": "CHE/CHE 514/1249__n8d89d__Fundamentals of Petroleum Production.html",
+    "subject": "CHE",
+    "courseCode": "CHE 514",
+    "courseName": "Fundamentals of Petroleum Production",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nra7dd__Process Optimization.html",
+    "relativePath": "CHE/CHE 521/1249__nra7dd__Process Optimization.html",
+    "subject": "CHE",
+    "courseCode": "CHE 521",
+    "courseName": "Process Optimization",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 5,
+    "officeHoursHints": [
+      "Office hours: Fridays at 9:00 a.m. to 10:00 a.m. (none on October 18 th and November 1 st )"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__npxhfk__Introduction to Polymer Science and Properties.html",
+    "relativePath": "CHE/CHE 541/1249__npxhfk__Introduction to Polymer Science and Properties.html",
+    "subject": "CHE",
+    "courseCode": "CHE 541",
+    "courseName": "Introduction to Polymer Science and Properties",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office hours will be on Wednesday between 12:00– 1:00 pm. Should you wish to e-meet with the instructor outside of office hours, please contact Prof. Mekonnen by e-mail to schedule an appointment."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n45b5s__Industrial Ecology.html",
+    "relativePath": "CHE/CHE 571/1249__n45b5s__Industrial Ecology.html",
+    "subject": "CHE",
+    "courseCode": "CHE 571",
+    "courseName": "Industrial Ecology",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9w6s7__General Chemistry 1.html",
+    "relativePath": "CHEM/CHEM 120/1249__n9w6s7__General Chemistry 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 120",
+    "courseName": "General Chemistry 1",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npq7mz__General Chemistry Laboratory 1.html",
+    "relativePath": "CHEM/CHEM 120L/1249__npq7mz__General Chemistry Laboratory 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 120L",
+    "courseName": "General Chemistry Laboratory 1",
+    "parserEventCount": 13,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours : My door is open and I welcome questions, comments and visits Monday – Friday, between 9:00 am – 5:20 pm. Unless you have an urgent need, please avoid the busiest lab times : ½ hour before and after labs start (9:30 – 10:30 am and 2:00 – 3:00 pm)"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6fqp8__Physical and Chemical Properties of Matter.html",
+    "relativePath": "CHEM/CHEM 121/1249__n6fqp8__Physical and Chemical Properties of Matter.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 121",
+    "courseName": "Physical and Chemical Properties of Matter",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nyd9bj__Physical and Chemical Properties of Matter.html",
+    "relativePath": "CHEM/CHEM 121/1249__nyd9bj__Physical and Chemical Properties of Matter.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 121",
+    "courseName": "Physical and Chemical Properties of Matter",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4rgsy__Chemical Reaction Laboratory 1.html",
+    "relativePath": "CHEM/CHEM 121L/1249__n4rgsy__Chemical Reaction Laboratory 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 121L",
+    "courseName": "Chemical Reaction Laboratory 1",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours : My door is open, and I welcome questions, comments and visits Monday – Friday, between 9:00 am – 5:20 pm. Unless you have an urgent need, please avoid the busiest lab times: ½ hour before and after labs start (9:30 – 10:30 am and 2:00 – 3:00 pm)"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6973t__Introduction to Scientific Calculations.html",
+    "relativePath": "CHEM/CHEM 140/1249__n6973t__Introduction to Scientific Calculations.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 140",
+    "courseName": "Introduction to Scientific Calculations",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmes7p__Introduction to Laboratory Techniques.html",
+    "relativePath": "CHEM/CHEM 200/1249__nmes7p__Introduction to Laboratory Techniques.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 200",
+    "courseName": "Introduction to Laboratory Techniques",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5uhhg__Introductory Spectroscopy and Structure.html",
+    "relativePath": "CHEM/CHEM 209/1249__n5uhhg__Introductory Spectroscopy and Structure.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 209",
+    "courseName": "Introductory Spectroscopy and Structure",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Thursday 3:30 – 4:30 (QNC 4619)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6ega6__Intro Analytical Chemistry.html",
+    "relativePath": "CHEM/CHEM 220/1249__n6ega6__Intro Analytical Chemistry.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 220",
+    "courseName": "Intro Analytical Chemistry",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 7,
+    "unmatchedCount": 7,
+    "unmatched": [
+      {
+        "line": "Submit questions on Crowdmark by 11:59pm, Saturday, September 14",
+        "dates": [
+          "2024-09-14"
+        ],
+        "missingDates": [
+          "2024-09-14"
+        ]
+      },
+      {
+        "line": "Submit questions on Crowdmark by 11:59pm, Saturday, September 21",
+        "dates": [
+          "2024-09-21"
+        ],
+        "missingDates": [
+          "2024-09-21"
+        ]
+      },
+      {
+        "line": "Submit questions on Crowdmark by 11:59pm, Saturday, October 5",
+        "dates": [
+          "2024-10-05"
+        ],
+        "missingDates": [
+          "2024-10-05"
+        ]
+      },
+      {
+        "line": "Submit questions on Crowdmark by 11:59pm, Saturday, October 12",
+        "dates": [
+          "2024-10-12"
+        ],
+        "missingDates": [
+          "2024-10-12"
+        ]
+      },
+      {
+        "line": "Submit questions on Crowdmark by 11:59pm, Saturday, November 2",
+        "dates": [
+          "2024-11-02"
+        ],
+        "missingDates": [
+          "2024-11-02"
+        ]
+      },
+      {
+        "line": "Submit Questions on Crowdmark by 11:59pm, Saturday, November 16",
+        "dates": [
+          "2024-11-16"
+        ],
+        "missingDates": [
+          "2024-11-16"
+        ]
+      },
+      {
+        "line": "Submit questions on Crowdmark by 11:59pm, Saturday, November 30",
+        "dates": [
+          "2024-11-30"
+        ],
+        "missingDates": [
+          "2024-11-30"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 3,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nz5fm9__Quantitative Chemical Analysis Laboratory.html",
+    "relativePath": "CHEM/CHEM 220L/1249__nz5fm9__Quantitative Chemical Analysis Laboratory.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 220L",
+    "courseName": "Quantitative Chemical Analysis Laboratory",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 3,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ny7jq6__Physical Chemistry Laboratory 1.html",
+    "relativePath": "CHEM/CHEM 250L/1249__ny7jq6__Physical Chemistry Laboratory 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 250L",
+    "courseName": "Physical Chemistry Laboratory 1",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nv4den__Introductory Chemical Thermodynamics.html",
+    "relativePath": "CHEM/CHEM 254/1249__nv4den__Introductory Chemical Thermodynamics.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 254",
+    "courseName": "Introductory Chemical Thermodynamics",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n7jv4z__Organic Chemistry for Engineering.html",
+    "relativePath": "CHEM/CHEM 262/1249__n7jv4z__Organic Chemistry for Engineering.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 262",
+    "courseName": "Organic Chemistry for Engineering",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npapdt__Organic Chemistry Laboratory for Engineering Students.html",
+    "relativePath": "CHEM/CHEM 262L/1249__npapdt__Organic Chemistry Laboratory for Engineering Students.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 262L",
+    "courseName": "Organic Chemistry Laboratory for Engineering Students",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Student hours: Mon 8:30–11:30, Tues 8:30–11:30, Fri 8:30–11:30, and times where lab sections are running (see full schedule on LEARN) Other meeting times available upon request Please do not use Microsoft Teams as messages are not monitored often."
+    ],
+    "officeHoursHintDayCount": 3,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6axdz__Organic Chemistry 1.html",
+    "relativePath": "CHEM/CHEM 264/1249__n6axdz__Organic Chemistry 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 264",
+    "courseName": "Organic Chemistry 1",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n7pwcw__Basic Organic Chemistry 1.html",
+    "relativePath": "CHEM/CHEM 266/1249__n7pwcw__Basic Organic Chemistry 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 266",
+    "courseName": "Basic Organic Chemistry 1",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nwt8uq__Organic Chemistry Laboratory.html",
+    "relativePath": "CHEM/CHEM 266L/1249__nwt8uq__Organic Chemistry Laboratory.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 266L",
+    "courseName": "Organic Chemistry Laboratory",
+    "parserEventCount": 14,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "For Fall 2024, the WD deadline is November 19 th and the WF deadline is December 5 th , 2024. Note that students who wish to remain in CHEM 266L while dropping the lecture may do so if they are in good standing in the laboratory and have completed Experiment 4. Please contact the lab instructor if you need to explore this option.",
+        "dates": [
+          "2024-11-19",
+          "2024-12-05"
+        ],
+        "missingDates": [
+          "2024-12-05"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Student hours: Mon 9–11 AM, Fri 9–11 AM in ESC 102A; Mon 3–5 PM, Tues 3–8 PM, Wed 3–8 PM and Thurs 3–5 PM in ESC-104."
+    ],
+    "officeHoursHintDayCount": 5,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nb7nwa__Basic Organic Chemistry 2.html",
+    "relativePath": "CHEM/CHEM 267/1249__nb7nwa__Basic Organic Chemistry 2.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 267",
+    "courseName": "Basic Organic Chemistry 2",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nwmjts__Transition Element Compounds and Inorganic Materials.html",
+    "relativePath": "CHEM/CHEM 310/1249__nwmjts__Transition Element Compounds and Inorganic Materials.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 310",
+    "courseName": "Transition Element Compounds and Inorganic Materials",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Instructor’s Name, Office Location, Office Hours, Contact: Head Instructor: Prof. Linda F. Nazar, QNC 4609, Tuesday and Thursday, 11:00 am - 12:00 pm, x 8-4637, email: lfnazar@uwaterloo.ca."
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n47922__Inorganic Chemistry Laboratory 2.html",
+    "relativePath": "CHEM/CHEM 310L/1249__n47922__Inorganic Chemistry Laboratory 2.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 310L",
+    "courseName": "Inorganic Chemistry Laboratory 2",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nj5sp6__Analytical Instrumentation.html",
+    "relativePath": "CHEM/CHEM 323/1249__nj5sp6__Analytical Instrumentation.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 323",
+    "courseName": "Analytical Instrumentation",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nnj6ax__Fundamentals of Metabolism 1.html",
+    "relativePath": "CHEM/CHEM 331/1249__nnj6ax__Fundamentals of Metabolism 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 331",
+    "courseName": "Fundamentals of Metabolism 1",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__ncs6hc__Metabolism 1.html",
+    "relativePath": "CHEM/CHEM 333/1249__ncs6hc__Metabolism 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 333",
+    "courseName": "Metabolism 1",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Poster presentation: 30% You will create and present a poster based on an assigned topic. Details to follow. This will be an individual presentation and the final presentation will be due on November 19th. The live presentations will be held during regular class time in the last two weeks of the term starting on November 20th.",
+        "dates": [
+          "2024-11-19",
+          "2024-11-20"
+        ],
+        "missingDates": [
+          "2024-11-19"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Mondays from 12:30-2 pm in ESC 227"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrwekm__Advanced Biochemistry Laboratory.html",
+    "relativePath": "CHEM/CHEM 335L/1249__nrwekm__Advanced Biochemistry Laboratory.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 335L",
+    "courseName": "Advanced Biochemistry Laboratory",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvngw3__Physical Chemistry Laboratory 2.html",
+    "relativePath": "CHEM/CHEM 350L/1249__nvngw3__Physical Chemistry Laboratory 2.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 350L",
+    "courseName": "Physical Chemistry Laboratory 2",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nbtwh2__Introductory Quantum Mechanics.html",
+    "relativePath": "CHEM/CHEM 356/1249__nbtwh2__Introductory Quantum Mechanics.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 356",
+    "courseName": "Introductory Quantum Mechanics",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nwejef__Introduction to Polymer Science.html",
+    "relativePath": "CHEM/CHEM 370/1249__nwejef__Introduction to Polymer Science.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 370",
+    "courseName": "Introduction to Polymer Science",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nbvu6r__Advanced Organic Synthesis Laboratory.html",
+    "relativePath": "CHEM/CHEM 382L/1249__nbvu6r__Advanced Organic Synthesis Laboratory.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 382L",
+    "courseName": "Advanced Organic Synthesis Laboratory",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nwqpmd__Medicinal Chemistry.html",
+    "relativePath": "CHEM/CHEM 383/1249__nwqpmd__Medicinal Chemistry.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 383",
+    "courseName": "Medicinal Chemistry",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nc88nq__Research Project 1.html",
+    "relativePath": "CHEM/CHEM 392A/1249__nc88nq__Research Project 1.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 392A",
+    "courseName": "Research Project 1",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ngpxc8__Research Project 2.html",
+    "relativePath": "CHEM/CHEM 392B/1249__ngpxc8__Research Project 2.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 392B",
+    "courseName": "Research Project 2",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nh4quw__Miniaturization and lntroduction to artificial intelligence.html",
+    "relativePath": "CHEM/CHEM 400/1249__nh4quw__Miniaturization and lntroduction to artificial intelligence.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 400",
+    "courseName": "Miniaturization and Lntroduction to Artificial Intelligence",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nm6gcm__Physicochemical Aspects of Natural Waters.html",
+    "relativePath": "CHEM/CHEM 404/1249__nm6gcm__Physicochemical Aspects of Natural Waters.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 404",
+    "courseName": "Physicochemical Aspects of Natural Waters",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n8mbbr__Metabolism 2.html",
+    "relativePath": "CHEM/CHEM 432/1249__n8mbbr__Metabolism 2.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 432",
+    "courseName": "Metabolism 2",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nwhvyp__Spectroscopy in Organic Chemistry.html",
+    "relativePath": "CHEM/CHEM 464/1249__nwhvyp__Spectroscopy in Organic Chemistry.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 464",
+    "courseName": "Spectroscopy in Organic Chemistry",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office hours: Monday - Thursday 4:00 – 5:00 pm or by appointment"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n49w3u__Rational Design of Potential Drug Candidates.html",
+    "relativePath": "CHEM/CHEM 481/1249__n49w3u__Rational Design of Potential Drug Candidates.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 481",
+    "courseName": "Rational Design of Potential Drug Candidates",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nnkwpe__Research Project.html",
+    "relativePath": "CHEM/CHEM 494A/1249__nnkwpe__Research Project.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 494A",
+    "courseName": "Research Project",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__npqngn__Research Project.html",
+    "relativePath": "CHEM/CHEM 494B/1249__npqngn__Research Project.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 494B",
+    "courseName": "Research Project",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Please see course LEARN site for submission of reports via Dropbox. Seminar date is tentatively scheduled for November 18, 3 pm. Final report is due by December 6, 2024 (4 pm).",
+        "dates": [
+          "2024-11-18",
+          "2024-12-06"
+        ],
+        "missingDates": [
+          "2024-11-18"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvtn74__Advanced Research Project.html",
+    "relativePath": "CHEM/CHEM 495/1249__nvtn74__Advanced Research Project.html",
+    "subject": "CHEM",
+    "courseCode": "CHEM 495",
+    "courseName": "Advanced Research Project",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4wyxx__Cultural Identities Today.html",
+    "relativePath": "CI/CI 100/1249__n4wyxx__Cultural Identities Today.html",
+    "subject": "CI",
+    "courseCode": "CI 100",
+    "courseName": "Cultural Identities Today",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nnsrhn__Solid Mechanics 1.html",
+    "relativePath": "CIVE/CIVE 204/1249__nnsrhn__Solid Mechanics 1.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 204",
+    "courseName": "Solid Mechanics 1",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "A course project in the form of Civil Engineering Design Days will take place on November 21 st and 22 nd . Participation in this event is required .",
+        "dates": [
+          "2024-11-21"
+        ],
+        "missingDates": [
+          "2024-11-21"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmvnqt__CIVE 224 _ Probability and Statistics.html",
+    "relativePath": "CIVE/CIVE 224/1249__nmvnqt__CIVE 224 _ Probability and Statistics.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 224",
+    "courseName": "CIVE 224 – Probability and Statistics",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n9hxsq__Transport Principles and Applications.html",
+    "relativePath": "CIVE/CIVE 241/1249__n9hxsq__Transport Principles and Applications.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 241",
+    "courseName": "Transport Principles and Applications",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Tuesdays from 1:00 - 2:00 mainly held by the TAs."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nv7mf3__Structure and Properties of Materials.html",
+    "relativePath": "CIVE/CIVE 265/1249__nv7mf3__Structure and Properties of Materials.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 265",
+    "courseName": "Structure and Properties of Materials",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nw6jxp__Solid Mechanics.html",
+    "relativePath": "CIVE/CIVE 306/1249__nw6jxp__Solid Mechanics.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 306",
+    "courseName": "Solid Mechanics",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [
+      "Office Hours: Monday, Wednesday, 11:30 a.m.-12:30 p.m.",
+      "Office Hours: Thursday, 6:30-7:30 p.m."
+    ],
+    "officeHoursHintDayCount": 3,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nrjw6s__Introduction to Structural Design.html",
+    "relativePath": "CIVE/CIVE 310/1249__nrjw6s__Introduction to Structural Design.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 310",
+    "courseName": "Introduction to Structural Design",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmrvwn__Traffic Simulation Modelling and Applications.html",
+    "relativePath": "CIVE/CIVE 343/1249__nmrvwn__Traffic Simulation Modelling and Applications.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 343",
+    "courseName": "Traffic Simulation Modelling and Applications",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor : Prof. Liping Fu, lfu@uwaterloo.ca , E2-2310. Office Hours: 1:30pm-2:30pm, Thur."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nyhbcc__Geotechnical Engineering 2.html",
+    "relativePath": "CIVE/CIVE 354/1249__nyhbcc__Geotechnical Engineering 2.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 354",
+    "courseName": "Geotechnical Engineering 2",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office Hours - Tuesdays 8:00 – 9:00 p.m. (online)",
+      "Mohammad Zaid – mzaid@uwaterloo.ca (TA) Office Hours - Fridays 5:30 - 6:30 p.m. (Teams)",
+      "Zahidul Islam -- z7islam@uwaterloo.ca (CA) Office Hours - Monday 10:30 – 11:30 a.m. (online)"
+    ],
+    "officeHoursHintDayCount": 3,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ngm7px__Environmental Engineering Principles.html",
+    "relativePath": "CIVE/CIVE 375/1249__ngm7px__Environmental Engineering Principles.html",
+    "subject": "CIVE",
+    "courseCode": "CIVE 375",
+    "courseName": "Environmental Engineering Principles",
+    "parserEventCount": 11,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor: Dafne de Brito Cruz (ddbcruz@uwaterloo.ca). Office hours: Wednesday 11:30-12:30 pm (to be confirmed)",
+      "TA: Madeleine Myles (m2myles@uwaterloo.ca) will run weekly tutorial sessions, mark quizzes and and part of the final exam. Office hours: Friday 11:30-12:30 pm (to be confirmed)"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4njdw__Classical Mythology.html",
+    "relativePath": "CLAS/CLAS 104/1249__n4njdw__Classical Mythology.html",
+    "subject": "CLAS",
+    "courseCode": "CLAS 104",
+    "courseName": "Classical Mythology",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8s2wj__Introduction to Medieval Studies.html",
+    "relativePath": "CLAS/CLAS 105/1249__n8s2wj__Introduction to Medieval Studies.html",
+    "subject": "CLAS",
+    "courseCode": "CLAS 105",
+    "courseName": "Introduction to Medieval Studies",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 5
+  },
+  {
+    "fileName": "1249__nccxsu__Worship Practicum 1.html",
+    "relativePath": "CMW/CMW 201/1249__nccxsu__Worship Practicum 1.html",
+    "subject": "CMW",
+    "courseCode": "CMW 201",
+    "courseName": "Worship Practicum 1",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvdrv5__Introduction to Optimization _Non-Specialist Level_.html",
+    "relativePath": "CO/CO 227/1249__nvdrv5__Introduction to Optimization _Non-Specialist Level_.html",
+    "subject": "CO",
+    "courseCode": "CO 227",
+    "courseName": "Introduction to Optimization (Non-Specialist Level)",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 10,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n75ejg__Introduction to Optimization.html",
+    "relativePath": "CO/CO 250/1249__n75ejg__Introduction to Optimization.html",
+    "subject": "CO",
+    "courseCode": "CO 250",
+    "courseName": "Introduction to Optimization",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n9j8up__Introduction to Optimization.html",
+    "relativePath": "CO/CO 250/1249__n9j8up__Introduction to Optimization.html",
+    "subject": "CO",
+    "courseCode": "CO 250",
+    "courseName": "Introduction to Optimization",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 2
+  },
+  {
+    "fileName": "1249__n89998__Introduction to Optimization _Advanced Level_.html",
+    "relativePath": "CO/CO 255/1249__n89998__Introduction to Optimization _Advanced Level_.html",
+    "subject": "CO",
+    "courseCode": "CO 255",
+    "courseName": "Introduction to Optimization (Advanced Level)",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__njvb9b__Combinatorial Enumeration.html",
+    "relativePath": "CO/CO 330/1249__njvb9b__Combinatorial Enumeration.html",
+    "subject": "CO",
+    "courseCode": "CO 330",
+    "courseName": "Combinatorial Enumeration",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 7,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "A6 due 12/3",
+        "dates": [
+          "2024-12-03"
+        ],
+        "missingDates": [
+          "2024-12-03"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nmkewr__Introduction to Graph Theory.html",
+    "relativePath": "CO/CO 342/1249__nmkewr__Introduction to Graph Theory.html",
+    "subject": "CO",
+    "courseCode": "CO 342",
+    "courseName": "Introduction to Graph Theory",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nph9yr__Network Flow Theory.html",
+    "relativePath": "CO/CO 351/1249__nph9yr__Network Flow Theory.html",
+    "subject": "CO",
+    "courseCode": "CO 351",
+    "courseName": "Network Flow Theory",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n7wzfp__Deterministic OR Models.html",
+    "relativePath": "CO/CO 370/1249__n7wzfp__Deterministic OR Models.html",
+    "subject": "CO",
+    "courseCode": "CO 370",
+    "courseName": "Deterministic OR Models",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 3,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n78vkg__Portfolio Optimization Models.html",
+    "relativePath": "CO/CO 372/1249__n78vkg__Portfolio Optimization Models.html",
+    "subject": "CO",
+    "courseCode": "CO 372",
+    "courseName": "Portfolio Optimization Models",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 2,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5ae8e__Introduction to Game Theory.html",
+    "relativePath": "CO/CO 456/1249__n5ae8e__Introduction to Game Theory.html",
+    "subject": "CO",
+    "courseCode": "CO 456",
+    "courseName": "Introduction to Game Theory",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 9,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nmu3um__Introduction to Financial Markets.html",
+    "relativePath": "COMM/COMM 101/1249__nmu3um__Introduction to Financial Markets.html",
+    "subject": "COMM",
+    "courseCode": "COMM 101",
+    "courseName": "Introduction to Financial Markets",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nmyjud__Introduction to Financial Markets.html",
+    "relativePath": "COMM/COMM 101/1249__nmyjud__Introduction to Financial Markets.html",
+    "subject": "COMM",
+    "courseCode": "COMM 101",
+    "courseName": "Introduction to Financial Markets",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Marked midterm exams will be returned, either in class or in M3-2001 during normal office hours. Any marked midterms not claimed by December 23 rd , 2024 will be destroyed.",
+        "dates": [
+          "2024-12-23"
+        ],
+        "missingDates": [
+          "2024-12-23"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nh4wt3__Financial Statement Analysis.html",
+    "relativePath": "COMM/COMM 421/1249__nh4wt3__Financial Statement Analysis.html",
+    "subject": "COMM",
+    "courseCode": "COMM 421",
+    "courseName": "Financial Statement Analysis",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 3,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n62968__Income Tax for Finance Students.html",
+    "relativePath": "COMM/COMM 433/1249__n62968__Income Tax for Finance Students.html",
+    "subject": "COMM",
+    "courseCode": "COMM 433",
+    "courseName": "Income Tax for Finance Students",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n6xpgu__Elementary Croatian 1.html",
+    "relativePath": "CROAT/CROAT 101/1249__n6xpgu__Elementary Croatian 1.html",
+    "subject": "CROAT",
+    "courseCode": "CROAT 101",
+    "courseName": "Elementary Croatian 1",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6absn__Introduction to Computing Through Applications.html",
+    "relativePath": "CS/CS 100/1249__n6absn__Introduction to Computing Through Applications.html",
+    "subject": "CS",
+    "courseCode": "CS 100",
+    "courseName": "Introduction to Computing Through Applications",
+    "parserEventCount": 10,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nzfj7u__Introduction to Computer Programming 1.html",
+    "relativePath": "CS/CS 105/1249__nzfj7u__Introduction to Computer Programming 1.html",
+    "subject": "CS",
+    "courseCode": "CS 105",
+    "courseName": "Introduction to Computer Programming 1",
+    "parserEventCount": 14,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nvh8z2__Principles of Computing for Science.html",
+    "relativePath": "CS/CS 114/1249__nvh8z2__Principles of Computing for Science.html",
+    "subject": "CS",
+    "courseCode": "CS 114",
+    "courseName": "Principles of Computing for Science",
+    "parserEventCount": 8,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nn4tv7__Introduction to Computer Science 1.html",
+    "relativePath": "CS/CS 115/1249__nn4tv7__Introduction to Computer Science 1.html",
+    "subject": "CS",
+    "courseCode": "CS 115",
+    "courseName": "Introduction to Computer Science 1",
+    "parserEventCount": 22,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nm7p5g__Designing Functional Programs.html",
+    "relativePath": "CS/CS 135/1249__nm7p5g__Designing Functional Programs.html",
+    "subject": "CS",
+    "courseCode": "CS 135",
+    "courseName": "Designing Functional Programs",
+    "parserEventCount": 29,
+    "sourceDateEntryCount": 3,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "First lecture on Thursday, September 7.",
+        "dates": [
+          "2024-09-07"
+        ],
+        "missingDates": [
+          "2024-09-07"
+        ]
+      },
+      {
+        "line": "First tutorial on Friday, September 8.",
+        "dates": [
+          "2024-09-08"
+        ],
+        "missingDates": [
+          "2024-09-08"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office Hours: 1:30-2:30 Thurs (in-person)",
+      "Office Hours: 10:30-12:30 Fri (on-line)",
+      "Office Hours: 2:00-3:00 Tues (in-person); 12:00-1:00 Wed (on-line)",
+      "Office Hours: 10:30-1:30 Mon (in-person)",
+      "Office Hours: 3:00-5:00 Tues (in-person)",
+      "Office Hours: -4:00-5:00 Mon (in-person)"
+    ],
+    "officeHoursHintDayCount": 7,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nj482w__Elementary Algorithm Design and Data Abstraction.html",
+    "relativePath": "CS/CS 136/1249__nj482w__Elementary Algorithm Design and Data Abstraction.html",
+    "subject": "CS",
+    "courseCode": "CS 136",
+    "courseName": "Elementary Algorithm Design and Data Abstraction",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nwrxa2__Tools and Techniques for Software Development.html",
+    "relativePath": "CS/CS 136L/1249__nwrxa2__Tools and Techniques for Software Development.html",
+    "subject": "CS",
+    "courseCode": "CS 136L",
+    "courseName": "Tools and Techniques for Software Development",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nck7uc__Programming Principles.html",
+    "relativePath": "CS/CS 137/1249__nck7uc__Programming Principles.html",
+    "subject": "CS",
+    "courseCode": "CS 137",
+    "courseName": "Programming Principles",
+    "parserEventCount": 16,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 10,
+    "officeHoursHints": [
+      "Office hours: Tuesday 5:00-7:30pm and Thursday 5:00-6:30pm",
+      "Office hours: Mon 10:30am-12:20pm",
+      "Online Office hours: Thurs 6:00pm-7:30pm",
+      "Office hours: Wed 4:30pm-6:00pm"
+    ],
+    "officeHoursHintDayCount": 5,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n6r84n__Designing Functional Programs _Advanced Level_.html",
+    "relativePath": "CS/CS 145/1249__n6r84n__Designing Functional Programs _Advanced Level_.html",
+    "subject": "CS",
+    "courseCode": "CS 145",
+    "courseName": "Designing Functional Programs (Advanced Level)",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office Hours: Tues and Thur 1:00-2:00pm in MC 6212,"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__ngqjky__Data Types and Structures.html",
+    "relativePath": "CS/CS 234/1249__ngqjky__Data Types and Structures.html",
+    "subject": "CS",
+    "courseCode": "CS 234",
+    "courseName": "Data Types and Structures",
+    "parserEventCount": 0,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ncyzyc__Data Structures and Data Management.html",
+    "relativePath": "CS/CS 240/1249__ncyzyc__Data Structures and Data Management.html",
+    "subject": "CS",
+    "courseCode": "CS 240",
+    "courseName": "Data Structures and Data Management",
+    "parserEventCount": 7,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nyr6k2__Foundations of Sequential Programs.html",
+    "relativePath": "CS/CS 241/1249__nyr6k2__Foundations of Sequential Programs.html",
+    "subject": "CS",
+    "courseCode": "CS 241",
+    "courseName": "Foundations of Sequential Programs",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njae3e__Foundations of Sequential Programs _Enriched_.html",
+    "relativePath": "CS/CS 241E/1249__njae3e__Foundations of Sequential Programs _Enriched_.html",
+    "subject": "CS",
+    "courseCode": "CS 241E",
+    "courseName": "Foundations of Sequential Programs (Enriched)",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nn6hn5__Logic and Computation.html",
+    "relativePath": "CS/CS 245/1249__nn6hn5__Logic and Computation.html",
+    "subject": "CS",
+    "courseCode": "CS 245",
+    "courseName": "Logic and Computation",
+    "parserEventCount": 13,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n654qp__Logic and Computation _Enriched_.html",
+    "relativePath": "CS/CS 245E/1249__n654qp__Logic and Computation _Enriched_.html",
+    "subject": "CS",
+    "courseCode": "CS 245E",
+    "courseName": "Logic and Computation (Enriched)",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor: Shai Ben-David, DC 2643, shai@uwaterloo.ca, Office hours Tuesday 2:30-3:30"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__np5r6c__Object-Oriented Software Development.html",
+    "relativePath": "CS/CS 246/1249__np5r6c__Object-Oriented Software Development.html",
+    "subject": "CS",
+    "courseCode": "CS 246",
+    "courseName": "Object-Oriented Software Development",
+    "parserEventCount": 17,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "The project will include running an in-person demo with course staff for grading. Tentative dates for the demos are from December 1-3.",
+        "dates": [
+          "2024-12-01"
+        ],
+        "missingDates": [
+          "2024-12-01"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n4ptn9__Object-Oriented Software Development _Enriched_.html",
+    "relativePath": "CS/CS 246E/1249__n4ptn9__Object-Oriented Software Development _Enriched_.html",
+    "subject": "CS",
+    "courseCode": "CS 246E",
+    "courseName": "Object-Oriented Software Development (Enriched)",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n8577b__Computer Organization and Design.html",
+    "relativePath": "CS/CS 251/1249__n8577b__Computer Organization and Design.html",
+    "subject": "CS",
+    "courseCode": "CS 251",
+    "courseName": "Computer Organization and Design",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nncjcn__Management Information Systems.html",
+    "relativePath": "CS/CS 330/1249__nncjcn__Management Information Systems.html",
+    "subject": "CS",
+    "courseCode": "CS 330",
+    "courseName": "Management Information Systems",
+    "parserEventCount": 6,
+    "sourceDateEntryCount": 5,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [
+      "Office hours: Thursdays 12:00-2:00 pm."
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__ncsy4y__Computational Methods in Business and Finance.html",
+    "relativePath": "CS/CS 335/1249__ncsy4y__Computational Methods in Business and Finance.html",
+    "subject": "CS",
+    "courseCode": "CS 335",
+    "courseName": "Computational Methods in Business and Finance",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Thursday, 3:00-5:00pm, DC 2129/DC 2584 (See Piazza)"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n5avv8__Computer Applications in Business_ Databases.html",
+    "relativePath": "CS/CS 338/1249__n5avv8__Computer Applications in Business_ Databases.html",
+    "subject": "CS",
+    "courseCode": "CS 338",
+    "courseName": "Computer Applications in Business: Databases",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nmnxnk__Algorithms.html",
+    "relativePath": "CS/CS 341/1249__nmnxnk__Algorithms.html",
+    "subject": "CS",
+    "courseCode": "CS 341",
+    "courseName": "Algorithms",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 1,
+    "unmatched": [
+      {
+        "line": "Midterm Exam: Monday, Oct 28, 4:30pm to 6:20pm",
+        "dates": [
+          "2024-10-28"
+        ],
+        "missingDates": [
+          "2024-10-28"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njusbg__Concurrent and Parallel Programming.html",
+    "relativePath": "CS/CS 343/1249__njusbg__Concurrent and Parallel Programming.html",
+    "subject": "CS",
+    "courseCode": "CS 343",
+    "courseName": "Concurrent and Parallel Programming",
+    "parserEventCount": 9,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__npb7wk__Application Development.html",
+    "relativePath": "CS/CS 346/1249__npb7wk__Application Development.html",
+    "subject": "CS",
+    "courseCode": "CS 346",
+    "courseName": "Application Development",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n5244v__Introduction to Database Management.html",
+    "relativePath": "CS/CS 348/1249__n5244v__Introduction to Database Management.html",
+    "subject": "CS",
+    "courseCode": "CS 348",
+    "courseName": "Introduction to Database Management",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 5,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office Hours: Wed 12:30-2:30pm in DC 3346"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nc9gd2__User Interfaces.html",
+    "relativePath": "CS/CS 349/1249__nc9gd2__User Interfaces.html",
+    "subject": "CS",
+    "courseCode": "CS 349",
+    "courseName": "User Interfaces",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nrsxwc__Introduction to the Theory of Computing.html",
+    "relativePath": "CS/CS 360/1249__nrsxwc__Introduction to the Theory of Computing.html",
+    "subject": "CS",
+    "courseCode": "CS 360",
+    "courseName": "Introduction to the Theory of Computing",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__ng23jh__Numerical Computation.html",
+    "relativePath": "CS/CS 370/1249__ng23jh__Numerical Computation.html",
+    "subject": "CS",
+    "courseCode": "CS 370",
+    "courseName": "Numerical Computation",
+    "parserEventCount": 4,
+    "sourceDateEntryCount": 4,
+    "unmatchedCount": 2,
+    "unmatched": [
+      {
+        "line": "Assignment 2 due: Oct 3",
+        "dates": [
+          "2024-10-03"
+        ],
+        "missingDates": [
+          "2024-10-03"
+        ]
+      },
+      {
+        "line": "Assignment 3 due: Oct 24",
+        "dates": [
+          "2024-10-24"
+        ],
+        "missingDates": [
+          "2024-10-24"
+        ]
+      }
+    ],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nb3nw6__Applications Software Engineering.html",
+    "relativePath": "CS/CS 430/1249__nb3nw6__Applications Software Engineering.html",
+    "subject": "CS",
+    "courseCode": "CS 430",
+    "courseName": "Applications Software Engineering",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n94jeb__Data-Intensive Distributed Analytics.html",
+    "relativePath": "CS/CS 431/1249__n94jeb__Data-Intensive Distributed Analytics.html",
+    "subject": "CS",
+    "courseCode": "CS 431",
+    "courseName": "Data-Intensive Distributed Analytics",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nz82da__Human-Computer Interaction.html",
+    "relativePath": "CS/CS 449/1249__nz82da__Human-Computer Interaction.html",
+    "subject": "CS",
+    "courseCode": "CS 449",
+    "courseName": "Human-Computer Interaction",
+    "parserEventCount": 5,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__njkagm__Distributed Systems.html",
+    "relativePath": "CS/CS 454/1249__njkagm__Distributed Systems.html",
+    "subject": "CS",
+    "courseCode": "CS 454",
+    "courseName": "Distributed Systems",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 2,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nm3nfw__Computer Networks.html",
+    "relativePath": "CS/CS 456/1249__nm3nfw__Computer Networks.html",
+    "subject": "CS",
+    "courseCode": "CS 456",
+    "courseName": "Computer Networks",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__nn2gtc__Computer Networks.html",
+    "relativePath": "CS/CS 456/1249__nn2gtc__Computer Networks.html",
+    "subject": "CS",
+    "courseCode": "CS 456",
+    "courseName": "Computer Networks",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n4ez8g__Algorithm Design and Analysis.html",
+    "relativePath": "CS/CS 466/1249__n4ez8g__Algorithm Design and Analysis.html",
+    "subject": "CS",
+    "courseCode": "CS 466",
+    "courseName": "Algorithm Design and Analysis",
+    "parserEventCount": 3,
+    "sourceDateEntryCount": 1,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Office hours: Mondays 5:00 - 6:00 PM in DC 2334",
+      "Office hours: Wednesdays 3:00 to 4:00 PM in DC 2331"
+    ],
+    "officeHoursHintDayCount": 2,
+    "officeHoursDayMismatch": true,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__n7qh9p__Computational Vision.html",
+    "relativePath": "CS/CS 484/1249__n7qh9p__Computational Vision.html",
+    "subject": "CS",
+    "courseCode": "CS 484",
+    "courseName": "Computational Vision",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 1
+  },
+  {
+    "fileName": "1249__n6y963__Introduction to Computer Graphics.html",
+    "relativePath": "CS/CS 488/1249__n6y963__Introduction to Computer Graphics.html",
+    "subject": "CS",
+    "courseCode": "CS 488",
+    "courseName": "Introduction to Computer Graphics",
+    "parserEventCount": 2,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 1,
+    "officeHoursHints": [
+      "Instructor: Stephen Mann; DC2317. Office hours: 11:30-12:30 Mondays"
+    ],
+    "officeHoursHintDayCount": 1,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  },
+  {
+    "fileName": "1249__nr9p33__Team Project 1.html",
+    "relativePath": "CS/CS 493/1249__nr9p33__Team Project 1.html",
+    "subject": "CS",
+    "courseCode": "CS 493",
+    "courseName": "Team Project 1",
+    "parserEventCount": 1,
+    "sourceDateEntryCount": 0,
+    "unmatchedCount": 0,
+    "unmatched": [],
+    "officeHoursEventCount": 0,
+    "officeHoursHints": [],
+    "officeHoursHintDayCount": 0,
+    "officeHoursDayMismatch": false,
+    "suspiciousEventNameCount": 0
+  }
+]

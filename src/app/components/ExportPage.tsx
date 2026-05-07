@@ -443,7 +443,7 @@ export default function ExportPage() {
                     Notification and Colour Settings
                   </h3>
                   <p className="mt-1 max-w-[520px] text-sm leading-relaxed text-[#78716c]">
-                    Choose how GooseCalendar should color Google calendars, and decide which event
+                    Choose how gooseCalendar should color Google calendars, and decide which event
                     types should get reminders when you export.
                   </p>
                 </div>
@@ -543,7 +543,7 @@ export default function ExportPage() {
                             Colour preview
                           </h4>
                           <p className="mt-1 text-sm text-[#78716c]">
-                            Preview how GooseCalendar will assign the selected palette.
+                            Preview how gooseCalendar will assign the selected palette.
                           </p>
                         </div>
                         {colorStrategy === "course" && courses.length > colorPreviewItems.length && (
@@ -812,7 +812,7 @@ export default function ExportPage() {
                   <InfoIcon />
                 </div>
                 <span className="font-['Lexend',sans-serif] text-xs font-normal leading-relaxed text-[#a8a29e]">
-                  .ICS files don't support colors. Google export uses separate GooseCalendar calendars per event type so your selected hex palette can be preserved.
+                  .ICS files don't support colors. Google export uses separate gooseCalendar calendars per event type so your selected hex palette can be preserved.
                 </span>
               </div>
 
