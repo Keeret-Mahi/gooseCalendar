@@ -11,6 +11,7 @@ export const AI_CACHE_VERSION = "v1";
 const CACHE_COLLECTION = "outlineAiExtractionCache";
 const HASH_PATTERN = /^[a-f0-9]{64}$/i;
 let hasLoggedMissingFirebaseConfig = false;
+let hasLoggedFirebaseConfigSource = false;
 
 interface CacheWriteInput {
   request: AiOutlineExtractionRequest;
@@ -38,26 +39,81 @@ function normalizeWarning(value: unknown) {
 }
 
 function normalizePrivateKey(value: string) {
-  const trimmed = value.trim();
-  const unquoted =
-    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
-    (trimmed.startsWith("'") && trimmed.endsWith("'"))
-      ? trimmed.slice(1, -1)
-      : trimmed;
-  return unquoted.replace(/\\n/g, "\n");
+  let normalized = value.trim();
+
+  try {
+    const parsed = JSON.parse(normalized);
+    if (typeof parsed === "string") {
+      normalized = parsed;
+    }
+  } catch {
+    if (
+      (normalized.startsWith('"') && normalized.endsWith('"')) ||
+      (normalized.startsWith("'") && normalized.endsWith("'"))
+    ) {
+      normalized = normalized.slice(1, -1);
+    }
+  }
+
+  return normalized
+    .replace(/\\\\r\\\\n/g, "\n")
+    .replace(/\\\\n/g, "\n")
+    .replace(/\\r\\n/g, "\n")
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n/g, "\n");
 }
 
 function isCacheEnabled() {
   return process.env.AI_EXTRACTION_CACHE_ENABLED?.toLowerCase() !== "false";
 }
 
+function readServiceAccountJson() {
+  const raw =
+    process.env.FIREBASE_SERVICE_ACCOUNT_JSON ||
+    process.env.FIREBASE_ADMIN_CREDENTIALS ||
+    "";
+  const trimmed = raw.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(trimmed) as Record<string, unknown>;
+  } catch (error) {
+    console.warn("[gooseCalendar] Firebase service account JSON could not be parsed", {
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
+    return undefined;
+  }
+}
+
 function getFirebaseConfig() {
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  const serviceAccount = readServiceAccountJson();
+  const projectId =
+    process.env.FIREBASE_PROJECT_ID ||
+    (typeof serviceAccount?.project_id === "string" ? serviceAccount.project_id : "");
+  const clientEmail =
+    process.env.FIREBASE_CLIENT_EMAIL ||
+    (typeof serviceAccount?.client_email === "string" ? serviceAccount.client_email : "");
+  const privateKey =
+    process.env.FIREBASE_PRIVATE_KEY ||
+    (typeof serviceAccount?.private_key === "string" ? serviceAccount.private_key : "");
 
   if (!projectId || !clientEmail || !privateKey) {
     return undefined;
+  }
+
+  if (!hasLoggedFirebaseConfigSource) {
+    console.info("[gooseCalendar] Firebase Admin config loaded", {
+      hasProjectId: Boolean(projectId),
+      hasClientEmail: Boolean(clientEmail),
+      hasPrivateKey: Boolean(privateKey),
+      privateKeyHasPemMarkers: privateKey.includes("BEGIN PRIVATE KEY"),
+      privateKeyHasEscapedNewlines: privateKey.includes("\\n"),
+      privateKeyHasActualNewlines: privateKey.includes("\n"),
+      source: serviceAccount ? "service_account_json_or_env" : "individual_env_vars",
+    });
+    hasLoggedFirebaseConfigSource = true;
   }
 
   return {
