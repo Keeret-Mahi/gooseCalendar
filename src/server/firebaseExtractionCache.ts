@@ -45,6 +45,13 @@ function normalizePrivateKey(value: string) {
     const parsed = JSON.parse(normalized);
     if (typeof parsed === "string") {
       normalized = parsed;
+    } else if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      "private_key" in parsed &&
+      typeof parsed.private_key === "string"
+    ) {
+      normalized = parsed.private_key;
     }
   } catch {
     if (
@@ -55,12 +62,14 @@ function normalizePrivateKey(value: string) {
     }
   }
 
-  return normalized
+  normalized = normalized
     .replace(/\\\\r\\\\n/g, "\n")
     .replace(/\\\\n/g, "\n")
     .replace(/\\r\\n/g, "\n")
     .replace(/\\n/g, "\n")
     .replace(/\r\n/g, "\n");
+
+  return normalized.endsWith("\n") ? normalized : `${normalized}\n`;
 }
 
 function isCacheEnabled() {
@@ -103,6 +112,8 @@ function getFirebaseConfig() {
     return undefined;
   }
 
+  const normalizedPrivateKey = normalizePrivateKey(privateKey);
+
   if (!hasLoggedFirebaseConfigSource) {
     console.info("[gooseCalendar] Firebase Admin config loaded", {
       hasProjectId: Boolean(projectId),
@@ -111,6 +122,13 @@ function getFirebaseConfig() {
       privateKeyHasPemMarkers: privateKey.includes("BEGIN PRIVATE KEY"),
       privateKeyHasEscapedNewlines: privateKey.includes("\\n"),
       privateKeyHasActualNewlines: privateKey.includes("\n"),
+      normalizedPrivateKeyStartsWithPem: normalizedPrivateKey.startsWith(
+        "-----BEGIN PRIVATE KEY-----"
+      ),
+      normalizedPrivateKeyEndsWithPem: normalizedPrivateKey
+        .trim()
+        .endsWith("-----END PRIVATE KEY-----"),
+      normalizedPrivateKeyLineCount: normalizedPrivateKey.split("\n").length,
       source: serviceAccount ? "service_account_json_or_env" : "individual_env_vars",
     });
     hasLoggedFirebaseConfigSource = true;
@@ -119,7 +137,7 @@ function getFirebaseConfig() {
   return {
     projectId,
     clientEmail,
-    privateKey: normalizePrivateKey(privateKey),
+    privateKey: normalizedPrivateKey,
   };
 }
 
