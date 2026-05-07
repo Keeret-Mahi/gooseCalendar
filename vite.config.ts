@@ -23,6 +23,12 @@ export default defineConfig(({ mode }) => {
     'OPENAI_MODEL',
     'OPENAI_API_BASE_URL',
     'OPENAI_OUTLINE_TEXT_LIMIT',
+    'OPENAI_TIMEOUT_MS',
+    'OPENAI_MAX_OUTPUT_TOKENS',
+    'FIREBASE_PROJECT_ID',
+    'FIREBASE_CLIENT_EMAIL',
+    'FIREBASE_PRIVATE_KEY',
+    'AI_EXTRACTION_CACHE_ENABLED',
   ].forEach((key) => {
     if (!process.env[key] && env[key]) {
       process.env[key] = env[key]

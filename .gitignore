@@ -6,10 +6,12 @@ dist/
 
 # Environment files
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+!.env.example
 
 # Logs
 *.log
@@ -17,12 +19,20 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+firebase-debug.log*
+firestore-debug.log*
 
 # Cache / temp artifacts
 .vite/
 .cache/
 tmp/
 tmp-parser-bundle.cjs
+.vercel/
+.firebase/
+
+# Local outline corpora
+all_outlines_2024_to_2026/
+sample_outlines/
 
 # OS / editor files
 .DS_Store

@@ -558,7 +558,13 @@ function buildSingleEventResource(
     },
   };
 
-  if (event.timing.allDay || (!event.timing.startTime && !event.timing.endTime)) {
+  if (
+    event.timing.allDay ||
+    (!event.timing.startTime && !event.timing.endTime) ||
+    (event.eventType === "Assignment" &&
+      event.timing.kind === "single" &&
+      Boolean(event.timing.startTime) !== Boolean(event.timing.endTime))
+  ) {
     const exclusiveEnd = format(
       addDays(parseISO(event.timing.endDate ?? event.timing.date), 1),
       "yyyy-MM-dd"

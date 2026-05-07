@@ -13,6 +13,7 @@ interface MappingOptions {
     startDate: string;
     endDate: string;
   };
+  outlineText?: string;
 }
 
 const EVENT_GROUP_BY_TYPE: Record<EventType, EventGroup> = {
@@ -97,6 +98,66 @@ function isSinglePointDeadlineAtEndOfDay(startTime?: string, endTime?: string) {
   return startTime === "23:59" && endTime === "23:59";
 }
 
+function dueTimeOnly(startTime?: string, endTime?: string) {
+  if (startTime && !endTime) return startTime;
+  if (!startTime && endTime) return endTime;
+  return undefined;
+}
+
+function normalizeMeridiemTime(hourText: string, minuteText: string | undefined, meridiem: string) {
+  let hour = Number(hourText);
+  const minute = Number(minuteText ?? "00");
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return undefined;
+
+  const normalizedMeridiem = meridiem.toLowerCase();
+  if (normalizedMeridiem === "pm" && hour < 12) hour += 12;
+  if (normalizedMeridiem === "am" && hour === 12) hour = 0;
+
+  return `${`${hour}`.padStart(2, "0")}:${`${minute}`.padStart(2, "0")}`;
+}
+
+function extractDueTimeFromText(value: string | null | undefined) {
+  const text = normalizeWhitespace(value);
+  if (!text) return undefined;
+
+  const contextualMeridiem = text.match(
+    /\b(?:assignments?|due|deadline|deadlines|by|at)\b[^.\n|]{0,80}?\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i
+  );
+  if (contextualMeridiem) {
+    return normalizeMeridiemTime(
+      contextualMeridiem[1],
+      contextualMeridiem[2],
+      contextualMeridiem[3]
+    );
+  }
+
+  const tableMeridiem = text.match(
+    /\bassignments?\b[^.\n]{0,140}?\b(?:mon|tue|wed|thu|fri|sat|sun|monday|tuesday|wednesday|thursday|friday|saturday|sunday)s?\s+at\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i
+  );
+  if (tableMeridiem) {
+    return normalizeMeridiemTime(tableMeridiem[1], tableMeridiem[2], tableMeridiem[3]);
+  }
+
+  return undefined;
+}
+
+function dueTimeFromItem(item: AiExtractedEvent) {
+  if (item.timing.kind !== "single" || item.eventType !== "Assignment") return undefined;
+  return (
+    dueTimeOnly(item.timing.startTime ?? undefined, item.timing.endTime ?? undefined) ??
+    extractDueTimeFromText(
+      [item.label, ...item.notes, item.sourceSectionTitle ?? "", item.sourceSnippet].join(" ")
+    )
+  );
+}
+
+function defaultAssignmentDueTime(extraction: AiExtractionResponse, outlineText?: string) {
+  return (
+    extraction.events.map(dueTimeFromItem).find(Boolean) ??
+    extractDueTimeFromText(outlineText)
+  );
+}
+
 function mapTiming(item: AiExtractedEvent, options: MappingOptions): EventTiming {
   const timing = item.timing;
   let startTime = timing.startTime ?? undefined;
@@ -124,7 +185,8 @@ function mapTiming(item: AiExtractedEvent, options: MappingOptions): EventTiming
 
   if (
     item.eventType !== "OfficeHours" &&
-    isSinglePointDeadlineAtEndOfDay(startTime, endTime)
+    (isSinglePointDeadlineAtEndOfDay(startTime, endTime) ||
+      (item.eventType === "Assignment" && dueTimeOnly(startTime, endTime)))
   ) {
     startTime = undefined;
     endTime = undefined;
@@ -140,10 +202,18 @@ function mapTiming(item: AiExtractedEvent, options: MappingOptions): EventTiming
   };
 }
 
-function notesForItem(item: AiExtractedEvent) {
+function notesForItem(item: AiExtractedEvent, timing: EventTiming, fallbackDueTime?: string) {
   const weight = normalizeWeight(item.weight);
+  const dateUnresolved =
+    timing.kind === "single" && !timing.date && item.eventType !== "OfficeHours";
+  const sourceDueTime =
+    item.timing.kind === "single" && item.eventType === "Assignment"
+      ? dueTimeFromItem(item) ?? fallbackDueTime
+      : undefined;
   return unique([
     ...(weight ? [`Weight: ${weight}`] : []),
+    ...(sourceDueTime ? [`Due time: ${sourceDueTime}`] : []),
+    ...(dateUnresolved ? ["Date unresolved"] : []),
     ...item.notes,
   ]);
 }
@@ -168,6 +238,8 @@ export function mapAiExtractionToEventCandidates(
   course: ParsedCourse,
   options: MappingOptions = {}
 ) {
+  const fallbackAssignmentDueTime = defaultAssignmentDueTime(extraction, options.outlineText);
+
   return extraction.events.map((item): EventCandidate => {
     const eventType = item.eventType;
     const eventGroup = EVENT_GROUP_BY_TYPE[eventType];
@@ -206,7 +278,7 @@ export function mapAiExtractionToEventCandidates(
       extractedSectionLabels: [],
       instructorName: item.instructorName ?? undefined,
       instructorEmail: item.instructorEmail ?? undefined,
-      notes: notesForItem(item),
+      notes: notesForItem(item, timing, fallbackAssignmentDueTime),
       confidence,
       reviewNeeded,
       include: !reviewNeeded,

@@ -53,6 +53,49 @@ function extractWeight(notes: string[]) {
     .find(Boolean);
 }
 
+function extractDueTime(notes: string[]) {
+  return notes
+    .map((note) => note.match(/^Due time:\s*(\d{2}:\d{2})$/i)?.[1]?.trim())
+    .find(Boolean);
+}
+
+function formatDisplayTime(value: string) {
+  const [hourText, minuteText] = value.split(":");
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return value;
+
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${`${minute}`.padStart(2, "0")} ${suffix}`;
+}
+
+function assignmentDueTime(event: EventCandidate, occurrenceNotes?: string[]) {
+  const noteTime = extractDueTime(eventNotes(event, occurrenceNotes));
+  if (noteTime) return noteTime;
+  if (event.eventType !== "Assignment" || event.timing.kind !== "single") return undefined;
+  if (event.timing.startTime && !event.timing.endTime) return event.timing.startTime;
+  if (!event.timing.startTime && event.timing.endTime) return event.timing.endTime;
+  return undefined;
+}
+
+function assignmentHasOnlyDueTime(event: EventCandidate) {
+  return Boolean(assignmentDueTime(event));
+}
+
+function titleWithAssignmentDueTime(title: string, event: EventCandidate, occurrenceNotes?: string[]) {
+  const dueTime = assignmentDueTime(event, occurrenceNotes);
+  if (!dueTime) return title;
+  const displayTime = formatDisplayTime(dueTime);
+  if (
+    new RegExp(`\\bdue\\s+${dueTime.replace(":", "\\:")}\\b`, "i").test(title) ||
+    title.toLowerCase().includes(displayTime.toLowerCase())
+  ) {
+    return title;
+  }
+  return `${title} (due ${displayTime})`;
+}
+
 function titleWithLocation(base: string, location: string) {
   const normalizedLocation = normalizeInlineText(location);
   return normalizedLocation ? `${base} @ ${normalizedLocation}` : base;
@@ -526,7 +569,10 @@ export function buildEventSummary(
   if (event.eventType === "Assignment") {
     const baseTitle = stripLocationSuffix(event.title, event.location);
     if (!occurrenceNotes?.length) {
-      return titleWithLocation(baseTitle, exportLocationForEvent(event));
+      return titleWithLocation(
+        titleWithAssignmentDueTime(baseTitle, event, occurrenceNotes),
+        exportLocationForEvent(event)
+      );
     }
 
     const occurrenceLabel = compactAssignmentOccurrenceLabel(occurrenceNotes);
@@ -534,7 +580,10 @@ export function buildEventSummary(
       ? `${event.courseCode} ${occurrenceLabel}`.trim()
       : baseTitle;
 
-    return titleWithLocation(resolvedBaseTitle, exportLocationForEvent(event));
+    return titleWithLocation(
+      titleWithAssignmentDueTime(resolvedBaseTitle, event, occurrenceNotes),
+      exportLocationForEvent(event)
+    );
   }
 
   return event.title;
@@ -600,6 +649,7 @@ export function buildEventDescription(
 export function validateEventForExport(event: EventCandidate) {
   if (event.timing.kind === "single") {
     if (!event.timing.date) return "Missing event date.";
+    if (assignmentHasOnlyDueTime(event)) return null;
     if ((event.timing.startTime && !event.timing.endTime) || (!event.timing.startTime && event.timing.endTime)) {
       return "Timed events need both a start and end time.";
     }
@@ -826,7 +876,11 @@ function buildSingleEventLines(
     lines.push(foldIcsLine(`LOCATION:${escapeIcsText(exportedLocation)}`));
   }
 
-  if (event.timing.allDay || (!event.timing.startTime && !event.timing.endTime)) {
+  if (
+    event.timing.allDay ||
+    (!event.timing.startTime && !event.timing.endTime) ||
+    assignmentHasOnlyDueTime(event)
+  ) {
     lines.push(`DTSTART;VALUE=DATE:${toIcsDate(event.timing.date)}`);
     const inclusiveEndDate = event.timing.endDate ?? event.timing.date;
     const nextDate = format(addDays(parseISO(inclusiveEndDate), 1), "yyyy-MM-dd");

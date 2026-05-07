@@ -44,6 +44,7 @@ export async function extractNonMeetingEventsWithAi(
   console.info("[gooseCalendar] Sending outline to AI extraction proxy", {
     outlineName: request.outlineName,
     courseCode: request.courseCode,
+    hasOutlineHash: Boolean(request.outlineHash),
   });
 
   let response: Response;

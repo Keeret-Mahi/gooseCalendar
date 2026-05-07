@@ -676,6 +676,33 @@ function normalizedAssessmentTitleLabel(
     : stripAssessmentSequenceNumber(normalized);
 }
 
+function assignmentDueTimeFromNotes(notes: string[]) {
+  return notes
+    .map((note) => note.match(/^Due time:\s*(\d{2}:\d{2})$/i)?.[1]?.trim())
+    .find(Boolean);
+}
+
+function formatAssignmentDueTime(value: string) {
+  const [hourText, minuteText] = value.split(":");
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return value;
+
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${`${minute}`.padStart(2, "0")} ${suffix}`;
+}
+
+function addAssignmentDueTimeToTitle(title: string, event: EventCandidate) {
+  const dueTime = assignmentDueTimeFromNotes(event.notes);
+  if (!dueTime) return title;
+
+  const displayTime = formatAssignmentDueTime(dueTime);
+  if (title.toLowerCase().includes(displayTime.toLowerCase())) return title;
+
+  return `${title} (due ${displayTime})`;
+}
+
 function buildCalendarTitle(
   courseCode: string,
   event: EventCandidate,
@@ -696,7 +723,17 @@ function buildCalendarTitle(
     );
   }
 
-  if (event.eventType === "Assignment" || event.eventType === "Other") {
+  if (event.eventType === "Assignment") {
+    return addLocationToTitle(
+      addAssignmentDueTimeToTitle(
+        `${courseCode} ${normalizeWhitespace(event.label)}`.trim(),
+        event
+      ),
+      event.location
+    );
+  }
+
+  if (event.eventType === "Other") {
     return addLocationToTitle(
       `${courseCode} ${normalizeWhitespace(event.label)}`.trim(),
       event.location
@@ -3855,6 +3892,42 @@ function tableToRows(table: HTMLTableElement) {
     .filter((row) => row.some((cell) => cell.length > 0));
 }
 
+function tableToAiText(table: HTMLTableElement) {
+  return tableToRows(table)
+    .map((row) => `| ${row.map((cell) => cell.replace(/\|/g, "/")).join(" | ")} |`)
+    .join("\n");
+}
+
+function elementToAiText(element: Element) {
+  if (element.tagName.toLowerCase() === "table") {
+    return tableToAiText(element as HTMLTableElement);
+  }
+
+  const tables = Array.from(element.querySelectorAll("table")) as HTMLTableElement[];
+  if (tables.length === 0) {
+    return htmlToText(element);
+  }
+
+  const clone = element.cloneNode(true) as Element;
+  Array.from(clone.querySelectorAll("table")).forEach((table, index) => {
+    const replacement = clone.ownerDocument.createElement("div");
+    replacement.textContent = `\n${tableToAiText(tables[index])}\n`;
+    table.replaceWith(replacement);
+  });
+
+  return clone.textContent ?? "";
+}
+
+function normalizeAiExtractionText(value: string) {
+  return value
+    .replace(/\r/g, "")
+    .split("\n")
+    .map((line) => normalizeWhitespace(line))
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function collectSectionBlocks(document: Document) {
   const headers = Array.from(
     document.querySelectorAll("article.outline-content > h2.header")
@@ -3908,7 +3981,11 @@ function truncateText(value: string, limit: number) {
 
 function compactAiSection(section: SectionBlock) {
   const title = normalizeWhitespace(section.title);
-  const text = normalizeWhitespace(section.text);
+  const rawText =
+    section.elements.length > 0
+      ? section.elements.map(elementToAiText).join("\n")
+      : section.text;
+  const text = normalizeAiExtractionText(rawText);
   if (!text) return "";
 
   const isCourseEventSection =
@@ -3952,6 +4029,21 @@ function buildAiExtractionRequest(
     termYear: meta.termYear,
     outlineText: buildAiExtractionOutlineText(document),
   };
+}
+
+async function computeRawOutlineHash(html: string) {
+  if (!globalThis.crypto?.subtle) {
+    throw new Error("Browser crypto is unavailable.");
+  }
+
+  const digest = await globalThis.crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(html)
+  );
+
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function extractMeta(document: Document, outlineName: string): OutlineMeta {
@@ -21039,13 +21131,26 @@ export async function parseOutlineHtmlWithAi(
   outlineName: string
 ): Promise<OutlineParseResult> {
   const parsed = buildDeterministicScheduleParse(html, outlineName);
+  let aiRequest = parsed.aiRequest;
 
   try {
-    const extraction = await extractNonMeetingEventsWithAi(parsed.aiRequest);
+    aiRequest = {
+      ...aiRequest,
+      outlineHash: await computeRawOutlineHash(html),
+    };
+  } catch (error) {
+    console.warn("[gooseCalendar] AI extraction cache hash could not be computed", {
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+
+  try {
+    const extraction = await extractNonMeetingEventsWithAi(aiRequest);
     extraction.warnings.forEach((warning) => addCourseWarning(parsed.course, warning));
 
     const aiEvents = mapAiExtractionToEventCandidates(extraction, parsed.course, {
       termBounds: parsed.termBounds,
+      outlineText: aiRequest.outlineText,
     });
     const events = finalizeParserEvents(parsed.course, [...parsed.events, ...aiEvents], parsed.meta);
 

@@ -4,15 +4,29 @@ import {
   validateAiExtractionResponse,
   type AiOutlineExtractionRequest,
 } from "../app/lib/aiExtractionSchema";
+import {
+  readAiExtractionCache,
+  writeAiExtractionCache,
+} from "./firebaseExtractionCache";
 
 const DEFAULT_MODEL = "gpt-4.1-mini";
 const DEFAULT_OUTLINE_TEXT_LIMIT = 45_000;
+const DEFAULT_OPENAI_TIMEOUT_MS = 90_000;
+const GPT_55_TIMEOUT_MS = 240_000;
+const DEFAULT_OPENAI_MAX_OUTPUT_TOKENS = 6_000;
+const GPT_55_MAX_OUTPUT_TOKENS = 8_000;
+const GPT_55_PRO_MAX_OUTPUT_TOKENS = 12_000;
 
 type OpenAiUsage = {
   prompt_tokens?: number;
   completion_tokens?: number;
   total_tokens?: number;
   prompt_tokens_details?: {
+    cached_tokens?: number;
+  };
+  input_tokens?: number;
+  output_tokens?: number;
+  input_tokens_details?: {
     cached_tokens?: number;
   };
 };
@@ -26,6 +40,18 @@ type OpenAiPricing = {
 
 const OPENAI_MODEL_PRICING: OpenAiPricing[] = [
   {
+    modelPrefix: "gpt-5.5-pro",
+    inputUsdPerMillion: 30,
+    cachedInputUsdPerMillion: 30,
+    outputUsdPerMillion: 180,
+  },
+  {
+    modelPrefix: "gpt-5.5",
+    inputUsdPerMillion: 5,
+    cachedInputUsdPerMillion: 0.5,
+    outputUsdPerMillion: 30,
+  },
+  {
     modelPrefix: "gpt-5.4-nano",
     inputUsdPerMillion: 0.2,
     cachedInputUsdPerMillion: 0.02,
@@ -36,6 +62,12 @@ const OPENAI_MODEL_PRICING: OpenAiPricing[] = [
     inputUsdPerMillion: 0.75,
     cachedInputUsdPerMillion: 0.075,
     outputUsdPerMillion: 4.5,
+  },
+  {
+    modelPrefix: "gpt-5.4",
+    inputUsdPerMillion: 2.5,
+    cachedInputUsdPerMillion: 0.25,
+    outputUsdPerMillion: 15,
   },
   {
     modelPrefix: "gpt-4.1-nano",
@@ -92,6 +124,18 @@ Rules:
    - Part 2
 9. Keep weights when explicitly stated.
 10. Include a short source snippet for each event so the local app can store provenance.
+11. Do not omit assignment or assessment series just because individual dates are not listed.
+    - Scan prose, tables, bullet lists, grading summaries, tentative schedules, and policy-adjacent course-specific text for assignments, quizzes, exams, discussions, labs, projects, papers, reports, presentations, and other coursework.
+    - Tentative class plans, weekly schedules, course schedules, and topic schedules are valid sources for assignment/assessment deadlines. Extract only the assignment/assessment/deadline cells from those rows; do not return lecture/topic/meeting events from those tables.
+    - If a schedule table lists exact items such as "Assignment 1 due Wed Jan 14", return those exact items with dates.
+    - If month/day dates omit a year, use the course metadata termYear.
+    - If one section gives a common due time or submission method for a series and another table gives exact dates for the individual items, combine those explicit facts.
+    - If the outline says there are multiple assignments, quizzes, posts, labs, or similar items but only gives a weekday/time pattern, return one undated single event for the series.
+    - If the outline names individual items such as Assignment 1, Assignment 2, Quiz 1, Quiz 2, etc. without dates, return those items as separate undated single events.
+    - Put "Date unresolved" in notes when the item exists but no exact date is known.
+    - Put the count, weekday/time pattern, submission method, and other useful known facts in notes.
+    - Do not create numbered events for a series unless the outline explicitly lists those item numbers/names.
+    - Ignore generic university policy mentions of assignments unless they refer to this course's actual coursework.
 
 Return exactly this JSON shape:
 
@@ -133,6 +177,7 @@ Timing rules:
   - use \`kind = "single"\`
   - use \`date\` if known
   - use \`allDay = true\` if no explicit time
+  - for assignment due/deadline times, set \`allDay = true\`, put the due time in \`endTime\`, leave \`startTime = null\`, and do not invent a start time
   - if a due/deadline time is exactly 11:59 PM / 23:59, treat it as an all-day deadline and set \`startTime = null\` and \`endTime = null\`
 - For recurring office hours:
   - use \`kind = "recurring"\`
@@ -143,10 +188,12 @@ Timing rules:
   - use \`kind = "single"\`
   - \`date = null\`
   - \`allDay = true\`
+  - include \`Date unresolved\` in notes
 
 Labeling examples:
 - good: \`Assignment #2\`
 - good: \`Assignment #2 Published\`
+- good: \`Assignments\` for a series like "10 assignments due Wednesdays at 5:00pm" when exact dates are not listed
 - good: \`Discussion Post #3 - Initial Post\`
 - good: \`Midterm\`
 - good: \`Quiz #2\`
@@ -214,6 +261,7 @@ function validateRequest(value: unknown) {
   const courseName = readString(raw.courseName);
   const term = readString(raw.term);
   const outlineText = readString(raw.outlineText);
+  const outlineHash = readString(raw.outlineHash).toLowerCase();
   const termYear =
     typeof raw.termYear === "number" && Number.isFinite(raw.termYear)
       ? raw.termYear
@@ -230,22 +278,61 @@ function validateRequest(value: unknown) {
     term,
     termYear,
     outlineText,
+    ...(outlineHash ? { outlineHash } : {}),
   } satisfies AiOutlineExtractionRequest;
 }
 
 function parseOpenAiContent(content: unknown) {
   if (typeof content !== "string") {
-    return EMPTY_AI_EXTRACTION;
+    return {
+      data: EMPTY_AI_EXTRACTION,
+      warnings: ["AI extraction returned no text content."],
+    };
   }
   try {
-    return JSON.parse(content);
+    return {
+      data: JSON.parse(content),
+      warnings: [] as string[],
+    };
   } catch {
-    return EMPTY_AI_EXTRACTION;
+    return {
+      data: EMPTY_AI_EXTRACTION,
+      warnings: [
+        "AI extraction returned invalid or truncated JSON. Try increasing OPENAI_MAX_OUTPUT_TOKENS or using a faster non-pro model.",
+      ],
+    };
   }
+}
+
+function normalizeOpenAiModelName(model: string) {
+  const trimmed = model.trim();
+  if (/^gpt[-\s]/i.test(trimmed)) {
+    return trimmed.toLowerCase().replace(/\s+/g, "-");
+  }
+  return trimmed;
 }
 
 function readTokenCount(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function normalizeOpenAiUsage(value: unknown): OpenAiUsage | undefined {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const raw = value as OpenAiUsage;
+  const cachedTokens =
+    raw.prompt_tokens_details?.cached_tokens ?? raw.input_tokens_details?.cached_tokens;
+
+  return {
+    prompt_tokens: raw.prompt_tokens ?? raw.input_tokens,
+    completion_tokens: raw.completion_tokens ?? raw.output_tokens,
+    total_tokens: raw.total_tokens,
+    prompt_tokens_details: {
+      cached_tokens: cachedTokens,
+    },
+  };
 }
 
 function findModelPricing(model: string) {
@@ -291,6 +378,201 @@ function estimateOpenAiCost(model: string, usage: OpenAiUsage | undefined) {
   };
 }
 
+function shouldPreferResponsesApi(model: string) {
+  return model.startsWith("gpt-5.5");
+}
+
+function defaultTimeoutForModel(model: string) {
+  return model.startsWith("gpt-5.5") ? GPT_55_TIMEOUT_MS : DEFAULT_OPENAI_TIMEOUT_MS;
+}
+
+function configuredTimeoutForModel(model: string) {
+  const configured = Number(process.env.OPENAI_TIMEOUT_MS);
+  if (Number.isFinite(configured) && configured >= 10_000) {
+    return Math.round(configured);
+  }
+  return defaultTimeoutForModel(model);
+}
+
+function defaultMaxOutputTokensForModel(model: string) {
+  if (model.startsWith("gpt-5.5-pro")) return GPT_55_PRO_MAX_OUTPUT_TOKENS;
+  if (model.startsWith("gpt-5.5")) return GPT_55_MAX_OUTPUT_TOKENS;
+  return DEFAULT_OPENAI_MAX_OUTPUT_TOKENS;
+}
+
+function configuredMaxOutputTokensForModel(model: string) {
+  const configured = Number(process.env.OPENAI_MAX_OUTPUT_TOKENS);
+  if (Number.isFinite(configured) && configured >= 1_000) {
+    return Math.round(Math.min(configured, 32_000));
+  }
+  return defaultMaxOutputTokensForModel(model);
+}
+
+function isChatEndpointMismatch(status: number, message: string) {
+  return status === 404 && /not a chat model|chat model|chat\/completions/i.test(message);
+}
+
+function isAbortError(error: unknown) {
+  return (
+    error instanceof Error &&
+    (error.name === "AbortError" || /aborted/i.test(error.message))
+  );
+}
+
+function extractResponsesContent(data: any) {
+  if (typeof data?.output_text === "string") {
+    return data.output_text;
+  }
+
+  const output = Array.isArray(data?.output) ? data.output : [];
+  for (const item of output) {
+    const content = Array.isArray(item?.content) ? item.content : [];
+    for (const part of content) {
+      if (typeof part?.text === "string") {
+        return part.text;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function openAiCompletionWarnings({
+  endpoint,
+  data,
+  maxOutputTokens,
+}: {
+  endpoint: "chat.completions" | "responses";
+  data: any;
+  maxOutputTokens: number;
+}) {
+  const warnings: string[] = [];
+
+  if (endpoint === "responses") {
+    const status = typeof data?.status === "string" ? data.status : "";
+    const reason =
+      typeof data?.incomplete_details?.reason === "string"
+        ? data.incomplete_details.reason
+        : "";
+    if (status === "incomplete" || reason) {
+      warnings.push(
+        `OpenAI response was incomplete${reason ? ` (${reason})` : ""}. The ${maxOutputTokens}-token output cap may be too low.`
+      );
+    }
+    return warnings;
+  }
+
+  const finishReason =
+    typeof data?.choices?.[0]?.finish_reason === "string"
+      ? data.choices[0].finish_reason
+      : "";
+  if (finishReason === "length") {
+    warnings.push(
+      `OpenAI response hit the ${maxOutputTokens}-token output cap before finishing.`
+    );
+  }
+
+  return warnings;
+}
+
+async function requestChatCompletions({
+  apiKey,
+  baseUrl,
+  model,
+  request,
+  maxOutputTokens,
+  signal,
+}: {
+  apiKey: string;
+  baseUrl: string;
+  model: string;
+  request: AiOutlineExtractionRequest;
+  maxOutputTokens: number;
+  signal: AbortSignal;
+}) {
+  const response = await fetch(`${baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    signal,
+    body: JSON.stringify({
+      model,
+      messages: [
+        {
+          role: "system",
+          content: AI_EXTRACTOR_SYSTEM_PROMPT,
+        },
+        {
+          role: "user",
+          content: buildAiExtractorUserPrompt(request),
+        },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "goose_calendar_non_meeting_events",
+          strict: true,
+          schema: AI_EXTRACTION_JSON_SCHEMA,
+        },
+      },
+      max_completion_tokens: maxOutputTokens,
+    }),
+  });
+
+  return {
+    endpoint: "chat.completions",
+    response,
+    data: await response.json().catch(() => undefined),
+  } as const;
+}
+
+async function requestResponses({
+  apiKey,
+  baseUrl,
+  model,
+  request,
+  maxOutputTokens,
+  signal,
+}: {
+  apiKey: string;
+  baseUrl: string;
+  model: string;
+  request: AiOutlineExtractionRequest;
+  maxOutputTokens: number;
+  signal: AbortSignal;
+}) {
+  const response = await fetch(`${baseUrl}/responses`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    signal,
+    body: JSON.stringify({
+      model,
+      instructions: AI_EXTRACTOR_SYSTEM_PROMPT,
+      input: buildAiExtractorUserPrompt(request),
+      text: {
+        format: {
+          type: "json_schema",
+          name: "goose_calendar_non_meeting_events",
+          strict: true,
+          schema: AI_EXTRACTION_JSON_SCHEMA,
+        },
+      },
+      max_output_tokens: maxOutputTokens,
+    }),
+  });
+
+  return {
+    endpoint: "responses",
+    response,
+    data: await response.json().catch(() => undefined),
+  } as const;
+}
+
 async function callOpenAi(request: AiOutlineExtractionRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey || apiKey === "undefined") {
@@ -300,97 +582,164 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
       warnings: [
         "AI extraction skipped because OPENAI_API_KEY is not configured on the local server.",
       ],
+      cacheable: false,
+      model: DEFAULT_MODEL,
     };
   }
 
-  const model =
+  const configuredModel =
     process.env.OPENAI_MODEL && process.env.OPENAI_MODEL !== "undefined"
       ? process.env.OPENAI_MODEL
       : DEFAULT_MODEL;
-  const baseUrl =
+  const model = normalizeOpenAiModelName(configuredModel);
+  if (model !== configuredModel) {
+    console.info("[gooseCalendar] Normalized OpenAI model name", {
+      configuredModel,
+      model,
+    });
+  }
+
+  const baseUrl = (
     process.env.OPENAI_API_BASE_URL && process.env.OPENAI_API_BASE_URL !== "undefined"
       ? process.env.OPENAI_API_BASE_URL
-      : "https://api.openai.com/v1";
+      : "https://api.openai.com/v1"
+  ).replace(/\/+$/, "");
+  const timeoutMs = configuredTimeoutForModel(model);
+  const maxOutputTokens = configuredMaxOutputTokensForModel(model);
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60_000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     console.info("[gooseCalendar] Calling OpenAI for outline extraction", {
       model,
+      endpoint: shouldPreferResponsesApi(model) ? "responses" : "chat.completions",
       courseCode: request.courseCode,
       outlineName: request.outlineName,
       inputChars: request.outlineText.length,
+      timeoutMs,
+      maxOutputTokens,
     });
 
-    const response = await fetch(`${baseUrl.replace(/\/+$/, "")}/chat/completions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      signal: controller.signal,
-      body: JSON.stringify({
-        model,
-        messages: [
-          {
-            role: "system",
-            content: AI_EXTRACTOR_SYSTEM_PROMPT,
-          },
-          {
-            role: "user",
-            content: buildAiExtractorUserPrompt(request),
-          },
-        ],
-        response_format: {
-          type: "json_schema",
-          json_schema: {
-            name: "goose_calendar_non_meeting_events",
-            strict: true,
-            schema: AI_EXTRACTION_JSON_SCHEMA,
-          },
-        },
-        max_completion_tokens: 3000,
-      }),
-    });
+    let openAiResult = shouldPreferResponsesApi(model)
+      ? await requestResponses({
+          apiKey,
+          baseUrl,
+          model,
+          request,
+          maxOutputTokens,
+          signal: controller.signal,
+        })
+      : await requestChatCompletions({
+          apiKey,
+          baseUrl,
+          model,
+          request,
+          maxOutputTokens,
+          signal: controller.signal,
+        });
 
-    const data = await response.json().catch(() => undefined);
+    if (!openAiResult.response.ok && openAiResult.endpoint === "chat.completions") {
+      const message =
+        typeof openAiResult.data?.error?.message === "string"
+          ? openAiResult.data.error.message
+          : `OpenAI request failed with HTTP ${openAiResult.response.status}.`;
+
+      if (isChatEndpointMismatch(openAiResult.response.status, message)) {
+        console.info("[gooseCalendar] Retrying OpenAI extraction with Responses API", {
+          model,
+          reason: message,
+        });
+        openAiResult = await requestResponses({
+          apiKey,
+          baseUrl,
+          model,
+          request,
+          maxOutputTokens,
+          signal: controller.signal,
+        });
+      }
+    }
+
+    const { response, data, endpoint } = openAiResult;
     if (!response.ok) {
       const message =
         typeof data?.error?.message === "string"
           ? data.error.message
           : `OpenAI request failed with HTTP ${response.status}.`;
       console.warn("[gooseCalendar] OpenAI extraction request failed", {
+        endpoint,
         status: response.status,
         message,
       });
       return {
         extraction: EMPTY_AI_EXTRACTION,
         warnings: [message],
+        cacheable: false,
+        model,
       };
     }
 
-    const content = data?.choices?.[0]?.message?.content;
-    const validation = validateAiExtractionResponse(parseOpenAiContent(content));
-    const cost = estimateOpenAiCost(model, data?.usage);
+    const content =
+      endpoint === "responses"
+        ? extractResponsesContent(data)
+        : data?.choices?.[0]?.message?.content;
+    const completionWarnings = openAiCompletionWarnings({
+      endpoint,
+      data,
+      maxOutputTokens,
+    });
+    const parsedContent = parseOpenAiContent(content);
+    const validation = validateAiExtractionResponse(parsedContent.data);
+    const usage = normalizeOpenAiUsage(data?.usage);
+    const cost = estimateOpenAiCost(model, usage);
+    const warnings = [
+      ...completionWarnings,
+      ...parsedContent.warnings,
+      ...validation.warnings,
+    ];
+    const cacheable =
+      validation.ok && completionWarnings.length === 0 && parsedContent.warnings.length === 0;
     console.info("[gooseCalendar] OpenAI extraction completed", {
       courseCode: request.courseCode,
       model,
+      endpoint,
       eventCount: validation.data.events.length,
-      warningCount: validation.warnings.length + validation.data.warnings.length,
-      promptTokens: cost?.inputTokens ?? data?.usage?.prompt_tokens,
-      cachedPromptTokens: cost?.cachedInputTokens ?? data?.usage?.prompt_tokens_details?.cached_tokens,
-      completionTokens: cost?.outputTokens ?? data?.usage?.completion_tokens,
-      totalTokens: cost?.totalTokens ?? data?.usage?.total_tokens,
+      warningCount: warnings.length + validation.data.warnings.length,
+      promptTokens: cost?.inputTokens ?? usage?.prompt_tokens,
+      cachedPromptTokens: cost?.cachedInputTokens ?? usage?.prompt_tokens_details?.cached_tokens,
+      completionTokens: cost?.outputTokens ?? usage?.completion_tokens,
+      totalTokens: cost?.totalTokens ?? usage?.total_tokens,
       estimatedCostUsd: cost?.estimatedCostUsd ?? null,
       estimatedCostDisplay: cost?.estimatedCostDisplay ?? "unknown model pricing",
       pricingModelPrefix: cost?.pricingModelPrefix,
+      maxOutputTokens,
+      responseStatus: data?.status,
+      incompleteReason: data?.incomplete_details?.reason,
     });
 
     return {
       extraction: validation.data,
-      warnings: validation.warnings,
+      warnings,
+      cacheable,
+      model,
     };
   } catch (error) {
+    if (isAbortError(error)) {
+      const message = `AI extraction timed out after ${Math.round(
+        timeoutMs / 1000
+      )} seconds. Try again, increase OPENAI_TIMEOUT_MS, or use a faster model such as gpt-4.1-mini.`;
+      console.warn("[gooseCalendar] AI extraction timed out", {
+        model,
+        timeoutMs,
+      });
+      return {
+        extraction: EMPTY_AI_EXTRACTION,
+        warnings: [message],
+        cacheable: false,
+        model,
+      };
+    }
+
     console.warn("[gooseCalendar] AI extraction failed before completion", {
       message: error instanceof Error ? error.message : "Unknown error",
     });
@@ -401,6 +750,8 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
           ? `AI extraction failed: ${error.message}`
           : "AI extraction failed.",
       ],
+      cacheable: false,
+      model,
     };
   } finally {
     clearTimeout(timeout);
@@ -432,7 +783,17 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       courseCode: parsed.courseCode,
       outlineName: parsed.outlineName,
       inputChars: parsed.outlineText.length,
+      hasOutlineHash: Boolean(parsed.outlineHash),
     });
+
+    const cached = await readAiExtractionCache(parsed);
+    if (cached.status === "hit") {
+      sendJson(response, 200, {
+        extraction: cached.extraction,
+        warnings: cached.warnings,
+      });
+      return;
+    }
 
     const textLimit = Number(process.env.OPENAI_OUTLINE_TEXT_LIMIT ?? DEFAULT_OUTLINE_TEXT_LIMIT);
     const outlineText =
@@ -450,6 +811,19 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       ...parsed,
       outlineText,
     });
+    if (result.cacheable) {
+      await writeAiExtractionCache({
+        request: parsed,
+        model: result.model,
+        extraction: result.extraction,
+        warnings: [...truncationWarnings, ...result.warnings],
+      });
+    } else {
+      console.info("[gooseCalendar] Skipping AI extraction cache write", {
+        courseCode: parsed.courseCode,
+        reason: "OpenAI result was not cacheable.",
+      });
+    }
 
     sendJson(response, 200, {
       extraction: result.extraction,

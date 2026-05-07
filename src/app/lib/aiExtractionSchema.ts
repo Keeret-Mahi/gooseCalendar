@@ -55,6 +55,7 @@ export interface AiOutlineExtractionRequest {
   term: string;
   termYear: number;
   outlineText: string;
+  outlineHash?: string;
 }
 
 const EVENT_TYPES = new Set<AiExtractedEventType>([
