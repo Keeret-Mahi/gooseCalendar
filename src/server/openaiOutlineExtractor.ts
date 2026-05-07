@@ -3,11 +3,11 @@ import {
   EMPTY_AI_EXTRACTION,
   validateAiExtractionResponse,
   type AiOutlineExtractionRequest,
-} from "../app/lib/aiExtractionSchema";
+} from "../app/lib/aiExtractionSchema.js";
 import {
   readAiExtractionCache,
   writeAiExtractionCache,
-} from "./firebaseExtractionCache";
+} from "./firebaseExtractionCache.js";
 
 const DEFAULT_MODEL = "gpt-4.1-mini";
 const DEFAULT_OUTLINE_TEXT_LIMIT = 45_000;

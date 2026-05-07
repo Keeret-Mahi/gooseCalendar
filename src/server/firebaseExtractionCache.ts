@@ -4,7 +4,7 @@ import {
   validateAiExtractionResponse,
   type AiExtractionResponse,
   type AiOutlineExtractionRequest,
-} from "../app/lib/aiExtractionSchema";
+} from "../app/lib/aiExtractionSchema.js";
 
 export const AI_CACHE_VERSION = "v1";
 
