@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { RouteGuard } from "./RouteGuard";
@@ -82,6 +82,58 @@ function OutlineParsedBadge() {
         <span className="font-['Lexend',sans-serif] text-xs font-bold text-[#16a34a]">
           Outline Parsed
         </span>
+      </div>
+    </div>
+  );
+}
+
+function UploadProgressNotice({
+  visible,
+  activeCount,
+  completed,
+}: {
+  visible: boolean;
+  activeCount: number;
+  completed: boolean;
+}) {
+  return (
+    <div
+      className={`mt-3 max-w-[560px] transition-all duration-300 ${
+        visible
+          ? "max-h-28 translate-y-0 opacity-100"
+          : "max-h-0 -translate-y-2 pointer-events-none overflow-hidden opacity-0"
+      }`}
+      aria-live="polite"
+    >
+      <div className="overflow-hidden rounded-xl border border-[#eadfbc] bg-white shadow-[0px_8px_24px_-22px_rgba(28,24,13,0.35)]">
+        <div className="flex items-center justify-between gap-3 px-3.5 py-2.5">
+          <div>
+            <p className="font-['Inter',sans-serif] text-xs font-bold text-[#1c180d]">
+              {completed
+                ? "Upload complete"
+                : activeCount === 1
+                ? "Uploading and parsing 1 file..."
+                : `Uploading and parsing ${activeCount} files...`}
+            </p>
+            <p className="mt-0.5 text-xs text-[#78716c]">
+              {completed
+                ? "Your new outline is ready for section selection."
+                : "Reading schedules, deadlines, and course details."}
+            </p>
+          </div>
+          <span
+            className={`h-2.5 w-2.5 rounded-full ${
+              completed ? "bg-[#16a34a]" : "animate-pulse bg-[#f2b90d]"
+            }`}
+          />
+        </div>
+        <div className="h-1.5 bg-[#f5edd2]">
+          <div
+            className={`h-full rounded-r-full bg-[#f2b90d] transition-all duration-500 ${
+              completed ? "w-full bg-[#16a34a]" : "w-2/3 animate-pulse"
+            }`}
+          />
+        </div>
       </div>
     </div>
   );
@@ -441,8 +493,61 @@ function CourseCard({
 export default function SelectSectionsPage() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addFiles, courses, events, selections, updateSelection } = useAppContext();
+  const { addFiles, uploads, courses, events, selections, updateSelection } = useAppContext();
   const [errorMessage, setErrorMessage] = useState("");
+  const [trackedUploadIds, setTrackedUploadIds] = useState<string[]>([]);
+  const [showUploadProgress, setShowUploadProgress] = useState(false);
+  const [uploadProgressComplete, setUploadProgressComplete] = useState(false);
+  const pendingUploadNameKeysRef = useRef<Set<string>>(new Set());
+  const uploadDismissTimeoutRef = useRef<number | null>(null);
+
+  const trackedUploads = trackedUploadIds
+    .map((id) => uploads.find((upload) => upload.id === id))
+    .filter(Boolean) as typeof uploads;
+  const activeTrackedUploads = trackedUploads.filter(
+    (upload) => upload.status === "pending" || upload.status === "parsing"
+  );
+
+  useEffect(() => {
+    if (trackedUploadIds.length === 0) return;
+
+    if (activeTrackedUploads.length > 0) {
+      if (uploadDismissTimeoutRef.current !== null) {
+        window.clearTimeout(uploadDismissTimeoutRef.current);
+        uploadDismissTimeoutRef.current = null;
+      }
+      setUploadProgressComplete(false);
+      setShowUploadProgress(true);
+      return;
+    }
+
+    setUploadProgressComplete(true);
+    setShowUploadProgress(true);
+    uploadDismissTimeoutRef.current = window.setTimeout(() => {
+      setShowUploadProgress(false);
+      setTrackedUploadIds([]);
+      setUploadProgressComplete(false);
+      uploadDismissTimeoutRef.current = null;
+    }, 1300);
+
+    return () => {
+      if (uploadDismissTimeoutRef.current !== null) {
+        window.clearTimeout(uploadDismissTimeoutRef.current);
+        uploadDismissTimeoutRef.current = null;
+      }
+    };
+  }, [activeTrackedUploads.length, trackedUploadIds.length]);
+
+  useEffect(() => {
+    if (pendingUploadNameKeysRef.current.size === 0) return;
+    const nextTrackedIds = uploads
+      .filter((upload) => pendingUploadNameKeysRef.current.has(upload.name))
+      .map((upload) => upload.id);
+    if (nextTrackedIds.length === 0) return;
+
+    setTrackedUploadIds(nextTrackedIds);
+    pendingUploadNameKeysRef.current = new Set();
+  }, [uploads]);
 
   const invalidCourses = useMemo(
     () =>
@@ -473,6 +578,18 @@ export default function SelectSectionsPage() {
     navigate("/review");
   };
 
+  const handleAddFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    pendingUploadNameKeysRef.current = new Set(
+      Array.from(files)
+        .filter((file) => /\.(html?|HTML?)$/.test(file.name))
+        .map((file) => file.name)
+    );
+    addFiles(files);
+    setUploadProgressComplete(false);
+    setShowUploadProgress(true);
+  };
+
   return (
     <RouteGuard>
       <div
@@ -489,6 +606,11 @@ export default function SelectSectionsPage() {
                 <p className={goosePageSubheadingClass}>
                   Found lecture, tutorial, lab, and deadline details for {courses.length} courses.
                 </p>
+                <UploadProgressNotice
+                  visible={showUploadProgress}
+                  activeCount={Math.max(activeTrackedUploads.length, 1)}
+                  completed={uploadProgressComplete}
+                />
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -506,7 +628,7 @@ export default function SelectSectionsPage() {
                 multiple
                 className="hidden"
                 onChange={(event) => {
-                  if (event.target.files) addFiles(event.target.files);
+                  handleAddFiles(event.target.files);
                   event.target.value = "";
                 }}
               />
