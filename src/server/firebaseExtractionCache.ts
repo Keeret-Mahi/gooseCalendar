@@ -69,6 +69,14 @@ function normalizePrivateKey(value: string) {
     .replace(/\\n/g, "\n")
     .replace(/\r\n/g, "\n");
 
+  const beginMarker = "-----BEGIN PRIVATE KEY-----";
+  const endMarker = "-----END PRIVATE KEY-----";
+  const beginIndex = normalized.indexOf(beginMarker);
+  const endIndex = normalized.indexOf(endMarker);
+  if (beginIndex >= 0 && endIndex >= beginIndex) {
+    normalized = normalized.slice(beginIndex, endIndex + endMarker.length);
+  }
+
   return normalized.endsWith("\n") ? normalized : `${normalized}\n`;
 }
 
