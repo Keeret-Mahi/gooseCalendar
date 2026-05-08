@@ -279,11 +279,7 @@ function removeResolvedDateNotes(event: EventCandidate) {
 
   const notes = event.notes.filter((note) => {
     const normalized = normalizeNoteText(note);
-    return (
-      !/^Date unresolved$/i.test(normalized) &&
-      !/^Date unresolved in outline:/i.test(normalized) &&
-      !/^Due date unresolved in outline\.?$/i.test(normalized)
-    );
+    return !/^(?:date unresolved|due date unresolved)\b/i.test(normalized);
   });
 
   return notes.length === event.notes.length ? event : { ...event, notes };

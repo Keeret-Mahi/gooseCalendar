@@ -248,12 +248,15 @@ function notesForItem(item: AiExtractedEvent, timing: EventTiming, fallbackDueTi
     item.timing.kind === "single" && item.eventType === "Assignment"
       ? dueTimeFromItem(item) ?? fallbackDueTime
       : undefined;
-  return unique([
-    ...(weight ? [`Weight: ${weight}`] : []),
-    ...(sourceDueTime ? [`Due time: ${sourceDueTime}`] : []),
-    ...(dateUnresolved ? ["Date unresolved"] : []),
-    ...item.notes,
-  ]);
+  return cleanResolvedDateNotes(
+    unique([
+      ...(weight ? [`Weight: ${weight}`] : []),
+      ...(sourceDueTime ? [`Due time: ${sourceDueTime}`] : []),
+      ...(dateUnresolved ? ["Date unresolved"] : []),
+      ...item.notes,
+    ]),
+    timing
+  );
 }
 
 function labelForItem(item: AiExtractedEvent) {
@@ -294,6 +297,159 @@ function titleWithAssignmentDueTime(title: string, dueTime: string | undefined) 
   return `${title} (due ${displayTime})`;
 }
 
+function isDateUnresolvedNote(note: string) {
+  const normalized = normalizeWhitespace(note).replace(/[.]+$/g, "");
+  return /^(?:date unresolved|due date unresolved)\b/i.test(normalized);
+}
+
+function cleanResolvedDateNotes(notes: string[], timing: EventTiming) {
+  if (timing.kind !== "single" || !timing.date) return notes;
+  return notes.filter((note) => !isDateUnresolvedNote(note));
+}
+
+function isAssignmentPublishMilestone(event: EventCandidate) {
+  return (
+    event.eventType === "Assignment" &&
+    /\b(?:published|publish|released|release|available|opens?|opened|starts?|begins?)\b/i.test(
+      event.label
+    )
+  );
+}
+
+function isAssignmentDueEvent(event: EventCandidate) {
+  return event.eventType === "Assignment" && !isAssignmentPublishMilestone(event);
+}
+
+function assignmentMilestoneKey(label: string) {
+  return normalizeWhitespace(label)
+    .replace(/\s*\(due [^)]+\)$/i, "")
+    .replace(
+      /\b(?:published|publish|released|release|available|opens?|opened|starts?|begins?|due|deadline|closes?|closed)\b/gi,
+      ""
+    )
+    .replace(/\s*[-:–—]\s*$/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function isDescriptionNote(note: string) {
+  return /^Description:\s*\S/i.test(normalizeWhitespace(note));
+}
+
+function isWeightNote(note: string) {
+  return /^Weight:\s*\S/i.test(normalizeWhitespace(note));
+}
+
+function isDueTimeNote(note: string) {
+  return /^Due time:\s*\d{2}:\d{2}$/i.test(normalizeWhitespace(note));
+}
+
+function isDueSummaryNote(note: string) {
+  return /^Due:\s*\d{4}-\d{2}-\d{2}\b/i.test(normalizeWhitespace(note));
+}
+
+function dueTimeFromNotes(notes: string[]) {
+  return notes
+    .map((note) => note.match(/^Due time:\s*(\d{2}:\d{2})$/i)?.[1]?.trim())
+    .find(Boolean);
+}
+
+function dueSummaryNote(date: string | undefined, dueTime: string | undefined) {
+  if (!date) return dueTime ? `Due time: ${dueTime}` : "";
+  return dueTime ? `Due: ${date} at ${formatDueTime(dueTime)}` : `Due: ${date}`;
+}
+
+function eventDate(event: EventCandidate) {
+  return event.timing.kind === "single" ? event.timing.date : undefined;
+}
+
+function mergeAssignmentMilestoneNotes(
+  notes: string[],
+  shared: { descriptions: string[]; weights: string[] },
+  options: { dueSummary?: string; removeDueTime?: boolean }
+) {
+  const remaining = notes.filter((note) => {
+    if (isDescriptionNote(note) || isWeightNote(note)) return false;
+    if (options.removeDueTime && isDueTimeNote(note)) return false;
+    if (options.dueSummary && isDueSummaryNote(note)) return false;
+    return true;
+  });
+
+  return unique([
+    ...shared.weights,
+    ...shared.descriptions,
+    ...(options.dueSummary ? [options.dueSummary] : []),
+    ...remaining,
+  ]);
+}
+
+function enrichAssignmentMilestonePairs(events: EventCandidate[]) {
+  const cleanedEvents = events.map((event) => {
+    const notes = cleanResolvedDateNotes(event.notes, event.timing);
+    return notes.length === event.notes.length ? event : { ...event, notes };
+  });
+
+  const groups = new Map<string, { publish: EventCandidate[]; due: EventCandidate[] }>();
+  cleanedEvents.forEach((event) => {
+    if (event.eventType !== "Assignment") return;
+    const key = assignmentMilestoneKey(event.label);
+    if (!key) return;
+    const group = groups.get(key) ?? { publish: [], due: [] };
+    if (isAssignmentPublishMilestone(event)) {
+      group.publish.push(event);
+    } else if (isAssignmentDueEvent(event)) {
+      group.due.push(event);
+    }
+    groups.set(key, group);
+  });
+
+  const updates = new Map<string, EventCandidate>();
+  const currentEvent = (event: EventCandidate) => updates.get(event.id) ?? event;
+
+  groups.forEach(({ publish, due }) => {
+    if (publish.length === 0 || due.length === 0) return;
+    const dueEvent =
+      due.find((event) => Boolean(eventDate(event))) ??
+      due.find((event) => Boolean(dueTimeFromNotes(event.notes))) ??
+      due[0];
+
+    publish.forEach((publishEvent) => {
+      const currentPublish = currentEvent(publishEvent);
+      const currentDue = currentEvent(dueEvent);
+      const shared = {
+        descriptions: unique([
+          ...currentPublish.notes.filter(isDescriptionNote),
+          ...currentDue.notes.filter(isDescriptionNote),
+        ]),
+        weights: unique([
+          ...currentPublish.notes.filter(isWeightNote),
+          ...currentDue.notes.filter(isWeightNote),
+        ]),
+      };
+      const publishDueSummary = dueSummaryNote(
+        eventDate(currentDue),
+        dueTimeFromNotes(currentDue.notes)
+      );
+
+      updates.set(currentPublish.id, {
+        ...currentPublish,
+        notes: mergeAssignmentMilestoneNotes(currentPublish.notes, shared, {
+          dueSummary: publishDueSummary,
+          removeDueTime: true,
+        }),
+      });
+
+      updates.set(currentDue.id, {
+        ...currentDue,
+        notes: mergeAssignmentMilestoneNotes(currentDue.notes, shared, {}),
+      });
+    });
+  });
+
+  return cleanedEvents.map((event) => updates.get(event.id) ?? event);
+}
+
 export function mapAiExtractionToEventCandidates(
   extraction: AiExtractionResponse,
   course: ParsedCourse,
@@ -301,7 +457,7 @@ export function mapAiExtractionToEventCandidates(
 ) {
   const fallbackAssignmentDueTime = defaultAssignmentDueTime(extraction, options.outlineText);
 
-  return extraction.events.map((item): EventCandidate => {
+  const events = extraction.events.map((item): EventCandidate => {
     const eventType = item.eventType;
     const eventGroup = EVENT_GROUP_BY_TYPE[eventType];
     const location = normalizeOnlinePlatformLocation(item.location);
@@ -363,4 +519,6 @@ export function mapAiExtractionToEventCandidates(
       ],
     };
   });
+
+  return enrichAssignmentMilestonePairs(events);
 }

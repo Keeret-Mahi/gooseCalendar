@@ -146,6 +146,10 @@ Rules:
     - Use only assignment-specific content from the source, such as topic, task, deliverable, reading/problem range, or submission focus.
     - Do not summarize generic policy, late rules, academic integrity, platform instructions, or grading rubrics as the description.
     - Do not invent a description when the outline only names the assignment.
+14. When returning separate published/opened/available and due/deadline events for the same assignment:
+    - Use the same "Description: ..." note on both events when a description is available.
+    - If the due date is known, add it to the published/opened/available event notes as "Due: YYYY-MM-DD" or "Due: YYYY-MM-DD at HH:MM".
+    - Do not include "Date unresolved" on any event that has an explicit date.
 
 Return exactly this JSON shape:
 
