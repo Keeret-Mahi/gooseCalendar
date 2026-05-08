@@ -151,6 +151,10 @@ Rules:
     - Use the same location/platform on both events when a location/platform is available for the assignment.
     - If the due date is known, add it to the published/opened/available event notes as "Due: YYYY-MM-DD" or "Due: YYYY-MM-DD at HH:MM".
     - Do not include "Date unresolved" on any event that has an explicit date.
+15. If one instructor, TA, or staff member has multiple distinct office-hours time blocks, return each distinct time block as a separate OfficeHours event.
+    - Do not merge office-hours blocks with different weekdays, times, locations, modalities, or date ranges.
+    - Repeat the same instructorName, instructorEmail, and location on each separate office-hours event when those facts apply.
+    - Example: "Prof. Lee office hours: Monday 10-11 in MC 3001 and Thursday 2-3 on Teams" must return two OfficeHours events.
 
 Return exactly this JSON shape:
 
@@ -200,6 +204,8 @@ Timing rules:
   - use \`startDate\` / \`recurringEndDate\` if known
   - use \`byDay\`
   - include \`startTime\` / \`endTime\` when known
+  - if the same person lists multiple office-hours blocks, emit one recurring event per distinct block
+  - only combine weekdays into one event when the time, location, modality, person, and date range are the same
 - If an item is undated:
   - use \`kind = "single"\`
   - \`date = null\`
