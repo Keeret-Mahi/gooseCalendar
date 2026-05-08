@@ -32,8 +32,8 @@ export const palettes: PaletteOption[] = [
   },
   {
     id: "vanilla",
-    name: "Vanilla",
-    colors: ["#faf5ec", "#d8d3ca", "#a69f8e", "#eadfc3", "#f7ede5", "#c7b69e", "#fffaf1"],
+    name: "Pastel",
+    colors: ["#d6b1bb", "#cfdbe7", "#9ebdd8", "#e0daba", "#c6c5dd", "#eee3df", "#9cabc8"],
   },
   {
     id: "coffee",
