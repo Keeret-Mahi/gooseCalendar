@@ -21012,6 +21012,20 @@ function dedupeEvents(events: EventCandidate[]) {
   return Array.from(byKey.values());
 }
 
+function removeResolvedDateNotes(event: EventCandidate) {
+  if (event.timing.kind !== "single" || !event.timing.date) {
+    return event;
+  }
+
+  const notes = event.notes.filter(
+    (note) =>
+      !/^Date unresolved$/i.test(normalizeWhitespace(note)) &&
+      !/^Date unresolved in outline:/i.test(normalizeWhitespace(note))
+  );
+
+  return notes.length === event.notes.length ? event : { ...event, notes };
+}
+
 interface DeterministicScheduleParse {
   course: ParsedCourse;
   events: EventCandidate[];
@@ -21037,7 +21051,8 @@ function finalizeParserEvents(
 ) {
   return applyCalendarTitles(
     course,
-    dedupeEvents(normalizeEventDatesToOutlineTermYear(events, meta)).map((event) => {
+    dedupeEvents(normalizeEventDatesToOutlineTermYear(events, meta)).map((rawEvent) => {
+      const event = removeResolvedDateNotes(rawEvent);
       const needsReview = reviewNeededForEvent(event) || event.reviewNeeded;
       return {
         ...event,
