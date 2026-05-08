@@ -23,7 +23,7 @@ import {
   goosePageSubheadingClass,
   goosePanelDividerClass,
 } from "../lib/designSystem";
-import type { EventCandidate, EventType, ParsedCourse, WeekdayCode } from "../lib/types";
+import type { EventCandidate, EventGroup, EventType, ParsedCourse, WeekdayCode } from "../lib/types";
 import { cn } from "./ui/utils";
 
 const EVENT_TYPE_ORDER: Record<EventType, number> = {
@@ -556,6 +556,25 @@ function formatTypeText(eventType: EventType) {
   return TYPE_STYLES[eventType].text;
 }
 
+function eventGroupForType(eventType: EventType): EventGroup {
+  switch (eventType) {
+    case "Lecture":
+      return "Lecture";
+    case "Tutorial":
+      return "Tutorial";
+    case "Lab":
+      return "Lab";
+    case "OfficeHours":
+      return "Office Hours";
+    case "Assessment":
+      return "Assessments";
+    case "Assignment":
+      return "Assignments";
+    default:
+      return "Other";
+  }
+}
+
 function stripTrailingPeriod(value: string) {
   return value.replace(/\.+$/g, "").trim();
 }
@@ -597,7 +616,7 @@ function buildCourseHeading(course: ParsedCourse) {
   return `${course.courseCode} - ${normalizedName}`;
 }
 
-const MANUAL_EVENT_TYPE_OPTIONS: EventType[] = [
+const EVENT_TYPE_OPTIONS: EventType[] = [
   "Lecture",
   "Tutorial",
   "Lab",
@@ -751,7 +770,7 @@ function AddEventButton({
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            {MANUAL_EVENT_TYPE_OPTIONS.map((eventType) => (
+            {EVENT_TYPE_OPTIONS.map((eventType) => (
               <button
                 key={eventType}
                 type="button"
@@ -800,10 +819,51 @@ function sortEvents(events: EventCandidate[]) {
   });
 }
 
+function sortEventsWithEditingAnchor(
+  events: EventCandidate[],
+  editingEventId: string | null,
+  editingSortAnchor: EventCandidate | null
+) {
+  if (!editingEventId || !editingSortAnchor) return sortEvents(events);
+
+  const eventById = new Map(events.map((event) => [event.id, event]));
+  return sortEvents(
+    events.map((event) =>
+      event.id === editingEventId
+        ? {
+            ...editingSortAnchor,
+            id: event.id,
+          }
+        : event
+    )
+  )
+    .map((event) => eventById.get(event.id))
+    .filter(Boolean) as EventCandidate[];
+}
+
+function restoreEventTypeDraft(
+  current: EventCandidate,
+  restored: EventCandidate,
+  eventType: EventType
+) {
+  return {
+    ...restored,
+    id: current.id,
+    outlineId: current.outlineId,
+    courseId: current.courseId,
+    courseCode: current.courseCode,
+    courseName: current.courseName,
+    eventType,
+    eventGroup: eventGroupForType(eventType),
+    include: current.include,
+  };
+}
+
 function EventEditor({
   event,
   issue,
   onUpdate,
+  onEventTypeChange,
   embedded = true,
   showSectionsUsed = true,
   notesLabel = "Notes",
@@ -811,11 +871,23 @@ function EventEditor({
   event: EventCandidate;
   issue: string | null;
   onUpdate: (updater: (current: EventCandidate) => EventCandidate) => void;
+  onEventTypeChange?: (eventType: EventType) => void;
   embedded?: boolean;
   showSectionsUsed?: boolean;
   notesLabel?: string;
 }) {
   const [hoveredRecurringDay, setHoveredRecurringDay] = useState<WeekdayCode | null>(null);
+  const typeDraftsRef = useRef<Partial<Record<EventType, EventCandidate>>>({});
+  const typeDraftEventIdRef = useRef(event.id);
+
+  if (typeDraftEventIdRef.current !== event.id) {
+    typeDraftsRef.current = {};
+    typeDraftEventIdRef.current = event.id;
+  }
+
+  useEffect(() => {
+    typeDraftsRef.current[event.eventType] = event;
+  }, [event]);
 
   useEffect(() => {
     if (!isMeetingEventType(event.eventType)) return;
@@ -854,6 +926,55 @@ function EventEditor({
       )}
 
       <div className="grid gap-4 md:grid-cols-2">
+        <div className="md:col-span-2">
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[#9ca3af]">
+            Event Type
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+            {EVENT_TYPE_OPTIONS.map((eventType) => {
+              const typeStyle = TYPE_STYLES[eventType];
+              const selected = event.eventType === eventType;
+
+              return (
+                <button
+                  key={eventType}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => {
+                    if (selected) return;
+                    onEventTypeChange?.(eventType);
+                    onUpdate((current) => {
+                      typeDraftsRef.current[current.eventType] = current;
+                      const restored = typeDraftsRef.current[eventType];
+                      if (restored) {
+                        return restoreEventTypeDraft(current, restored, eventType);
+                      }
+
+                      return {
+                        ...current,
+                        eventType,
+                        eventGroup: eventGroupForType(eventType),
+                      };
+                    });
+                  }}
+                  className={cn(
+                    "flex cursor-pointer items-center justify-start rounded-full p-0.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b90d]/40 sm:justify-center",
+                    selected ? "z-10" : ""
+                  )}
+                >
+                  <span
+                    className={`inline-flex min-h-7 items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase transition-[filter,box-shadow] hover:brightness-[0.98] ${typeStyle.pillClassName} ${
+                      selected ? "shadow-[0_0_0_2px_rgba(242,185,13,0.3)]" : ""
+                    }`}
+                  >
+                    {typeStyle.text}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <Field label="Calendar Title">
           <input
             value={event.title}
@@ -1246,6 +1367,7 @@ function EventRow({
   onToggleEdit,
   onToggleInclude,
   onUpdate,
+  onEventTypeChange,
 }: {
   event: EventCandidate;
   editing: boolean;
@@ -1253,6 +1375,7 @@ function EventRow({
   onToggleEdit: () => void;
   onToggleInclude: () => void;
   onUpdate: (updater: (current: EventCandidate) => EventCandidate) => void;
+  onEventTypeChange: (eventType: EventType) => void;
 }) {
   const typeStyle = TYPE_STYLES[event.eventType];
 
@@ -1305,7 +1428,14 @@ function EventRow({
         </div>
       </div>
 
-      {editing && <EventEditor event={event} issue={issue} onUpdate={onUpdate} />}
+      {editing && (
+        <EventEditor
+          event={event}
+          issue={issue}
+          onUpdate={onUpdate}
+          onEventTypeChange={onEventTypeChange}
+        />
+      )}
     </div>
   );
 }
@@ -1318,6 +1448,7 @@ function CourseCard({
   onToggle,
   onRequestAddEvent,
   onUpdate,
+  onEventTypeChange,
 }: {
   course: ParsedCourse;
   events: EventCandidate[];
@@ -1326,13 +1457,16 @@ function CourseCard({
   onToggle: () => void;
   onRequestAddEvent: (eventType: EventType) => void;
   onUpdate: (eventId: string, updater: (current: EventCandidate) => EventCandidate) => void;
+  onEventTypeChange: (event: EventCandidate, eventType: EventType) => void;
 }) {
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [editingSortAnchor, setEditingSortAnchor] = useState<EventCandidate | null>(null);
   const eventsContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (editingEventId && !events.some((event) => event.id === editingEventId)) {
       setEditingEventId(null);
+      setEditingSortAnchor(null);
     }
   }, [editingEventId, events]);
 
@@ -1349,7 +1483,10 @@ function CourseCard({
     return () => window.cancelAnimationFrame(frame);
   }, [editingEventId]);
 
-  const sortedEvents = useMemo(() => sortEvents(events), [events]);
+  const sortedEvents = useMemo(
+    () => sortEventsWithEditingAnchor(events, editingEventId, editingSortAnchor),
+    [editingEventId, editingSortAnchor, events]
+  );
 
   const issuesByEventId = useMemo(
     () =>
@@ -1436,12 +1573,21 @@ function CourseCard({
                       editing={editingEventId === event.id}
                       issue={issue}
                       onToggleEdit={() =>
-                        setEditingEventId((current) => (current === event.id ? null : event.id))
+                        setEditingEventId((current) => {
+                          if (current === event.id) {
+                            setEditingSortAnchor(null);
+                            return null;
+                          }
+
+                          setEditingSortAnchor(event);
+                          return event.id;
+                        })
                       }
                       onToggleInclude={() =>
                         onUpdate(event.id, (current) => ({ ...current, include: !current.include }))
                       }
                       onUpdate={(updater) => onUpdate(event.id, updater)}
+                      onEventTypeChange={(eventType) => onEventTypeChange(event, eventType)}
                     />
                   );
                 })}
@@ -1474,7 +1620,7 @@ function CourseCard({
 
 export default function ReviewClassesPage() {
   const navigate = useNavigate();
-  const { courses, events, selections, updateEvent, createDraftEvent, addEvent } =
+  const { courses, events, selections, updateSelection, updateEvent, createDraftEvent, addEvent } =
     useAppContext();
 
   const visibleCourses = useMemo(
@@ -1557,6 +1703,20 @@ export default function ReviewClassesPage() {
                       courseId: course.id,
                       eventType,
                     });
+                  }}
+                  onEventTypeChange={(event, eventType) => {
+                    const nextEventGroup = eventGroupForType(eventType);
+                    updateSelection(event.courseId, (current) => ({
+                      ...current,
+                      includedGroups: current.includedGroups.includes(nextEventGroup)
+                        ? current.includedGroups
+                        : [...current.includedGroups, nextEventGroup],
+                      selectedOfficeHourEventIds:
+                        nextEventGroup === "Office Hours" &&
+                        !current.selectedOfficeHourEventIds.includes(event.id)
+                          ? [...current.selectedOfficeHourEventIds, event.id]
+                          : current.selectedOfficeHourEventIds,
+                    }));
                   }}
                   onUpdate={(eventId, updater) => {
                     updateEvent(eventId, (current) => {
