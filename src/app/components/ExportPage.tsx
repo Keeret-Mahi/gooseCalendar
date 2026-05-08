@@ -248,6 +248,12 @@ export default function ExportPage() {
     ...FALLBACK_CUSTOM_NOTIFICATION_MINUTES,
     ...(exportConfig.customNotificationMinutes ?? {}),
   };
+  const [draftColorStrategy, setDraftColorStrategy] =
+    useState<ExportColorStrategy>(colorStrategy);
+  const [draftNotificationSettings, setDraftNotificationSettings] =
+    useState<Record<EventGroup, ExportNotificationSetting>>(notificationSettings);
+  const [draftCustomNotificationMinutes, setDraftCustomNotificationMinutes] =
+    useState<Record<EventGroup, number>>(customNotificationMinutes);
   const [customNotificationUnits, setCustomNotificationUnits] = useState<
     Record<EventGroup, NotificationUnit>
   >(() => buildNotificationUnitState(customNotificationMinutes));
@@ -257,7 +263,12 @@ export default function ExportPage() {
     const units = buildNotificationUnitState(customNotificationMinutes);
     return buildNotificationInputState(customNotificationMinutes, units);
   });
-  const palettePreviewColors = resolveExportPaletteColors(exportConfig);
+  const palettePreviewColors = resolveExportPaletteColors({
+    ...exportConfig,
+    colorStrategy: draftColorStrategy,
+    notificationSettings: draftNotificationSettings,
+    customNotificationMinutes: draftCustomNotificationMinutes,
+  });
   const coursePreviewItems = courses
     .slice()
     .sort((left, right) =>
@@ -269,13 +280,58 @@ export default function ExportPage() {
       color: palettePreviewColors[index % Math.max(palettePreviewColors.length, 1)] ?? "#f2b90d",
     }));
   const colorPreviewItems =
-    colorStrategy === "eventGroup"
+    draftColorStrategy === "eventGroup"
       ? EXPORT_GROUP_ORDER.map((group, index) => ({
           label: group,
           color:
             palettePreviewColors[index % Math.max(palettePreviewColors.length, 1)] ?? "#f2b90d",
         }))
       : coursePreviewItems;
+
+  const openSettingsModal = () => {
+    const currentNotificationSettings = {
+      ...FALLBACK_NOTIFICATION_SETTINGS,
+      ...(exportConfig.notificationSettings ?? {}),
+    };
+    const currentCustomNotificationMinutes = {
+      ...FALLBACK_CUSTOM_NOTIFICATION_MINUTES,
+      ...(exportConfig.customNotificationMinutes ?? {}),
+    };
+    const currentUnits = buildNotificationUnitState(currentCustomNotificationMinutes);
+
+    setDraftColorStrategy(exportConfig.colorStrategy ?? "eventGroup");
+    setDraftNotificationSettings(currentNotificationSettings);
+    setDraftCustomNotificationMinutes(currentCustomNotificationMinutes);
+    setCustomNotificationUnits(currentUnits);
+    setCustomNotificationInputs(
+      buildNotificationInputState(currentCustomNotificationMinutes, currentUnits)
+    );
+    setShowSettingsModal(true);
+  };
+
+  const closeSettingsModal = () => {
+    setShowSettingsModal(false);
+  };
+
+  const applySettingsModal = () => {
+    const normalizedCustomNotificationMinutes = { ...draftCustomNotificationMinutes };
+
+    EXPORT_GROUP_ORDER.forEach((group) => {
+      const parsedValue = Number.parseInt(customNotificationInputs[group], 10);
+      const displayValue = Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 1;
+      normalizedCustomNotificationMinutes[group] = notificationMinutesFromValue(
+        displayValue,
+        customNotificationUnits[group]
+      );
+    });
+
+    setColorStrategy(draftColorStrategy);
+    EXPORT_GROUP_ORDER.forEach((group) => {
+      setNotificationSetting(group, draftNotificationSettings[group]);
+      setCustomNotificationMinutes(group, normalizedCustomNotificationMinutes[group]);
+    });
+    setShowSettingsModal(false);
+  };
 
   const handleDownloadICS = () => {
     if (exportValidationIssues.length > 0) return;
@@ -448,7 +504,7 @@ export default function ExportPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() => setShowSettingsModal(false)}
+                  onClick={closeSettingsModal}
                   className="cursor-pointer rounded-full p-2 text-[#a8a29e] transition-colors hover:bg-[#faf7ef] hover:text-[#57534e]"
                   aria-label="Close settings"
                 >
@@ -500,11 +556,11 @@ export default function ExportPage() {
                       </h4>
                       <div className="mt-3 grid gap-3 sm:grid-cols-2">
                         {COLOR_STRATEGY_OPTIONS.map((option) => {
-                          const selected = colorStrategy === option.value;
+                          const selected = draftColorStrategy === option.value;
                           return (
                             <button
                               key={option.value}
-                              onClick={() => setColorStrategy(option.value)}
+                              onClick={() => setDraftColorStrategy(option.value)}
                               className={`cursor-pointer rounded-2xl border p-4 text-left transition-all ${
                                 selected
                                   ? "border-[#f2b90d] bg-[#fffbeb] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.16)]"
@@ -546,7 +602,7 @@ export default function ExportPage() {
                             Preview how gooseCalendar will assign the selected palette.
                           </p>
                         </div>
-                        {colorStrategy === "course" && courses.length > colorPreviewItems.length && (
+                        {draftColorStrategy === "course" && courses.length > colorPreviewItems.length && (
                           <span className="text-xs font-medium text-[#78716c]">
                             +{courses.length - colorPreviewItems.length} more course{courses.length - colorPreviewItems.length === 1 ? "" : "s"}
                           </span>
@@ -602,12 +658,12 @@ export default function ExportPage() {
                           <label className="block">
                             <span className="sr-only">{group} reminder setting</span>
                             <Select
-                              value={notificationSettings[group]}
+                              value={draftNotificationSettings[group]}
                               onValueChange={(value) =>
-                                setNotificationSetting(
-                                  group,
-                                  value as ExportNotificationSetting
-                                )
+                                setDraftNotificationSettings((current) => ({
+                                  ...current,
+                                  [group]: value as ExportNotificationSetting,
+                                }))
                               }
                             >
                               <SelectTrigger className="h-11 w-full cursor-pointer rounded-xl border-[#e8e2ce] bg-white px-3 text-sm font-medium text-[#1c180d] shadow-none transition-colors focus-visible:border-[#f2b90d] focus-visible:ring-2 focus-visible:ring-[#f2b90d]/20">
@@ -626,7 +682,7 @@ export default function ExportPage() {
                               </SelectContent>
                             </Select>
                           </label>
-                          {notificationSettings[group] === "custom" && (
+                          {draftNotificationSettings[group] === "custom" && (
                             <div className="md:col-start-2">
                               <div className="grid gap-2 sm:grid-cols-[88px_minmax(0,1fr)]">
                                 <input
@@ -643,13 +699,13 @@ export default function ExportPage() {
                                     }));
                                     if (!rawValue) return;
                                     const nextValue = Number.parseInt(rawValue, 10);
-                                    setCustomNotificationMinutes(
-                                      group,
-                                      notificationMinutesFromValue(
+                                    setDraftCustomNotificationMinutes((current) => ({
+                                      ...current,
+                                      [group]: notificationMinutesFromValue(
                                         Number.isFinite(nextValue) && nextValue > 0 ? nextValue : 1,
                                         customNotificationUnits[group]
-                                      )
-                                    );
+                                      ),
+                                    }));
                                   }}
                                   onBlur={() => {
                                     const parsedValue = Number.parseInt(
@@ -664,13 +720,13 @@ export default function ExportPage() {
                                       ...current,
                                       [group]: String(normalizedValue),
                                     }));
-                                    setCustomNotificationMinutes(
-                                      group,
-                                      notificationMinutesFromValue(
+                                    setDraftCustomNotificationMinutes((current) => ({
+                                      ...current,
+                                      [group]: notificationMinutesFromValue(
                                         normalizedValue,
                                         customNotificationUnits[group]
-                                      )
-                                    );
+                                      ),
+                                    }));
                                   }}
                                   onFocus={(event) => event.currentTarget.select()}
                                   className="h-10 w-full rounded-lg border border-[#e8e2ce] bg-white px-3 font-['Inter',sans-serif] text-sm font-semibold text-[#1c180d] outline-none focus:border-[#f2b90d] focus:ring-2 focus:ring-[#f2b90d]/20"
@@ -695,17 +751,17 @@ export default function ExportPage() {
                                       ...current,
                                       [group]: String(displayValue),
                                     }));
-                                    setCustomNotificationMinutes(
-                                      group,
-                                      notificationMinutesFromValue(displayValue, nextUnit)
-                                    );
+                                    setDraftCustomNotificationMinutes((current) => ({
+                                      ...current,
+                                      [group]: notificationMinutesFromValue(displayValue, nextUnit),
+                                    }));
                                   }}
                                 >
                                   <SelectTrigger className="h-10 w-full cursor-pointer rounded-lg border-[#e8e2ce] bg-white px-3 text-sm font-medium text-[#1c180d] shadow-none focus-visible:border-[#f2b90d] focus-visible:ring-2 focus-visible:ring-[#f2b90d]/20">
                                     <span>
                                       {notificationUnitLabelForCount(
                                         notificationValueForUnit(
-                                          customNotificationMinutes[group],
+                                          draftCustomNotificationMinutes[group],
                                           customNotificationUnits[group]
                                         ),
                                         customNotificationUnits[group]
@@ -744,7 +800,7 @@ export default function ExportPage() {
 
               <div className="flex justify-end border-t border-[#efe7cc] px-6 py-4 sm:px-8">
                 <button
-                  onClick={() => setShowSettingsModal(false)}
+                  onClick={applySettingsModal}
                   className="cursor-pointer rounded-xl bg-[#f2b90d] px-5 py-3 text-sm font-bold text-[#1c180d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.18)] transition-all hover:brightness-[1.03]"
                 >
                   Done
@@ -895,7 +951,7 @@ export default function ExportPage() {
 
               <div className="mt-5">
                 <button
-                  onClick={() => setShowSettingsModal(true)}
+                  onClick={openSettingsModal}
                   className="flex w-full cursor-pointer items-center justify-between rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-4 text-left transition-all hover:border-[#d9cfb8] hover:bg-[#faf7ef]"
                 >
                   <div className="flex min-w-0 items-center gap-3">

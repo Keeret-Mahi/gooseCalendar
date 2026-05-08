@@ -148,6 +148,7 @@ Rules:
     - Do not invent a description when the outline only names the assignment.
 14. When returning separate published/opened/available and due/deadline events for the same assignment:
     - Use the same "Description: ..." note on both events when a description is available.
+    - Use the same location/platform on both events when a location/platform is available for the assignment.
     - If the due date is known, add it to the published/opened/available event notes as "Due: YYYY-MM-DD" or "Due: YYYY-MM-DD at HH:MM".
     - Do not include "Date unresolved" on any event that has an explicit date.
 

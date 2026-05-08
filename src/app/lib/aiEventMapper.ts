@@ -297,6 +297,24 @@ function titleWithAssignmentDueTime(title: string, dueTime: string | undefined) 
   return `${title} (due ${displayTime})`;
 }
 
+function titleWithoutLocation(title: string, location: string) {
+  const normalizedLocation = normalizeWhitespace(location);
+  if (!normalizedLocation) return title;
+  const suffix = ` @ ${normalizedLocation}`;
+  return title.endsWith(suffix) ? title.slice(0, -suffix.length) : title;
+}
+
+function eventWithLocation(event: EventCandidate, location: string) {
+  const normalizedLocation = normalizeWhitespace(location);
+  if (!normalizedLocation || event.location) return event;
+
+  return {
+    ...event,
+    location: normalizedLocation,
+    title: titleWithLocation(titleWithoutLocation(event.title, event.location), normalizedLocation),
+  };
+}
+
 function isDateUnresolvedNote(note: string) {
   const normalized = normalizeWhitespace(note).replace(/[.]+$/g, "");
   return /^(?:date unresolved|due date unresolved)\b/i.test(normalized);
@@ -431,19 +449,20 @@ function enrichAssignmentMilestonePairs(events: EventCandidate[]) {
         eventDate(currentDue),
         dueTimeFromNotes(currentDue.notes)
       );
+      const sharedLocation = currentPublish.location || currentDue.location;
 
-      updates.set(currentPublish.id, {
+      updates.set(currentPublish.id, eventWithLocation({
         ...currentPublish,
         notes: mergeAssignmentMilestoneNotes(currentPublish.notes, shared, {
           dueSummary: publishDueSummary,
           removeDueTime: true,
         }),
-      });
+      }, sharedLocation));
 
-      updates.set(currentDue.id, {
+      updates.set(currentDue.id, eventWithLocation({
         ...currentDue,
         notes: mergeAssignmentMilestoneNotes(currentDue.notes, shared, {}),
-      });
+      }, sharedLocation));
     });
   });
 
