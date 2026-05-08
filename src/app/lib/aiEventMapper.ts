@@ -39,6 +39,27 @@ function normalizeWhitespace(value: string | null | undefined) {
   return (value ?? "").replace(/\s+/g, " ").trim();
 }
 
+function normalizeOnlinePlatformLocation(value: string | null | undefined) {
+  const normalized = normalizeWhitespace(value);
+  if (!normalized) return "";
+
+  const platformMatch =
+    normalized.match(
+      /^(?:online|electronically|submitted online)\s*,?\s*(?:through|via|on|using|in)\s+(.+)$/i
+    ) ?? normalized.match(/^online\s*\(([^)]+)\)$/i);
+  if (!platformMatch) return normalized;
+
+  const platform = normalizeWhitespace(platformMatch[1])
+    .replace(/^the\s+/i, "")
+    .replace(/[.;,]+$/g, "");
+
+  if (!platform || /^(?:online|platform|course platform|system|portal)$/i.test(platform)) {
+    return normalized;
+  }
+
+  return platform;
+}
+
 function unique(values: string[]) {
   return Array.from(new Set(values.map(normalizeWhitespace).filter(Boolean)));
 }
@@ -243,7 +264,7 @@ export function mapAiExtractionToEventCandidates(
   return extraction.events.map((item): EventCandidate => {
     const eventType = item.eventType;
     const eventGroup = EVENT_GROUP_BY_TYPE[eventType];
-    const location = normalizeWhitespace(item.location);
+    const location = normalizeOnlinePlatformLocation(item.location);
     const baseLabel = labelForItem(item);
     const label = item.eventType === "OfficeHours" ? officeHourLabel(item, baseLabel) : baseLabel;
     const timing = mapTiming(item, options);

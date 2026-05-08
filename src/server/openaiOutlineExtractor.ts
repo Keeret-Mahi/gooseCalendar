@@ -136,6 +136,16 @@ Rules:
     - Put the count, weekday/time pattern, submission method, and other useful known facts in notes.
     - Do not create numbered events for a series unless the outline explicitly lists those item numbers/names.
     - Ignore generic university policy mentions of assignments unless they refer to this course's actual coursework.
+12. For location, prefer the specific platform over generic online phrasing.
+    - If an item says it is online through/via/on/using a named platform, set location to only that platform name.
+    - Example: use "Crowdmark", not "online, through Crowdmark".
+    - Example: use "LEARN Dropbox", not "online via LEARN Dropbox".
+    - If no specific platform is named and only "online" is known, use "Online".
+13. If the source explicitly says what an assignment is about, add one short note in the form "Description: ...".
+    - Keep it to one concise sentence fragment or sentence.
+    - Use only assignment-specific content from the source, such as topic, task, deliverable, reading/problem range, or submission focus.
+    - Do not summarize generic policy, late rules, academic integrity, platform instructions, or grading rubrics as the description.
+    - Do not invent a description when the outline only names the assignment.
 
 Return exactly this JSON shape:
 
