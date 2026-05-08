@@ -119,10 +119,24 @@ function isSinglePointDeadlineAtEndOfDay(startTime?: string, endTime?: string) {
   return startTime === "23:59" && endTime === "23:59";
 }
 
-function dueTimeOnly(startTime?: string, endTime?: string) {
+function singleProvidedTime(startTime?: string, endTime?: string) {
   if (startTime && !endTime) return startTime;
   if (!startTime && endTime) return endTime;
+  if (startTime && endTime && startTime === endTime) return startTime;
   return undefined;
+}
+
+function assignmentTimingDueTime(startTime?: string, endTime?: string) {
+  if (!startTime && !endTime) return undefined;
+  if (isSinglePointDeadlineAtEndOfDay(startTime, endTime)) return undefined;
+  return singleProvidedTime(startTime, endTime) ?? endTime ?? startTime;
+}
+
+function isAssignmentDueMilestone(item: AiExtractedEvent) {
+  if (item.eventType !== "Assignment") return false;
+  return !/\b(?:published|released|available|opens?|opened|starts?|begins?)\b/i.test(
+    item.label
+  );
 }
 
 function normalizeMeridiemTime(hourText: string, minuteText: string | undefined, meridiem: string) {
@@ -163,9 +177,12 @@ function extractDueTimeFromText(value: string | null | undefined) {
 }
 
 function dueTimeFromItem(item: AiExtractedEvent) {
-  if (item.timing.kind !== "single" || item.eventType !== "Assignment") return undefined;
+  if (item.timing.kind !== "single" || !isAssignmentDueMilestone(item)) return undefined;
   return (
-    dueTimeOnly(item.timing.startTime ?? undefined, item.timing.endTime ?? undefined) ??
+    assignmentTimingDueTime(
+      item.timing.startTime ?? undefined,
+      item.timing.endTime ?? undefined
+    ) ??
     extractDueTimeFromText(
       [item.label, ...item.notes, item.sourceSectionTitle ?? "", item.sourceSnippet].join(" ")
     )
@@ -207,7 +224,7 @@ function mapTiming(item: AiExtractedEvent, options: MappingOptions): EventTiming
   if (
     item.eventType !== "OfficeHours" &&
     (isSinglePointDeadlineAtEndOfDay(startTime, endTime) ||
-      (item.eventType === "Assignment" && dueTimeOnly(startTime, endTime)))
+      (item.eventType === "Assignment" && assignmentTimingDueTime(startTime, endTime)))
   ) {
     startTime = undefined;
     endTime = undefined;
@@ -254,6 +271,29 @@ function officeHourLabel(item: AiExtractedEvent, label: string) {
   return /^office hours\b/i.test(label) ? label : `Office Hours: ${label}`;
 }
 
+function formatDueTime(value: string) {
+  const [hourText, minuteText] = value.split(":");
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return value;
+
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${`${minute}`.padStart(2, "0")} ${suffix}`;
+}
+
+function titleWithAssignmentDueTime(title: string, dueTime: string | undefined) {
+  if (!dueTime) return title;
+  const displayTime = formatDueTime(dueTime);
+  if (
+    title.toLowerCase().includes(displayTime.toLowerCase()) ||
+    title.toLowerCase().includes(dueTime.toLowerCase())
+  ) {
+    return title;
+  }
+  return `${title} (due ${displayTime})`;
+}
+
 export function mapAiExtractionToEventCandidates(
   extraction: AiExtractionResponse,
   course: ParsedCourse,
@@ -267,6 +307,10 @@ export function mapAiExtractionToEventCandidates(
     const location = normalizeOnlinePlatformLocation(item.location);
     const baseLabel = labelForItem(item);
     const label = item.eventType === "OfficeHours" ? officeHourLabel(item, baseLabel) : baseLabel;
+    const dueTime =
+      item.eventType === "Assignment" && isAssignmentDueMilestone(item)
+        ? dueTimeFromItem(item) ?? fallbackAssignmentDueTime
+        : undefined;
     const timing = mapTiming(item, options);
     const confidence = confidenceFromTiming(timing, item.confidence);
     const reviewNeeded = reviewNeededForTiming(timing, confidence);
@@ -291,7 +335,12 @@ export function mapAiExtractionToEventCandidates(
       courseCode: course.courseCode,
       courseName: course.courseName,
       label,
-      title: defaultTitle(course, eventType, label, location),
+      title: defaultTitle(
+        course,
+        eventType,
+        titleWithAssignmentDueTime(label, dueTime),
+        location
+      ),
       location,
       eventType,
       eventGroup,
@@ -299,7 +348,7 @@ export function mapAiExtractionToEventCandidates(
       extractedSectionLabels: [],
       instructorName: item.instructorName ?? undefined,
       instructorEmail: item.instructorEmail ?? undefined,
-      notes: notesForItem(item, timing, fallbackAssignmentDueTime),
+      notes: notesForItem(item, timing, dueTime),
       confidence,
       reviewNeeded,
       include: !reviewNeeded,

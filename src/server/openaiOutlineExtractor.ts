@@ -187,7 +187,8 @@ Timing rules:
   - use \`kind = "single"\`
   - use \`date\` if known
   - use \`allDay = true\` if no explicit time
-  - for assignment due/deadline times, set \`allDay = true\`, put the due time in \`endTime\`, leave \`startTime = null\`, and do not invent a start time
+  - for assignment due/deadline times, set \`allDay = true\`, set \`startTime = null\`, set \`endTime = null\`, and add a note exactly like \`Due time: HH:MM\`
+  - do not represent assignment due/deadline times as timed calendar events
   - if a due/deadline time is exactly 11:59 PM / 23:59, treat it as an all-day deadline and set \`startTime = null\` and \`endTime = null\`
 - For recurring office hours:
   - use \`kind = "recurring"\`
