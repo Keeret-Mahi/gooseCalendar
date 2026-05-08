@@ -125,6 +125,10 @@ export interface CourseSelection {
 
 export type ExportColorStrategy = "eventGroup" | "course";
 
+export type GoogleCalendarMode = "single" | "many";
+
+export type GoogleEventColorMode = "eventGroup" | "uniform";
+
 export type ExportNotificationSetting =
   | "default"
   | "none"
@@ -139,6 +143,9 @@ export interface ExportConfig {
   paletteId: string;
   customColors: string[];
   colorStrategy: ExportColorStrategy;
+  googleCalendarMode: GoogleCalendarMode;
+  googleEventColorMode: GoogleEventColorMode;
+  googleUniformColorId: string;
   notificationSettings: Record<EventGroup, ExportNotificationSetting>;
   customNotificationMinutes: Record<EventGroup, number>;
 }

@@ -7,7 +7,10 @@ import {
   getCourseSelection,
   isEventVisible,
 } from "./calendar";
-import { resolveExportPaletteColors } from "./palettes";
+import {
+  resolveExportPaletteColors,
+  resolveGoogleEventColorId,
+} from "./palettes";
 import type {
   CourseSelection,
   EventCandidate,
@@ -17,9 +20,13 @@ import type {
   WeekdayCode,
 } from "./types";
 
+export const GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED = false;
+
 const GOOGLE_CALENDAR_SCOPES = [
   "https://www.googleapis.com/auth/calendar.app.created",
-  "https://www.googleapis.com/auth/calendar.calendarlist",
+  ...(GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
+    ? ["https://www.googleapis.com/auth/calendar.calendarlist"]
+    : []),
 ].join(" ");
 const GOOGLE_IDENTITY_SCRIPT_URL = "https://accounts.google.com/gsi/client";
 const GOOGLE_CALENDAR_API_BASE = "https://www.googleapis.com/calendar/v3";
@@ -69,6 +76,7 @@ interface GoogleCalendarEventResource {
   summary: string;
   description?: string;
   location?: string;
+  colorId?: string;
   start: GoogleEventDateTime;
   end: GoogleEventDateTime;
   recurrence?: string[];
@@ -541,7 +549,8 @@ function buildSingleEventResource(
   course: ParsedCourse,
   selection: CourseSelection,
   event: EventCandidate,
-  exportConfig: ExportConfig
+  exportConfig: ExportConfig,
+  colorId?: string
 ): GoogleCalendarEventResource {
   if (event.timing.kind !== "single" || !event.timing.date) {
     throw new Error("Cannot build a Google Calendar resource for an incomplete single event.");
@@ -552,6 +561,7 @@ function buildSingleEventResource(
     summary: buildEventSummary(event, undefined, "google"),
     description: buildEventDescription(course, selection, event),
     location: exportLocationForEvent(event) || undefined,
+    colorId,
     reminders: buildGoogleEventReminders(exportConfig, event.eventGroup),
     extendedProperties: {
       private: buildPrivateMetadata(event, course),
@@ -592,7 +602,8 @@ function buildRecurringEventResource(
   course: ParsedCourse,
   selection: CourseSelection,
   event: EventCandidate,
-  exportConfig: ExportConfig
+  exportConfig: ExportConfig,
+  colorId?: string
 ): GoogleCalendarEventResource {
   if (
     event.timing.kind !== "recurring" ||
@@ -613,6 +624,7 @@ function buildRecurringEventResource(
     ),
     description: buildEventDescription(course, selection, event),
     location: exportLocationForEvent(event) || undefined,
+    colorId,
     reminders: buildGoogleEventReminders(exportConfig, event.eventGroup),
     extendedProperties: {
       private: buildPrivateMetadata(event, course, true),
@@ -644,6 +656,7 @@ function buildRecurringInstancePatch(
   selection: CourseSelection,
   event: EventCandidate,
   date: string,
+  colorId?: string,
   previousOverride = false
 ) {
   const occurrenceNotes = event.timing.kind === "recurring" ? event.timing.occurrenceNotes[date] : undefined;
@@ -664,6 +677,7 @@ function buildRecurringInstancePatch(
     summary: buildEventSummary(event, occurrenceNotes, "google"),
     description: buildEventDescription(course, selection, event, occurrenceNotes),
     location: exportLocationForEvent(event, occurrenceOverride?.location ?? event.location) || "",
+    colorId,
     extendedProperties: {
       private: {
         ...buildPrivateMetadata(event, course, true),
@@ -879,6 +893,82 @@ async function ensureGroupCalendars(
   return calendarIdsByBucketKey;
 }
 
+function singleExportCalendarSummary(courses: ParsedCourse[]) {
+  const courseCodes = Array.from(new Set(courses.map((course) => course.courseCode).filter(Boolean)));
+  const terms = Array.from(new Set(courses.map((course) => course.term).filter(Boolean)));
+
+  if (courseCodes.length === 1) {
+    return `GooseCalendar - ${courseCodes[0]}`;
+  }
+
+  if (terms.length === 1) {
+    return `GooseCalendar - ${terms[0]}`;
+  }
+
+  return "GooseCalendar Export";
+}
+
+async function createSingleExportCalendar(
+  accessToken: string,
+  courses: ParsedCourse[]
+) {
+  const created = await googleApiFetch<GoogleCalendarResource>(
+    accessToken,
+    "/calendars",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        summary: singleExportCalendarSummary(courses),
+        description: `${GOOSECALENDAR_DESCRIPTION_PREFIX} Single calendar export`,
+        timeZone: GOOGLE_TIMEZONE,
+      }),
+    }
+  );
+
+  return created.id;
+}
+
+async function createEventGroupCalendars(
+  accessToken: string,
+  eventGroups: EventGroup[],
+  onCalendarReady?: (summary: string) => void
+) {
+  const calendarIdsByGroup = new Map<string, string>();
+
+  for (const eventGroup of eventGroups) {
+    const summary = groupCalendarSummary(eventGroup);
+    const created = await googleApiFetch<GoogleCalendarResource>(
+      accessToken,
+      "/calendars",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          summary,
+          description: groupCalendarDescription(eventGroup),
+          timeZone: GOOGLE_TIMEZONE,
+        }),
+      }
+    );
+
+    calendarIdsByGroup.set(`group:${eventGroup}`, created.id);
+    onCalendarReady?.(summary);
+  }
+
+  return calendarIdsByGroup;
+}
+
+function normalizeGoogleEventColorId(colorId: string | undefined) {
+  return colorId && /^(?:[1-9]|10|11)$/.test(colorId) ? colorId : "5";
+}
+
+function googleEventColorIdForEvent(event: EventCandidate, exportConfig: ExportConfig) {
+  if (exportConfig.googleEventColorMode === "uniform") {
+    return normalizeGoogleEventColorId(exportConfig.googleUniformColorId);
+  }
+
+  return resolveGoogleEventColorId(event.eventGroup, exportConfig.paletteId);
+}
+
 async function upsertEvent(
   accessToken: string,
   calendarId: string,
@@ -925,7 +1015,8 @@ async function syncRecurringOverrides(
   course: ParsedCourse,
   selection: CourseSelection,
   event: EventCandidate,
-  masterEventId: string
+  masterEventId: string,
+  colorId?: string
 ) {
   if (
     event.timing.kind !== "recurring" ||
@@ -955,6 +1046,7 @@ async function syncRecurringOverrides(
         selection,
         event,
         date,
+        colorId,
         instance.extendedProperties?.private?.goosecalendarOccurrenceOverride === "1"
       );
 
@@ -1003,17 +1095,26 @@ export async function exportEventsToGoogleCalendar(
   onProgress?: (progress: GoogleCalendarExportProgress) => void
 ) {
   const accessToken = await getGoogleAccessToken();
-  const paletteColors = resolveExportPaletteColors(exportConfig);
   const items = exportableEvents(courses, allEvents, selections);
-  const bucketKeys = Array.from(
-    new Set(
-      items.map((item) =>
-        exportConfig.colorStrategy === "course"
-          ? `course:${item.course.id}`
-          : `group:${item.event.eventGroup}`
+  const narrowCalendarMode = exportConfig.googleCalendarMode ?? "single";
+  const paletteColors = GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
+    ? resolveExportPaletteColors(exportConfig)
+    : [];
+  const bucketKeys = GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
+    ? Array.from(
+        new Set(
+          items.map((item) =>
+            exportConfig.colorStrategy === "course"
+              ? `course:${item.course.id}`
+              : `group:${item.event.eventGroup}`
+          )
+        )
       )
-    )
-  );
+    : narrowCalendarMode === "many"
+    ? Array.from(new Set(items.map((item) => `group:${item.event.eventGroup}`)))
+    : items.length > 0
+    ? ["single"]
+    : [];
   const recurringOverrideCount = items.filter(
     (item) => item.event.timing.kind === "recurring" && hasRecurringOverrides(item.event)
   ).length;
@@ -1029,34 +1130,72 @@ export async function exportEventsToGoogleCalendar(
   };
 
   reportProgress("Preparing Google Calendar export...");
-  const calendarIdsByGroup = await ensureGroupCalendars(
-    accessToken,
-    items,
-    exportConfig,
-    paletteColors,
-    (bucket) => {
-      completedSteps += 1;
-      reportProgress(`Prepared ${bucket.summary}`);
-    }
-  );
+
+  if (items.length === 0) {
+    completedSteps = totalSteps;
+    reportProgress("Google Calendar export complete");
+    return {
+      calendarUrl: GOOGLE_CALENDAR_URL,
+      eventCount: 0,
+      calendarCount: 0,
+    } satisfies GoogleCalendarExportResult;
+  }
+
+  const calendarIdsByGroup = GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
+    ? await ensureGroupCalendars(
+        accessToken,
+        items,
+        exportConfig,
+        paletteColors,
+        (bucket) => {
+          completedSteps += 1;
+          reportProgress(`Prepared ${bucket.summary}`);
+        }
+      )
+    : narrowCalendarMode === "many"
+    ? await createEventGroupCalendars(
+        accessToken,
+        Array.from(new Set(items.map((item) => item.event.eventGroup))),
+        (summary) => {
+          completedSteps += 1;
+          reportProgress(`Prepared ${summary}`);
+        }
+      )
+    : new Map<string, string>();
+  const singleCalendarId = GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED || narrowCalendarMode === "many"
+    ? ""
+    : await createSingleExportCalendar(accessToken, courses);
+
+  if (!GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED && narrowCalendarMode !== "many") {
+    completedSteps += 1;
+    reportProgress(`Prepared ${singleExportCalendarSummary(courses)}`);
+  }
 
   await runWithConcurrency(items, GOOGLE_EXPORT_CONCURRENCY, async ({ course, selection, event }) => {
-    const bucketKey =
-      exportConfig.colorStrategy === "course"
-        ? `course:${course.id}`
-        : `group:${event.eventGroup}`;
-    const calendarId = calendarIdsByGroup.get(bucketKey);
+    const colorId = GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
+      ? undefined
+      : googleEventColorIdForEvent(event, exportConfig);
+    const calendarId = GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
+      ? calendarIdsByGroup.get(
+          exportConfig.colorStrategy === "course"
+            ? `course:${course.id}`
+            : `group:${event.eventGroup}`
+        )
+      : narrowCalendarMode === "many"
+      ? calendarIdsByGroup.get(`group:${event.eventGroup}`)
+      : singleCalendarId;
+
     if (!calendarId) return;
 
     if (event.timing.kind === "single") {
-      const resource = buildSingleEventResource(course, selection, event, exportConfig);
+      const resource = buildSingleEventResource(course, selection, event, exportConfig, colorId);
       await upsertEvent(accessToken, calendarId, resource.id!, resource);
       completedSteps += 1;
       reportProgress(`Exported ${buildEventSummary(event, undefined, "google")}`);
       return;
     }
 
-    const resource = buildRecurringEventResource(course, selection, event, exportConfig);
+    const resource = buildRecurringEventResource(course, selection, event, exportConfig, colorId);
     const masterEventId = resource.id!;
     await upsertEvent(accessToken, calendarId, masterEventId, resource);
     completedSteps += 1;
@@ -1067,7 +1206,8 @@ export async function exportEventsToGoogleCalendar(
       course,
       selection,
       event,
-      masterEventId
+      masterEventId,
+      colorId
     );
     if (hasRecurringOverrides(event)) {
       completedSteps += 1;
@@ -1081,6 +1221,9 @@ export async function exportEventsToGoogleCalendar(
   return {
     calendarUrl: GOOGLE_CALENDAR_URL,
     eventCount: items.length,
-    calendarCount: calendarIdsByGroup.size,
+    calendarCount:
+      GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED || narrowCalendarMode === "many"
+        ? calendarIdsByGroup.size
+        : 1,
   } satisfies GoogleCalendarExportResult;
 }

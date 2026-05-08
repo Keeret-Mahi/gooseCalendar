@@ -1,4 +1,4 @@
-import type { ExportConfig } from "./types";
+import type { EventGroup, ExportConfig } from "./types";
 
 export interface PaletteOption {
   id: string;
@@ -8,6 +8,75 @@ export interface PaletteOption {
 
 export const VISIBLE_PALETTE_COLOR_COUNT = 5;
 export const INTERNAL_PALETTE_COLOR_COUNT = 7;
+
+const GOOGLE_EVENT_COLOR_HEX_BY_ID: Record<string, string> = {
+  "1": "#7986cb",
+  "2": "#33b679",
+  "3": "#8e24aa",
+  "4": "#e67c73",
+  "5": "#f6bf26",
+  "6": "#f4511e",
+  "7": "#039be5",
+  "8": "#616161",
+  "9": "#3f51b5",
+  "10": "#0b8043",
+  "11": "#d50000",
+};
+
+export interface GoogleEventColorPaletteOption extends PaletteOption {
+  colorIdsByGroup: Record<EventGroup, string>;
+}
+
+export const DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID = "google-classic";
+
+export const googleEventColorPalettes: GoogleEventColorPaletteOption[] = [
+  {
+    id: "google-classic",
+    name: "Classic",
+    colorIdsByGroup: {
+      Lecture: "5",
+      Tutorial: "3",
+      Lab: "9",
+      Assessments: "11",
+      Assignments: "10",
+      "Office Hours": "7",
+      Other: "8",
+    },
+    colors: ["#f6bf26", "#8e24aa", "#3f51b5", "#d50000", "#0b8043", "#039be5", "#616161"],
+  },
+  {
+    id: "google-campus",
+    name: "Campus",
+    colorIdsByGroup: {
+      Lecture: "7",
+      Tutorial: "1",
+      Lab: "2",
+      Assessments: "6",
+      Assignments: "5",
+      "Office Hours": "10",
+      Other: "8",
+    },
+    colors: ["#039be5", "#7986cb", "#33b679", "#f4511e", "#f6bf26", "#0b8043", "#616161"],
+  },
+  {
+    id: "google-bold",
+    name: "Bold",
+    colorIdsByGroup: {
+      Lecture: "6",
+      Tutorial: "3",
+      Lab: "7",
+      Assessments: "11",
+      Assignments: "2",
+      "Office Hours": "9",
+      Other: "8",
+    },
+    colors: ["#f4511e", "#8e24aa", "#039be5", "#d50000", "#33b679", "#3f51b5", "#616161"],
+  },
+];
+
+export const googleEventColorOptions = Object.entries(GOOGLE_EVENT_COLOR_HEX_BY_ID).map(
+  ([id, color]) => ({ id, color })
+);
 
 export const palettes: PaletteOption[] = [
   {
@@ -159,4 +228,23 @@ export function resolveExportPaletteColors(exportConfig: ExportConfig) {
     palettes.find((palette) => palette.id === exportConfig.paletteId)?.colors.filter(Boolean) ?? [];
 
   return ensurePaletteColorCount(presetColors);
+}
+
+export function resolveGoogleEventColorPalette(paletteId: string) {
+  return (
+    googleEventColorPalettes.find((palette) => palette.id === paletteId) ??
+    googleEventColorPalettes.find(
+      (palette) => palette.id === DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID
+    ) ??
+    googleEventColorPalettes[0]
+  );
+}
+
+export function resolveGoogleEventColorId(eventGroup: EventGroup, paletteId: string) {
+  const palette = resolveGoogleEventColorPalette(paletteId);
+  return palette?.colorIdsByGroup[eventGroup] ?? "8";
+}
+
+export function googleEventColorHex(colorId: string) {
+  return GOOGLE_EVENT_COLOR_HEX_BY_ID[colorId] ?? GOOGLE_EVENT_COLOR_HEX_BY_ID["8"];
 }

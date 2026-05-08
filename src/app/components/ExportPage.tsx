@@ -13,8 +13,18 @@ import {
   goosePanelDividerClass,
 } from "../lib/designSystem";
 import svgPaths from "../../imports/svg-muqjom28j6";
-import type { GoogleCalendarExportProgress } from "../lib/googleCalendar";
-import { resolveExportPaletteColors } from "../lib/palettes";
+import {
+  GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED,
+  type GoogleCalendarExportProgress,
+} from "../lib/googleCalendar";
+import {
+  DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
+  googleEventColorOptions,
+  googleEventColorPalettes,
+  googleEventColorHex,
+  resolveExportPaletteColors,
+  resolveGoogleEventColorPalette,
+} from "../lib/palettes";
 import {
   Select,
   SelectContent,
@@ -26,6 +36,8 @@ import type {
   EventGroup,
   ExportColorStrategy,
   ExportNotificationSetting,
+  GoogleCalendarMode,
+  GoogleEventColorMode,
 } from "../lib/types";
 
 const EXPORT_GROUP_ORDER: EventGroup[] = [
@@ -37,6 +49,8 @@ const EXPORT_GROUP_ORDER: EventGroup[] = [
   "Office Hours",
   "Other",
 ];
+
+const LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED = GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED;
 
 const COLOR_STRATEGY_OPTIONS: Array<{
   value: ExportColorStrategy;
@@ -52,6 +66,40 @@ const COLOR_STRATEGY_OPTIONS: Array<{
     value: "course",
     label: "By course",
     description: "Keep every event from the same course on the same color calendar.",
+  },
+];
+
+const GOOGLE_CALENDAR_MODE_OPTIONS: Array<{
+  value: GoogleCalendarMode;
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "single",
+    label: "One calendar",
+    description: "Put every selected event into one GooseCalendar calendar.",
+  },
+  {
+    value: "many",
+    label: "Many calendars",
+    description: "Create separate GooseCalendar calendars for lectures, labs, assignments, and other event types.",
+  },
+];
+
+const GOOGLE_EVENT_COLOR_MODE_OPTIONS: Array<{
+  value: GoogleEventColorMode;
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "uniform",
+    label: "Uniform",
+    description: "Use one built-in Google event color for every exported event.",
+  },
+  {
+    value: "eventGroup",
+    label: "By event type",
+    description: "Use different built-in Google event colors for each event type.",
   },
 ];
 
@@ -214,6 +262,9 @@ export default function ExportPage() {
     setPaletteId,
     setCustomColors,
     setColorStrategy,
+    setGoogleCalendarMode,
+    setGoogleEventColorMode,
+    setGoogleUniformColorId,
     setNotificationSetting,
     setCustomNotificationMinutes,
     exportValidationIssues,
@@ -232,13 +283,14 @@ export default function ExportPage() {
   const [googleExportProgress, setGoogleExportProgress] =
     useState<GoogleCalendarExportProgress | null>(null);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [settingsTab, setSettingsTab] = useState<"colors" | "notifications">("colors");
+  const [settingsTab, setSettingsTab] = useState<"colors" | "notifications">(
+    LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED ? "colors" : "notifications"
+  );
   const [googleStatusHighlighted, setGoogleStatusHighlighted] = useState(false);
   const googleStatusRef = useRef<HTMLDivElement | null>(null);
   const googleStatusHighlightTimeoutRef = useRef<number | null>(null);
-  const hasSelectedPalette = Boolean(exportConfig.paletteId);
   const isGoogleButtonBlocked =
-    !googleCalendarConfigured || !hasSelectedPalette || exportValidationIssues.length > 0;
+    !googleCalendarConfigured || exportValidationIssues.length > 0;
   const colorStrategy = exportConfig.colorStrategy ?? "eventGroup";
   const notificationSettings = {
     ...FALLBACK_NOTIFICATION_SETTINGS,
@@ -287,6 +339,12 @@ export default function ExportPage() {
             palettePreviewColors[index % Math.max(palettePreviewColors.length, 1)] ?? "#f2b90d",
         }))
       : coursePreviewItems;
+  const selectedGoogleEventPalette = resolveGoogleEventColorPalette(
+    exportConfig.paletteId || DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID
+  );
+  const googleCalendarMode = exportConfig.googleCalendarMode ?? "single";
+  const googleEventColorMode = exportConfig.googleEventColorMode ?? "uniform";
+  const googleUniformColorId = exportConfig.googleUniformColorId ?? "5";
 
   const openSettingsModal = () => {
     const currentNotificationSettings = {
@@ -306,6 +364,7 @@ export default function ExportPage() {
     setCustomNotificationInputs(
       buildNotificationInputState(currentCustomNotificationMinutes, currentUnits)
     );
+    setSettingsTab(LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED ? "colors" : "notifications");
     setShowSettingsModal(true);
   };
 
@@ -325,7 +384,9 @@ export default function ExportPage() {
       );
     });
 
-    setColorStrategy(draftColorStrategy);
+    if (LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED) {
+      setColorStrategy(draftColorStrategy);
+    }
     EXPORT_GROUP_ORDER.forEach((group) => {
       setNotificationSetting(group, draftNotificationSettings[group]);
       setCustomNotificationMinutes(group, normalizedCustomNotificationMinutes[group]);
@@ -356,7 +417,6 @@ export default function ExportPage() {
   const handleGoogleCalendar = async () => {
     if (
       !googleCalendarConfigured ||
-      !hasSelectedPalette ||
       exportValidationIssues.length > 0 ||
       isGoogleExporting
     ) {
@@ -415,13 +475,6 @@ export default function ExportPage() {
       };
     }
 
-    if (!hasSelectedPalette) {
-      return {
-        tone: "info" as const,
-        message: "Select a color palette to enable Google Calendar export.",
-      };
-    }
-
     if (exportValidationIssues.length > 0) {
       return {
         tone: "info" as const,
@@ -453,12 +506,12 @@ export default function ExportPage() {
               <h3 className="mb-2 font-['Inter',sans-serif] text-[22px] font-black tracking-[-0.5px] text-[#1c180d]">
                 {successState.kind === "ics"
                   ? "ICS File Downloaded!"
-                  : "Google Calendar Updated!"}
+                  : "Google Calendar Exported!"}
               </h3>
               <p className="mb-6 text-sm font-normal leading-relaxed text-[#78716c]">
                 {successState.kind === "ics"
                   ? "Your .ics file has been downloaded. Import it into any calendar app to add your events."
-                  : `Synced ${successState.eventCount ?? 0} included events across ${successState.calendarCount ?? 0} GooseCalendar Google calendars.`}
+                  : `Synced ${successState.eventCount ?? 0} included events into ${successState.calendarCount ?? 0} GooseCalendar Google calendar${(successState.calendarCount ?? 0) === 1 ? "" : "s"}.`}
               </p>
 
               <div className="flex w-full gap-3">
@@ -496,11 +549,14 @@ export default function ExportPage() {
               <div className="flex items-start justify-between gap-4 border-b border-[#efe7cc] px-6 py-5 sm:px-8">
                 <div>
                   <h3 className="font-['Inter',sans-serif] text-[24px] font-black tracking-[-0.5px] text-[#1c180d]">
-                    Notification and Colour Settings
+                    {LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED
+                      ? "Notification and Colour Settings"
+                      : "Notification and Calendar Settings"}
                   </h3>
                   <p className="mt-1 max-w-[520px] text-sm leading-relaxed text-[#78716c]">
-                    Choose how gooseCalendar should color Google calendars, and decide which event
-                    types should get reminders when you export.
+                    {LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED
+                      ? "Choose how gooseCalendar should color Google calendars, and decide which event types should get reminders when you export."
+                      : "Choose the Google calendar layout and reminder defaults before you export."}
                   </p>
                 </div>
                 <button
@@ -520,35 +576,37 @@ export default function ExportPage() {
               </div>
 
               <div className="overflow-y-auto px-6 py-6 sm:px-8">
-                <div className="relative mb-6 inline-grid w-fit grid-cols-2 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] p-1">
-                  <div
-                    className={`pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-xl bg-[#f2b90d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.18)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      settingsTab === "notifications" ? "translate-x-full" : "translate-x-0"
-                    }`}
-                  />
-                  <button
-                    onClick={() => setSettingsTab("colors")}
-                    className={`relative z-10 cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors duration-200 ${
-                      settingsTab === "colors"
-                        ? "text-[#1c180d]"
-                        : "text-[#78716c] hover:text-[#1c180d]"
-                    }`}
-                  >
-                    Colour settings
-                  </button>
-                  <button
-                    onClick={() => setSettingsTab("notifications")}
-                    className={`relative z-10 cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors duration-200 ${
-                      settingsTab === "notifications"
-                        ? "text-[#1c180d]"
-                        : "text-[#78716c] hover:text-[#1c180d]"
-                    }`}
-                  >
-                    Notifications
-                  </button>
-                </div>
+                {LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED && (
+                  <div className="relative mb-6 inline-grid w-fit grid-cols-2 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] p-1">
+                    <div
+                      className={`pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-xl bg-[#f2b90d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.18)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        settingsTab === "notifications" ? "translate-x-full" : "translate-x-0"
+                      }`}
+                    />
+                    <button
+                      onClick={() => setSettingsTab("colors")}
+                      className={`relative z-10 cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors duration-200 ${
+                        settingsTab === "colors"
+                          ? "text-[#1c180d]"
+                          : "text-[#78716c] hover:text-[#1c180d]"
+                      }`}
+                    >
+                      Colour settings
+                    </button>
+                    <button
+                      onClick={() => setSettingsTab("notifications")}
+                      className={`relative z-10 cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors duration-200 ${
+                        settingsTab === "notifications"
+                          ? "text-[#1c180d]"
+                          : "text-[#78716c] hover:text-[#1c180d]"
+                      }`}
+                    >
+                      Notifications
+                    </button>
+                  </div>
+                )}
 
-                {settingsTab === "colors" ? (
+                {LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED && settingsTab === "colors" ? (
                   <section key="colors" className="animate-in fade-in-0 slide-in-from-bottom-1 duration-200 ease-out space-y-5">
                     <div>
                       <h4 className="font-['Lexend',sans-serif] text-sm font-bold uppercase tracking-[0.12em] text-[#a8a29e]">
@@ -633,6 +691,57 @@ export default function ExportPage() {
                   </section>
                 ) : (
                   <section key="notifications" className="animate-in fade-in-0 slide-in-from-bottom-1 duration-200 ease-out space-y-4">
+                    {!LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED && (
+                      <div>
+                        <h4 className="font-['Lexend',sans-serif] text-sm font-bold uppercase tracking-[0.12em] text-[#a8a29e]">
+                          Google calendar layout
+                        </h4>
+                        <p className="mt-2 text-sm leading-relaxed text-[#78716c]">
+                          Choose whether Google export should create one calendar or split events into multiple app-created calendars.
+                        </p>
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          {GOOGLE_CALENDAR_MODE_OPTIONS.map((option) => {
+                            const selected = googleCalendarMode === option.value;
+                            return (
+                              <button
+                                key={option.value}
+                                onClick={() => setGoogleCalendarMode(option.value)}
+                                className={`cursor-pointer rounded-2xl border p-4 text-left transition-all ${
+                                  selected
+                                    ? "border-[#f2b90d] bg-[#fffbeb] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.16)]"
+                                    : "border-[#e8e2ce] bg-[#fcfbf7] hover:border-[#d9cfb8]"
+                                }`}
+                              >
+                                <div className="flex items-start justify-between gap-3">
+                                  <div>
+                                    <p className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
+                                      {option.label}
+                                    </p>
+                                    <p className="mt-1 text-xs leading-relaxed text-[#78716c]">
+                                      {option.description}
+                                    </p>
+                                  </div>
+                                  <span
+                                    className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${
+                                      selected
+                                        ? "bg-[#f2b90d] text-[#1c180d]"
+                                        : "pointer-events-none select-none opacity-0"
+                                    }`}
+                                  >
+                                    Active
+                                  </span>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {googleCalendarMode === "many" && (
+                          <p className="mt-3 text-xs leading-relaxed text-[#a8a29e]">
+                            Many calendars stays on the narrow Google scope, but it creates fresh app-created calendars on each export.
+                          </p>
+                        )}
+                      </div>
+                    )}
                     <div>
                       <h4 className="font-['Lexend',sans-serif] text-sm font-bold uppercase tracking-[0.12em] text-[#a8a29e]">
                         Notification settings
@@ -868,7 +977,7 @@ export default function ExportPage() {
                   <InfoIcon />
                 </div>
                 <span className="font-['Lexend',sans-serif] text-xs font-normal leading-relaxed text-[#a8a29e]">
-                  .ICS files don't support colors. Google export uses separate gooseCalendar calendars per event type so your selected hex palette can be preserved.
+                  .ICS files don't support colors. Google export uses app-created GooseCalendar calendars and Google's built-in event colors so it can request a narrower Calendar permission.
                 </span>
               </div>
 
@@ -923,31 +1032,102 @@ export default function ExportPage() {
             </div>
 
             <div className={`border-t ${goosePanelDividerClass} px-6 pb-6 pt-6 sm:px-8 sm:pb-8 sm:pt-7`}>
-              <div className="mb-5">
-                <h3 className="mb-1 font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
-                  Color palette
-                </h3>
-                <p className="text-sm font-normal leading-relaxed text-[#78716c]">
-                  Pick a palette before exporting to Google Calendar so each event-type calendar gets its color.
-                </p>
-              </div>
+              {LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED ? (
+                <>
+                  <div className="mb-5">
+                    <h3 className="mb-1 font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
+                      Color palette
+                    </h3>
+                    <p className="text-sm font-normal leading-relaxed text-[#78716c]">
+                      Pick a palette before exporting to Google Calendar so each event-type calendar gets its color.
+                    </p>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {palettes.map((palette) => (
-                  <PaletteCard
-                    key={palette.id}
-                    palette={palette}
-                    selected={exportConfig.paletteId === palette.id}
-                    onClick={() => setPaletteId(palette.id)}
-                  />
-                ))}
-                <CustomPaletteCard
-                  colors={exportConfig.customColors}
-                  selected={exportConfig.paletteId === "custom"}
-                  onClick={() => setPaletteId("custom")}
-                  onColorsChange={setCustomColors}
-                />
-              </div>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                    {palettes.map((palette) => (
+                      <PaletteCard
+                        key={palette.id}
+                        palette={palette}
+                        selected={exportConfig.paletteId === palette.id}
+                        onClick={() => setPaletteId(palette.id)}
+                      />
+                    ))}
+                    <CustomPaletteCard
+                      colors={exportConfig.customColors}
+                      selected={exportConfig.paletteId === "custom"}
+                      onClick={() => setPaletteId("custom")}
+                      onColorsChange={setCustomColors}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <h3 className="mb-1 font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
+                      Google event colors
+                    </h3>
+                    <p className="text-sm font-normal leading-relaxed text-[#78716c]">
+                      Use Google built-in event colors by event type, or choose one color for every event.
+                    </p>
+                    <div className="relative mt-4 grid w-full grid-cols-2 rounded-xl border border-[#e8e2ce] bg-[#fcfbf7] p-0.5">
+                      <div
+                        className={`pointer-events-none absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-[10px] bg-[#f2b90d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.14)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                          googleEventColorMode === "eventGroup" ? "translate-x-full" : "translate-x-0"
+                        }`}
+                      />
+                      {GOOGLE_EVENT_COLOR_MODE_OPTIONS.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => setGoogleEventColorMode(option.value)}
+                          className={`relative z-10 cursor-pointer rounded-[10px] px-3 py-1.5 text-center text-xs font-bold transition-colors duration-200 ${
+                            googleEventColorMode === option.value
+                              ? "text-[#1c180d]"
+                              : "text-[#78716c] hover:text-[#1c180d]"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {googleEventColorMode === "eventGroup" ? (
+                      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        {googleEventColorPalettes.map((palette) => (
+                          <PaletteCard
+                            key={palette.id}
+                            palette={palette}
+                            selected={selectedGoogleEventPalette.id === palette.id}
+                            onClick={() => setPaletteId(palette.id)}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-4 grid grid-cols-6 gap-2 sm:grid-cols-11">
+                        {googleEventColorOptions.map((option) => {
+                          const selected = googleUniformColorId === option.id;
+                          return (
+                            <button
+                              key={option.id}
+                              onClick={() => setGoogleUniformColorId(option.id)}
+                              aria-label={`Use ${option.color} for all Google events`}
+                              className={`flex aspect-square min-h-10 cursor-pointer items-center justify-center rounded-full border transition-all ${
+                                selected
+                                  ? "border-[#f2b90d] bg-[#fff8df] shadow-[0px_0px_0px_3px_rgba(242,185,13,0.18)]"
+                                  : "border-[#e8e2ce] bg-white hover:border-[#d9cfb8]"
+                              }`}
+                            >
+                              <span
+                                className="h-6 w-6 rounded-full border border-black/10"
+                                style={{ backgroundColor: googleEventColorHex(option.id) }}
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
               <div className="mt-5">
                 <button
@@ -1003,10 +1183,14 @@ export default function ExportPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d] sm:text-base">
-                        Notification and Colour Settings
+                        {LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED
+                          ? "Notification and Colour Settings"
+                          : "Notification and Calendar Settings"}
                       </p>
                       <p className="mt-0.5 text-xs leading-relaxed text-[#78716c] sm:text-sm">
-                        Choose colour grouping and reminder defaults before you export.
+                        {LEGACY_CALENDAR_COLOR_SETTINGS_ENABLED
+                          ? "Choose colour grouping and reminder defaults before you export."
+                          : "Choose Google calendar layout and reminder defaults before you export."}
                       </p>
                     </div>
                   </div>

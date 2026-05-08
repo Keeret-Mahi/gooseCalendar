@@ -14,6 +14,8 @@ import type {
   EventType,
   ExportConfig,
   ExportColorStrategy,
+  GoogleCalendarMode,
+  GoogleEventColorMode,
   ExportNotificationSetting,
   ParsedCourse,
   ParsedSectionOption,
@@ -26,7 +28,10 @@ import {
   getExportValidationIssues,
   validateEventForExport,
 } from "../lib/calendar";
-import { ensurePaletteColorCount } from "../lib/palettes";
+import {
+  DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
+  ensurePaletteColorCount,
+} from "../lib/palettes";
 import {
   exportEventsToGoogleCalendar,
   isGoogleCalendarConfigured,
@@ -60,6 +65,9 @@ interface AppContextType {
   setPaletteId: (paletteId: string) => void;
   setCustomColors: (colors: string[]) => void;
   setColorStrategy: (colorStrategy: ExportColorStrategy) => void;
+  setGoogleCalendarMode: (mode: GoogleCalendarMode) => void;
+  setGoogleEventColorMode: (mode: GoogleEventColorMode) => void;
+  setGoogleUniformColorId: (colorId: string) => void;
   setNotificationSetting: (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
@@ -85,7 +93,7 @@ function buildStableId(seed: string) {
 }
 
 const defaultExportConfig: ExportConfig = {
-  paletteId: "",
+  paletteId: DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
   customColors: ensurePaletteColorCount([
     "#e74c3c",
     "#3498db",
@@ -94,6 +102,9 @@ const defaultExportConfig: ExportConfig = {
     "#9b59b6",
   ]),
   colorStrategy: "eventGroup",
+  googleCalendarMode: "single",
+  googleEventColorMode: "uniform",
+  googleUniformColorId: "5",
   notificationSettings: {
     Lecture: "default",
     Tutorial: "default",
@@ -301,6 +312,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         current.customColors?.length ? current.customColors : defaultExportConfig.customColors
       ),
       colorStrategy: current.colorStrategy ?? defaultExportConfig.colorStrategy,
+      googleCalendarMode:
+        current.googleCalendarMode ?? defaultExportConfig.googleCalendarMode,
+      googleEventColorMode:
+        current.googleEventColorMode ?? defaultExportConfig.googleEventColorMode,
+      googleUniformColorId:
+        current.googleUniformColorId ?? defaultExportConfig.googleUniformColorId,
       notificationSettings: {
         ...defaultExportConfig.notificationSettings,
         ...(current.notificationSettings ?? {}),
@@ -561,6 +578,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setExportConfig((current) => ({ ...current, colorStrategy }));
   };
 
+  const setGoogleCalendarMode = (mode: GoogleCalendarMode) => {
+    setExportConfig((current) => ({ ...current, googleCalendarMode: mode }));
+  };
+
+  const setGoogleEventColorMode = (mode: GoogleEventColorMode) => {
+    setExportConfig((current) => ({ ...current, googleEventColorMode: mode }));
+  };
+
+  const setGoogleUniformColorId = (colorId: string) => {
+    setExportConfig((current) => ({ ...current, googleUniformColorId: colorId }));
+  };
+
   const setNotificationSetting = (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
@@ -632,6 +661,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setPaletteId,
         setCustomColors,
         setColorStrategy,
+        setGoogleCalendarMode,
+        setGoogleEventColorMode,
+        setGoogleUniformColorId,
         setNotificationSetting,
         setCustomNotificationMinutes,
         exportValidationIssues,
