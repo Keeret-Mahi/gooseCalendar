@@ -268,6 +268,27 @@ function buildManualEventDraft(
   return draftEvent;
 }
 
+function normalizeNoteText(value: string) {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function removeResolvedDateNotes(event: EventCandidate) {
+  if (event.timing.kind !== "single" || !event.timing.date) {
+    return event;
+  }
+
+  const notes = event.notes.filter((note) => {
+    const normalized = normalizeNoteText(note);
+    return (
+      !/^Date unresolved$/i.test(normalized) &&
+      !/^Date unresolved in outline:/i.test(normalized) &&
+      !/^Due date unresolved in outline\.?$/i.test(normalized)
+    );
+  });
+
+  return notes.length === event.notes.length ? event : { ...event, notes };
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [uploads, setUploads] = useState<UploadedOutline[]>([]);
   const [courses, setCourses] = useState<ParsedCourse[]>([]);
@@ -320,7 +341,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             ]);
             setEvents((current) => [
               ...current.filter((event) => event.courseId !== result.course.id),
-              ...result.events,
+              ...result.events.map(removeResolvedDateNotes),
             ]);
             setSelections((current) => ({
               ...current,
@@ -449,7 +470,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     updater: (current: EventCandidate) => EventCandidate
   ) => {
     setEvents((current) =>
-      current.map((event) => (event.id === eventId ? updater(event) : event))
+      current.map((event) =>
+        event.id === eventId ? removeResolvedDateNotes(updater(event)) : event
+      )
     );
   };
 
@@ -464,10 +487,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const course = courses.find((item) => item.id === event.courseId);
     if (!course) return null;
     const eventGroup = eventGroupForType(event.eventType);
-    const reviewNeeded = !!validateEventForExport(event);
-    const newEvent = {
+    const cleanedEvent = removeResolvedDateNotes({
       ...event,
       eventGroup,
+    });
+    const reviewNeeded = !!validateEventForExport(cleanedEvent);
+    const newEvent = {
+      ...cleanedEvent,
       reviewNeeded,
     };
 

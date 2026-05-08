@@ -6,7 +6,7 @@ import {
   type AiOutlineExtractionRequest,
 } from "../app/lib/aiExtractionSchema.js";
 
-export const AI_CACHE_VERSION = "v1";
+export const AI_CACHE_VERSION = "v2";
 
 const CACHE_COLLECTION = "outlineAiExtractionCache";
 const HASH_PATTERN = /^[a-f0-9]{64}$/i;
