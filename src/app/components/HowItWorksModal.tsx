@@ -170,8 +170,8 @@ function GuideStepCard({
   );
 }
 
-const HOW_IT_WORKS_VIDEO_URL = "https://www.youtube.com/watch?v=8gJ716dhStg&t=430s";
-const HOW_IT_WORKS_VIDEO_EMBED_URL = "https://www.youtube.com/embed/8gJ716dhStg?start=430";
+const HOW_IT_WORKS_VIDEO_URL = "https://youtu.be/Bn9FSQeeKbw";
+const HOW_IT_WORKS_VIDEO_EMBED_URL = "https://www.youtube.com/embed/Bn9FSQeeKbw";
 
 const steps = [
   {
