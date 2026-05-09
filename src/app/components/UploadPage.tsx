@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router";
 import { useAppContext } from "./AppContext";
+import { trackAnalyticsEvent } from "../lib/analytics";
 import svgPaths from "../../imports/svg-up87mvwjbr";
 import img920081 from "figma:asset/b92fc544a736117e881173174fe48bce3b51e1e8.png";
 
@@ -131,6 +132,12 @@ export default function UploadPage() {
   const { uploads, courses, isParsing, addFiles, removeUpload } = useAppContext();
   const [isDragging, setIsDragging] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
+
+  useEffect(() => {
+    void trackAnalyticsEvent("home_page_view", {
+      page_path: "/",
+    });
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";

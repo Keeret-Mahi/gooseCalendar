@@ -17,6 +17,7 @@ import {
   GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED,
   type GoogleCalendarExportProgress,
 } from "../lib/googleCalendar";
+import { trackAnalyticsEvent } from "../lib/analytics";
 import {
   DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
   googleEventColorOptions,
@@ -345,6 +346,12 @@ export default function ExportPage() {
   const googleCalendarMode = exportConfig.googleCalendarMode ?? "single";
   const googleEventColorMode = exportConfig.googleEventColorMode ?? "uniform";
   const googleUniformColorId = exportConfig.googleUniformColorId ?? "5";
+  const exportTrackingParams = {
+    course_count: courses.length,
+    validation_issue_count: exportValidationIssues.length,
+    google_calendar_mode: googleCalendarMode,
+    google_color_mode: googleEventColorMode,
+  };
 
   const openSettingsModal = () => {
     const currentNotificationSettings = {
@@ -395,8 +402,13 @@ export default function ExportPage() {
   };
 
   const handleDownloadICS = () => {
+    void trackAnalyticsEvent("export_ics_clicked", {
+      ...exportTrackingParams,
+      blocked: exportValidationIssues.length > 0,
+    });
     if (exportValidationIssues.length > 0) return;
     downloadCalendar();
+    void trackAnalyticsEvent("export_ics_downloaded", exportTrackingParams);
     setSuccessState({ kind: "ics" });
   };
 
@@ -420,6 +432,11 @@ export default function ExportPage() {
       exportValidationIssues.length > 0 ||
       isGoogleExporting
     ) {
+      void trackAnalyticsEvent("export_google_clicked", {
+        ...exportTrackingParams,
+        blocked: true,
+        google_configured: googleCalendarConfigured,
+      });
       if (!isGoogleExporting) {
         triggerGoogleStatusHighlight();
       }
@@ -427,6 +444,11 @@ export default function ExportPage() {
     }
 
     try {
+      void trackAnalyticsEvent("export_google_clicked", {
+        ...exportTrackingParams,
+        blocked: false,
+        google_configured: googleCalendarConfigured,
+      });
       setGoogleError("");
       setIsGoogleExporting(true);
       setGoogleExportProgress({
@@ -443,7 +465,16 @@ export default function ExportPage() {
         eventCount: result.eventCount,
         calendarCount: result.calendarCount,
       });
+      void trackAnalyticsEvent("export_google_success", {
+        ...exportTrackingParams,
+        event_count: result.eventCount,
+        calendar_count: result.calendarCount,
+      });
     } catch (error) {
+      void trackAnalyticsEvent("export_google_failed", {
+        ...exportTrackingParams,
+        error_name: error instanceof Error ? error.name : "UnknownError",
+      });
       setGoogleError(
         error instanceof Error
           ? error.message
