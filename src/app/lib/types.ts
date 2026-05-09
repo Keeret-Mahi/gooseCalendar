@@ -143,9 +143,9 @@ export interface ExportConfig {
   paletteId: string;
   customColors: string[];
   colorStrategy: ExportColorStrategy;
-  googleCalendarMode: GoogleCalendarMode;
-  googleEventColorMode: GoogleEventColorMode;
-  googleUniformColorId: string;
+  googleCalendarMode?: GoogleCalendarMode;
+  googleEventColorMode?: GoogleEventColorMode;
+  googleUniformColorId?: string;
   notificationSettings: Record<EventGroup, ExportNotificationSetting>;
   customNotificationMinutes: Record<EventGroup, number>;
 }

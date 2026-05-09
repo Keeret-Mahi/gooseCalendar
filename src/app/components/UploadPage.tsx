@@ -198,7 +198,7 @@ export default function UploadPage() {
     {
       number: 3,
       title: "Export Your Calendar",
-      description: "Send everything to Google Calendar or download a ready-to-import .ics file.",
+      description: "Download a ready-to-import .ics file for your calendar app.",
     },
   ];
 

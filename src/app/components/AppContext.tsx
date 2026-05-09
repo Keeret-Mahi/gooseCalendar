@@ -14,8 +14,6 @@ import type {
   EventType,
   ExportConfig,
   ExportColorStrategy,
-  GoogleCalendarMode,
-  GoogleEventColorMode,
   ExportNotificationSetting,
   ParsedCourse,
   ParsedSectionOption,
@@ -32,16 +30,8 @@ import {
   DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
   ensurePaletteColorCount,
 } from "../lib/palettes";
-import {
-  exportEventsToGoogleCalendar,
-  isGoogleCalendarConfigured,
-} from "../lib/googleCalendar";
 import { trackAnalyticsEvent } from "../lib/analytics";
 import { parseOutlineHtmlWithAi } from "../lib/parser";
-import type {
-  GoogleCalendarExportProgress,
-  GoogleCalendarExportResult,
-} from "../lib/googleCalendar";
 
 interface AppContextType {
   uploads: UploadedOutline[];
@@ -66,9 +56,6 @@ interface AppContextType {
   setPaletteId: (paletteId: string) => void;
   setCustomColors: (colors: string[]) => void;
   setColorStrategy: (colorStrategy: ExportColorStrategy) => void;
-  setGoogleCalendarMode: (mode: GoogleCalendarMode) => void;
-  setGoogleEventColorMode: (mode: GoogleEventColorMode) => void;
-  setGoogleUniformColorId: (colorId: string) => void;
   setNotificationSetting: (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
@@ -76,10 +63,6 @@ interface AppContextType {
   setCustomNotificationMinutes: (eventGroup: EventGroup, minutes: number) => void;
   exportValidationIssues: ReturnType<typeof getExportValidationIssues>;
   downloadCalendar: () => void;
-  googleCalendarConfigured: boolean;
-  exportToGoogleCalendar: (
-    onProgress?: (progress: GoogleCalendarExportProgress) => void
-  ) => Promise<GoogleCalendarExportResult>;
 }
 
 export const AppContext = createContext<AppContextType | null>(null);
@@ -103,9 +86,6 @@ const defaultExportConfig: ExportConfig = {
     "#9b59b6",
   ]),
   colorStrategy: "eventGroup",
-  googleCalendarMode: "single",
-  googleEventColorMode: "uniform",
-  googleUniformColorId: "5",
   notificationSettings: {
     Lecture: "default",
     Tutorial: "default",
@@ -313,12 +293,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         current.customColors?.length ? current.customColors : defaultExportConfig.customColors
       ),
       colorStrategy: current.colorStrategy ?? defaultExportConfig.colorStrategy,
-      googleCalendarMode:
-        current.googleCalendarMode ?? defaultExportConfig.googleCalendarMode,
-      googleEventColorMode:
-        current.googleEventColorMode ?? defaultExportConfig.googleEventColorMode,
-      googleUniformColorId:
-        current.googleUniformColorId ?? defaultExportConfig.googleUniformColorId,
       notificationSettings: {
         ...defaultExportConfig.notificationSettings,
         ...(current.notificationSettings ?? {}),
@@ -594,18 +568,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setExportConfig((current) => ({ ...current, colorStrategy }));
   };
 
-  const setGoogleCalendarMode = (mode: GoogleCalendarMode) => {
-    setExportConfig((current) => ({ ...current, googleCalendarMode: mode }));
-  };
-
-  const setGoogleEventColorMode = (mode: GoogleEventColorMode) => {
-    setExportConfig((current) => ({ ...current, googleEventColorMode: mode }));
-  };
-
-  const setGoogleUniformColorId = (colorId: string) => {
-    setExportConfig((current) => ({ ...current, googleUniformColorId: colorId }));
-  };
-
   const setNotificationSetting = (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
@@ -639,23 +601,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     downloadIcsFile(content);
   };
 
-  const exportToGoogleCalendar = async (
-    onProgress?: (progress: GoogleCalendarExportProgress) => void
-  ) => {
-    const issues = getExportValidationIssues(courses, events, selections);
-    if (issues.length > 0) {
-      throw new Error("Cannot export to Google Calendar while included events are still incomplete.");
-    }
-
-    return exportEventsToGoogleCalendar(
-      courses,
-      events,
-      selections,
-      exportConfig,
-      onProgress
-    );
-  };
-
   const isParsing = uploads.some((upload) => upload.status === "pending" || upload.status === "parsing");
 
   return (
@@ -677,15 +622,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setPaletteId,
         setCustomColors,
         setColorStrategy,
-        setGoogleCalendarMode,
-        setGoogleEventColorMode,
-        setGoogleUniformColorId,
         setNotificationSetting,
         setCustomNotificationMinutes,
         exportValidationIssues,
         downloadCalendar,
-        googleCalendarConfigured: isGoogleCalendarConfigured(),
-        exportToGoogleCalendar,
       }}
     >
       {children}

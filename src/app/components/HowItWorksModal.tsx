@@ -193,8 +193,8 @@ const steps = [
   {
     number: 3,
     title: "Export Your Calendar",
-    description: "Send everything to Google Calendar or download a ready-to-import .ics file.",
-    detail: "You can choose a color palette, set reminders, and keep your gooseCalendar export organized.",
+    description: "Download a ready-to-import .ics file for your calendar app.",
+    detail: "You can set reminders and keep your gooseCalendar export organized.",
     kind: "export" as const,
   },
 ];
@@ -460,7 +460,7 @@ export function HowItWorksModal({
                   "Review the events page before exporting. gooseCalendar can make mistakes.",
                   "Assignments and assessments can include both publish and due dates when the outline gives both.",
                   "If something is missing, add it manually from the review page before export.",
-                  "Google Calendar export keeps your chosen color palette by creating GooseCalendar calendars.",
+                  "The .ics file can be imported into most calendar apps.",
                 ].map((tip) => (
                   <div
                     key={tip}
