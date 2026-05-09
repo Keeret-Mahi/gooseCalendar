@@ -160,6 +160,16 @@ export default function UploadPage() {
     if (event.dataTransfer.files.length) addFiles(event.dataTransfer.files);
   };
 
+  const handleNextSelectSections = () => {
+    void trackAnalyticsEvent("upload_next_sections_clicked", {
+      upload_count: uploads.length,
+      parsed_upload_count: uploads.filter((upload) => upload.status === "parsed").length,
+      failed_upload_count: uploads.filter((upload) => upload.status === "error").length,
+      course_count: courses.length,
+    });
+    navigate("/sections");
+  };
+
   const parsedUploads = uploads.filter((upload) => upload.status === "parsed").length;
   const failedUploads = uploads.filter((upload) => upload.status === "error").length;
   const canContinue = courses.length > 0 && !isParsing;
@@ -440,7 +450,7 @@ export default function UploadPage() {
 
           {uploads.length > 0 && (
             <button
-              onClick={() => navigate("/sections")}
+              onClick={handleNextSelectSections}
               disabled={!canContinue}
               className={`flex w-full items-center justify-center gap-2 rounded-2xl px-8 py-3.5 shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] transition-all ${
                 canContinue

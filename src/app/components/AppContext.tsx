@@ -36,6 +36,7 @@ import {
   exportEventsToGoogleCalendar,
   isGoogleCalendarConfigured,
 } from "../lib/googleCalendar";
+import { trackAnalyticsEvent } from "../lib/analytics";
 import { parseOutlineHtmlWithAi } from "../lib/parser";
 import type {
   GoogleCalendarExportProgress,
@@ -396,6 +397,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [uploads]);
 
   const addFiles = (newFiles: FileList | File[]) => {
+    const incomingFiles = Array.from(newFiles);
     const htmlFiles = Array.from(newFiles).filter(
       (file) => file.name.endsWith(".html") || file.name.endsWith(".htm")
     );
@@ -404,6 +406,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const incomingKeys = new Set(htmlFiles.map(uploadKey));
     const duplicateUploads = uploads.filter((upload) => incomingKeys.has(uploadKey(upload.file)));
     const duplicateCourseIds = duplicateUploads.flatMap((upload) => upload.courseIds);
+
+    void trackAnalyticsEvent("outline_upload_attempted", {
+      file_count: incomingFiles.length,
+      html_file_count: htmlFiles.length,
+      rejected_file_count: incomingFiles.length - htmlFiles.length,
+      duplicate_file_count: duplicateUploads.length,
+    });
+
+    if (htmlFiles.length > 0) {
+      void trackAnalyticsEvent("outline_upload_accepted", {
+        html_file_count: htmlFiles.length,
+        duplicate_file_count: duplicateUploads.length,
+      });
+    }
 
     if (duplicateUploads.length > 0) {
       duplicateUploads.forEach((upload) => removedUploadIdsRef.current.add(upload.id));
