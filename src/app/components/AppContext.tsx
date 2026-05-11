@@ -15,6 +15,8 @@ import type {
   ExportConfig,
   ExportColorStrategy,
   ExportNotificationSetting,
+  GoogleCalendarMode,
+  GoogleEventColorMode,
   ParsedCourse,
   ParsedSectionOption,
   UploadedOutline,
@@ -30,6 +32,12 @@ import {
   DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
   ensurePaletteColorCount,
 } from "../lib/palettes";
+import {
+  exportEventsToGoogleCalendar,
+  isGoogleCalendarConfigured,
+  type GoogleCalendarExportProgress,
+  type GoogleCalendarExportResult,
+} from "../lib/googleCalendar";
 import { trackAnalyticsEvent } from "../lib/analytics";
 import { parseOutlineHtmlWithAi } from "../lib/parser";
 
@@ -40,6 +48,8 @@ interface AppContextType {
   selections: Record<string, CourseSelection>;
   exportConfig: ExportConfig;
   isParsing: boolean;
+  adminModeEnabled: boolean;
+  setAdminModeEnabled: (enabled: boolean) => void;
   addFiles: (newFiles: FileList | File[]) => void;
   removeUpload: (uploadId: string) => void;
   clearFiles: () => void;
@@ -56,12 +66,19 @@ interface AppContextType {
   setPaletteId: (paletteId: string) => void;
   setCustomColors: (colors: string[]) => void;
   setColorStrategy: (colorStrategy: ExportColorStrategy) => void;
+  setGoogleCalendarMode: (mode: GoogleCalendarMode) => void;
+  setGoogleEventColorMode: (mode: GoogleEventColorMode) => void;
+  setGoogleUniformColorId: (colorId: string) => void;
   setNotificationSetting: (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
   ) => void;
   setCustomNotificationMinutes: (eventGroup: EventGroup, minutes: number) => void;
   exportValidationIssues: ReturnType<typeof getExportValidationIssues>;
+  googleCalendarConfigured: boolean;
+  exportToGoogleCalendar: (
+    onProgress?: (progress: GoogleCalendarExportProgress) => void
+  ) => Promise<GoogleCalendarExportResult>;
   downloadCalendar: () => void;
 }
 
@@ -86,6 +103,9 @@ const defaultExportConfig: ExportConfig = {
     "#9b59b6",
   ]),
   colorStrategy: "eventGroup",
+  googleCalendarMode: "single",
+  googleEventColorMode: "uniform",
+  googleUniformColorId: "5",
   notificationSettings: {
     Lecture: "default",
     Tutorial: "default",
@@ -105,6 +125,17 @@ const defaultExportConfig: ExportConfig = {
     Other: 15,
   },
 };
+
+const ADMIN_MODE_STORAGE_KEY = "goosecalendar:admin-mode";
+
+function readStoredAdminMode() {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.localStorage.getItem(ADMIN_MODE_STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
 
 function eventGroupForType(eventType: EventType): EventGroup {
   switch (eventType) {
@@ -283,6 +314,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [events, setEvents] = useState<EventCandidate[]>([]);
   const [selections, setSelections] = useState<Record<string, CourseSelection>>({});
   const [exportConfig, setExportConfig] = useState<ExportConfig>(defaultExportConfig);
+  const [adminModeEnabled, setAdminModeEnabledState] = useState(readStoredAdminMode);
   const parsingIdsRef = useRef<Set<string>>(new Set());
   const removedUploadIdsRef = useRef<Set<string>>(new Set());
 
@@ -293,6 +325,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         current.customColors?.length ? current.customColors : defaultExportConfig.customColors
       ),
       colorStrategy: current.colorStrategy ?? defaultExportConfig.colorStrategy,
+      googleCalendarMode:
+        current.googleCalendarMode ?? defaultExportConfig.googleCalendarMode,
+      googleEventColorMode:
+        current.googleEventColorMode ?? defaultExportConfig.googleEventColorMode,
+      googleUniformColorId:
+        current.googleUniformColorId ?? defaultExportConfig.googleUniformColorId,
       notificationSettings: {
         ...defaultExportConfig.notificationSettings,
         ...(current.notificationSettings ?? {}),
@@ -303,6 +341,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
       },
     }));
   }, []);
+
+  const setAdminModeEnabled = (enabled: boolean) => {
+    setAdminModeEnabledState(enabled);
+    if (typeof window === "undefined") return;
+    try {
+      if (enabled) {
+        window.localStorage.setItem(ADMIN_MODE_STORAGE_KEY, "true");
+        return;
+      }
+      window.localStorage.removeItem(ADMIN_MODE_STORAGE_KEY);
+    } catch {
+      // Admin mode still works for the current session if storage is unavailable.
+    }
+  };
 
   useEffect(() => {
     uploads
@@ -568,6 +620,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setExportConfig((current) => ({ ...current, colorStrategy }));
   };
 
+  const setGoogleCalendarMode = (googleCalendarMode: GoogleCalendarMode) => {
+    setExportConfig((current) => ({ ...current, googleCalendarMode }));
+  };
+
+  const setGoogleEventColorMode = (googleEventColorMode: GoogleEventColorMode) => {
+    setExportConfig((current) => ({ ...current, googleEventColorMode }));
+  };
+
+  const setGoogleUniformColorId = (googleUniformColorId: string) => {
+    setExportConfig((current) => ({ ...current, googleUniformColorId }));
+  };
+
   const setNotificationSetting = (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
@@ -601,6 +665,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     downloadIcsFile(content);
   };
 
+  const exportToGoogleCalendar = (
+    onProgress?: (progress: GoogleCalendarExportProgress) => void
+  ) => exportEventsToGoogleCalendar(courses, events, selections, exportConfig, onProgress);
+
   const isParsing = uploads.some((upload) => upload.status === "pending" || upload.status === "parsing");
 
   return (
@@ -612,6 +680,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         selections,
         exportConfig,
         isParsing,
+        adminModeEnabled,
+        setAdminModeEnabled,
         addFiles,
         removeUpload,
         clearFiles,
@@ -622,9 +692,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setPaletteId,
         setCustomColors,
         setColorStrategy,
+        setGoogleCalendarMode,
+        setGoogleEventColorMode,
+        setGoogleUniformColorId,
         setNotificationSetting,
         setCustomNotificationMinutes,
         exportValidationIssues,
+        googleCalendarConfigured: isGoogleCalendarConfigured(),
+        exportToGoogleCalendar,
         downloadCalendar,
       }}
     >

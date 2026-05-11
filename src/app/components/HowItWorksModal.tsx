@@ -119,18 +119,14 @@ function GuidePreview({ kind }: { kind: "upload" | "select" | "review" | "export
 
   return (
     <div className="flex h-[120px] flex-col justify-center gap-3 rounded-[24px] bg-[#f8f8f6] px-4 py-4">
-      <div className="flex gap-2">
-        <div className="flex h-10 flex-1 items-center justify-center rounded-2xl bg-[#f7efe0] text-xs font-bold text-[#8b8170]">
-          Google
-        </div>
-        <div className="flex h-10 flex-1 items-center justify-center rounded-2xl bg-[#f1c84b] text-xs font-bold text-[#1b180d]">
-          .ics
-        </div>
+      <div className="flex h-10 items-center justify-center rounded-2xl bg-[#f1c84b] text-xs font-bold text-[#1b180d]">
+        Download .ics
       </div>
-      <div className="flex gap-1.5">
-        {["#879e7d", "#ead7c5", "#98c8d2", "#b7dfe1", "#b9b2a5"].map((color) => (
-          <div key={color} className="h-6 flex-1 rounded-full" style={{ backgroundColor: color }} />
-        ))}
+      <div className="rounded-2xl border border-[#eadfc3] bg-white px-3 py-2">
+        <div className="flex items-center justify-between text-[10px] font-semibold text-[#78716c]">
+          <span>Reminders</span>
+          <span>Calendar default</span>
+        </div>
       </div>
     </div>
   );

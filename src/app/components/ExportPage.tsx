@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { RouteGuard } from "./RouteGuard";
 import { useAppContext } from "./AppContext";
@@ -13,6 +13,16 @@ import {
 } from "../lib/designSystem";
 import svgPaths from "../../imports/svg-muqjom28j6";
 import { trackAnalyticsEvent } from "../lib/analytics";
+import { PaletteCard, CustomPaletteCard, palettes } from "./AppearanceCard";
+import {
+  googleEventColorHex,
+  googleEventColorOptions,
+  googleEventColorPalettes,
+} from "../lib/palettes";
+import {
+  GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED,
+  type GoogleCalendarExportProgress,
+} from "../lib/googleCalendar";
 import {
   Select,
   SelectContent,
@@ -22,7 +32,10 @@ import {
 } from "./ui/select";
 import type {
   EventGroup,
+  ExportColorStrategy,
   ExportNotificationSetting,
+  GoogleCalendarMode,
+  GoogleEventColorMode,
 } from "../lib/types";
 
 const EXPORT_GROUP_ORDER: EventGroup[] = [
@@ -69,7 +82,41 @@ const FALLBACK_CUSTOM_NOTIFICATION_MINUTES: Record<EventGroup, number> = {
   Other: 15,
 };
 
+const GOOGLE_CALENDAR_MODE_OPTIONS: Array<{
+  value: GoogleCalendarMode;
+  label: string;
+}> = [
+  { value: "single", label: "One calendar" },
+  { value: "many", label: "By event type" },
+];
+
+const GOOGLE_EVENT_COLOR_MODE_OPTIONS: Array<{
+  value: GoogleEventColorMode;
+  label: string;
+}> = [
+  { value: "uniform", label: "Uniform" },
+  { value: "eventGroup", label: "By event type" },
+];
+
+const COLOR_STRATEGY_OPTIONS: Array<{
+  value: ExportColorStrategy;
+  label: string;
+}> = [
+  { value: "eventGroup", label: "By event type" },
+  { value: "course", label: "By course" },
+];
+
 type NotificationUnit = "minutes" | "hours" | "days" | "weeks";
+
+type SuccessState =
+  | { kind: "ics" }
+  | {
+      kind: "google";
+      eventCount: number;
+      calendarCount: number;
+      calendarUrl: string;
+    }
+  | null;
 
 const NOTIFICATION_UNIT_OPTIONS: Array<{
   value: NotificationUnit;
@@ -156,18 +203,107 @@ function DownloadIcon() {
   );
 }
 
+function GoogleCalendarIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="17" rx="3" fill="#fff" />
+      <path d="M7 2v4M17 2v4M3 9h18" stroke="#1a73e8" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M8.5 14.8a3.7 3.7 0 016.5-2.4" stroke="#34a853" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M15 14.8a3.7 3.7 0 01-6.5 2.4" stroke="#ea4335" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M12 12.5h3v3" stroke="#fbbc04" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function SettingsIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 6h16M4 12h16M4 18h16"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 4v4M15 10v4M12 16v4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function SegmentedControl<T extends string>({
+  value,
+  options,
+  onChange,
+  ariaLabel,
+}: {
+  value: T;
+  options: Array<{ value: T; label: string }>;
+  onChange: (value: T) => void;
+  ariaLabel: string;
+}) {
+  return (
+    <div
+      className="mx-auto grid w-full rounded-full bg-[#f6f1df] p-1"
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+      role="group"
+      aria-label={ariaLabel}
+    >
+      {options.map((option) => {
+        const selected = option.value === value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => onChange(option.value)}
+            className={`h-9 cursor-pointer rounded-full px-3 text-center font-['Lexend',sans-serif] text-xs font-bold transition-all sm:text-sm ${
+              selected
+                ? "bg-white text-[#1c180d] shadow-[0px_4px_18px_-12px_rgba(28,24,13,0.55)]"
+                : "text-[#78716c] hover:text-[#1c180d]"
+            }`}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function ExportPage() {
   const navigate = useNavigate();
   const {
     courses,
     exportConfig,
+    adminModeEnabled,
+    setPaletteId,
+    setCustomColors,
+    setColorStrategy,
+    setGoogleCalendarMode,
+    setGoogleEventColorMode,
+    setGoogleUniformColorId,
     setNotificationSetting,
     setCustomNotificationMinutes,
     exportValidationIssues,
+    googleCalendarConfigured,
+    exportToGoogleCalendar,
     downloadCalendar,
   } = useAppContext();
-  const [successState, setSuccessState] = useState(false);
+  const [successState, setSuccessState] = useState<SuccessState>(null);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [isGoogleExporting, setIsGoogleExporting] = useState(false);
+  const [googleExportProgress, setGoogleExportProgress] =
+    useState<GoogleCalendarExportProgress | null>(null);
+  const [googleError, setGoogleError] = useState("");
+  const googleStatusRef = useRef<HTMLDivElement>(null);
+  const googleCalendarMode = exportConfig.googleCalendarMode ?? "single";
+  const googleEventColorMode = exportConfig.googleEventColorMode ?? "uniform";
+  const googleUniformColorId = exportConfig.googleUniformColorId ?? "5";
   const notificationSettings = {
     ...FALLBACK_NOTIFICATION_SETTINGS,
     ...(exportConfig.notificationSettings ?? {}),
@@ -180,6 +316,8 @@ export default function ExportPage() {
     useState<Record<EventGroup, ExportNotificationSetting>>(notificationSettings);
   const [draftCustomNotificationMinutes, setDraftCustomNotificationMinutes] =
     useState<Record<EventGroup, number>>(customNotificationMinutes);
+  const [draftGoogleCalendarMode, setDraftGoogleCalendarMode] =
+    useState<GoogleCalendarMode>(googleCalendarMode);
   const [customNotificationUnits, setCustomNotificationUnits] = useState<
     Record<EventGroup, NotificationUnit>
   >(() => buildNotificationUnitState(customNotificationMinutes));
@@ -192,6 +330,7 @@ export default function ExportPage() {
   const exportTrackingParams = {
     course_count: courses.length,
     validation_issue_count: exportValidationIssues.length,
+    admin_mode: adminModeEnabled,
   };
 
   const openSettingsModal = () => {
@@ -207,6 +346,7 @@ export default function ExportPage() {
 
     setDraftNotificationSettings(currentNotificationSettings);
     setDraftCustomNotificationMinutes(currentCustomNotificationMinutes);
+    setDraftGoogleCalendarMode(exportConfig.googleCalendarMode ?? "single");
     setCustomNotificationUnits(currentUnits);
     setCustomNotificationInputs(
       buildNotificationInputState(currentCustomNotificationMinutes, currentUnits)
@@ -226,6 +366,9 @@ export default function ExportPage() {
       );
     });
 
+    if (adminModeEnabled) {
+      setGoogleCalendarMode(draftGoogleCalendarMode);
+    }
     EXPORT_GROUP_ORDER.forEach((group) => {
       setNotificationSetting(group, draftNotificationSettings[group]);
       setCustomNotificationMinutes(group, normalizedCustomNotificationMinutes[group]);
@@ -241,15 +384,77 @@ export default function ExportPage() {
     if (exportValidationIssues.length > 0) return;
     downloadCalendar();
     void trackAnalyticsEvent("export_ics_downloaded", exportTrackingParams);
-    setSuccessState(true);
+    setSuccessState({ kind: "ics" });
   };
+
+  const handleGoogleCalendarExport = async () => {
+    void trackAnalyticsEvent("export_google_clicked", {
+      ...exportTrackingParams,
+      blocked: exportValidationIssues.length > 0,
+      configured: googleCalendarConfigured,
+      google_calendar_mode: googleCalendarMode,
+      google_color_mode: googleEventColorMode,
+    });
+
+    if (exportValidationIssues.length > 0) return;
+
+    if (!googleCalendarConfigured) {
+      setGoogleError("Google Calendar export is not configured for this build.");
+      googleStatusRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      return;
+    }
+
+    setGoogleError("");
+    setGoogleExportProgress({
+      completed: 0,
+      total: 1,
+      label: "Preparing Google Calendar export...",
+    });
+    setIsGoogleExporting(true);
+
+    try {
+      const result = await exportToGoogleCalendar(setGoogleExportProgress);
+      void trackAnalyticsEvent("export_google_succeeded", {
+        ...exportTrackingParams,
+        event_count: result.eventCount,
+        calendar_count: result.calendarCount,
+        google_calendar_mode: googleCalendarMode,
+        google_color_mode: googleEventColorMode,
+      });
+      setSuccessState({
+        kind: "google",
+        eventCount: result.eventCount,
+        calendarCount: result.calendarCount,
+        calendarUrl: result.calendarUrl,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Google Calendar export failed. Please try again.";
+      setGoogleError(message);
+      void trackAnalyticsEvent("export_google_failed", {
+        ...exportTrackingParams,
+        message,
+      });
+    } finally {
+      setIsGoogleExporting(false);
+    }
+  };
+
+  const googleProgressPercent = googleExportProgress
+    ? Math.min(
+        100,
+        Math.round((googleExportProgress.completed / googleExportProgress.total) * 100)
+      )
+    : 0;
+  const settingsTitle = adminModeEnabled
+    ? "Notification and Calendar Settings"
+    : "Notification Settings";
 
   return (
     <RouteGuard>
-      <div
-        className={goosePageShellClass}
-        style={goosePageBackgroundStyle}
-      >
+      <div className={goosePageShellClass} style={goosePageBackgroundStyle}>
         {successState && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4 backdrop-blur-sm">
             <div className="flex w-full max-w-[420px] flex-col items-center rounded-2xl border border-[#e8e2ce] bg-white p-8 text-center shadow-[0px_20px_60px_-10px_rgba(28,24,13,0.15)]">
@@ -260,25 +465,40 @@ export default function ExportPage() {
               </div>
 
               <h3 className="mb-2 font-['Inter',sans-serif] text-[22px] font-black tracking-[-0.5px] text-[#1c180d]">
-                ICS File Downloaded!
+                {successState.kind === "google"
+                  ? "Google Calendar Updated!"
+                  : "ICS File Downloaded!"}
               </h3>
               <p className="mb-6 text-sm font-normal leading-relaxed text-[#78716c]">
-                Your .ics file has been downloaded. Import it into any calendar app to add your events.
+                {successState.kind === "google"
+                  ? `${successState.eventCount} events were exported across ${successState.calendarCount} calendar${successState.calendarCount === 1 ? "" : "s"}.`
+                  : "Your .ics file has been downloaded. Import it into any calendar app to add your events."}
               </p>
 
               <div className="flex w-full gap-3">
                 <button
-                  onClick={() => setSuccessState(false)}
+                  onClick={() => setSuccessState(null)}
                   className="h-11 min-w-0 flex-1 cursor-pointer rounded-xl border border-[#e8e2ce] bg-white px-5 text-sm font-medium text-[#78716c] transition-colors hover:bg-[#faf9f6]"
                 >
                   Back to Export
                 </button>
-                <button
-                  onClick={() => setSuccessState(false)}
-                  className="h-11 min-w-0 flex-1 cursor-pointer rounded-xl bg-[#f2b90d] px-7 text-sm font-bold text-[#1c180d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.2)] transition-all hover:brightness-[1.03]"
-                >
-                  Done
-                </button>
+                {successState.kind === "google" ? (
+                  <a
+                    href={successState.calendarUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-xl bg-[#f2b90d] px-7 text-sm font-bold text-[#1c180d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.2)] transition-all hover:brightness-[1.03]"
+                  >
+                    Open Calendar
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => setSuccessState(null)}
+                    className="h-11 min-w-0 flex-1 cursor-pointer rounded-xl bg-[#f2b90d] px-7 text-sm font-bold text-[#1c180d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.2)] transition-all hover:brightness-[1.03]"
+                  >
+                    Done
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -290,10 +510,10 @@ export default function ExportPage() {
               <div className="flex items-start justify-between gap-4 border-b border-[#efe7cc] px-6 py-5 sm:px-8">
                 <div>
                   <h3 className="font-['Inter',sans-serif] text-[24px] font-black tracking-[-0.5px] text-[#1c180d]">
-                    Notification Settings
+                    {settingsTitle}
                   </h3>
                   <p className="mt-1 max-w-[520px] text-sm leading-relaxed text-[#78716c]">
-                    Choose reminder defaults for the alarms included in your .ics file.
+                    Choose reminder defaults for exported calendar events.
                   </p>
                 </div>
                 <button
@@ -312,14 +532,30 @@ export default function ExportPage() {
                 </button>
               </div>
 
-              <div className="overflow-y-auto px-6 py-6 sm:px-8">
-                <section className="animate-in fade-in-0 slide-in-from-bottom-1 duration-200 ease-out space-y-4">
+              <div className="space-y-7 overflow-y-auto px-6 py-6 sm:px-8">
+                {adminModeEnabled && (
+                  <section className="space-y-4">
+                    <div>
+                      <h4 className="font-['Lexend',sans-serif] text-sm font-bold uppercase tracking-[0.12em] text-[#a8a29e]">
+                        Google Calendar layout
+                      </h4>
+                    </div>
+                    <SegmentedControl
+                      value={draftGoogleCalendarMode}
+                      options={GOOGLE_CALENDAR_MODE_OPTIONS}
+                      onChange={setDraftGoogleCalendarMode}
+                      ariaLabel="Google Calendar layout"
+                    />
+                  </section>
+                )}
+
+                <section className="animate-in fade-in-0 slide-in-from-bottom-1 space-y-4 duration-200 ease-out">
                   <div>
                     <h4 className="font-['Lexend',sans-serif] text-sm font-bold uppercase tracking-[0.12em] text-[#a8a29e]">
                       Notification settings
                     </h4>
                     <p className="mt-2 text-sm leading-relaxed text-[#78716c]">
-                      Choose a reminder preset for each event type. ICS export adds alarms when you choose a specific reminder.
+                      ICS export adds alarms when you choose a specific reminder.
                     </p>
                   </div>
                   <div className="space-y-3">
@@ -492,41 +728,219 @@ export default function ExportPage() {
 
         <main className={goosePageMainClass}>
           <div className="mb-8 w-full max-w-[600px] text-center">
-            <h1 className={goosePageHeadingClass}>
-              Export Your Calendar
-            </h1>
+            <h1 className={goosePageHeadingClass}>Export Your Calendar</h1>
             <p className="mt-3 font-['Lexend',sans-serif] text-base font-normal text-[#78716c]">
               Your calendar is all set. Download an import-ready ICS file below.
             </p>
           </div>
 
-          <div className={`${goosePanelClass} max-w-[680px] rounded-2xl`}>
+          <div className={`${goosePanelClass} max-w-[760px] rounded-2xl`}>
             <div className="p-6 sm:p-8">
               <h2 className="mb-5 font-['Lexend',sans-serif] text-lg font-bold text-[#1c180d]">
-                Download Calendar
+                {adminModeEnabled ? "Choose Export Method" : "Download Calendar"}
               </h2>
 
-              <button
-                onClick={handleDownloadICS}
-                disabled={exportValidationIssues.length > 0}
-                className={`flex w-full items-center justify-center gap-3 rounded-xl p-4 transition-all ${
-                  exportValidationIssues.length > 0
-                    ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
-                    : "cursor-pointer bg-[#f2b90d] shadow-[0px_0px_0px_3px_rgba(242,185,13,0.2)] hover:brightness-[1.02] hover:shadow-[0px_0px_0px_4px_rgba(242,185,13,0.3)]"
-                }`}
-              >
-                <div className="-scale-y-100">
-                  <DownloadIcon />
-                </div>
-                <span className="font-['Lexend',sans-serif] text-base font-bold whitespace-nowrap text-[#1c180d] sm:text-lg">
-                  Download .ICS
-                </span>
-              </button>
+              <div className={adminModeEnabled ? "grid gap-3 md:grid-cols-2" : ""}>
+                {adminModeEnabled && (
+                  <button
+                    onClick={handleGoogleCalendarExport}
+                    disabled={exportValidationIssues.length > 0 || isGoogleExporting}
+                    className={`flex w-full items-center justify-center gap-3 rounded-xl p-4 transition-all ${
+                      exportValidationIssues.length > 0 || isGoogleExporting
+                        ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
+                        : "cursor-pointer border border-[#d8e3fb] bg-white text-[#1c180d] shadow-[0px_0px_0px_3px_rgba(66,133,244,0.12)] hover:bg-[#f8fbff]"
+                    }`}
+                  >
+                    <GoogleCalendarIcon />
+                    <span className="font-['Lexend',sans-serif] text-base font-bold whitespace-nowrap sm:text-lg">
+                      {isGoogleExporting ? "Exporting..." : "Export to Google"}
+                    </span>
+                  </button>
+                )}
+
+                <button
+                  onClick={handleDownloadICS}
+                  disabled={exportValidationIssues.length > 0}
+                  className={`flex w-full items-center justify-center gap-3 rounded-xl p-4 transition-all ${
+                    exportValidationIssues.length > 0
+                      ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
+                      : "cursor-pointer bg-[#f2b90d] shadow-[0px_0px_0px_3px_rgba(242,185,13,0.2)] hover:brightness-[1.02] hover:shadow-[0px_0px_0px_4px_rgba(242,185,13,0.3)]"
+                  }`}
+                >
+                  <div className="-scale-y-100">
+                    <DownloadIcon />
+                  </div>
+                  <span className="font-['Lexend',sans-serif] text-base font-bold whitespace-nowrap text-[#1c180d] sm:text-lg">
+                    Download .ICS
+                  </span>
+                </button>
+              </div>
 
               <p className="mt-4 font-['Lexend',sans-serif] text-xs font-normal leading-relaxed text-[#a8a29e]">
                 ICS files can be imported into most calendar apps.
               </p>
+
+              {adminModeEnabled && (
+                <div
+                  ref={googleStatusRef}
+                  className="mt-5 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-4"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
+                        Google Calendar admin export
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-[#78716c]">
+                        {googleCalendarConfigured
+                          ? "Configured for this build."
+                          : "Set VITE_GOOGLE_CLIENT_ID before using Google export."}
+                      </p>
+                    </div>
+                    <span
+                      className={`rounded-full px-3 py-1 font-['Lexend',sans-serif] text-[11px] font-bold uppercase tracking-[0.1em] ${
+                        googleCalendarConfigured
+                          ? "bg-[#ecfdf5] text-[#047857]"
+                          : "bg-[#fef2f2] text-[#b91c1c]"
+                      }`}
+                    >
+                      {googleCalendarConfigured ? "Ready" : "Missing"}
+                    </span>
+                  </div>
+
+                  {googleExportProgress && (
+                    <div className="mt-4">
+                      <div className="mb-2 flex items-center justify-between gap-3 text-xs font-semibold text-[#78716c]">
+                        <span>{googleExportProgress.label}</span>
+                        <span>{googleProgressPercent}%</span>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded-full bg-[#ede9dd]">
+                        <div
+                          className="h-full rounded-full bg-[#f2b90d] transition-all duration-300"
+                          style={{ width: `${googleProgressPercent}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {googleError && (
+                    <p className="mt-4 rounded-xl border border-[#fecaca] bg-[#fef2f2] px-3 py-2 text-sm font-medium text-[#b91c1c]">
+                      {googleError}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
+
+            {adminModeEnabled && (
+              <div className={`border-t ${goosePanelDividerClass} px-6 py-6 sm:px-8`}>
+                <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h3 className="font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
+                      Colour Controls
+                    </h3>
+                    <p className="mt-1 text-sm leading-relaxed text-[#78716c]">
+                      Choose how Google Calendar colours exported events.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-5">
+                  <SegmentedControl
+                    value={googleEventColorMode}
+                    options={GOOGLE_EVENT_COLOR_MODE_OPTIONS}
+                    onChange={setGoogleEventColorMode}
+                    ariaLabel="Google event colour mode"
+                  />
+
+                  {googleEventColorMode === "uniform" ? (
+                    <div className="grid grid-cols-6 gap-3 sm:grid-cols-11">
+                      {googleEventColorOptions.map((option) => {
+                        const selected = option.id === googleUniformColorId;
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => setGoogleUniformColorId(option.id)}
+                            className={`h-10 rounded-full border-2 transition-all ${
+                              selected
+                                ? "border-[#1c180d] ring-2 ring-[#f2b90d]/45"
+                                : "border-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
+                            }`}
+                            style={{ backgroundColor: googleEventColorHex(option.id) }}
+                            aria-label={`Google event colour ${option.id}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {googleEventColorPalettes.map((palette) => {
+                        const selected = palette.id === exportConfig.paletteId;
+                        return (
+                          <button
+                            key={palette.id}
+                            type="button"
+                            onClick={() => setPaletteId(palette.id)}
+                            className={`overflow-hidden rounded-xl text-left transition-all ${
+                              selected
+                                ? "bg-[rgba(242,185,13,0.05)] ring-2 ring-[#f2b90d]"
+                                : "bg-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
+                            }`}
+                          >
+                            <div className="flex h-14">
+                              {palette.colors.slice(0, 5).map((color) => (
+                                <span
+                                  key={color}
+                                  className="flex-1"
+                                  style={{ backgroundColor: color }}
+                                />
+                              ))}
+                            </div>
+                            <div className="flex items-center justify-between px-3.5 py-3">
+                              <span className="font-['Lexend',sans-serif] text-[13px] font-bold text-[#1c1917]">
+                                {palette.name}
+                              </span>
+                              {selected && (
+                                <span className="rounded-full bg-[#f2b90d] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-[#1c180d]">
+                                  Selected
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED && (
+                    <div className="space-y-5 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] p-4">
+                      <SegmentedControl
+                        value={exportConfig.colorStrategy}
+                        options={COLOR_STRATEGY_OPTIONS}
+                        onChange={setColorStrategy}
+                        ariaLabel="Calendar palette strategy"
+                      />
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {palettes.map((palette) => (
+                          <PaletteCard
+                            key={palette.id}
+                            palette={palette}
+                            selected={exportConfig.paletteId === palette.id}
+                            onClick={() => setPaletteId(palette.id)}
+                          />
+                        ))}
+                        <CustomPaletteCard
+                          colors={exportConfig.customColors}
+                          selected={exportConfig.paletteId === "custom"}
+                          onClick={() => setPaletteId("custom")}
+                          onColorsChange={setCustomColors}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className={`border-t ${goosePanelDividerClass} px-6 pb-6 pt-6 sm:px-8 sm:pb-8 sm:pt-7`}>
               <button
@@ -535,57 +949,14 @@ export default function ExportPage() {
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#fff6d8] text-[#8f6a00]">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path
-                        d="M4 6h16"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M4 12h16"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M4 18h16"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M9 4v4"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M15 10v4"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M12 16v4"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <SettingsIcon />
                   </div>
                   <div className="min-w-0">
                     <p className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d] sm:text-base">
-                      Notification Settings
+                      {settingsTitle}
                     </p>
                     <p className="mt-0.5 text-xs leading-relaxed text-[#78716c] sm:text-sm">
-                      Choose reminder defaults before downloading your calendar.
+                      Choose reminder defaults before exporting your calendar.
                     </p>
                   </div>
                 </div>
@@ -610,7 +981,7 @@ export default function ExportPage() {
           </div>
 
           {exportValidationIssues.length > 0 && (
-            <div className="mt-6 w-full max-w-[680px] rounded-xl border border-[#fecaca] bg-[#fef2f2] px-5 py-4">
+            <div className="mt-6 w-full max-w-[760px] rounded-xl border border-[#fecaca] bg-[#fef2f2] px-5 py-4">
               <h3 className="font-['Lexend',sans-serif] text-sm font-bold text-[#b91c1c]">
                 Fix these items before export
               </h3>
@@ -625,10 +996,7 @@ export default function ExportPage() {
           )}
         </main>
 
-        <FlowFooter
-          backLabel="Back to Review"
-          onBack={() => navigate("/review")}
-        />
+        <FlowFooter backLabel="Back to Review" onBack={() => navigate("/review")} />
       </div>
     </RouteGuard>
   );
