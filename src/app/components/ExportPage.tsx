@@ -18,6 +18,7 @@ import {
   googleEventColorHex,
   googleEventColorOptions,
   googleEventColorPalettes,
+  resolveExportPaletteColors,
 } from "../lib/palettes";
 import {
   GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED,
@@ -275,6 +276,10 @@ function SegmentedControl<T extends string>({
   );
 }
 
+function courseMappingLabel(course: { courseCode: string; courseName: string }) {
+  return course.courseCode || course.courseName || "Course";
+}
+
 export default function ExportPage() {
   const navigate = useNavigate();
   const {
@@ -307,6 +312,25 @@ export default function ExportPage() {
   const activePaletteId = palettes.some((palette) => palette.id === exportConfig.paletteId)
     ? exportConfig.paletteId
     : palettes[0]?.id ?? "matcha";
+  const palettePreviewConfig =
+    exportConfig.paletteId === "custom"
+      ? exportConfig
+      : { ...exportConfig, paletteId: activePaletteId };
+  const paletteMappingColors = resolveExportPaletteColors(palettePreviewConfig);
+  const eventGroupColorMappings = EXPORT_GROUP_ORDER.map((group, index) => ({
+    label: group,
+    color: paletteMappingColors[index % paletteMappingColors.length],
+  }));
+  const uniqueCourses = Array.from(
+    new Map(courses.map((course) => [course.id, course])).values()
+  ).sort((left, right) =>
+    `${left.courseCode} ${left.term}`.localeCompare(`${right.courseCode} ${right.term}`)
+  );
+  const courseColorMappings = uniqueCourses.map((course, index) => ({
+    label: courseMappingLabel(course),
+    detail: course.term,
+    color: paletteMappingColors[index % paletteMappingColors.length],
+  }));
   const notificationSettings = {
     ...FALLBACK_NOTIFICATION_SETTINGS,
     ...(exportConfig.notificationSettings ?? {}),
@@ -873,6 +897,46 @@ export default function ExportPage() {
                           onClick={() => setPaletteId("custom")}
                           onColorsChange={setCustomColors}
                         />
+                      </div>
+                      <div className="rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-4">
+                        <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <h4 className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
+                              Colour mapping
+                            </h4>
+                            <p className="text-xs leading-relaxed text-[#78716c]">
+                              {exportConfig.colorStrategy === "course"
+                                ? "Each course calendar uses the next colour in the selected palette."
+                                : "Each event-type calendar uses the matching palette colour below."}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                          {(exportConfig.colorStrategy === "course" && courseColorMappings.length > 0
+                            ? courseColorMappings
+                            : eventGroupColorMappings
+                          ).map((mapping) => (
+                            <div
+                              key={`${mapping.label}-${mapping.color}`}
+                              className="flex items-center gap-3 rounded-xl border border-[#ebe2c9] bg-white px-3 py-2.5"
+                            >
+                              <span
+                                className="h-8 w-8 shrink-0 rounded-full border-2 border-white shadow-[0px_0px_0px_1px_rgba(28,24,13,0.12)]"
+                                style={{ backgroundColor: mapping.color }}
+                              />
+                              <div className="min-w-0">
+                                <p className="truncate font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
+                                  {mapping.label}
+                                </p>
+                                {"detail" in mapping && mapping.detail && (
+                                  <p className="truncate text-xs text-[#78716c]">
+                                    {mapping.detail}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ) : (
