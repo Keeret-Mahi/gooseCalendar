@@ -304,6 +304,9 @@ export default function ExportPage() {
   const googleCalendarMode = exportConfig.googleCalendarMode ?? "single";
   const googleEventColorMode = exportConfig.googleEventColorMode ?? "uniform";
   const googleUniformColorId = exportConfig.googleUniformColorId ?? "5";
+  const activePaletteId = palettes.some((palette) => palette.id === exportConfig.paletteId)
+    ? exportConfig.paletteId
+    : palettes[0]?.id ?? "matcha";
   const notificationSettings = {
     ...FALLBACK_NOTIFICATION_SETTINGS,
     ...(exportConfig.notificationSettings ?? {}),
@@ -836,96 +839,31 @@ export default function ExportPage() {
                 <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <h3 className="font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
-                      Colour Controls
+                      Color palette
                     </h3>
                     <p className="mt-1 text-sm leading-relaxed text-[#78716c]">
-                      Choose how Google Calendar colours exported events.
+                      {GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
+                        ? "Pick a palette before exporting to Google Calendar so each event-type calendar gets its color."
+                        : "Choose how Google Calendar colours exported events."}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-5">
-                  <SegmentedControl
-                    value={googleEventColorMode}
-                    options={GOOGLE_EVENT_COLOR_MODE_OPTIONS}
-                    onChange={setGoogleEventColorMode}
-                    ariaLabel="Google event colour mode"
-                  />
-
-                  {googleEventColorMode === "uniform" ? (
-                    <div className="grid grid-cols-6 gap-3 sm:grid-cols-11">
-                      {googleEventColorOptions.map((option) => {
-                        const selected = option.id === googleUniformColorId;
-                        return (
-                          <button
-                            key={option.id}
-                            type="button"
-                            onClick={() => setGoogleUniformColorId(option.id)}
-                            className={`h-10 rounded-full border-2 transition-all ${
-                              selected
-                                ? "border-[#1c180d] ring-2 ring-[#f2b90d]/45"
-                                : "border-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
-                            }`}
-                            style={{ backgroundColor: googleEventColorHex(option.id) }}
-                            aria-label={`Google event colour ${option.id}`}
-                          />
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      {googleEventColorPalettes.map((palette) => {
-                        const selected = palette.id === exportConfig.paletteId;
-                        return (
-                          <button
-                            key={palette.id}
-                            type="button"
-                            onClick={() => setPaletteId(palette.id)}
-                            className={`overflow-hidden rounded-xl text-left transition-all ${
-                              selected
-                                ? "bg-[rgba(242,185,13,0.05)] ring-2 ring-[#f2b90d]"
-                                : "bg-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
-                            }`}
-                          >
-                            <div className="flex h-14">
-                              {palette.colors.slice(0, 5).map((color) => (
-                                <span
-                                  key={color}
-                                  className="flex-1"
-                                  style={{ backgroundColor: color }}
-                                />
-                              ))}
-                            </div>
-                            <div className="flex items-center justify-between px-3.5 py-3">
-                              <span className="font-['Lexend',sans-serif] text-[13px] font-bold text-[#1c1917]">
-                                {palette.name}
-                              </span>
-                              {selected && (
-                                <span className="rounded-full bg-[#f2b90d] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-[#1c180d]">
-                                  Selected
-                                </span>
-                              )}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED && (
-                    <div className="space-y-5 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] p-4">
+                  {GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED ? (
+                    <>
                       <SegmentedControl
                         value={exportConfig.colorStrategy}
                         options={COLOR_STRATEGY_OPTIONS}
                         onChange={setColorStrategy}
                         ariaLabel="Calendar palette strategy"
                       />
-                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
                         {palettes.map((palette) => (
                           <PaletteCard
                             key={palette.id}
                             palette={palette}
-                            selected={exportConfig.paletteId === palette.id}
+                            selected={activePaletteId === palette.id}
                             onClick={() => setPaletteId(palette.id)}
                           />
                         ))}
@@ -936,7 +874,76 @@ export default function ExportPage() {
                           onColorsChange={setCustomColors}
                         />
                       </div>
-                    </div>
+                    </>
+                  ) : (
+                    <>
+                      <SegmentedControl
+                        value={googleEventColorMode}
+                        options={GOOGLE_EVENT_COLOR_MODE_OPTIONS}
+                        onChange={setGoogleEventColorMode}
+                        ariaLabel="Google event colour mode"
+                      />
+
+                      {googleEventColorMode === "uniform" ? (
+                        <div className="grid grid-cols-6 gap-3 sm:grid-cols-11">
+                          {googleEventColorOptions.map((option) => {
+                            const selected = option.id === googleUniformColorId;
+                            return (
+                              <button
+                                key={option.id}
+                                type="button"
+                                onClick={() => setGoogleUniformColorId(option.id)}
+                                className={`h-10 rounded-full border-2 transition-all ${
+                                  selected
+                                    ? "border-[#1c180d] ring-2 ring-[#f2b90d]/45"
+                                    : "border-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
+                                }`}
+                                style={{ backgroundColor: googleEventColorHex(option.id) }}
+                                aria-label={`Google event colour ${option.id}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          {googleEventColorPalettes.map((palette) => {
+                            const selected = palette.id === exportConfig.paletteId;
+                            return (
+                              <button
+                                key={palette.id}
+                                type="button"
+                                onClick={() => setPaletteId(palette.id)}
+                                className={`overflow-hidden rounded-xl text-left transition-all ${
+                                  selected
+                                    ? "bg-[rgba(242,185,13,0.05)] ring-2 ring-[#f2b90d]"
+                                    : "bg-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
+                                }`}
+                              >
+                                <div className="flex h-14">
+                                  {palette.colors.slice(0, 5).map((color) => (
+                                    <span
+                                      key={color}
+                                      className="flex-1"
+                                      style={{ backgroundColor: color }}
+                                    />
+                                  ))}
+                                </div>
+                                <div className="flex items-center justify-between px-3.5 py-3">
+                                  <span className="font-['Lexend',sans-serif] text-[13px] font-bold text-[#1c1917]">
+                                    {palette.name}
+                                  </span>
+                                  {selected && (
+                                    <span className="rounded-full bg-[#f2b90d] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-[#1c180d]">
+                                      Selected
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

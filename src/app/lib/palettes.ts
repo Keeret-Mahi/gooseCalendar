@@ -225,7 +225,9 @@ export function resolveExportPaletteColors(exportConfig: ExportConfig) {
   }
 
   const presetColors =
-    palettes.find((palette) => palette.id === exportConfig.paletteId)?.colors.filter(Boolean) ?? [];
+    palettes.find((palette) => palette.id === exportConfig.paletteId)?.colors.filter(Boolean) ??
+    palettes[0]?.colors.filter(Boolean) ??
+    [];
 
   return ensurePaletteColorCount(presetColors);
 }

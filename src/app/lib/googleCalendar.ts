@@ -20,10 +20,11 @@ import type {
   WeekdayCode,
 } from "./types";
 
-export const GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED = false;
+export const GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED = true;
 
 const GOOGLE_CALENDAR_SCOPES = [
   "https://www.googleapis.com/auth/calendar.app.created",
+  "https://www.googleapis.com/auth/calendar.calendarlist",
 ].join(" ");
 const GOOGLE_IDENTITY_SCRIPT_URL = "https://accounts.google.com/gsi/client";
 const GOOGLE_CALENDAR_API_BASE = "https://www.googleapis.com/calendar/v3";

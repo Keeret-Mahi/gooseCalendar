@@ -28,10 +28,7 @@ import {
   getExportValidationIssues,
   validateEventForExport,
 } from "../lib/calendar";
-import {
-  DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
-  ensurePaletteColorCount,
-} from "../lib/palettes";
+import { ensurePaletteColorCount } from "../lib/palettes";
 import {
   exportEventsToGoogleCalendar,
   isGoogleCalendarConfigured,
@@ -94,7 +91,7 @@ function buildStableId(seed: string) {
 }
 
 const defaultExportConfig: ExportConfig = {
-  paletteId: DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
+  paletteId: "matcha",
   customColors: ensurePaletteColorCount([
     "#e74c3c",
     "#3498db",
