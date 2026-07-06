@@ -4094,9 +4094,25 @@ function courseNameFromOutlineName(outlineName: string, courseCode: string) {
   );
 }
 
+function compactCourseCode(courseCode: string) {
+  return courseCode.replace(/\s+/g, "").toUpperCase();
+}
+
+function fallbackGenericCourseName(outlineName: string, courseCode: string) {
+  if (courseCode !== "COURSE") return compactCourseCode(courseCode);
+  return courseNameFromOutlineName(outlineName, courseCode) || outlineName.replace(/\.[^.]+$/, "");
+}
+
+function isGenericOutlineSectionHeading(value: string) {
+  return /^(?:\d+(?:\.\d+)?|[ivxlcdm]+)\s+(?:organizational information|contents?|outline|office hours?|schedule|lectures?(?:\s+and\s+tutorials?)?|tutorials?|labs?|web resources?|course notes?|assignments?|submitting assignments?|discussion forum|course policies?|grading|assessments?)\b/i.test(
+    value
+  );
+}
+
 function isUsableGenericCourseName(value: string, courseCode: string) {
   const normalized = normalizeWhitespace(value.replace(new RegExp(`\\b${escapeRegExp(courseCode)}\\b`, "i"), ""));
   if (normalized.length < 4 || normalized.length > 90) return false;
+  if (isGenericOutlineSectionHeading(normalized)) return false;
   if (/https?:|@|contents?\b|outline\b.*\b(?:office hours?|schedule|assignments?)\b/i.test(normalized)) {
     return false;
   }
@@ -4124,7 +4140,7 @@ function extractMetaFromSourceText(text: string, outlineName: string): OutlineMe
     line.toLowerCase().includes(courseCode.toLowerCase())
   );
   const courseCodePattern = new RegExp(`\\b${escapeRegExp(courseCode)}\\b`, "i");
-  const fallbackCourseName = courseNameFromOutlineName(outlineName, courseCode);
+  const fallbackCourseName = fallbackGenericCourseName(outlineName, courseCode);
   const extractedCandidateName =
     (courseLineIndex >= 0
       ? lines
