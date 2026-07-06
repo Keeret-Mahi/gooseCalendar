@@ -11,7 +11,7 @@ const HTML_FILE_EXTENSIONS = /\.html?$/i;
 const PDF_FILE_EXTENSION = /\.pdf$/i;
 
 function normalizeExtractedText(value: string) {
-  return value
+  return repairPdfTextArtifacts(value)
     .replace(/\r/g, "\n")
     .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]+/g, " ")
     .replace(/[ \t]+/g, " ")
@@ -19,6 +19,27 @@ function normalizeExtractedText(value: string) {
     .replace(/\n\s+/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+}
+
+function repairPdfTextArtifacts(value: string) {
+  return value
+    .replace(/\bO\s*ce\b/g, "Office")
+    .replace(/\bo\s*ce\b/g, "office")
+    .replace(/\bO\s*ces\b/g, "Offices")
+    .replace(/\bo\s*ces\b/g, "offices")
+    .replace(/\bLo\s*Cation\b/g, "Location")
+    .replace(/\bSc\s*H\s*edule\b/g, "Schedule")
+    .replace(/\bSche\s*dule\b/gi, "schedule")
+    .replace(/\bCon\s*ten\s*ts\b/gi, "contents")
+    .replace(/\bAssignmen\s*ts\b/gi, "assignments")
+    .replace(/\bT\s*utorials\b/g, "Tutorials")
+    .replace(/\bt\s*utorials\b/g, "tutorials")
+    .replace(/\bW\s*eb\b/g, "Web")
+    .replace(/\bw\s*eb\b/g, "web")
+    .replace(/\bco\s*urse\b/gi, "course")
+    .replace(/\bsp\s*eci\s*c\b/gi, "specific")
+    .replace(/\bda\s*y-b\s*y-da\s*y\b/gi, "day-by-day")
+    .replace(/\bu\s*w\s*aterlo\s*o\b/gi, "uwaterloo");
 }
 
 function bytesToBinaryString(bytes: Uint8Array) {
@@ -140,12 +161,40 @@ function readPdfLiteral(source: string, startIndex: number) {
   return undefined;
 }
 
+function shouldJoinPdfFragments(previous: string, current: string) {
+  const previousTrimmed = previous.trimEnd();
+  const currentTrimmed = current.trimStart();
+  if (!previousTrimmed || !currentTrimmed) return true;
+  if (/\s$/.test(previous) || /^\s/.test(current)) return true;
+  if (/^[,.;:!?)]/.test(currentTrimmed)) return true;
+  if (/[([{/:-]$/.test(previousTrimmed)) return true;
+  if (/[A-Za-z]$/.test(previousTrimmed) && /^[a-z]/.test(currentTrimmed)) return true;
+  if (/^[A-Z]$/.test(previousTrimmed.slice(-1)) && /^[a-z]/.test(currentTrimmed)) return true;
+  if (/\d$/.test(previousTrimmed) && /^[\d:.,]/.test(currentTrimmed)) return true;
+  return false;
+}
+
+function joinPdfTextFragments(fragments: string[]) {
+  let output = "";
+  fragments.forEach((fragment) => {
+    const cleaned = fragment.replace(/\s+/g, " ");
+    if (!cleaned.trim()) return;
+    if (!output || shouldJoinPdfFragments(output, cleaned)) {
+      output += cleaned;
+    } else {
+      output += ` ${cleaned}`;
+    }
+  });
+  return output;
+}
+
 function extractPdfTextStrings(content: string) {
   const blocks = Array.from(content.matchAll(/\bBT\b([\s\S]*?)\bET\b/g), (match) => match[1]);
   const sources = blocks.length > 0 ? blocks : [content];
-  const values: string[] = [];
+  const blockTexts: string[] = [];
 
   sources.forEach((source) => {
+    const values: string[] = [];
     for (let index = 0; index < source.length; index += 1) {
       const char = source[index];
       if (char === "(") {
@@ -168,9 +217,11 @@ function extractPdfTextStrings(content: string) {
         }
       }
     }
+    const blockText = joinPdfTextFragments(values);
+    if (blockText) blockTexts.push(blockText);
   });
 
-  return normalizeExtractedText(values.join(" "));
+  return normalizeExtractedText(blockTexts.join("\n"));
 }
 
 function extractPdfStreams(binary: string) {
@@ -217,8 +268,8 @@ export async function extractPdfText(file: File) {
     if (extracted) extractedParts.push(extracted);
   }
 
-  const fallbackText = extractPdfTextStrings(binary);
-  const text = normalizeExtractedText([...extractedParts, fallbackText].join("\n\n"));
+  const streamText = normalizeExtractedText(extractedParts.join("\n\n"));
+  const text = streamText.length >= 20 ? streamText : extractPdfTextStrings(binary);
   if (text.length < 20) {
     throw new Error(
       "Could not extract readable text from this PDF. Try exporting the outline as HTML or text."

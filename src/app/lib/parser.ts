@@ -4082,6 +4082,29 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function courseNameFromOutlineName(outlineName: string, courseCode: string) {
+  const codePattern = new RegExp(`\\b${escapeRegExp(courseCode)}\\b`, "i");
+  return normalizeWhitespace(
+    outlineName
+      .replace(/\.[^.]+$/, "")
+      .replace(/[_-]+/g, " ")
+      .replace(codePattern, "")
+      .replace(/\b(?:W|S|F)\s?\d{2,4}\b/gi, "")
+      .replace(/\b(?:Winter|Spring|Fall|Autumn)\s+20\d{2}\b/gi, "")
+  );
+}
+
+function isUsableGenericCourseName(value: string, courseCode: string) {
+  const normalized = normalizeWhitespace(value.replace(new RegExp(`\\b${escapeRegExp(courseCode)}\\b`, "i"), ""));
+  if (normalized.length < 4 || normalized.length > 90) return false;
+  if (/https?:|@|contents?\b|outline\b.*\b(?:office hours?|schedule|assignments?)\b/i.test(normalized)) {
+    return false;
+  }
+  const wordCount = normalized.split(/\s+/).length;
+  if (wordCount > 12) return false;
+  return /[A-Za-z]/.test(normalized);
+}
+
 function extractMetaFromSourceText(text: string, outlineName: string): OutlineMeta {
   const normalized = normalizeTextOutline(text);
   const lines = normalized
@@ -4101,19 +4124,22 @@ function extractMetaFromSourceText(text: string, outlineName: string): OutlineMe
     line.toLowerCase().includes(courseCode.toLowerCase())
   );
   const courseCodePattern = new RegExp(`\\b${escapeRegExp(courseCode)}\\b`, "i");
-  const candidateName =
+  const fallbackCourseName = courseNameFromOutlineName(outlineName, courseCode);
+  const extractedCandidateName =
     (courseLineIndex >= 0
       ? lines
           .slice(courseLineIndex, courseLineIndex + 4)
           .find(
             (line) =>
               line.length > courseCode.length &&
+              isUsableGenericCourseName(line, courseCode) &&
               !/^course outline$/i.test(line) &&
               !/^(?:winter|spring|fall|autumn)\s+20\d{2}$/i.test(line)
           )
       : undefined) ??
-    lines.find((line) => line.length > 8 && !/\b(?:university|outline|syllabus)\b/i.test(line)) ??
-    outlineName.replace(/\.[^.]+$/, "");
+    lines.find((line) => isUsableGenericCourseName(line, courseCode));
+  const candidateName =
+    extractedCandidateName || fallbackCourseName || outlineName.replace(/\.[^.]+$/, "");
   const courseName = normalizeCourseNameCapitalization(
     normalizeWhitespace(candidateName.replace(courseCodePattern, ""))
   );
@@ -4121,7 +4147,7 @@ function extractMetaFromSourceText(text: string, outlineName: string): OutlineMe
   return {
     outlineName,
     courseCode,
-    courseName: courseName || outlineName.replace(/\.[^.]+$/, ""),
+    courseName: courseName || fallbackCourseName || outlineName.replace(/\.[^.]+$/, ""),
     term,
     termYear,
     summary: undefined,

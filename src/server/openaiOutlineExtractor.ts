@@ -16,6 +16,7 @@ const GPT_55_TIMEOUT_MS = 240_000;
 const DEFAULT_OPENAI_MAX_OUTPUT_TOKENS = 6_000;
 const GPT_55_MAX_OUTPUT_TOKENS = 8_000;
 const GPT_55_PRO_MAX_OUTPUT_TOKENS = 12_000;
+const FULL_OUTLINE_MIN_OUTPUT_TOKENS = 16_000;
 
 type OpenAiUsage = {
   prompt_tokens?: number;
@@ -467,18 +468,20 @@ function configuredTimeoutForModel(model: string) {
   return defaultTimeoutForModel(model);
 }
 
-function defaultMaxOutputTokensForModel(model: string) {
+function defaultMaxOutputTokensForRequest(model: string, request: AiOutlineExtractionRequest) {
+  if (request.extractionMode === "fullOutline") return FULL_OUTLINE_MIN_OUTPUT_TOKENS;
   if (model.startsWith("gpt-5.5-pro")) return GPT_55_PRO_MAX_OUTPUT_TOKENS;
   if (model.startsWith("gpt-5.5")) return GPT_55_MAX_OUTPUT_TOKENS;
   return DEFAULT_OPENAI_MAX_OUTPUT_TOKENS;
 }
 
-function configuredMaxOutputTokensForModel(model: string) {
+function configuredMaxOutputTokensForRequest(model: string, request: AiOutlineExtractionRequest) {
+  const defaultTokens = defaultMaxOutputTokensForRequest(model, request);
   const configured = Number(process.env.OPENAI_MAX_OUTPUT_TOKENS);
   if (Number.isFinite(configured) && configured >= 1_000) {
-    return Math.round(Math.min(configured, 32_000));
+    return Math.max(defaultTokens, Math.round(Math.min(configured, 32_000)));
   }
-  return defaultMaxOutputTokensForModel(model);
+  return defaultTokens;
 }
 
 function isChatEndpointMismatch(status: number, message: string) {
@@ -678,7 +681,7 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
       : "https://api.openai.com/v1"
   ).replace(/\/+$/, "");
   const timeoutMs = configuredTimeoutForModel(model);
-  const maxOutputTokens = configuredMaxOutputTokensForModel(model);
+  const maxOutputTokens = configuredMaxOutputTokensForRequest(model, request);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
