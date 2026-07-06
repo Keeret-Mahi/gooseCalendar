@@ -13,6 +13,7 @@ import { extractNonMeetingEventsWithAi } from "./aiExtractionClient";
 import { mapAiExtractionToEventCandidates } from "./aiEventMapper";
 import { normalizeCourseNameCapitalization } from "./courseNames";
 import type { AiOutlineExtractionRequest } from "./aiExtractionSchema";
+import type { OutlineSource } from "./outlineSource";
 import type {
   EventCandidate,
   EventConfidence,
@@ -4028,22 +4029,145 @@ function buildAiExtractionRequest(
     term: meta.term,
     termYear: meta.termYear,
     outlineText: buildAiExtractionOutlineText(document),
+    extractionMode: "nonMeeting",
+    sourceFormat: "html",
   };
 }
 
-async function computeRawOutlineHash(html: string) {
+function outlineTextFromHtml(html: string) {
+  const document = new DOMParser().parseFromString(html, "text/html");
+  document.querySelectorAll("script, style, noscript").forEach((element) => element.remove());
+  return normalizeAiExtractionText(
+    document.body ? htmlToText(document.body) : document.documentElement.textContent ?? ""
+  );
+}
+
+function normalizeTextOutline(value: string) {
+  return normalizeAiExtractionText(value);
+}
+
+function normalizeCacheSource(value: string) {
+  return normalizeWhitespace(value)
+    .toLowerCase()
+    .replace(/[^\S\r\n]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+async function computeOutlineHash(value: string) {
   if (!globalThis.crypto?.subtle) {
     throw new Error("Browser crypto is unavailable.");
   }
 
   const digest = await globalThis.crypto.subtle.digest(
     "SHA-256",
-    new TextEncoder().encode(html)
+    new TextEncoder().encode(normalizeCacheSource(value))
   );
 
   return Array.from(new Uint8Array(digest))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
+}
+
+function isUWaterlooDeterministicDocument(document: Document) {
+  return Boolean(
+    document.querySelector("article.outline-content") &&
+      (document.querySelector("figure.schedule-info table") ||
+        document.querySelector(".outline-courses") ||
+        document.querySelector(".outline-term"))
+  );
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractMetaFromSourceText(text: string, outlineName: string): OutlineMeta {
+  const normalized = normalizeTextOutline(text);
+  const lines = normalized
+    .split("\n")
+    .map((line) => normalizeWhitespace(line))
+    .filter(Boolean);
+  const courseCode =
+    normalized.match(/\b[A-Z]{2,8}\s*\d{2,4}[A-Z]?\b/)?.[0]?.replace(/\s+/g, " ") ??
+    outlineName.match(/[A-Z]{2,8}\s*\d{2,4}[A-Z]?/i)?.[0]?.toUpperCase().replace(/\s+/g, " ") ??
+    "COURSE";
+  const term =
+    normalized.match(/\b(?:Winter|Spring|Fall|Autumn)\s+20\d{2}\b/i)?.[0] ??
+    normalized.match(/\b20\d{2}\s+(?:Winter|Spring|Fall|Autumn)\b/i)?.[0] ??
+    "Unknown Term";
+  const termYear = Number(term.match(/(20\d{2})/)?.[1] ?? new Date().getFullYear());
+  const courseLineIndex = lines.findIndex((line) =>
+    line.toLowerCase().includes(courseCode.toLowerCase())
+  );
+  const courseCodePattern = new RegExp(`\\b${escapeRegExp(courseCode)}\\b`, "i");
+  const candidateName =
+    (courseLineIndex >= 0
+      ? lines
+          .slice(courseLineIndex, courseLineIndex + 4)
+          .find(
+            (line) =>
+              line.length > courseCode.length &&
+              !/^course outline$/i.test(line) &&
+              !/^(?:winter|spring|fall|autumn)\s+20\d{2}$/i.test(line)
+          )
+      : undefined) ??
+    lines.find((line) => line.length > 8 && !/\b(?:university|outline|syllabus)\b/i.test(line)) ??
+    outlineName.replace(/\.[^.]+$/, "");
+  const courseName = normalizeCourseNameCapitalization(
+    normalizeWhitespace(candidateName.replace(courseCodePattern, ""))
+  );
+
+  return {
+    outlineName,
+    courseCode,
+    courseName: courseName || outlineName.replace(/\.[^.]+$/, ""),
+    term,
+    termYear,
+    summary: undefined,
+  };
+}
+
+function buildGenericParsedCourse(meta: OutlineMeta, sourceKey: string): ParsedCourse {
+  return {
+    id: buildStableId(`${meta.courseCode}:${meta.term}:${sourceKey}`),
+    outlineId: buildStableId(sourceKey),
+    outlineName: meta.outlineName,
+    courseCode: meta.courseCode,
+    courseName: meta.courseName,
+    term: meta.term,
+    sectionOptions: [],
+    eventIds: [],
+    officeHourEventIds: [],
+    warnings: [
+      "This outline was processed with full-outline AI extraction because it was not a deterministic UWaterloo HTML outline.",
+    ],
+    summary: meta.summary,
+  };
+}
+
+function buildFullOutlineAiRequest(
+  source: OutlineSource,
+  meta: OutlineMeta,
+  outlineText: string
+): AiOutlineExtractionRequest {
+  return {
+    outlineName: meta.outlineName,
+    courseCode: meta.courseCode,
+    courseName: meta.courseName,
+    term: meta.term,
+    termYear: meta.termYear,
+    outlineText: truncateText(outlineText, AI_EXTRACTION_TEXT_LIMIT),
+    extractionMode: "fullOutline",
+    sourceFormat: source.format,
+  };
+}
+
+function sourceTextForAi(source: OutlineSource) {
+  if (source.format === "html") {
+    return outlineTextFromHtml(source.content);
+  }
+  return normalizeTextOutline(source.content);
 }
 
 function extractMeta(document: Document, outlineName: string): OutlineMeta {
@@ -21140,22 +21264,86 @@ export function parseOutlineHtml(html: string, outlineName: string): OutlinePars
 }
 
 export async function parseOutlineHtmlWithAi(
-  html: string,
-  outlineName: string
+  sourceOrHtml: OutlineSource | string,
+  outlineName?: string
 ): Promise<OutlineParseResult> {
-  const parsed = buildDeterministicScheduleParse(html, outlineName);
-  let aiRequest = parsed.aiRequest;
+  const source: OutlineSource =
+    typeof sourceOrHtml === "string"
+      ? {
+          outlineName: outlineName ?? "outline.html",
+          format: "html",
+          content: sourceOrHtml,
+        }
+      : sourceOrHtml;
+
+  if (source.format === "html") {
+    const document = new DOMParser().parseFromString(source.content, "text/html");
+    if (isUWaterlooDeterministicDocument(document)) {
+      const parsed = buildDeterministicScheduleParse(source.content, source.outlineName);
+      let aiRequest = parsed.aiRequest;
+
+      try {
+        aiRequest = {
+          ...aiRequest,
+          outlineHash: await computeOutlineHash(aiRequest.outlineText),
+        };
+      } catch (error) {
+        console.warn("[gooseCalendar] AI extraction cache hash could not be computed", {
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+
+      try {
+        const extraction = await extractNonMeetingEventsWithAi(aiRequest);
+        extraction.warnings.forEach((warning) => addCourseWarning(parsed.course, warning));
+
+        const aiEvents = mapAiExtractionToEventCandidates(extraction, parsed.course, {
+          termBounds: parsed.termBounds,
+          outlineText: aiRequest.outlineText,
+        });
+        const events = finalizeParserEvents(parsed.course, [...parsed.events, ...aiEvents], parsed.meta);
+
+        return finalizeOutlineParseResult(parsed, events);
+      } catch (error) {
+        addCourseWarning(
+          parsed.course,
+          error instanceof Error
+            ? `AI extraction failed: ${error.message}`
+            : "AI extraction failed."
+        );
+        return finalizeOutlineParseResult(parsed, parsed.events);
+      }
+    }
+  }
+
+  const outlineText = sourceTextForAi(source);
+  const meta = extractMetaFromSourceText(outlineText, source.outlineName);
+  const course = buildGenericParsedCourse(meta, `${source.outlineName}:${source.format}`);
+  const termBounds = computeFallbackTermBounds(
+    [{ id: "source", title: "Outline", elements: [], text: outlineText }],
+    meta
+  );
+  let aiRequest = buildFullOutlineAiRequest(source, meta, outlineText);
 
   try {
     aiRequest = {
       ...aiRequest,
-      outlineHash: await computeRawOutlineHash(html),
+      outlineHash: await computeOutlineHash(aiRequest.outlineText),
     };
   } catch (error) {
     console.warn("[gooseCalendar] AI extraction cache hash could not be computed", {
       message: error instanceof Error ? error.message : "Unknown error",
     });
   }
+
+  const parsed: DeterministicScheduleParse = {
+    course,
+    events: [],
+    meta,
+    termBounds,
+    aiRequest,
+    sectionOptionCount: 1,
+  };
 
   try {
     const extraction = await extractNonMeetingEventsWithAi(aiRequest);
@@ -21165,7 +21353,7 @@ export async function parseOutlineHtmlWithAi(
       termBounds: parsed.termBounds,
       outlineText: aiRequest.outlineText,
     });
-    const events = finalizeParserEvents(parsed.course, [...parsed.events, ...aiEvents], parsed.meta);
+    const events = finalizeParserEvents(parsed.course, aiEvents, parsed.meta);
 
     return finalizeOutlineParseResult(parsed, events);
   } catch (error) {
@@ -21175,6 +21363,6 @@ export async function parseOutlineHtmlWithAi(
         ? `AI extraction failed: ${error.message}`
         : "AI extraction failed."
     );
-    return finalizeOutlineParseResult(parsed, parsed.events);
+    return finalizeOutlineParseResult(parsed, []);
   }
 }

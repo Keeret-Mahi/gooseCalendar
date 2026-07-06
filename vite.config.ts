@@ -28,6 +28,8 @@ export default defineConfig(({ mode }) => {
     'FIREBASE_PROJECT_ID',
     'FIREBASE_CLIENT_EMAIL',
     'FIREBASE_PRIVATE_KEY',
+    'FIREBASE_SERVICE_ACCOUNT_JSON',
+    'FIREBASE_ADMIN_CREDENTIALS',
     'AI_EXTRACTION_CACHE_ENABLED',
   ].forEach((key) => {
     if (!process.env[key] && env[key]) {

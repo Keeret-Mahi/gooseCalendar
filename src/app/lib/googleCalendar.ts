@@ -506,6 +506,10 @@ function recurringDates(event: EventCandidate) {
     .map((date) => format(date, "yyyy-MM-dd"));
 }
 
+function firstRecurringDate(event: EventCandidate) {
+  return recurringDates(event)[0];
+}
+
 function buildRecurrenceLines(event: EventCandidate) {
   if (
     event.timing.kind !== "recurring" ||
@@ -611,13 +615,16 @@ function buildRecurringEventResource(
     throw new Error("Cannot build a Google Calendar resource for an incomplete recurring event.");
   }
 
+  const firstDate = firstRecurringDate(event);
+  if (!firstDate) {
+    throw new Error("Cannot build a Google Calendar resource for a recurring event with no occurrences.");
+  }
+
   const common = {
     id: buildGoogleEventId(`${course.id}:${event.id}`),
     summary: buildEventSummary(
       event,
-      event.timing.kind === "recurring" && event.timing.startDate
-        ? event.timing.occurrenceNotes[event.timing.startDate]
-        : undefined,
+      event.timing.occurrenceNotes[firstDate] ?? undefined,
       "google"
     ),
     description: buildEventDescription(course, selection, event),
@@ -633,18 +640,18 @@ function buildRecurringEventResource(
   if (event.timing.startTime && event.timing.endTime) {
     return {
       ...common,
-      start: googleDateTime(event.timing.startDate, event.timing.startTime),
-      end: googleDateTime(event.timing.startDate, event.timing.endTime),
+      start: googleDateTime(firstDate, event.timing.startTime),
+      end: googleDateTime(firstDate, event.timing.endTime),
     };
   }
 
   return {
     ...common,
     start: {
-      date: event.timing.startDate,
+      date: firstDate,
     },
     end: {
-      date: format(addDays(parseISO(event.timing.startDate), 1), "yyyy-MM-dd"),
+      date: format(addDays(parseISO(firstDate), 1), "yyyy-MM-dd"),
     },
   };
 }

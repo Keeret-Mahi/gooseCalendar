@@ -624,7 +624,7 @@ export default function SelectSectionsPage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".html,.htm"
+                accept=".html,.htm,.pdf,.txt,.text,.md,text/html,text/plain,application/pdf"
                 multiple
                 className="hidden"
                 onChange={(event) => {

@@ -6,7 +6,7 @@ import {
   type AiOutlineExtractionRequest,
 } from "../app/lib/aiExtractionSchema.js";
 
-export const AI_CACHE_VERSION = "v1";
+export const AI_CACHE_VERSION = "v2";
 
 const CACHE_COLLECTION = "outlineAiExtractionCache";
 const HASH_PATTERN = /^[a-f0-9]{64}$/i;
@@ -192,7 +192,7 @@ function buildCacheKey(request: AiOutlineExtractionRequest) {
     return undefined;
   }
 
-  return `${AI_CACHE_VERSION}_${request.termYear}_${request.outlineHash.toLowerCase()}`;
+  return `${AI_CACHE_VERSION}_${request.extractionMode}_${request.outlineHash.toLowerCase()}`;
 }
 
 export async function readAiExtractionCache(
@@ -205,6 +205,7 @@ export async function readAiExtractionCache(
       termYear: request.termYear,
       hasOutlineHash: Boolean(request.outlineHash),
       outlineHashLength: request.outlineHash?.length ?? 0,
+      extractionMode: request.extractionMode,
     });
     return { status: "disabled" };
   }
@@ -221,6 +222,7 @@ export async function readAiExtractionCache(
       console.info("[gooseCalendar] AI extraction cache miss", {
         cacheKey,
         courseCode: request.courseCode,
+        extractionMode: request.extractionMode,
       });
       return { status: "miss", cacheKey };
     }
@@ -229,7 +231,7 @@ export async function readAiExtractionCache(
     const expectedHash = request.outlineHash?.toLowerCase();
     if (
       data.outlineHash !== expectedHash ||
-      data.termYear !== request.termYear ||
+      data.extractionMode !== request.extractionMode ||
       data.cacheVersion !== AI_CACHE_VERSION
     ) {
       console.warn("[gooseCalendar] AI extraction cache metadata is invalid", {
@@ -270,6 +272,7 @@ export async function readAiExtractionCache(
     console.info("[gooseCalendar] AI extraction cache hit", {
       cacheKey,
       courseCode: request.courseCode,
+      extractionMode: request.extractionMode,
       eventCount: validation.data.events.length,
       skippedOpenAi: true,
       estimatedCostDisplay: "$0.000",
@@ -298,6 +301,7 @@ export async function writeAiExtractionCache(input: CacheWriteInput) {
       termYear: input.request.termYear,
       hasOutlineHash: Boolean(input.request.outlineHash),
       outlineHashLength: input.request.outlineHash?.length ?? 0,
+      extractionMode: input.request.extractionMode,
     });
     return;
   }
@@ -324,6 +328,8 @@ export async function writeAiExtractionCache(input: CacheWriteInput) {
         {
           outlineHash: input.request.outlineHash?.toLowerCase(),
           termYear: input.request.termYear,
+          extractionMode: input.request.extractionMode,
+          sourceFormat: input.request.sourceFormat,
           cacheVersion: AI_CACHE_VERSION,
           courseCode: input.request.courseCode,
           courseName: input.request.courseName,
@@ -342,6 +348,7 @@ export async function writeAiExtractionCache(input: CacheWriteInput) {
     console.info("[gooseCalendar] AI extraction cache write completed", {
       cacheKey,
       courseCode: input.request.courseCode,
+      extractionMode: input.request.extractionMode,
       eventCount: validation.data.events.length,
     });
   } catch (error) {

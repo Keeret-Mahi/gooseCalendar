@@ -144,7 +144,7 @@ function Container11() {
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="flex flex-col font-['Inter:Regular',sans-serif] font-normal justify-center leading-[0] not-italic relative shrink-0 text-[#645f52] text-[12px] text-center whitespace-nowrap">
-        <p className="leading-[16px]">HTML Files Only · Multiple files supported</p>
+        <p className="leading-[16px]">HTML, PDF, or text files · Multiple files supported</p>
       </div>
     </div>
   );

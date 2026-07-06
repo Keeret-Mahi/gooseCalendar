@@ -25,8 +25,12 @@ firestore-debug.log*
 # Cache / temp artifacts
 .vite/
 .cache/
+coverage/
+playwright-report/
+test-results/
 tmp/
 tmp-parser-bundle.cjs
+*.tsbuildinfo
 .vercel/
 .firebase/
 
@@ -37,5 +41,8 @@ sample_outlines/
 # OS / editor files
 .DS_Store
 .claude/
+.claude*/
+.codex/
+.cursor/
 .vscode/
 .idea/

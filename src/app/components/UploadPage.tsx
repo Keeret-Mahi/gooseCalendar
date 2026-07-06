@@ -44,6 +44,34 @@ function FileIcon() {
   );
 }
 
+function ExternalLinkIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M6 3.33333H3.33333C2.59695 3.33333 2 3.93029 2 4.66667V12.6667C2 13.403 2.59695 14 3.33333 14H11.3333C12.0697 14 12.6667 13.403 12.6667 12.6667V10"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M9.33333 2H14V6.66667"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M6.66667 9.33333L14 2"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
 function XIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -175,7 +203,7 @@ export default function UploadPage() {
   const canContinue = courses.length > 0 && !isParsing;
   const hasOverflow = uploads.length > 4;
   const helperText = useMemo(() => {
-    if (uploads.length === 0) return "HTML Files Only · Multiple files supported";
+    if (uploads.length === 0) return "HTML, PDF, or text files · Multiple files supported";
     if (isParsing) return "Extracting dates, schedules, and assessments from your outlines";
     if (courses.length > 0) {
       return `${courses.length} course${courses.length === 1 ? "" : "s"} parsed and ready for section selection`;
@@ -187,7 +215,7 @@ export default function UploadPage() {
     {
       number: 1,
       title: "Upload Course Outlines",
-      description: "Drop in one or more Waterloo outline HTML files.",
+      description: "Drop in one or more course outline files.",
     },
     {
       number: 2,
@@ -305,9 +333,14 @@ export default function UploadPage() {
           <div className="mb-6 mt-1 max-w-[576px] text-center">
             <p className="font-['Lexend',sans-serif] text-[18px] font-normal leading-[28px] text-[#78716c]">
               Upload your{" "}
-              <span className="font-medium text-[#645f52] underline decoration-[#d4c99a] underline-offset-2">
+              <a
+                href="https://outline.uwaterloo.ca/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-[#645f52] underline decoration-[#d4c99a] underline-offset-2 transition-colors hover:text-[#1b180d]"
+              >
                 UWaterloo course outlines
-              </span>{" "}
+              </a>{" "}
               and
               <br />
               get an exportable calendar in seconds.
@@ -439,7 +472,7 @@ export default function UploadPage() {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".html,.htm"
+            accept=".html,.htm,.pdf,.txt,.text,.md,text/html,text/plain,application/pdf"
             multiple
             className="hidden"
             onChange={(event) => {
@@ -469,17 +502,28 @@ export default function UploadPage() {
             </button>
           )}
 
-          <div className="group mt-2 flex cursor-pointer items-center justify-center gap-2">
+          <div className="mt-2 flex flex-col items-center justify-center gap-1">
             <button
               type="button"
               onClick={openHowItWorks}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-3 py-2 transition-colors hover:bg-[rgba(241,200,75,0.08)]"
+              className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-3 py-2 transition-colors hover:bg-[rgba(241,200,75,0.08)]"
             >
               <VideoIcon />
               <span className="font-['Inter',sans-serif] text-sm font-normal text-[#645f52] transition-colors group-hover:underline">
                 Watch a video to see how it works
               </span>
             </button>
+            {uploads.length === 0 && (
+              <a
+                href="https://outline.uwaterloo.ca/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-['Inter',sans-serif] text-sm font-normal text-[#8a6f17] transition-colors hover:bg-[rgba(241,200,75,0.08)] hover:text-[#1b180d] hover:underline"
+              >
+                Find outlines at outline.uwaterloo.ca
+                <ExternalLinkIcon />
+              </a>
+            )}
           </div>
         </div>
 

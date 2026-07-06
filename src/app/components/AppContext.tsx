@@ -37,6 +37,7 @@ import {
 } from "../lib/googleCalendar";
 import { trackAnalyticsEvent } from "../lib/analytics";
 import { parseOutlineHtmlWithAi } from "../lib/parser";
+import { isSupportedOutlineFile, readOutlineSource } from "../lib/outlineSource";
 
 interface AppContextType {
   uploads: UploadedOutline[];
@@ -366,11 +367,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           )
         );
 
-        upload.file
-          .text()
-          .then(async (html) => {
+        readOutlineSource(upload.file)
+          .then(async (source) => {
             if (removedUploadIdsRef.current.has(upload.id)) return;
-            const result = await parseOutlineHtmlWithAi(html, upload.name);
+            const result = await parseOutlineHtmlWithAi(source);
 
             setCourses((current) => [
               ...current.filter((course) => course.id !== result.course.id),
@@ -421,25 +421,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const addFiles = (newFiles: FileList | File[]) => {
     const incomingFiles = Array.from(newFiles);
-    const htmlFiles = Array.from(newFiles).filter(
-      (file) => file.name.endsWith(".html") || file.name.endsWith(".htm")
-    );
+    const outlineFiles = Array.from(newFiles).filter(isSupportedOutlineFile);
 
     const uploadKey = (file: File) => `${file.name}:${file.size}:${file.lastModified}`;
-    const incomingKeys = new Set(htmlFiles.map(uploadKey));
+    const incomingKeys = new Set(outlineFiles.map(uploadKey));
     const duplicateUploads = uploads.filter((upload) => incomingKeys.has(uploadKey(upload.file)));
     const duplicateCourseIds = duplicateUploads.flatMap((upload) => upload.courseIds);
 
     void trackAnalyticsEvent("outline_upload_attempted", {
       file_count: incomingFiles.length,
-      html_file_count: htmlFiles.length,
-      rejected_file_count: incomingFiles.length - htmlFiles.length,
+      outline_file_count: outlineFiles.length,
+      rejected_file_count: incomingFiles.length - outlineFiles.length,
       duplicate_file_count: duplicateUploads.length,
     });
 
-    if (htmlFiles.length > 0) {
+    if (outlineFiles.length > 0) {
       void trackAnalyticsEvent("outline_upload_accepted", {
-        html_file_count: htmlFiles.length,
+        outline_file_count: outlineFiles.length,
         duplicate_file_count: duplicateUploads.length,
       });
     }
@@ -462,7 +460,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setUploads((current) => {
       const nextExisting = current.filter((upload) => !incomingKeys.has(uploadKey(upload.file)));
       const timestamp = Date.now();
-      const nextUploads = htmlFiles.map((file, index) => ({
+      const nextUploads = outlineFiles.map((file, index) => ({
         id: buildStableId(`${uploadKey(file)}:${timestamp}:${index}`),
         name: file.name,
         file,

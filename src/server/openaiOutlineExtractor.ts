@@ -9,7 +9,7 @@ import {
   writeAiExtractionCache,
 } from "./firebaseExtractionCache.js";
 
-const DEFAULT_MODEL = "gpt-4.1-mini";
+const DEFAULT_MODEL = "gpt-5.5";
 const DEFAULT_OUTLINE_TEXT_LIMIT = 45_000;
 const DEFAULT_OPENAI_TIMEOUT_MS = 90_000;
 const GPT_55_TIMEOUT_MS = 240_000;
@@ -89,14 +89,16 @@ const OPENAI_MODEL_PRICING: OpenAiPricing[] = [
   },
 ];
 
-export const AI_EXTRACTOR_SYSTEM_PROMPT = `You are extracting structured non-meeting calendar events from a University of Waterloo course outline.
+export const AI_EXTRACTOR_SYSTEM_PROMPT = `You are extracting structured calendar events from a course outline.
 
 Context:
-- The lecture/tutorial/lab schedule has already been parsed elsewhere.
-- Do NOT return lecture, tutorial, or lab meeting events.
-- Your job is only to extract non-meeting items from the remaining outline content.
+- You may receive either a deterministic UWaterloo hybrid extraction task or a generic full-outline extraction task.
+- Follow the mode-specific instructions in the user message.
 
 You must identify and categorize:
+- Lecture
+- Tutorial
+- Lab
 - Assignment
 - Assessment
 - OfficeHours
@@ -126,7 +128,7 @@ Rules:
 10. Include a short source snippet for each event so the local app can store provenance.
 11. Do not omit assignment or assessment series just because individual dates are not listed.
     - Scan prose, tables, bullet lists, grading summaries, tentative schedules, and policy-adjacent course-specific text for assignments, quizzes, exams, discussions, labs, projects, papers, reports, presentations, and other coursework.
-    - Tentative class plans, weekly schedules, course schedules, and topic schedules are valid sources for assignment/assessment deadlines. Extract only the assignment/assessment/deadline cells from those rows; do not return lecture/topic/meeting events from those tables.
+    - Tentative class plans, weekly schedules, course schedules, and topic schedules are valid sources for assignment/assessment deadlines. In deterministic UWaterloo hybrid mode, extract only assignment/assessment/deadline cells from those rows; do not return lecture/topic/meeting events from those tables.
     - If a schedule table lists exact items such as "Assignment 1 due Wed Jan 14", return those exact items with dates.
     - If month/day dates omit a year, use the course metadata termYear.
     - If one section gives a common due time or submission method for a series and another table gives exact dates for the individual items, combine those explicit facts.
@@ -162,14 +164,14 @@ Return exactly this JSON shape:
   "events": [
     {
       "label": "string",
-      "eventType": "Assignment | Assessment | OfficeHours | Other",
+      "eventType": "Lecture | Tutorial | Lab | Assignment | Assessment | OfficeHours | Other",
       "location": "string | null",
       "instructorName": "string | null",
       "instructorEmail": "string | null",
       "notes": ["string"],
       "weight": "string | null",
       "confidence": "high | medium | low",
-      "sourceKind": "table | prose | topic",
+      "sourceKind": "schedule | table | prose | topic",
       "sourceSectionTitle": "string | null",
       "sourceSnippet": "string",
       "timing": {
@@ -212,6 +214,11 @@ Timing rules:
   - \`allDay = true\`
   - include \`Date unresolved\` in notes
 
+Recurring class rules:
+- For recurring lectures, tutorials, labs, and office hours, startDate and recurringEndDate are the date range boundaries from the outline.
+- The actual meeting days are determined only by byDay.
+- Example: "Jan 1 - May 2, every Tuesday and Thursday" means startDate is the parsed Jan 1 date, recurringEndDate is the parsed May 2 date, and byDay is ["TU","TH"]. Do not imply there is a meeting on Jan 1 unless Jan 1 is Tuesday or Thursday.
+
 Labeling examples:
 - good: \`Assignment #2\`
 - good: \`Assignment #2 Published\`
@@ -224,25 +231,35 @@ Labeling examples:
 - bad: \`Assignment due September 12\`
 
 Important:
-- Do not emit lecture/tutorial/lab meetings.
 - Do not merge two distinct milestones into one event.
 - Do not throw away undated events just because they cannot be exported yet.`;
 
 export function buildAiExtractorUserPrompt(request: AiOutlineExtractionRequest) {
+  const modeInstructions =
+    request.extractionMode === "fullOutline"
+      ? `Extraction mode: fullOutline
+- The local deterministic parser did not run for this source.
+- Extract every calendar-ready event from the whole outline, including lectures, tutorials, labs, office hours, assignments, assessments, exams, quizzes, projects, presentations, and other dated course events.
+- For UWaterloo-style or syllabus-style recurring class schedules, return recurring Lecture/Tutorial/Lab events with startDate, recurringEndDate, byDay, startTime, endTime, and location when available.
+- Do not create single class meetings from the first date in a range unless the outline explicitly lists that exact date as a class meeting.`
+      : `Extraction mode: nonMeeting
+- The local deterministic parser has already parsed lecture, tutorial, and lab schedules.
+- Do NOT return lecture, tutorial, or lab meeting events.
+- Extract only non-meeting items from the remaining outline content.`;
+
   return `Course metadata:
 - outlineName: ${request.outlineName}
 - courseCode: ${request.courseCode}
 - courseName: ${request.courseName}
 - term: ${request.term}
 - termYear: ${request.termYear}
+- sourceFormat: ${request.sourceFormat}
 
-Extract non-meeting calendar candidates from the remaining outline text below.
+${modeInstructions}
 
-Remember:
-- Do not extract lectures, tutorials, labs, or class schedule rows.
-- Return JSON only.
+Return JSON only.
 
-Remaining outline text:
+Outline text:
 ${request.outlineText}`;
 }
 
@@ -306,6 +323,16 @@ function validateRequest(value: unknown) {
   const term = readString(raw.term);
   const outlineText = readString(raw.outlineText);
   const outlineHash = readString(raw.outlineHash).toLowerCase();
+  const rawExtractionMode = readString(raw.extractionMode);
+  const extractionMode =
+    rawExtractionMode === "fullOutline" || rawExtractionMode === "nonMeeting"
+      ? rawExtractionMode
+      : "nonMeeting";
+  const rawSourceFormat = readString(raw.sourceFormat);
+  const sourceFormat =
+    rawSourceFormat === "pdf" || rawSourceFormat === "text" || rawSourceFormat === "html"
+      ? rawSourceFormat
+      : "html";
   const termYear =
     typeof raw.termYear === "number" && Number.isFinite(raw.termYear)
       ? raw.termYear
@@ -322,6 +349,8 @@ function validateRequest(value: unknown) {
     term,
     termYear,
     outlineText,
+    extractionMode,
+    sourceFormat,
     ...(outlineHash ? { outlineHash } : {}),
   } satisfies AiOutlineExtractionRequest;
 }
@@ -659,6 +688,8 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
       endpoint: shouldPreferResponsesApi(model) ? "responses" : "chat.completions",
       courseCode: request.courseCode,
       outlineName: request.outlineName,
+      extractionMode: request.extractionMode,
+      sourceFormat: request.sourceFormat,
       inputChars: request.outlineText.length,
       timeoutMs,
       maxOutputTokens,
@@ -777,7 +808,7 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
     if (isAbortError(error)) {
       const message = `AI extraction timed out after ${Math.round(
         timeoutMs / 1000
-      )} seconds. Try again, increase OPENAI_TIMEOUT_MS, or use a faster model such as gpt-4.1-mini.`;
+      )} seconds. Try again, increase OPENAI_TIMEOUT_MS, or use a faster model such as gpt-5.4-mini.`;
       console.warn("[gooseCalendar] AI extraction timed out", {
         model,
         timeoutMs,
@@ -832,6 +863,8 @@ export async function handleOutlineExtractionRequest(request: any, response: any
     console.info("[gooseCalendar] AI extraction proxy received request", {
       courseCode: parsed.courseCode,
       outlineName: parsed.outlineName,
+      extractionMode: parsed.extractionMode,
+      sourceFormat: parsed.sourceFormat,
       inputChars: parsed.outlineText.length,
       hasOutlineHash: Boolean(parsed.outlineHash),
     });

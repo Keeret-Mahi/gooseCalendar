@@ -717,6 +717,10 @@ function recurringOccurrenceDates(event: EventCandidate) {
     .map((date) => format(date, "yyyy-MM-dd"));
 }
 
+function firstRecurringOccurrenceDate(event: EventCandidate) {
+  return recurringOccurrenceDates(event)[0];
+}
+
 function buildRecurringEventLines(
   course: ParsedCourse,
   selection: CourseSelection,
@@ -735,7 +739,8 @@ function buildRecurringEventLines(
   const uid = `${event.id}@goosecalendar`;
   const baseNotes = buildEventDescription(course, selection, event);
   const exDates = new Set(event.timing.exDates);
-  const occurrences = recurringOccurrenceDates(event);
+  const firstOccurrenceDate = firstRecurringOccurrenceDate(event);
+  if (!firstOccurrenceDate) return [];
   const untilTime = event.timing.endTime ?? event.timing.startTime ?? "23:59";
   const lines: string[] = [
     "BEGIN:VEVENT",
@@ -745,7 +750,7 @@ function buildRecurringEventLines(
       `SUMMARY:${escapeIcsText(
         buildEventSummary(
           event,
-          event.timing.occurrenceNotes[event.timing.startDate] ?? undefined
+          event.timing.occurrenceNotes[firstOccurrenceDate] ?? undefined
         )
       )}`
     ),
@@ -759,10 +764,10 @@ function buildRecurringEventLines(
 
   if (event.timing.startTime && event.timing.endTime) {
     lines.push(
-      `DTSTART;TZID=America/Toronto:${toIcsDateTime(event.timing.startDate, event.timing.startTime)}`
+      `DTSTART;TZID=America/Toronto:${toIcsDateTime(firstOccurrenceDate, event.timing.startTime)}`
     );
     lines.push(
-      `DTEND;TZID=America/Toronto:${toIcsDateTime(event.timing.startDate, event.timing.endTime)}`
+      `DTEND;TZID=America/Toronto:${toIcsDateTime(firstOccurrenceDate, event.timing.endTime)}`
     );
     lines.push(
       `RRULE:FREQ=WEEKLY;BYDAY=${event.timing.byDay.join(",")};UNTIL=${toIcsDateTime(
@@ -771,7 +776,7 @@ function buildRecurringEventLines(
       )}`
     );
   } else {
-    lines.push(`DTSTART;VALUE=DATE:${toIcsDate(event.timing.startDate)}`);
+    lines.push(`DTSTART;VALUE=DATE:${toIcsDate(firstOccurrenceDate)}`);
     lines.push(
       `RRULE:FREQ=WEEKLY;BYDAY=${event.timing.byDay.join(",")};UNTIL=${toIcsDate(
         event.timing.endDate

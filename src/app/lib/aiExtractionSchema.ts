@@ -5,14 +5,15 @@ import type {
   WeekdayCode,
 } from "./types";
 
-export type AiExtractedEventType = Extract<
-  EventType,
-  "Assignment" | "Assessment" | "OfficeHours" | "Other"
->;
+export type AiExtractionMode = "nonMeeting" | "fullOutline";
+
+export type AiOutlineSourceFormat = "html" | "pdf" | "text";
+
+export type AiExtractedEventType = EventType;
 
 export type AiExtractedSourceKind = Extract<
   EventProvenance["sourceKind"],
-  "table" | "prose" | "topic"
+  "schedule" | "table" | "prose" | "topic"
 >;
 
 export interface AiExtractedTiming {
@@ -55,10 +56,15 @@ export interface AiOutlineExtractionRequest {
   term: string;
   termYear: number;
   outlineText: string;
+  extractionMode: AiExtractionMode;
+  sourceFormat: AiOutlineSourceFormat;
   outlineHash?: string;
 }
 
 const EVENT_TYPES = new Set<AiExtractedEventType>([
+  "Lecture",
+  "Tutorial",
+  "Lab",
   "Assignment",
   "Assessment",
   "OfficeHours",
@@ -66,6 +72,7 @@ const EVENT_TYPES = new Set<AiExtractedEventType>([
 ]);
 
 const SOURCE_KINDS = new Set<AiExtractedSourceKind>([
+  "schedule",
   "table",
   "prose",
   "topic",
@@ -118,7 +125,15 @@ export const AI_EXTRACTION_JSON_SCHEMA = {
           label: { type: "string" },
           eventType: {
             type: "string",
-            enum: ["Assignment", "Assessment", "OfficeHours", "Other"],
+            enum: [
+              "Lecture",
+              "Tutorial",
+              "Lab",
+              "Assignment",
+              "Assessment",
+              "OfficeHours",
+              "Other",
+            ],
           },
           location: { type: ["string", "null"] },
           instructorName: { type: ["string", "null"] },
@@ -134,7 +149,7 @@ export const AI_EXTRACTION_JSON_SCHEMA = {
           },
           sourceKind: {
             type: "string",
-            enum: ["table", "prose", "topic"],
+            enum: ["schedule", "table", "prose", "topic"],
           },
           sourceSectionTitle: { type: ["string", "null"] },
           sourceSnippet: { type: "string" },
