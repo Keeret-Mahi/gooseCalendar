@@ -13,17 +13,13 @@ import {
 } from "../lib/designSystem";
 import svgPaths from "../../imports/svg-muqjom28j6";
 import { trackAnalyticsEvent } from "../lib/analytics";
-import { PaletteCard, CustomPaletteCard, palettes } from "./AppearanceCard";
 import {
+  DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID,
   googleEventColorHex,
   googleEventColorOptions,
   googleEventColorPalettes,
-  resolveExportPaletteColors,
 } from "../lib/palettes";
-import {
-  GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED,
-  type GoogleCalendarExportProgress,
-} from "../lib/googleCalendar";
+import type { GoogleCalendarExportProgress } from "../lib/googleCalendar";
 import {
   Select,
   SelectContent,
@@ -33,7 +29,6 @@ import {
 } from "./ui/select";
 import type {
   EventGroup,
-  ExportColorStrategy,
   ExportNotificationSetting,
   GoogleCalendarMode,
   GoogleEventColorMode,
@@ -97,14 +92,6 @@ const GOOGLE_EVENT_COLOR_MODE_OPTIONS: Array<{
 }> = [
   { value: "uniform", label: "Uniform" },
   { value: "eventGroup", label: "By event type" },
-];
-
-const COLOR_STRATEGY_OPTIONS: Array<{
-  value: ExportColorStrategy;
-  label: string;
-}> = [
-  { value: "eventGroup", label: "By event type" },
-  { value: "course", label: "By course" },
 ];
 
 type NotificationUnit = "minutes" | "hours" | "days" | "weeks";
@@ -276,10 +263,6 @@ function SegmentedControl<T extends string>({
   );
 }
 
-function courseMappingLabel(course: { courseCode: string; courseName: string }) {
-  return course.courseCode || course.courseName || "Course";
-}
-
 export default function ExportPage() {
   const navigate = useNavigate();
   const {
@@ -287,8 +270,6 @@ export default function ExportPage() {
     exportConfig,
     adminModeEnabled,
     setPaletteId,
-    setCustomColors,
-    setColorStrategy,
     setGoogleCalendarMode,
     setGoogleEventColorMode,
     setGoogleUniformColorId,
@@ -307,30 +288,13 @@ export default function ExportPage() {
   const [googleError, setGoogleError] = useState("");
   const googleStatusRef = useRef<HTMLDivElement>(null);
   const googleCalendarMode = exportConfig.googleCalendarMode ?? "single";
-  const googleEventColorMode = exportConfig.googleEventColorMode ?? "uniform";
+  const googleEventColorMode = exportConfig.googleEventColorMode ?? "eventGroup";
   const googleUniformColorId = exportConfig.googleUniformColorId ?? "5";
-  const activePaletteId = palettes.some((palette) => palette.id === exportConfig.paletteId)
+  const googleEventColorPaletteId = googleEventColorPalettes.some(
+    (palette) => palette.id === exportConfig.paletteId
+  )
     ? exportConfig.paletteId
-    : palettes[0]?.id ?? "matcha";
-  const palettePreviewConfig =
-    exportConfig.paletteId === "custom"
-      ? exportConfig
-      : { ...exportConfig, paletteId: activePaletteId };
-  const paletteMappingColors = resolveExportPaletteColors(palettePreviewConfig);
-  const eventGroupColorMappings = EXPORT_GROUP_ORDER.map((group, index) => ({
-    label: group,
-    color: paletteMappingColors[index % paletteMappingColors.length],
-  }));
-  const uniqueCourses = Array.from(
-    new Map(courses.map((course) => [course.id, course])).values()
-  ).sort((left, right) =>
-    `${left.courseCode} ${left.term}`.localeCompare(`${right.courseCode} ${right.term}`)
-  );
-  const courseColorMappings = uniqueCourses.map((course, index) => ({
-    label: courseMappingLabel(course),
-    detail: course.term,
-    color: paletteMappingColors[index % paletteMappingColors.length],
-  }));
+    : DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID;
   const notificationSettings = {
     ...FALLBACK_NOTIFICATION_SETTINGS,
     ...(exportConfig.notificationSettings ?? {}),
@@ -757,33 +721,31 @@ export default function ExportPage() {
           <div className="mb-8 w-full max-w-[600px] text-center">
             <h1 className={goosePageHeadingClass}>Export Your Calendar</h1>
             <p className="mt-3 font-['Lexend',sans-serif] text-base font-normal text-[#78716c]">
-              Your calendar is all set. Download an import-ready ICS file below.
+              Your calendar is all set. Download an import-ready ICS file or add it to Google Calendar.
             </p>
           </div>
 
           <div className={`${goosePanelClass} max-w-[760px] rounded-2xl`}>
             <div className="p-6 sm:p-8">
               <h2 className="mb-5 font-['Lexend',sans-serif] text-lg font-bold text-[#1c180d]">
-                {adminModeEnabled ? "Choose Export Method" : "Download Calendar"}
+                Choose Export Method
               </h2>
 
-              <div className={adminModeEnabled ? "grid gap-3 md:grid-cols-2" : ""}>
-                {adminModeEnabled && (
-                  <button
-                    onClick={handleGoogleCalendarExport}
-                    disabled={exportValidationIssues.length > 0 || isGoogleExporting}
-                    className={`flex w-full items-center justify-center gap-3 rounded-xl p-4 transition-all ${
-                      exportValidationIssues.length > 0 || isGoogleExporting
-                        ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
-                        : "cursor-pointer border border-[#d8e3fb] bg-white text-[#1c180d] shadow-[0px_0px_0px_3px_rgba(66,133,244,0.12)] hover:bg-[#f8fbff]"
-                    }`}
-                  >
-                    <GoogleCalendarIcon />
-                    <span className="font-['Lexend',sans-serif] text-base font-bold whitespace-nowrap sm:text-lg">
-                      {isGoogleExporting ? "Exporting..." : "Export to Google"}
-                    </span>
-                  </button>
-                )}
+              <div className="grid gap-3 md:grid-cols-2">
+                <button
+                  onClick={handleGoogleCalendarExport}
+                  disabled={exportValidationIssues.length > 0 || isGoogleExporting}
+                  className={`flex w-full items-center justify-center gap-3 rounded-xl p-4 transition-all ${
+                    exportValidationIssues.length > 0 || isGoogleExporting
+                      ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
+                      : "cursor-pointer border border-[#d8e3fb] bg-white text-[#1c180d] shadow-[0px_0px_0px_3px_rgba(66,133,244,0.12)] hover:bg-[#f8fbff]"
+                  }`}
+                >
+                  <GoogleCalendarIcon />
+                  <span className="font-['Lexend',sans-serif] text-base font-bold whitespace-nowrap sm:text-lg">
+                    {isGoogleExporting ? "Exporting..." : "Export to Google"}
+                  </span>
+                </button>
 
                 <button
                   onClick={handleDownloadICS}
@@ -804,10 +766,10 @@ export default function ExportPage() {
               </div>
 
               <p className="mt-4 font-['Lexend',sans-serif] text-xs font-normal leading-relaxed text-[#a8a29e]">
-                ICS files can be imported into most calendar apps.
+                Google export uses app-created calendars and Google’s standard event colours.
               </p>
 
-              {adminModeEnabled && (
+              {(googleExportProgress || googleError || !googleCalendarConfigured) && (
                 <div
                   ref={googleStatusRef}
                   className="mt-5 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-4"
@@ -815,11 +777,11 @@ export default function ExportPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
-                        Google Calendar admin export
+                        Google Calendar export
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-[#78716c]">
                         {googleCalendarConfigured
-                          ? "Configured for this build."
+                          ? "Ready to add events directly to Google Calendar."
                           : "Set VITE_GOOGLE_CLIENT_ID before using Google export."}
                       </p>
                     </div>
@@ -863,151 +825,80 @@ export default function ExportPage() {
                 <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <h3 className="font-['Lexend',sans-serif] text-base font-bold text-[#1c180d]">
-                      Color palette
+                      Google event colours
                     </h3>
                     <p className="mt-1 text-sm leading-relaxed text-[#78716c]">
-                      {GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED
-                        ? "Pick a palette before exporting to Google Calendar so each event-type calendar gets its color."
-                        : "Choose how Google Calendar colours exported events."}
+                      Choose from Google Calendar's standard event colours.
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-5">
-                  {GOOGLE_CALENDAR_LIST_COLOR_EXPORT_ENABLED ? (
-                    <>
-                      <SegmentedControl
-                        value={exportConfig.colorStrategy}
-                        options={COLOR_STRATEGY_OPTIONS}
-                        onChange={setColorStrategy}
-                        ariaLabel="Calendar palette strategy"
-                      />
-                      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                        {palettes.map((palette) => (
-                          <PaletteCard
-                            key={palette.id}
-                            palette={palette}
-                            selected={activePaletteId === palette.id}
-                            onClick={() => setPaletteId(palette.id)}
-                          />
-                        ))}
-                        <CustomPaletteCard
-                          colors={exportConfig.customColors}
-                          selected={exportConfig.paletteId === "custom"}
-                          onClick={() => setPaletteId("custom")}
-                          onColorsChange={setCustomColors}
-                        />
-                      </div>
-                      <div className="rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-4">
-                        <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <h4 className="font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
-                              Colour mapping
-                            </h4>
-                            <p className="text-xs leading-relaxed text-[#78716c]">
-                              {exportConfig.colorStrategy === "course"
-                                ? "Each course calendar uses the next colour in the selected palette."
-                                : "Each event-type calendar uses the matching palette colour below."}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                          {(exportConfig.colorStrategy === "course" && courseColorMappings.length > 0
-                            ? courseColorMappings
-                            : eventGroupColorMappings
-                          ).map((mapping) => (
-                            <div
-                              key={`${mapping.label}-${mapping.color}`}
-                              className="flex items-center gap-3 rounded-xl border border-[#ebe2c9] bg-white px-3 py-2.5"
-                            >
-                              <span
-                                className="h-8 w-8 shrink-0 rounded-full border-2 border-white shadow-[0px_0px_0px_1px_rgba(28,24,13,0.12)]"
-                                style={{ backgroundColor: mapping.color }}
-                              />
-                              <div className="min-w-0">
-                                <p className="truncate font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d]">
-                                  {mapping.label}
-                                </p>
-                                {"detail" in mapping && mapping.detail && (
-                                  <p className="truncate text-xs text-[#78716c]">
-                                    {mapping.detail}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <SegmentedControl
-                        value={googleEventColorMode}
-                        options={GOOGLE_EVENT_COLOR_MODE_OPTIONS}
-                        onChange={setGoogleEventColorMode}
-                        ariaLabel="Google event colour mode"
-                      />
+                  <SegmentedControl
+                    value={googleEventColorMode}
+                    options={GOOGLE_EVENT_COLOR_MODE_OPTIONS}
+                    onChange={setGoogleEventColorMode}
+                    ariaLabel="Google event colour mode"
+                  />
 
-                      {googleEventColorMode === "uniform" ? (
-                        <div className="grid grid-cols-6 gap-3 sm:grid-cols-11">
-                          {googleEventColorOptions.map((option) => {
-                            const selected = option.id === googleUniformColorId;
-                            return (
-                              <button
-                                key={option.id}
-                                type="button"
-                                onClick={() => setGoogleUniformColorId(option.id)}
-                                className={`h-10 rounded-full border-2 transition-all ${
-                                  selected
-                                    ? "border-[#1c180d] ring-2 ring-[#f2b90d]/45"
-                                    : "border-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
-                                }`}
-                                style={{ backgroundColor: googleEventColorHex(option.id) }}
-                                aria-label={`Google event colour ${option.id}`}
-                              />
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <div className="grid gap-3 sm:grid-cols-3">
-                          {googleEventColorPalettes.map((palette) => {
-                            const selected = palette.id === exportConfig.paletteId;
-                            return (
-                              <button
-                                key={palette.id}
-                                type="button"
-                                onClick={() => setPaletteId(palette.id)}
-                                className={`overflow-hidden rounded-xl text-left transition-all ${
-                                  selected
-                                    ? "bg-[rgba(242,185,13,0.05)] ring-2 ring-[#f2b90d]"
-                                    : "bg-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
-                                }`}
-                              >
-                                <div className="flex h-14">
-                                  {palette.colors.slice(0, 5).map((color) => (
-                                    <span
-                                      key={color}
-                                      className="flex-1"
-                                      style={{ backgroundColor: color }}
-                                    />
-                                  ))}
-                                </div>
-                                <div className="flex items-center justify-between px-3.5 py-3">
-                                  <span className="font-['Lexend',sans-serif] text-[13px] font-bold text-[#1c1917]">
-                                    {palette.name}
-                                  </span>
-                                  {selected && (
-                                    <span className="rounded-full bg-[#f2b90d] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-[#1c180d]">
-                                      Selected
-                                    </span>
-                                  )}
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </>
+                  {googleEventColorMode === "uniform" ? (
+                    <div className="grid grid-cols-6 gap-3 sm:grid-cols-11">
+                      {googleEventColorOptions.map((option) => {
+                        const selected = option.id === googleUniformColorId;
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => setGoogleUniformColorId(option.id)}
+                            className={`h-10 rounded-full border-2 transition-all ${
+                              selected
+                                ? "border-[#1c180d] ring-2 ring-[#f2b90d]/45"
+                                : "border-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
+                            }`}
+                            style={{ backgroundColor: googleEventColorHex(option.id) }}
+                            aria-label={`Google event colour ${option.id}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {googleEventColorPalettes.map((palette) => {
+                        const selected = palette.id === googleEventColorPaletteId;
+                        return (
+                          <button
+                            key={palette.id}
+                            type="button"
+                            onClick={() => setPaletteId(palette.id)}
+                            className={`overflow-hidden rounded-xl text-left transition-all ${
+                              selected
+                                ? "bg-[rgba(242,185,13,0.05)] ring-2 ring-[#f2b90d]"
+                                : "bg-white ring-1 ring-[#e7e5e4] hover:ring-[#d6d3d1]"
+                            }`}
+                          >
+                            <div className="flex h-14">
+                              {palette.colors.slice(0, 5).map((color) => (
+                                <span
+                                  key={color}
+                                  className="flex-1"
+                                  style={{ backgroundColor: color }}
+                                />
+                              ))}
+                            </div>
+                            <div className="flex items-center justify-between px-3.5 py-3">
+                              <span className="font-['Lexend',sans-serif] text-[13px] font-bold text-[#1c1917]">
+                                {palette.name}
+                              </span>
+                              {selected && (
+                                <span className="rounded-full bg-[#f2b90d] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-[#1c180d]">
+                                  Selected
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               </div>

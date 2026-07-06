@@ -102,7 +102,7 @@ const defaultExportConfig: ExportConfig = {
   ]),
   colorStrategy: "eventGroup",
   googleCalendarMode: "single",
-  googleEventColorMode: "uniform",
+  googleEventColorMode: "eventGroup",
   googleUniformColorId: "5",
   notificationSettings: {
     Lecture: "default",
