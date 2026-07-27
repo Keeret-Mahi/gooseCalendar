@@ -1,5 +1,7 @@
 # GooseCalendar
 
+![GooseCalendar outline-to-calendar upload screen](./hero-image.png)
+
 GooseCalendar turns course outlines into calendar events. Upload an outline, review the lectures, tutorials, labs, assignments, assessments, and office hours it finds, then export the events to Google Calendar or an `.ics` file.
 
 The app is designed around University of Waterloo outlines, while also supporting PDF, HTML, and text-based outlines from other sources.
