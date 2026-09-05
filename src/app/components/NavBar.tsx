@@ -1,6 +1,6 @@
 import svgPaths from "../../imports/svg-muqjom28j6";
 import progressSvg from "../../imports/svg-3i7h8lbbf7";
-import gooseLogo from "../../assets/goosecalendar-nav-mark-v3.png";
+import gooseLogo from "../../assets/goosecalendar-mark.png";
 
 function CalendarIcon() {
   return (
