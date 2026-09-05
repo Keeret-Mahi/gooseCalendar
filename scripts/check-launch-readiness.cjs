@@ -1,5 +1,6 @@
 // Local checks only: Firebase and OpenAI are stubbed. No credentials or paid calls are used.
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 const { buildSync } = require("esbuild");
@@ -101,6 +102,7 @@ async function baselineServerChecks() {
 }
 
 async function analyticsChecks() {
+  let catalog = [];
   for (const scenario of ["configured", "debug", "missing", "blocked"]) {
     const events = [];
     const warnings = [];
@@ -124,16 +126,42 @@ async function analyticsChecks() {
         },
       },
     });
-    await analytics.trackAnalyticsEvent("home_page_view", { page_path: "/" });
+    catalog = Array.from(analytics.ANALYTICS_EVENT_NAMES);
+    const eventNames = scenario === "configured" || scenario === "debug"
+      ? catalog
+      : ["home_page_view"];
+    for (const eventName of eventNames) {
+      await analytics.trackAnalyticsEvent(eventName, {
+        page_path: "/",
+        message: "x".repeat(150),
+      });
+    }
     if (scenario === "missing" || scenario === "blocked") {
       assert.equal(events.length, 0);
       assert.equal(warnings.length, 1);
     } else {
-      assert.equal(events.length, 1);
-      assert.equal(events[0].params.debug_mode, scenario === "debug" ? true : undefined);
+      assert.equal(events.length, catalog.length);
+      assert.ok(events.every((event) => event.params.message.length === 100));
+      assert.ok(events.every((event) =>
+        event.params.debug_mode === (scenario === "debug" ? true : undefined)
+      ));
     }
   }
-  console.log("PASS: analytics configuration, opt-in DebugView, missing config, blocked analytics.");
+
+  assert.equal(catalog.length, 11);
+  const analyticsCallSites = [
+    "src/app/components/AppContext.tsx",
+    "src/app/components/ExportPage.tsx",
+    "src/app/components/ReviewClassesPage.tsx",
+    "src/app/components/SelectSectionsPage.tsx",
+    "src/app/components/UploadPage.tsx",
+  ].map((file) => fs.readFileSync(path.join(root, file), "utf8")).join("\n");
+  const usedEventNames = Array.from(
+    new Set(Array.from(analyticsCallSites.matchAll(/trackAnalyticsEvent\(\s*"([a-z0-9_]+)"/g), (match) => match[1]))
+  ).sort();
+  assert.deepEqual(usedEventNames, [...catalog].sort());
+
+  console.log("PASS: all 11 analytics events are valid, used, delivered, and parameter-safe.");
 }
 
 (async () => { await baselineServerChecks(); await analyticsChecks(); })().catch((error) => {

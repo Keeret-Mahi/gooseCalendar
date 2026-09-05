@@ -7,6 +7,7 @@ import { useAppContext } from "./AppContext";
 import { FlowFooter } from "./FlowFooter";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { trackAnalyticsEvent } from "../lib/analytics";
 import {
   formatEventTiming,
   getVisibleCourseEvents,
@@ -1663,6 +1664,16 @@ export default function ReviewClassesPage() {
 
   const draftIssue = draftEvent ? validateEventForExport(draftEvent) : null;
 
+  const handleNext = () => {
+    const visibleEvents = visibleCourses.flatMap(({ events: courseEvents }) => courseEvents);
+    void trackAnalyticsEvent("review_export_clicked", {
+      course_count: visibleCourses.length,
+      event_count: visibleEvents.length,
+      review_issue_count: visibleEvents.filter(validateEventForExport).length,
+    });
+    navigate("/export");
+  };
+
   return (
     <RouteGuard>
       <div
@@ -1756,7 +1767,7 @@ export default function ReviewClassesPage() {
         <FlowFooter
           backLabel="Back to Sections"
           onBack={() => navigate("/sections")}
-          onAction={() => navigate("/export")}
+          onAction={handleNext}
           actionLabel="Next: Export Calendar"
         />
       </div>

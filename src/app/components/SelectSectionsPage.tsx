@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { RouteGuard } from "./RouteGuard";
 import { useAppContext } from "./AppContext";
 import { FlowFooter } from "./FlowFooter";
+import { trackAnalyticsEvent } from "../lib/analytics";
 import { courseNeedsSectionChoice } from "../lib/calendar";
 import { normalizeCourseNameCapitalization } from "../lib/courseNames";
 import {
@@ -575,6 +576,22 @@ export default function SelectSectionsPage() {
       return;
     }
     setErrorMessage("");
+    const courseSelections = Object.values(selections);
+    void trackAnalyticsEvent("sections_review_clicked", {
+      course_count: courses.length,
+      selected_group_count: courseSelections.reduce(
+        (total, selection) => total + selection.includedGroups.length,
+        0
+      ),
+      selected_section_count: courseSelections.reduce(
+        (total, selection) => total + selection.selectedSectionIds.length,
+        0
+      ),
+      selected_office_hour_count: courseSelections.reduce(
+        (total, selection) => total + selection.selectedOfficeHourEventIds.length,
+        0
+      ),
+    });
     navigate("/review");
   };
 
