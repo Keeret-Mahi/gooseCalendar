@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import gooseImg from "figma:asset/b92fc544a736117e881173174fe48bce3b51e1e8.png";
+import gooseImg from "../../assets/goosecalendar-home-mark-v2.png";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function NotFoundPage() {
             404
           </span>
           <div className="absolute inset-0 flex items-center justify-center">
-            <img src={gooseImg} alt="Goose" className="w-[56px] h-[56px] sm:w-[72px] sm:h-[72px] object-cover opacity-60" />
+            <img src={gooseImg} alt="Goose" className="h-[56px] w-[56px] object-cover opacity-60 brightness-0 sm:h-[72px] sm:w-[72px]" />
           </div>
         </div>
 

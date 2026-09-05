@@ -1,6 +1,6 @@
 import svgPaths from "../../imports/svg-muqjom28j6";
 import progressSvg from "../../imports/svg-3i7h8lbbf7";
-import gooseLogo from "figma:asset/71a36586a047aa969e219c2e297cd52b033ae39f.png";
+import gooseLogo from "../../assets/goosecalendar-nav-mark-v3.png";
 
 function CalendarIcon() {
   return (
@@ -130,7 +130,7 @@ export function NavBar({
       <div className="max-w-[1200px] mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <div className="flex items-center gap-3 shrink-0">
-          <img src={gooseLogo} alt="gooseCalendar" className="size-8 rounded-lg object-cover" />
+          <img src={gooseLogo} alt="gooseCalendar" className="size-8 rounded-full object-cover" />
           <span className="font-['Lexend',sans-serif] font-bold text-[#1c180d] text-lg tracking-[-0.45px] whitespace-nowrap hidden sm:inline">
             gooseCalendar
           </span>

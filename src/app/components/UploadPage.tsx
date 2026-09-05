@@ -3,7 +3,7 @@ import { useNavigate, useOutletContext } from "react-router";
 import { useAppContext } from "./AppContext";
 import { trackAnalyticsEvent } from "../lib/analytics";
 import svgPaths from "../../imports/svg-up87mvwjbr";
-import img920081 from "figma:asset/b92fc544a736117e881173174fe48bce3b51e1e8.png";
+import gooseHomeMark from "../../assets/goosecalendar-home-mark-v2.png";
 
 function UploadCloudIcon() {
   return (
@@ -319,9 +319,9 @@ export default function UploadPage() {
           </div>
           <div className="relative flex items-center gap-0">
             <img
-              src={img920081}
+              src={gooseHomeMark}
               alt=""
-              className="relative -top-[4px] mr-1 h-[41px] w-[41px] object-cover"
+              className="relative -top-[4px] mr-1 h-[41px] w-[41px] -scale-x-100 object-cover brightness-0"
             />
             <h1 className="text-center font-['Inter',sans-serif] text-[36px] font-bold leading-[36px] tracking-[-1.5px] text-[#1b180d] sm:text-[60px] sm:leading-[60px]">
               gooseCalendar

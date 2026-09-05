@@ -12,6 +12,12 @@ const firebaseAnalyticsConfig = {
 };
 
 let analyticsPromise: Promise<ReturnType<typeof getAnalytics> | null> | null = null;
+let hasWarnedMissingConfig = false;
+
+function isAnalyticsDebugSession() {
+  return typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("analytics_debug") === "1";
+}
 
 function hasAnalyticsConfig() {
   return Boolean(
@@ -24,6 +30,10 @@ function hasAnalyticsConfig() {
 
 async function getFirebaseAnalytics() {
   if (!hasAnalyticsConfig() || typeof window === "undefined") {
+    if (typeof window !== "undefined" && !hasWarnedMissingConfig) {
+      console.warn("[gooseCalendar] Analytics is not configured in this build. Set VITE_FIREBASE_* before building and redeploy.");
+      hasWarnedMissingConfig = true;
+    }
     return null;
   }
 
@@ -44,7 +54,19 @@ async function getFirebaseAnalytics() {
 }
 
 export async function trackAnalyticsEvent(name: string, params: AnalyticsParams = {}) {
-  const analytics = await getFirebaseAnalytics();
-  if (!analytics) return;
-  logEvent(analytics, name, params);
+  try {
+    const analytics = await getFirebaseAnalytics();
+    if (!analytics) return;
+    // Opt-in test visits appear in GA4 DebugView without enabling debug mode for everyone.
+    logEvent(analytics, name, {
+      ...params,
+      ...(isAnalyticsDebugSession() ? { debug_mode: true } : {}),
+    });
+  } catch (error) {
+    // Analytics must not interrupt uploads or exports, including when blocked by the browser.
+    console.warn("[gooseCalendar] Analytics event could not be recorded", {
+      event: name,
+      message: error instanceof Error ? error.message : String(error),
+    });
+  }
 }

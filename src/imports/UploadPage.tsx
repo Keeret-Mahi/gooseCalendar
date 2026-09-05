@@ -1,5 +1,5 @@
 import svgPaths from "./svg-up87mvwjbr";
-import img920081 from "figma:asset/b92fc544a736117e881173174fe48bce3b51e1e8.png";
+import gooseHomeMark from "../assets/goosecalendar-home-mark-v2.png";
 
 function Container() {
   return <div className="h-[60px] shrink-0 w-[257px]" data-name="Container" />;
@@ -17,7 +17,7 @@ function Heading() {
         <p className="leading-[60px]">gooseCalendar</p>
       </div>
       <div className="absolute left-[69px] size-[41px] top-[10px]" data-name="92008 1">
-        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={img920081} />
+        <img alt="" className="pointer-events-none absolute inset-0 size-full max-w-none -scale-x-100 object-cover brightness-0" src={gooseHomeMark} />
       </div>
     </div>
   );
