@@ -576,6 +576,8 @@ export default function SelectSectionsPage() {
       return;
     }
     setErrorMessage("");
+    navigate("/review");
+
     const courseSelections = Object.values(selections);
     void trackAnalyticsEvent("sections_review_clicked", {
       course_count: courses.length,
@@ -584,7 +586,7 @@ export default function SelectSectionsPage() {
         0
       ),
       selected_section_count: courseSelections.reduce(
-        (total, selection) => total + selection.selectedSectionIds.length,
+        (total, selection) => total + selection.selectedSectionOptionIds.length,
         0
       ),
       selected_office_hour_count: courseSelections.reduce(
@@ -592,7 +594,6 @@ export default function SelectSectionsPage() {
         0
       ),
     });
-    navigate("/review");
   };
 
   const handleAddFiles = (files: FileList | null) => {

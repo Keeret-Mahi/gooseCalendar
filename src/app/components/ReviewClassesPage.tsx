@@ -1665,13 +1665,14 @@ export default function ReviewClassesPage() {
   const draftIssue = draftEvent ? validateEventForExport(draftEvent) : null;
 
   const handleNext = () => {
+    navigate("/export");
+
     const visibleEvents = visibleCourses.flatMap(({ events: courseEvents }) => courseEvents);
     void trackAnalyticsEvent("review_export_clicked", {
       course_count: visibleCourses.length,
       event_count: visibleEvents.length,
       review_issue_count: visibleEvents.filter(validateEventForExport).length,
     });
-    navigate("/export");
   };
 
   return (
