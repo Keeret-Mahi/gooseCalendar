@@ -44,6 +44,9 @@ const EXPORT_GROUP_ORDER: EventGroup[] = [
   "Other",
 ];
 
+// Keep the Google Calendar implementation available while hiding it from the release UI.
+const GOOGLE_CALENDAR_EXPORT_ENABLED = false;
+
 const NOTIFICATION_OPTIONS: Array<{
   value: ExportNotificationSetting;
   label: string;
@@ -524,7 +527,7 @@ export default function ExportPage() {
               </div>
 
               <div className="space-y-7 overflow-y-auto px-6 py-6 sm:px-8">
-                {adminModeEnabled && (
+                {adminModeEnabled && GOOGLE_CALENDAR_EXPORT_ENABLED && (
                   <section className="space-y-4">
                     <div>
                       <h4 className="font-['Lexend',sans-serif] text-sm font-bold uppercase tracking-[0.12em] text-[#a8a29e]">
@@ -721,31 +724,41 @@ export default function ExportPage() {
           <div className="mb-8 w-full max-w-[600px] text-center">
             <h1 className={goosePageHeadingClass}>Export Your Calendar</h1>
             <p className="mt-3 font-['Lexend',sans-serif] text-base font-normal text-[#78716c]">
-              Your calendar is all set. Download an import-ready ICS file or add it to Google Calendar.
+              {GOOGLE_CALENDAR_EXPORT_ENABLED
+                ? "Your calendar is all set. Download an import-ready ICS file or add it to Google Calendar."
+                : "Your calendar is all set. Download an import-ready .ICS file."}
             </p>
           </div>
 
           <div className={`${goosePanelClass} max-w-[760px] rounded-2xl`}>
             <div className="p-6 sm:p-8">
               <h2 className="mb-5 font-['Lexend',sans-serif] text-lg font-bold text-[#1c180d]">
-                Choose Export Method
+                {GOOGLE_CALENDAR_EXPORT_ENABLED
+                  ? "Choose Export Method"
+                  : "Download Your Calendar"}
               </h2>
 
-              <div className="grid gap-3 md:grid-cols-2">
-                <button
-                  onClick={handleGoogleCalendarExport}
-                  disabled={exportValidationIssues.length > 0 || isGoogleExporting}
-                  className={`flex w-full items-center justify-center gap-3 rounded-xl p-4 transition-all ${
-                    exportValidationIssues.length > 0 || isGoogleExporting
-                      ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
-                      : "cursor-pointer border border-[#d8e3fb] bg-white text-[#1c180d] shadow-[0px_0px_0px_3px_rgba(66,133,244,0.12)] hover:bg-[#f8fbff]"
-                  }`}
-                >
-                  <GoogleCalendarIcon />
-                  <span className="font-['Lexend',sans-serif] text-base font-bold whitespace-nowrap sm:text-lg">
-                    {isGoogleExporting ? "Exporting..." : "Export to Google"}
-                  </span>
-                </button>
+              <div
+                className={`grid gap-3 ${
+                  GOOGLE_CALENDAR_EXPORT_ENABLED ? "md:grid-cols-2" : ""
+                }`}
+              >
+                {GOOGLE_CALENDAR_EXPORT_ENABLED && (
+                  <button
+                    onClick={handleGoogleCalendarExport}
+                    disabled={exportValidationIssues.length > 0 || isGoogleExporting}
+                    className={`flex w-full items-center justify-center gap-3 rounded-xl p-4 transition-all ${
+                      exportValidationIssues.length > 0 || isGoogleExporting
+                        ? "cursor-not-allowed bg-[#ede9dd] text-[#a8a29e]"
+                        : "cursor-pointer border border-[#d8e3fb] bg-white text-[#1c180d] shadow-[0px_0px_0px_3px_rgba(66,133,244,0.12)] hover:bg-[#f8fbff]"
+                    }`}
+                  >
+                    <GoogleCalendarIcon />
+                    <span className="font-['Lexend',sans-serif] text-base font-bold whitespace-nowrap sm:text-lg">
+                      {isGoogleExporting ? "Exporting..." : "Export to Google"}
+                    </span>
+                  </button>
+                )}
 
                 <button
                   onClick={handleDownloadICS}
@@ -765,11 +778,14 @@ export default function ExportPage() {
                 </button>
               </div>
 
-              <p className="mt-4 font-['Lexend',sans-serif] text-xs font-normal leading-relaxed text-[#a8a29e]">
-                Google export uses app-created calendars and Google’s standard event colours.
-              </p>
+              {GOOGLE_CALENDAR_EXPORT_ENABLED && (
+                <p className="mt-4 font-['Lexend',sans-serif] text-xs font-normal leading-relaxed text-[#a8a29e]">
+                  Google export uses app-created calendars and Google’s standard event colours.
+                </p>
+              )}
 
-              {(googleExportProgress || googleError || !googleCalendarConfigured) && (
+              {GOOGLE_CALENDAR_EXPORT_ENABLED &&
+                (googleExportProgress || googleError || !googleCalendarConfigured) && (
                 <div
                   ref={googleStatusRef}
                   className="mt-5 rounded-2xl border border-[#e8e2ce] bg-[#fcfbf7] px-4 py-4"
@@ -817,10 +833,10 @@ export default function ExportPage() {
                     </p>
                   )}
                 </div>
-              )}
+                )}
             </div>
 
-            {adminModeEnabled && (
+            {adminModeEnabled && GOOGLE_CALENDAR_EXPORT_ENABLED && (
               <div className={`border-t ${goosePanelDividerClass} px-6 py-6 sm:px-8`}>
                 <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
