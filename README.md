@@ -57,6 +57,9 @@ npm run build
 | `OPENAI_MAX_OUTPUT_TOKENS` | Sets the output-token budget for extracted event JSON. Full-outline extraction enforces its own minimum. |
 | `VITE_GOOGLE_CLIENT_ID` | Enables direct Google Calendar export. |
 | `AI_EXTRACTION_CACHE_ENABLED` | Set to `false` to disable the Firebase extraction cache. |
+| `AI_EXTRACTION_RATE_LIMIT_ENABLED` | Set to `false` to disable server-side AI request limits. Enabled by default. |
+| `AI_EXTRACTION_PER_CLIENT_DAILY_LIMIT` | Maximum uncached outlines per anonymous browser/device per UTC day. Defaults to `10`. |
+| `AI_EXTRACTION_GLOBAL_DAILY_LIMIT` | Maximum uncached outlines across the app per UTC day. Defaults to `300`. |
 | `FIREBASE_PROJECT_ID` | Firebase Admin project used by the server-side cache. |
 | `FIREBASE_CLIENT_EMAIL` | Firebase Admin service-account email. |
 | `FIREBASE_PRIVATE_KEY` | Firebase Admin service-account private key. |
@@ -76,6 +79,10 @@ GooseCalendar requests the narrow `calendar.app.created` scope. It creates calen
 The cache is optional. When Firebase Admin credentials are configured, successful AI results are stored using a versioned key containing the extraction mode and a SHA-256 hash of the outline. Uploading the same outline again can reuse the structured result instead of making another OpenAI request.
 
 If Firebase is unavailable or a cache operation fails, extraction falls back to OpenAI.
+
+Only cache misses count against the AI extraction limits. The server recomputes each outline's
+content hash rather than trusting the browser, and identical in-flight requests share one OpenAI
+call within a warm server instance.
 
 ## Deployment
 

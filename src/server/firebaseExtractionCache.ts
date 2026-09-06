@@ -9,9 +9,13 @@ import {
 export const AI_CACHE_VERSION = "v2";
 
 const CACHE_COLLECTION = "outlineAiExtractionCache";
+const RATE_LIMIT_COLLECTION = "outlineAiExtractionRateLimits";
 const HASH_PATTERN = /^[a-f0-9]{64}$/i;
+const DEFAULT_PER_CLIENT_DAILY_LIMIT = 10;
+const DEFAULT_GLOBAL_DAILY_LIMIT = 300;
 let hasLoggedMissingFirebaseConfig = false;
 let hasLoggedFirebaseConfigSource = false;
+const memoryRateLimits = new Map<string, { count: number; expiresAt: number }>();
 
 interface CacheWriteInput {
   request: AiOutlineExtractionRequest;
@@ -33,6 +37,12 @@ interface CacheMiss {
 }
 
 type CacheReadResult = CacheHit | CacheMiss;
+
+export interface AiExtractionQuotaResult {
+  allowed: boolean;
+  retryAfterSeconds: number;
+  reason?: "per_client_daily" | "global_daily";
+}
 
 function normalizeWarning(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -149,14 +159,7 @@ function getFirebaseConfig() {
   };
 }
 
-function getCacheDb() {
-  if (!isCacheEnabled()) {
-    console.info("[gooseCalendar] AI extraction cache disabled by env", {
-      AI_EXTRACTION_CACHE_ENABLED: process.env.AI_EXTRACTION_CACHE_ENABLED,
-    });
-    return undefined;
-  }
-
+function getServerDb() {
   const firebaseConfig = getFirebaseConfig();
   if (!firebaseConfig) {
     if (!hasLoggedMissingFirebaseConfig) {
@@ -185,6 +188,155 @@ function getCacheDb() {
     );
 
   return getFirestore(app);
+}
+
+function getCacheDb() {
+  if (!isCacheEnabled()) {
+    console.info("[gooseCalendar] AI extraction cache disabled by env", {
+      AI_EXTRACTION_CACHE_ENABLED: process.env.AI_EXTRACTION_CACHE_ENABLED,
+    });
+    return undefined;
+  }
+
+  return getServerDb();
+}
+
+function readPositiveInteger(value: string | undefined, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : fallback;
+}
+
+function isRateLimitEnabled() {
+  return process.env.AI_EXTRACTION_RATE_LIMIT_ENABLED?.toLowerCase() !== "false";
+}
+
+function consumeMemoryQuota(
+  clientKey: string,
+  now: number,
+  perClientLimit: number,
+  globalLimit: number
+): AiExtractionQuotaResult {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const dayBucket = Math.floor(now / dayMs);
+  const entries = [
+    {
+      key: `client_${dayBucket}_${clientKey}`,
+      limit: perClientLimit,
+      expiresAt: (dayBucket + 1) * dayMs,
+      reason: "per_client_daily" as const,
+    },
+    {
+      key: `global_${dayBucket}`,
+      limit: globalLimit,
+      expiresAt: (dayBucket + 1) * dayMs,
+      reason: "global_daily" as const,
+    },
+  ];
+
+  for (const entry of entries) {
+    const current = memoryRateLimits.get(entry.key);
+    const count = current && current.expiresAt > now ? current.count : 0;
+    if (count >= entry.limit) {
+      return {
+        allowed: false,
+        retryAfterSeconds: Math.max(1, Math.ceil((entry.expiresAt - now) / 1000)),
+        reason: entry.reason,
+      };
+    }
+  }
+
+  entries.forEach((entry) => {
+    const current = memoryRateLimits.get(entry.key);
+    memoryRateLimits.set(entry.key, {
+      count: current && current.expiresAt > now ? current.count + 1 : 1,
+      expiresAt: entry.expiresAt,
+    });
+  });
+
+  return { allowed: true, retryAfterSeconds: 0 };
+}
+
+export async function consumeAiExtractionQuota(
+  clientKey: string
+): Promise<AiExtractionQuotaResult> {
+  if (!isRateLimitEnabled()) {
+    return { allowed: true, retryAfterSeconds: 0 };
+  }
+
+  const perClientLimit = readPositiveInteger(
+    process.env.AI_EXTRACTION_PER_CLIENT_DAILY_LIMIT,
+    DEFAULT_PER_CLIENT_DAILY_LIMIT
+  );
+  const globalLimit = readPositiveInteger(
+    process.env.AI_EXTRACTION_GLOBAL_DAILY_LIMIT,
+    DEFAULT_GLOBAL_DAILY_LIMIT
+  );
+  const now = Date.now();
+  const dayMs = 24 * 60 * 60 * 1000;
+  const dayBucket = Math.floor(now / dayMs);
+  const clientRefId = `client_${dayBucket}_${clientKey}`;
+  const globalRefId = `global_${dayBucket}`;
+
+  try {
+    const db = getServerDb();
+    if (!db) {
+      return consumeMemoryQuota(clientKey, now, perClientLimit, globalLimit);
+    }
+
+    return await db.runTransaction(async (transaction) => {
+      const clientRef = db.collection(RATE_LIMIT_COLLECTION).doc(clientRefId);
+      const globalRef = db.collection(RATE_LIMIT_COLLECTION).doc(globalRefId);
+      const [clientSnapshot, globalSnapshot] = await Promise.all([
+        transaction.get(clientRef),
+        transaction.get(globalRef),
+      ]);
+      const clientCount = Number(clientSnapshot.data()?.count ?? 0);
+      const globalCount = Number(globalSnapshot.data()?.count ?? 0);
+
+      if (clientCount >= perClientLimit) {
+        return {
+          allowed: false,
+          retryAfterSeconds: Math.max(1, Math.ceil(((dayBucket + 1) * dayMs - now) / 1000)),
+          reason: "per_client_daily" as const,
+        };
+      }
+      if (globalCount >= globalLimit) {
+        return {
+          allowed: false,
+          retryAfterSeconds: Math.max(1, Math.ceil(((dayBucket + 1) * dayMs - now) / 1000)),
+          reason: "global_daily" as const,
+        };
+      }
+
+      transaction.set(
+        clientRef,
+        {
+          count: clientCount + 1,
+          limit: perClientLimit,
+          expiresAt: new Date((dayBucket + 1) * dayMs),
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+      transaction.set(
+        globalRef,
+        {
+          count: globalCount + 1,
+          limit: globalLimit,
+          expiresAt: new Date((dayBucket + 1) * dayMs),
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      return { allowed: true, retryAfterSeconds: 0 };
+    });
+  } catch (error) {
+    console.warn("[gooseCalendar] Firestore AI extraction rate limit failed; using instance fallback", {
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
+    return consumeMemoryQuota(clientKey, now, perClientLimit, globalLimit);
+  }
 }
 
 function buildCacheKey(request: AiOutlineExtractionRequest) {
@@ -248,22 +400,6 @@ export async function readAiExtractionCache(
       });
       return { status: "invalid", cacheKey };
     }
-
-    await ref
-      .set(
-        {
-          hitCount: FieldValue.increment(1),
-          lastUsedAt: FieldValue.serverTimestamp(),
-          updatedAt: FieldValue.serverTimestamp(),
-        },
-        { merge: true }
-      )
-      .catch((error) => {
-        console.warn("[gooseCalendar] Failed to update AI extraction cache hit stats", {
-          cacheKey,
-          message: error instanceof Error ? error.message : "Unknown error",
-        });
-      });
 
     const cachedWarnings = Array.isArray(data.warnings)
       ? data.warnings.map(normalizeWarning).filter(Boolean)

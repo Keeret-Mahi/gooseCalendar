@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router";
 import { useAppContext } from "./AppContext";
 import { trackAnalyticsEvent } from "../lib/analytics";
+import { MAX_OUTLINE_UPLOADS } from "../lib/uploadLimits";
 import svgPaths from "../../imports/svg-up87mvwjbr";
 import gooseHomeMark from "../../assets/goosecalendar-home-mark-v2.png";
 
@@ -160,6 +161,7 @@ export default function UploadPage() {
   const { uploads, courses, isParsing, addFiles, removeUpload } = useAppContext();
   const [isDragging, setIsDragging] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
 
   useEffect(() => {
     void trackAnalyticsEvent("home_page_view", {
@@ -185,7 +187,9 @@ export default function UploadPage() {
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setIsDragging(false);
-    if (event.dataTransfer.files.length) addFiles(event.dataTransfer.files);
+    if (event.dataTransfer.files.length) {
+      setUploadMessage(addFiles(event.dataTransfer.files).message ?? "");
+    }
   };
 
   const handleNextSelectSections = () => {
@@ -203,7 +207,9 @@ export default function UploadPage() {
   const canContinue = courses.length > 0 && !isParsing;
   const hasOverflow = uploads.length > 4;
   const helperText = useMemo(() => {
-    if (uploads.length === 0) return "HTML, PDF, or text files · Multiple files supported";
+    if (uploads.length === 0) {
+      return `HTML, PDF, or text files · Up to ${MAX_OUTLINE_UPLOADS} files · 10 MB each`;
+    }
     if (isParsing) return "Extracting dates, schedules, and assessments from your outlines";
     if (courses.length > 0) {
       return `${courses.length} course${courses.length === 1 ? "" : "s"} parsed and ready for section selection`;
@@ -405,10 +411,17 @@ export default function UploadPage() {
                 </div>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-[rgba(241,200,75,0.15)] px-3 py-1.5 transition-colors hover:bg-[rgba(241,200,75,0.3)]"
+                  disabled={uploads.length >= MAX_OUTLINE_UPLOADS}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 transition-colors ${
+                    uploads.length >= MAX_OUTLINE_UPLOADS
+                      ? "cursor-not-allowed bg-[#ece7db]"
+                      : "cursor-pointer bg-[rgba(241,200,75,0.15)] hover:bg-[rgba(241,200,75,0.3)]"
+                  }`}
                 >
-                  <span className="font-['Inter',sans-serif] text-xs font-semibold text-[#B38F1D]">
-                    + Upload more
+                  <span className={`font-['Inter',sans-serif] text-xs font-semibold ${
+                    uploads.length >= MAX_OUTLINE_UPLOADS ? "text-[#8b8170]" : "text-[#B38F1D]"
+                  }`}>
+                    {uploads.length >= MAX_OUTLINE_UPLOADS ? "7 file limit reached" : "+ Upload more"}
                   </span>
                 </button>
               </div>
@@ -476,10 +489,18 @@ export default function UploadPage() {
             multiple
             className="hidden"
             onChange={(event) => {
-              if (event.target.files) addFiles(event.target.files);
+              if (event.target.files) {
+                setUploadMessage(addFiles(event.target.files).message ?? "");
+              }
               event.target.value = "";
             }}
           />
+
+          {uploadMessage && (
+            <p className="rounded-xl border border-[#ead9a0] bg-[#fff9e8] px-4 py-2.5 text-center font-['Inter',sans-serif] text-xs font-medium text-[#806814]">
+              {uploadMessage}
+            </p>
+          )}
 
           {uploads.length > 0 && (
             <button

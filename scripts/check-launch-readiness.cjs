@@ -27,7 +27,7 @@ function loadModule(entry, options = {}) {
 
 function fakeFirestore() {
   const documents = new Map();
-  return {
+  const database = {
     documents,
     collection: (collection) => ({
       doc: (id) => ({
@@ -38,7 +38,12 @@ function fakeFirestore() {
         },
       }),
     }),
+    runTransaction: async (callback) => callback({
+      get: (reference) => reference.get(),
+      set: (reference, value, options) => reference.set(value, options),
+    }),
   };
+  return database;
 }
 
 const request = {
@@ -83,22 +88,92 @@ async function baselineServerChecks() {
   await invoke({ ...request, outlineName: "renamed-file.html" });
   const renamedReusesCache = paidCalls === 1;
   await invoke({ ...request, outlineText: "Different content with the same supplied hash." });
-  const trustsForgedClientHash = paidCalls === 1;
+  const trustsForgedClientHash = paidCalls !== 2;
   const beforeConcurrent = paidCalls;
-  await Promise.all([invoke({ ...request, outlineHash: "b".repeat(64) }), invoke({ ...request, outlineHash: "b".repeat(64) })]);
+  const concurrentRequest = {
+    ...request,
+    outlineText: "Assignment 2 is due October 20.",
+    outlineHash: "b".repeat(64),
+  };
+  await Promise.all([invoke(concurrentRequest), invoke(concurrentRequest)]);
   const concurrentPaidCalls = paidCalls - beforeConcurrent;
 
   env.OPENAI_OUTLINE_TEXT_LIMIT = "10";
-  await invoke({ ...request, outlineHash: "c".repeat(64) });
+  await invoke({
+    ...request,
+    outlineText: "A deliberately long unique outline with Assignment 3 due November 15.",
+    outlineHash: "c".repeat(64),
+  });
   const truncatedReplyCached = [...db.documents.values()].some((data) => data.warnings?.some((warning) => /truncated/.test(warning)));
   delete env.OPENAI_API_KEY;
-  const failed = await invoke({ ...request, outlineHash: "d".repeat(64) });
+  const failed = await invoke({
+    ...request,
+    outlineText: "A unique outline that cannot reach OpenAI.",
+    outlineHash: "d".repeat(64),
+  });
+
+  assert.equal(renamedReusesCache, true);
+  assert.equal(trustsForgedClientHash, false);
+  assert.equal(concurrentPaidCalls, 1);
+  assert.equal(truncatedReplyCached, false);
+  assert.equal(lastAiBody.store, false);
+  assert.equal(failed.statusCode, 503);
 
   console.log(JSON.stringify({ baselineServerChecks: {
     renamedReusesCache, trustsForgedClientHash, concurrentPaidCalls,
     truncatedReplyCached, missingApiKeyHttpStatus: failed.statusCode,
     providerStorageExplicitlyDisabled: lastAiBody.store === false,
   } }, null, 2));
+}
+
+async function rateLimitChecks() {
+  const db = fakeFirestore();
+  let paidCalls = 0;
+  const env = {
+    OPENAI_API_KEY: "test-not-a-real-key",
+    OPENAI_MODEL: "gpt-4.1-mini",
+    FIREBASE_PROJECT_ID: "test",
+    FIREBASE_CLIENT_EMAIL: "test@example.invalid",
+    FIREBASE_PRIVATE_KEY: "test",
+    AI_EXTRACTION_PER_CLIENT_DAILY_LIMIT: "1",
+    AI_EXTRACTION_GLOBAL_DAILY_LIMIT: "10",
+  };
+  const server = loadModule("src/server/openaiOutlineExtractor.ts", {
+    env,
+    modules: {
+      "firebase-admin/app": { cert: (value) => value, getApps: () => [], initializeApp: () => ({}) },
+      "firebase-admin/firestore": {
+        getFirestore: () => db,
+        FieldValue: { increment: () => 1, serverTimestamp: () => "test-timestamp" },
+      },
+    },
+    globals: {
+      fetch: async () => {
+        paidCalls += 1;
+        return { ok: true, json: async () => ({ choices: [{ finish_reason: "stop", message: { content: '{"events":[],"warnings":[]}' } }] }) };
+      },
+    },
+  });
+  async function invoke(body) {
+    const response = { headers: {}, setHeader(name, value) { this.headers[name] = value; }, end(text) { this.body = JSON.parse(text); } };
+    await server.handleOutlineExtractionRequest({
+      method: "POST",
+      body,
+      headers: {
+        "x-forwarded-for": "203.0.113.10",
+        "x-goosecalendar-client": "test-browser-client-1234",
+      },
+    }, response);
+    return response;
+  }
+
+  const first = await invoke({ ...request, outlineText: "First new outline." });
+  const second = await invoke({ ...request, outlineText: "Second new outline." });
+  assert.equal(first.statusCode, 200);
+  assert.equal(second.statusCode, 429);
+  assert.equal(paidCalls, 1);
+  assert.ok(Number(second.headers["Retry-After"]) > 0);
+  console.log("PASS: uncached AI extraction requests are rate limited before a paid call.");
 }
 
 async function analyticsChecks() {
@@ -164,7 +239,11 @@ async function analyticsChecks() {
   console.log("PASS: all 11 analytics events are valid, used, delivered, and parameter-safe.");
 }
 
-(async () => { await baselineServerChecks(); await analyticsChecks(); })().catch((error) => {
+(async () => {
+  await baselineServerChecks();
+  await rateLimitChecks();
+  await analyticsChecks();
+})().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

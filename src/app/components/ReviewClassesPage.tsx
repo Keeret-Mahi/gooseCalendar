@@ -7,6 +7,16 @@ import { useAppContext } from "./AppContext";
 import { FlowFooter } from "./FlowFooter";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 import { trackAnalyticsEvent } from "../lib/analytics";
 import {
   formatEventTiming,
@@ -1635,6 +1645,7 @@ export default function ReviewClassesPage() {
 
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
   const [draftEvent, setDraftEvent] = useState<EventCandidate | null>(null);
+  const [showReviewReminder, setShowReviewReminder] = useState(false);
   const [pendingManualEvent, setPendingManualEvent] = useState<{
     courseId: string;
     eventType: EventType;
@@ -1665,6 +1676,11 @@ export default function ReviewClassesPage() {
   const draftIssue = draftEvent ? validateEventForExport(draftEvent) : null;
 
   const handleNext = () => {
+    setShowReviewReminder(true);
+  };
+
+  const handleConfirmExport = () => {
+    setShowReviewReminder(false);
     navigate("/export");
 
     const visibleEvents = visibleCourses.flatMap(({ events: courseEvents }) => courseEvents);
@@ -1764,6 +1780,44 @@ export default function ReviewClassesPage() {
             setDraftEvent(null);
           }}
         />
+
+        <AlertDialog open={showReviewReminder} onOpenChange={setShowReviewReminder}>
+          <AlertDialogContent className="max-w-[500px] gap-0 overflow-hidden rounded-[24px] border border-[#e8dfc2] bg-[#fffdf8] p-0 shadow-[0px_28px_70px_-24px_rgba(28,24,13,0.35)]">
+            <div className="h-1.5 bg-[#f2b90d]" />
+            <div className="px-6 pb-6 pt-7 sm:px-8 sm:pb-7">
+              <AlertDialogHeader className="items-center gap-3 text-center sm:text-center">
+                <div className="flex size-12 items-center justify-center rounded-full bg-[rgba(242,185,13,0.16)]">
+                  <CheckIcon color="#a77c00" />
+                </div>
+                <div>
+                  <AlertDialogTitle className="font-['Inter',sans-serif] text-[24px] font-black tracking-[-0.03em] text-[#1c180d]">
+                    One last check
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="mt-2 font-['Lexend',sans-serif] text-[15px] leading-6 text-[#6f695d]">
+                    gooseCalendar can occasionally miss or misread dates. Please make sure you have
+                    reviewed the events on this page before exporting.
+                  </AlertDialogDescription>
+                </div>
+              </AlertDialogHeader>
+
+              <div className="mt-5 rounded-[14px] border border-[#ead9a0] bg-[#fff8df] px-4 py-3 text-center font-['Lexend',sans-serif] text-sm font-medium leading-5 text-[#806814]">
+                Compare assignments, assessments, and important deadlines with your original outline.
+              </div>
+
+              <AlertDialogFooter className="mt-6 gap-3 sm:justify-center">
+                <AlertDialogCancel className="h-auto cursor-pointer rounded-xl border-[#ddd4ba] bg-white px-5 py-3 font-['Lexend',sans-serif] text-sm font-semibold text-[#645f52] shadow-none transition-colors hover:bg-[#f8f6ef] hover:text-[#1c180d]">
+                  Keep reviewing
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleConfirmExport}
+                  className="h-auto cursor-pointer rounded-xl bg-[#f2b90d] px-5 py-3 font-['Lexend',sans-serif] text-sm font-bold text-[#1c180d] shadow-[0px_0px_0px_3px_rgba(242,185,13,0.18)] transition-all hover:bg-[#e8b20c] hover:shadow-[0px_0px_0px_4px_rgba(242,185,13,0.25)]"
+                >
+                  Continue to export
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </div>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <FlowFooter
           backLabel="Back to Sections"

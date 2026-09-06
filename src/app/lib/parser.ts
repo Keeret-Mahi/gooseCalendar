@@ -21347,13 +21347,11 @@ export async function parseOutlineHtmlWithAi(
 
         return finalizeOutlineParseResult(parsed, events);
       } catch (error) {
-        addCourseWarning(
-          parsed.course,
+        throw new Error(
           error instanceof Error
             ? `AI extraction failed: ${error.message}`
             : "AI extraction failed."
         );
-        return finalizeOutlineParseResult(parsed, parsed.events);
       }
     }
   }
@@ -21399,12 +21397,10 @@ export async function parseOutlineHtmlWithAi(
 
     return finalizeOutlineParseResult(parsed, events);
   } catch (error) {
-    addCourseWarning(
-      parsed.course,
+    throw new Error(
       error instanceof Error
         ? `AI extraction failed: ${error.message}`
         : "AI extraction failed."
     );
-    return finalizeOutlineParseResult(parsed, []);
   }
 }

@@ -10,6 +10,24 @@ interface AiExtractionApiResponse {
   warnings?: unknown;
 }
 
+const AI_CLIENT_ID_STORAGE_KEY = "goosecalendar:ai-client-id";
+
+function getAnonymousAiClientId() {
+  if (typeof window === "undefined") return "";
+
+  try {
+    const stored = window.localStorage.getItem(AI_CLIENT_ID_STORAGE_KEY);
+    if (stored) return stored;
+
+    const generated = globalThis.crypto?.randomUUID?.() ??
+      `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    window.localStorage.setItem(AI_CLIENT_ID_STORAGE_KEY, generated);
+    return generated;
+  } catch {
+    return "";
+  }
+}
+
 function normalizeWarning(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -56,6 +74,7 @@ export async function extractNonMeetingEventsWithAi(
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        "X-GooseCalendar-Client": getAnonymousAiClientId(),
       },
       body: JSON.stringify(request),
     });
@@ -83,18 +102,15 @@ export async function extractNonMeetingEventsWithAi(
       : [];
 
   if (!response.ok) {
+    const errorMessage =
+      serverWarnings[0] ??
+      responseWarnings[0] ??
+      `AI extraction failed with HTTP ${response.status}.`;
     console.warn("[gooseCalendar] AI extraction proxy returned an error", {
       status: response.status,
       warnings: [...responseWarnings, ...serverWarnings],
     });
-    return {
-      ...EMPTY_AI_EXTRACTION,
-      warnings: [
-        ...responseWarnings,
-        ...serverWarnings,
-        `AI extraction failed with HTTP ${response.status}.`,
-      ],
-    };
+    throw new Error(errorMessage);
   }
 
   const validation = validateAiExtractionResponse(

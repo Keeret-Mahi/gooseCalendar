@@ -38,6 +38,12 @@ import {
 import { trackAnalyticsEvent } from "../lib/analytics";
 import { parseOutlineHtmlWithAi } from "../lib/parser";
 import { isSupportedOutlineFile, readOutlineSource } from "../lib/outlineSource";
+import {
+  MAX_CONCURRENT_OUTLINE_PARSING,
+  MAX_OUTLINE_FILE_SIZE_BYTES,
+  MAX_OUTLINE_UPLOADS,
+  type AddOutlineFilesResult,
+} from "../lib/uploadLimits";
 
 interface AppContextType {
   uploads: UploadedOutline[];
@@ -48,7 +54,7 @@ interface AppContextType {
   isParsing: boolean;
   adminModeEnabled: boolean;
   setAdminModeEnabled: (enabled: boolean) => void;
-  addFiles: (newFiles: FileList | File[]) => void;
+  addFiles: (newFiles: FileList | File[]) => AddOutlineFilesResult;
   removeUpload: (uploadId: string) => void;
   clearFiles: () => void;
   updateSelection: (
@@ -355,8 +361,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    const availableParsingSlots = Math.max(
+      MAX_CONCURRENT_OUTLINE_PARSING - parsingIdsRef.current.size,
+      0
+    );
+
     uploads
       .filter((upload) => upload.status === "pending")
+      .slice(0, availableParsingSlots)
       .forEach((upload) => {
         if (parsingIdsRef.current.has(upload.id)) return;
         parsingIdsRef.current.add(upload.id);
@@ -421,9 +433,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const addFiles = (newFiles: FileList | File[]) => {
     const incomingFiles = Array.from(newFiles);
-    const outlineFiles = Array.from(newFiles).filter(isSupportedOutlineFile);
-
     const uploadKey = (file: File) => `${file.name}:${file.size}:${file.lastModified}`;
+    const supportedFiles = incomingFiles.filter(isSupportedOutlineFile);
+    const sizeEligibleFiles = supportedFiles.filter(
+      (file) => file.size <= MAX_OUTLINE_FILE_SIZE_BYTES
+    );
+    const seenIncomingKeys = new Set<string>();
+    const uniqueOutlineFiles = sizeEligibleFiles.filter((file) => {
+      const key = uploadKey(file);
+      if (seenIncomingKeys.has(key)) return false;
+      seenIncomingKeys.add(key);
+      return true;
+    });
+    const existingKeys = new Set(uploads.map((upload) => uploadKey(upload.file)));
+    let projectedUploadCount = uploads.length;
+    const outlineFiles = uniqueOutlineFiles.filter((file) => {
+      if (existingKeys.has(uploadKey(file))) return true;
+      if (projectedUploadCount >= MAX_OUTLINE_UPLOADS) return false;
+      projectedUploadCount += 1;
+      return true;
+    });
+    const capRejectedCount = uniqueOutlineFiles.length - outlineFiles.length;
+    const unsupportedCount = incomingFiles.length - supportedFiles.length;
+    const oversizedCount = supportedFiles.length - sizeEligibleFiles.length;
+    const duplicateIncomingCount = sizeEligibleFiles.length - uniqueOutlineFiles.length;
+    const rejectedCount =
+      unsupportedCount + oversizedCount + duplicateIncomingCount + capRejectedCount;
     const incomingKeys = new Set(outlineFiles.map(uploadKey));
     const duplicateUploads = uploads.filter((upload) => incomingKeys.has(uploadKey(upload.file)));
     const duplicateCourseIds = duplicateUploads.flatMap((upload) => upload.courseIds);
@@ -431,7 +466,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     void trackAnalyticsEvent("outline_upload_attempted", {
       file_count: incomingFiles.length,
       outline_file_count: outlineFiles.length,
-      rejected_file_count: incomingFiles.length - outlineFiles.length,
+      rejected_file_count: rejectedCount,
+      upload_limit_rejected_count: capRejectedCount,
+      oversized_file_count: oversizedCount,
       duplicate_file_count: duplicateUploads.length,
     });
 
@@ -470,6 +507,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       return [...nextExisting, ...nextUploads];
     });
+
+    return {
+      acceptedCount: outlineFiles.length,
+      acceptedFileNames: outlineFiles.map((file) => file.name),
+      rejectedCount,
+      ...(() => {
+        const messages: string[] = [];
+        if (capRejectedCount > 0) {
+          messages.push(
+            `You can upload up to ${MAX_OUTLINE_UPLOADS} outlines at a time. Remove an outline before adding another.`
+          );
+        }
+        if (oversizedCount > 0) {
+          messages.push("Files larger than 10 MB were skipped.");
+        }
+        if (unsupportedCount > 0) {
+          messages.push("Unsupported files were skipped. Use HTML, PDF, or text outlines.");
+        }
+        return messages.length > 0 ? { message: messages.join(" ") } : {};
+      })(),
+    };
   };
 
   const removeUpload = (uploadId: string) => {

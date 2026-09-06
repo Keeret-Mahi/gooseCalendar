@@ -31,6 +31,9 @@ export default defineConfig(({ mode }) => {
     'FIREBASE_SERVICE_ACCOUNT_JSON',
     'FIREBASE_ADMIN_CREDENTIALS',
     'AI_EXTRACTION_CACHE_ENABLED',
+    'AI_EXTRACTION_RATE_LIMIT_ENABLED',
+    'AI_EXTRACTION_PER_CLIENT_DAILY_LIMIT',
+    'AI_EXTRACTION_GLOBAL_DAILY_LIMIT',
   ].forEach((key) => {
     if (!process.env[key] && env[key]) {
       process.env[key] = env[key]

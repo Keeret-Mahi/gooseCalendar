@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import {
   AI_EXTRACTION_JSON_SCHEMA,
   EMPTY_AI_EXTRACTION,
@@ -5,6 +6,7 @@ import {
   type AiOutlineExtractionRequest,
 } from "../app/lib/aiExtractionSchema.js";
 import {
+  consumeAiExtractionQuota,
   readAiExtractionCache,
   writeAiExtractionCache,
 } from "./firebaseExtractionCache.js";
@@ -17,6 +19,20 @@ const DEFAULT_OPENAI_MAX_OUTPUT_TOKENS = 6_000;
 const GPT_55_MAX_OUTPUT_TOKENS = 8_000;
 const GPT_55_PRO_MAX_OUTPUT_TOKENS = 12_000;
 const FULL_OUTLINE_MIN_OUTPUT_TOKENS = 16_000;
+const inFlightExtractions = new Map<string, Promise<ExtractionAttempt>>();
+
+type ExtractionAttempt =
+  | {
+      status: "completed";
+      extraction: typeof EMPTY_AI_EXTRACTION;
+      warnings: string[];
+      httpStatus: number;
+    }
+  | {
+      status: "rate_limited";
+      retryAfterSeconds: number;
+      warning: string;
+    };
 
 type OpenAiUsage = {
   prompt_tokens?: number;
@@ -305,6 +321,60 @@ function readString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function normalizeCacheSource(value: string) {
+  return value
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\u00a0/g, " ")
+    .replace(/[\u200b-\u200d\ufeff\u2060\u00ad]/g, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\s*\n\s*/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+    .toLowerCase()
+    .replace(/[^\S\r\n]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function computeOutlineHash(value: string) {
+  return createHash("sha256").update(normalizeCacheSource(value), "utf8").digest("hex");
+}
+
+function readRequestHeader(request: any, name: string) {
+  const value = request.headers?.[name];
+  if (Array.isArray(value)) return value[0] ?? "";
+  return typeof value === "string" ? value : "";
+}
+
+function buildClientKey(request: any) {
+  const anonymousClientId = readRequestHeader(request, "x-goosecalendar-client").trim();
+  if (/^[a-z0-9_-]{16,128}$/i.test(anonymousClientId)) {
+    return createHash("sha256")
+      .update(`browser:${anonymousClientId}`, "utf8")
+      .digest("hex")
+      .slice(0, 32);
+  }
+
+  const forwardedFor =
+    readRequestHeader(request, "x-vercel-forwarded-for") ||
+    readRequestHeader(request, "x-forwarded-for");
+  const clientAddress =
+    forwardedFor.split(",")[0]?.trim() ||
+    readRequestHeader(request, "x-real-ip").trim() ||
+    request.socket?.remoteAddress ||
+    "unknown";
+
+  return createHash("sha256")
+    .update(`ip:${clientAddress}`, "utf8")
+    .digest("hex")
+    .slice(0, 32);
+}
+
 function validateRequest(value: unknown) {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return undefined;
@@ -316,7 +386,6 @@ function validateRequest(value: unknown) {
   const courseName = readString(raw.courseName);
   const term = readString(raw.term);
   const outlineText = readString(raw.outlineText);
-  const outlineHash = readString(raw.outlineHash).toLowerCase();
   const rawExtractionMode = readString(raw.extractionMode);
   const extractionMode =
     rawExtractionMode === "fullOutline" || rawExtractionMode === "nonMeeting"
@@ -345,7 +414,7 @@ function validateRequest(value: unknown) {
     outlineText,
     extractionMode,
     sourceFormat,
-    ...(outlineHash ? { outlineHash } : {}),
+    outlineHash: computeOutlineHash(outlineText),
   } satisfies AiOutlineExtractionRequest;
 }
 
@@ -568,6 +637,7 @@ async function requestChatCompletions({
     signal,
     body: JSON.stringify({
       model,
+      store: false,
       messages: [
         {
           role: "system",
@@ -622,6 +692,7 @@ async function requestResponses({
     signal,
     body: JSON.stringify({
       model,
+      store: false,
       instructions: AI_EXTRACTOR_SYSTEM_PROMPT,
       input: buildAiExtractorUserPrompt(request),
       text: {
@@ -654,6 +725,7 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
       ],
       cacheable: false,
       model: DEFAULT_MODEL,
+      httpStatus: 503,
     };
   }
 
@@ -748,6 +820,7 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
         warnings: [message],
         cacheable: false,
         model,
+        httpStatus: response.status === 429 ? 503 : 502,
       };
     }
 
@@ -800,6 +873,7 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
       warnings,
       cacheable,
       model,
+      httpStatus: 200,
     };
   } catch (error) {
     if (isAbortError(error)) {
@@ -815,6 +889,7 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
         warnings: [message],
         cacheable: false,
         model,
+        httpStatus: 504,
       };
     }
 
@@ -830,6 +905,7 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
       ],
       cacheable: false,
       model,
+      httpStatus: 502,
     };
   } finally {
     clearTimeout(timeout);
@@ -875,40 +951,88 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       return;
     }
 
-    const textLimit = Number(process.env.OPENAI_OUTLINE_TEXT_LIMIT ?? DEFAULT_OUTLINE_TEXT_LIMIT);
-    const outlineText =
-      parsed.outlineText.length > textLimit
-        ? parsed.outlineText.slice(0, textLimit)
-        : parsed.outlineText;
-    const truncationWarnings =
-      outlineText.length < parsed.outlineText.length
-        ? [
-            `Outline text was truncated to ${textLimit} characters before AI extraction.`,
-          ]
-        : [];
+    const extractionKey = `${parsed.extractionMode}:${parsed.outlineHash}`;
+    let extractionPromise = inFlightExtractions.get(extractionKey);
 
-    const result = await callOpenAi({
-      ...parsed,
-      outlineText,
-    });
-    if (result.cacheable) {
-      await writeAiExtractionCache({
-        request: parsed,
-        model: result.model,
-        extraction: result.extraction,
-        warnings: [...truncationWarnings, ...result.warnings],
-      });
-    } else {
-      console.info("[gooseCalendar] Skipping AI extraction cache write", {
-        courseCode: parsed.courseCode,
-        reason: "OpenAI result was not cacheable.",
-        warnings: result.warnings.slice(0, 5),
-      });
+    if (!extractionPromise) {
+      extractionPromise = (async (): Promise<ExtractionAttempt> => {
+        const quota = await consumeAiExtractionQuota(buildClientKey(request));
+        if (!quota.allowed) {
+          const warning =
+            quota.reason === "global_daily"
+              ? "gooseCalendar has reached today's new-outline processing limit. Please try again tomorrow."
+              : "This browser has reached its limit of 10 new outlines today. Cached outlines can still be processed.";
+          return {
+            status: "rate_limited",
+            retryAfterSeconds: quota.retryAfterSeconds,
+            warning,
+          };
+        }
+
+        const textLimit = Number(
+          process.env.OPENAI_OUTLINE_TEXT_LIMIT ?? DEFAULT_OUTLINE_TEXT_LIMIT
+        );
+        const outlineText =
+          parsed.outlineText.length > textLimit
+            ? parsed.outlineText.slice(0, textLimit)
+            : parsed.outlineText;
+        const truncationWarnings =
+          outlineText.length < parsed.outlineText.length
+            ? [`Outline text was truncated to ${textLimit} characters before AI extraction.`]
+            : [];
+        const result = await callOpenAi({
+          ...parsed,
+          outlineText,
+        });
+        const warnings = [...truncationWarnings, ...result.warnings];
+
+        if (result.cacheable && truncationWarnings.length === 0) {
+          await writeAiExtractionCache({
+            request: parsed,
+            model: result.model,
+            extraction: result.extraction,
+            warnings,
+          });
+        } else {
+          console.info("[gooseCalendar] Skipping AI extraction cache write", {
+            courseCode: parsed.courseCode,
+            reason:
+              truncationWarnings.length > 0
+                ? "Outline input was truncated."
+                : "OpenAI result was not cacheable.",
+            warnings: warnings.slice(0, 5),
+          });
+        }
+
+        return {
+          status: "completed",
+          extraction: result.extraction,
+          warnings,
+          httpStatus: result.httpStatus,
+        };
+      })();
+      inFlightExtractions.set(extractionKey, extractionPromise);
+      const removeInFlightExtraction = () => {
+        if (inFlightExtractions.get(extractionKey) === extractionPromise) {
+          inFlightExtractions.delete(extractionKey);
+        }
+      };
+      void extractionPromise.then(removeInFlightExtraction, removeInFlightExtraction);
     }
 
-    sendJson(response, 200, {
-      extraction: result.extraction,
-      warnings: [...truncationWarnings, ...result.warnings],
+    const extractionAttempt = await extractionPromise;
+    if (extractionAttempt.status === "rate_limited") {
+      response.setHeader("Retry-After", String(extractionAttempt.retryAfterSeconds));
+      sendJson(response, 429, {
+        extraction: EMPTY_AI_EXTRACTION,
+        warnings: [extractionAttempt.warning],
+      });
+      return;
+    }
+
+    sendJson(response, extractionAttempt.httpStatus, {
+      extraction: extractionAttempt.extraction,
+      warnings: extractionAttempt.warnings,
     });
   } catch (error) {
     sendJson(response, 400, {
