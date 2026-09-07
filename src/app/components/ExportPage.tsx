@@ -507,7 +507,7 @@ export default function ExportPage() {
                     {settingsTitle}
                   </h3>
                   <p className="mt-1 max-w-[520px] text-sm leading-relaxed text-[#78716c]">
-                    Choose reminder defaults for exported calendar events.
+                    Choose when you want to be notified about each event type.
                   </p>
                 </div>
                 <button
@@ -549,7 +549,7 @@ export default function ExportPage() {
                       Notification settings
                     </h4>
                     <p className="mt-2 text-sm leading-relaxed text-[#78716c]">
-                      ICS export adds alarms when you choose a specific reminder.
+                      ICS export adds notifications when you choose a specific reminder.
                     </p>
                   </div>
                   <div className="space-y-3">
@@ -934,7 +934,7 @@ export default function ExportPage() {
                       {settingsTitle}
                     </p>
                     <p className="mt-0.5 text-xs leading-relaxed text-[#78716c] sm:text-sm">
-                      Choose reminder defaults before exporting your calendar.
+                      Choose when you want notifications for each event type.
                     </p>
                   </div>
                 </div>
