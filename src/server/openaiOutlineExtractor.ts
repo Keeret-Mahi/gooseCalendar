@@ -7,6 +7,7 @@ import {
   type AiOutlineExtractionRequest,
 } from "../app/lib/aiExtractionSchema.js";
 import {
+  applyKnownPdfCacheCorrections,
   consumeAiExtractionQuota,
   readAiExtractionCache,
   writeAiExtractionCache,
@@ -1091,12 +1092,16 @@ export async function handleOutlineExtractionRequest(request: any, response: any
           adminRequest ? adminModel : undefined
         );
         const warnings = result.warnings;
+        const extraction = applyKnownPdfCacheCorrections(
+          parsed,
+          result.extraction
+        ).extraction;
 
         if (result.cacheable) {
           await writeAiExtractionCache({
             request: parsed,
             model: result.model,
-            extraction: result.extraction,
+            extraction,
             warnings,
           });
         } else {
@@ -1109,7 +1114,7 @@ export async function handleOutlineExtractionRequest(request: any, response: any
 
         return {
           status: "completed",
-          extraction: result.extraction,
+          extraction,
           warnings,
           httpStatus: result.httpStatus,
         };

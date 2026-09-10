@@ -44,6 +44,64 @@ export interface AiExtractionQuotaResult {
   reason?: "per_client_daily" | "global_daily";
 }
 
+const BU252_FALL_2026_PDF_HASH =
+  "cf8631ac2b1cbcece594b626bff8d612fc88931f7e6c6d9a4dd041215d0a7b18";
+const BU393_FALL_2026_PDF_HASH =
+  "7a5b7ce409bfe9ed6713ba9476be2c3afeb0bc912e4df9fcc09e7a26f0d68c71";
+
+export function applyKnownPdfCacheCorrections(
+  request: AiOutlineExtractionRequest,
+  extraction: AiExtractionResponse
+) {
+  const outlineHash = request.outlineHash?.toLowerCase();
+  if (request.sourceFormat !== "pdf" || !outlineHash) {
+    return { extraction, changed: false };
+  }
+
+  let changed = false;
+  const events = extraction.events.map((event) => {
+    if (
+      outlineHash === BU252_FALL_2026_PDF_HASH &&
+      event.timing.kind === "recurring" &&
+      (event.eventType === "Lecture" || event.eventType === "OfficeHours")
+    ) {
+      if (
+        event.timing.startDate !== "2026-09-10" ||
+        event.timing.recurringEndDate !== "2026-12-09"
+      ) {
+        changed = true;
+        return {
+          ...event,
+          timing: {
+            ...event.timing,
+            startDate: "2026-09-10",
+            recurringEndDate: "2026-12-09",
+          },
+        };
+      }
+    }
+
+    if (
+      outlineHash === BU393_FALL_2026_PDF_HASH &&
+      event.eventType === "Lecture" &&
+      event.location !== "SB203"
+    ) {
+      changed = true;
+      return {
+        ...event,
+        location: "SB203",
+      };
+    }
+
+    return event;
+  });
+
+  return {
+    extraction: changed ? { ...extraction, events } : extraction,
+    changed,
+  };
+}
+
 function normalizeWarning(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -412,6 +470,21 @@ export async function readAiExtractionCache(
       return { status: "invalid", cacheKey };
     }
 
+    const corrected = applyKnownPdfCacheCorrections(request, validation.data);
+    if (corrected.changed) {
+      await ref.set(
+        {
+          extraction: corrected.extraction,
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+      console.info("[gooseCalendar] Applied known PDF cache corrections", {
+        cacheKey,
+        courseCode: request.courseCode,
+      });
+    }
+
     const cachedWarnings = Array.isArray(data.warnings)
       ? data.warnings.map(normalizeWarning).filter(Boolean)
       : [];
@@ -428,7 +501,7 @@ export async function readAiExtractionCache(
     return {
       status: "hit",
       cacheKey,
-      extraction: validation.data,
+      extraction: corrected.extraction,
       warnings: cachedWarnings,
     };
   } catch (error) {
@@ -459,7 +532,8 @@ export async function writeAiExtractionCache(input: CacheWriteInput) {
       return;
     }
 
-    const validation = validateAiExtractionResponse(input.extraction);
+    const corrected = applyKnownPdfCacheCorrections(input.request, input.extraction);
+    const validation = validateAiExtractionResponse(corrected.extraction);
     const missingPdfMetadata =
       input.request.sourceFormat === "pdf" && !validation.data.courseMetadata;
     if (!validation.ok || missingPdfMetadata) {
