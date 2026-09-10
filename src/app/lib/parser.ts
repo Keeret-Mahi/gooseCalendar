@@ -4269,6 +4269,85 @@ function addPdfMeetingSectionOptions(course: ParsedCourse, events: EventCandidat
   });
 }
 
+function compactPdfSameDayAvailabilityEvents(events: EventCandidate[]) {
+  const passthrough: EventCandidate[] = [];
+  const groups = new Map<
+    string,
+    Array<{ event: EventCandidate; number: number; stem: string; milestone: string }>
+  >();
+
+  events.forEach((event) => {
+    if (event.eventType !== "Assignment" || event.timing.kind !== "single" || !event.timing.date) {
+      passthrough.push(event);
+      return;
+    }
+
+    const match = normalizeWhitespace(event.label).match(
+      /^(.*?)\s+#?\s*(\d+)\s+(Available|Published|Released|Opened|Opens|Starts|Begins)$/i
+    );
+    if (!match?.[1]) {
+      passthrough.push(event);
+      return;
+    }
+
+    const stem = normalizeWhitespace(match[1]);
+    const milestone = match[3];
+    const key = [
+      event.courseId,
+      stem.toLowerCase(),
+      milestone.toLowerCase(),
+      event.timing.date,
+      event.location.toLowerCase(),
+    ].join(":");
+    const group = groups.get(key) ?? [];
+    group.push({ event, number: Number(match[2]), stem, milestone });
+    groups.set(key, group);
+  });
+
+  const compacted = [...passthrough];
+  groups.forEach((group) => {
+    const sorted = [...group].sort((left, right) => left.number - right.number);
+    if (sorted.length < 2) {
+      compacted.push(sorted[0].event);
+      return;
+    }
+
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+    const numbers = unique(sorted.map((item) => item.number));
+    const contiguous = numbers.every(
+      (number, index) => index === 0 || number === numbers[index - 1] + 1
+    );
+    const numberLabel = contiguous
+      ? `#${first.number}-${last.number}`
+      : `#${numbers.join(", #")}`;
+    const label = `${first.stem} ${numberLabel} ${first.milestone}`;
+    const representative = first.event;
+
+    compacted.push({
+      ...representative,
+      id: buildStableId(
+        `${representative.courseId}:pdf-common-availability:${first.stem}:${representative.timing.date}:${numbers.join(",")}:${representative.location}`
+      ),
+      label,
+      title: representative.title.replace(representative.label, label),
+      notes: combineNotes(
+        [`Includes ${sorted.map((item) => item.event.label).join(", ")}.`],
+        ...sorted.map((item) => item.event.notes)
+      ),
+      sectionOptionIds: unique(sorted.flatMap((item) => item.event.sectionOptionIds)),
+      extractedSectionLabels: unique(
+        sorted.flatMap((item) => item.event.extractedSectionLabels)
+      ),
+      provenance: mergeProvenanceLists(
+        sorted.map((item) => item.event.provenance)
+      ),
+    });
+  });
+
+  return compacted;
+}
+
 function sourceTextForAi(source: OutlineSource) {
   if (source.format === "html") {
     return outlineTextFromHtml(source.content);
@@ -21480,7 +21559,13 @@ export async function parseOutlineHtmlWithAi(
       addPdfMeetingSectionOptions(parsed.course, aiEvents);
       parsed.sectionOptionCount = parsed.course.sectionOptions.length;
     }
-    const events = finalizeParserEvents(parsed.course, aiEvents, parsed.meta);
+    const events = finalizeParserEvents(
+      parsed.course,
+      source.format === "pdf"
+        ? compactPdfSameDayAvailabilityEvents(aiEvents)
+        : aiEvents,
+      parsed.meta
+    );
 
     return finalizeOutlineParseResult(parsed, events);
   } catch (error) {
