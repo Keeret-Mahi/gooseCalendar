@@ -16,6 +16,14 @@ export type AiExtractedSourceKind = Extract<
   "schedule" | "table" | "prose" | "topic"
 >;
 
+export type AiMeetingType = Extract<EventType, "Lecture" | "Tutorial" | "Lab">;
+
+export interface AiTimingRelation {
+  meetingType: AiMeetingType;
+  windowStartDate: string;
+  windowEndDate: string;
+}
+
 export interface AiExtractedTiming {
   kind: "single" | "recurring";
   date: string | null;
@@ -41,6 +49,7 @@ export interface AiExtractedEvent {
   sourceKind: AiExtractedSourceKind;
   sourceSectionTitle: string | null;
   sourceSnippet: string;
+  timingRelation: AiTimingRelation | null;
   timing: AiExtractedTiming;
 }
 
@@ -89,6 +98,8 @@ const WEEKDAY_VALUES = new Set<WeekdayCode>([
   "SU",
 ]);
 
+const MEETING_TYPES = new Set<AiMeetingType>(["Lecture", "Tutorial", "Lab"]);
+
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_PATTERN = /^\d{2}:\d{2}$/;
 
@@ -119,6 +130,7 @@ export const AI_EXTRACTION_JSON_SCHEMA = {
           "sourceKind",
           "sourceSectionTitle",
           "sourceSnippet",
+          "timingRelation",
           "timing",
         ],
         properties: {
@@ -153,6 +165,19 @@ export const AI_EXTRACTION_JSON_SCHEMA = {
           },
           sourceSectionTitle: { type: ["string", "null"] },
           sourceSnippet: { type: "string" },
+          timingRelation: {
+            type: ["object", "null"],
+            additionalProperties: false,
+            required: ["meetingType", "windowStartDate", "windowEndDate"],
+            properties: {
+              meetingType: {
+                type: "string",
+                enum: ["Lecture", "Tutorial", "Lab"],
+              },
+              windowStartDate: { type: "string" },
+              windowEndDate: { type: "string" },
+            },
+          },
           timing: {
             type: "object",
             additionalProperties: false,
@@ -342,6 +367,49 @@ function validateTiming(value: unknown, errors: string[]) {
   } satisfies AiExtractedTiming;
 }
 
+function validateTimingRelation(value: unknown, errors: string[]) {
+  if (value === null) return null;
+  if (!isRecord(value)) {
+    errors.push("timingRelation must be an object or null");
+    return undefined;
+  }
+
+  const meetingType = stringValue(value.meetingType);
+  const windowStartDate = stringValue(value.windowStartDate);
+  const windowEndDate = stringValue(value.windowEndDate);
+
+  if (!meetingType || !MEETING_TYPES.has(meetingType as AiMeetingType)) {
+    errors.push("timingRelation.meetingType is invalid");
+  }
+  if (!windowStartDate || !ISO_DATE_PATTERN.test(windowStartDate)) {
+    errors.push("timingRelation.windowStartDate must be YYYY-MM-DD");
+  }
+  if (!windowEndDate || !ISO_DATE_PATTERN.test(windowEndDate)) {
+    errors.push("timingRelation.windowEndDate must be YYYY-MM-DD");
+  }
+  if (windowStartDate && windowEndDate && windowStartDate > windowEndDate) {
+    errors.push("timingRelation date window is reversed");
+  }
+
+  if (
+    !meetingType ||
+    !MEETING_TYPES.has(meetingType as AiMeetingType) ||
+    !windowStartDate ||
+    !ISO_DATE_PATTERN.test(windowStartDate) ||
+    !windowEndDate ||
+    !ISO_DATE_PATTERN.test(windowEndDate) ||
+    windowStartDate > windowEndDate
+  ) {
+    return undefined;
+  }
+
+  return {
+    meetingType: meetingType as AiMeetingType,
+    windowStartDate,
+    windowEndDate,
+  } satisfies AiTimingRelation;
+}
+
 function validateEvent(value: unknown, index: number, warnings: string[]) {
   const errors: string[] = [];
   if (!isRecord(value)) {
@@ -385,6 +453,7 @@ function validateEvent(value: unknown, index: number, warnings: string[]) {
   const sourceSnippet = stringValue(value.sourceSnippet);
   if (!sourceSnippet) errors.push("sourceSnippet is required");
 
+  const timingRelation = validateTimingRelation(value.timingRelation, errors);
   const timing = validateTiming(value.timing, errors);
 
   if (errors.length > 0) {
@@ -404,6 +473,7 @@ function validateEvent(value: unknown, index: number, warnings: string[]) {
     sourceKind: sourceKind as AiExtractedSourceKind,
     sourceSectionTitle: sourceSectionTitle!,
     sourceSnippet: sourceSnippet!,
+    timingRelation: timingRelation!,
     timing: timing!,
   } satisfies AiExtractedEvent;
 }

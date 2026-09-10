@@ -202,6 +202,16 @@ Rules:
     - Do not merge office-hours blocks with different weekdays, times, locations, modalities, or date ranges.
     - Repeat the same instructorName, instructorEmail, and location on each separate office-hours event when those facts apply.
     - Example: "Prof. Lee office hours: Monday 10-11 in MC 3001 and Thursday 2-3 on Teams" must return two OfficeHours events.
+16. Resolve coursework that explicitly occurs during a recurring class through timingRelation.
+    - Use timingRelation only when the outline explicitly says an assignment, assessment, quiz, presentation, or other item occurs during a Lecture, Tutorial, or Lab.
+    - If a schedule row identifies the applicable week or date window, set timingRelation.meetingType and its inclusive windowStartDate/windowEndDate.
+    - Dates in a column such as "Lecture Dates" may define the calendar window for the entire row. They are not automatically the event date for an item in another column.
+    - Do not choose the first date in the row, an assignment due date, or an assumed weekday as the event date.
+    - The local application will select the actual recurring class occurrence within that window and supply its section-specific date, time, and location.
+    - For a timing-related item, return kind = "single", date = null, allDay = true, and timingRelation with the explicit meeting relationship and row window.
+    - Do not add "Date unresolved" when timingRelation is not null because the date is locally resolvable.
+    - Set timingRelation = null for every event that does not use this relationship.
+    - If the source does not explicitly connect the item to a recurring class, do not use timingRelation.
 
 The response must match the supplied strict JSON schema exactly.
 
@@ -225,6 +235,7 @@ Timing rules:
   - \`date = null\`
   - \`allDay = true\`
   - include \`Date unresolved\` in notes
+- An item with timingRelation is not undated, even though its direct timing.date is null.
 
 Recurring class rules:
 - For recurring lectures, tutorials, labs, and office hours, startDate and recurringEndDate are the date range boundaries from the outline.
@@ -248,6 +259,7 @@ Coverage examples:
 - If only "Assignment 3 due October 8" is present, return \`Assignment #3 Due\` and warn that earlier numbering is unresolved. Do not omit #3 and do not invent #1 or #2.
 - "The report is due September 12" means \`Report Due\`, not the full sentence and not \`The report is\`.
 - "Monday 10-11 in MC 300 and Thursday 2-3 on Teams" means two OfficeHours events because their time and location differ.
+- A row with "Sep 21, 23, 25" and "Quiz on A1", together with an explicit statement that quizzes occur during tutorials, means \`Quiz on Assignment #1\` with timingRelation meetingType \`Tutorial\`, windowStartDate \`YYYY-09-21\`, and windowEndDate \`YYYY-09-25\`. Do not set September 21 as the quiz date; the selected tutorial might meet on another day within that window.
 
 Important:
 - Do not merge two distinct milestones into one event.

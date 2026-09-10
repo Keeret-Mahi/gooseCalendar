@@ -21333,6 +21333,7 @@ export async function parseOutlineHtmlWithAi(
         const aiEvents = mapAiExtractionToEventCandidates(extraction, parsed.course, {
           termBounds: parsed.termBounds,
           outlineText: aiRequest.outlineText,
+          meetingEvents: parsed.events,
         });
         const events = finalizeParserEvents(parsed.course, [...parsed.events, ...aiEvents], parsed.meta);
 

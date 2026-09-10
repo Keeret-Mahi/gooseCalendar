@@ -6,7 +6,7 @@ import {
   type AiOutlineExtractionRequest,
 } from "../app/lib/aiExtractionSchema.js";
 
-export const AI_CACHE_VERSION = "v2";
+export const AI_CACHE_VERSION = "v3";
 
 const CACHE_COLLECTION = "outlineAiExtractionCache";
 const RATE_LIMIT_COLLECTION = "outlineAiExtractionRateLimits";

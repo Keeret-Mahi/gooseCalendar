@@ -5,6 +5,7 @@ import type {
   EventTiming,
   EventType,
   ParsedCourse,
+  WeekdayCode,
 } from "./types";
 import type { AiExtractedEvent, AiExtractionResponse } from "./aiExtractionSchema";
 
@@ -14,6 +15,7 @@ interface MappingOptions {
     endDate: string;
   };
   outlineText?: string;
+  meetingEvents?: EventCandidate[];
 }
 
 const EVENT_GROUP_BY_TYPE: Record<EventType, EventGroup> = {
@@ -62,6 +64,51 @@ function normalizeOnlinePlatformLocation(value: string | null | undefined) {
 
 function unique(values: string[]) {
   return Array.from(new Set(values.map(normalizeWhitespace).filter(Boolean)));
+}
+
+const WEEKDAY_BY_UTC_DAY: WeekdayCode[] = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+
+function addIsoDays(date: string, days: number) {
+  const [year, month, day] = date.split("-").map(Number);
+  const value = new Date(Date.UTC(year, month - 1, day + days));
+  return value.toISOString().slice(0, 10);
+}
+
+function weekdayForIsoDate(date: string) {
+  const [year, month, day] = date.split("-").map(Number);
+  return WEEKDAY_BY_UTC_DAY[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+}
+
+function datesForMeetingRelation(
+  meeting: EventCandidate,
+  windowStartDate: string,
+  windowEndDate: string
+) {
+  if (meeting.timing.kind === "single") {
+    const date = meeting.timing.date;
+    return date && date >= windowStartDate && date <= windowEndDate ? [date] : [];
+  }
+
+  const startDate = [windowStartDate, meeting.timing.startDate ?? windowStartDate].sort()[1];
+  const endDate = [windowEndDate, meeting.timing.endDate ?? windowEndDate].sort()[0];
+  if (startDate > endDate) return [];
+
+  const excludedDates = new Set(meeting.timing.exDates);
+  const dates: string[] = [];
+  let date = startDate;
+
+  // Relationship windows should describe one schedule row. Keep malformed AI output bounded.
+  for (let offset = 0; offset < 32 && date <= endDate; offset += 1) {
+    if (
+      meeting.timing.byDay.includes(weekdayForIsoDate(date)) &&
+      !excludedDates.has(date)
+    ) {
+      dates.push(date);
+    }
+    date = addIsoDays(date, 1);
+  }
+
+  return dates;
 }
 
 function normalizeWeight(value: string | null) {
@@ -469,6 +516,96 @@ function enrichAssignmentMilestonePairs(events: EventCandidate[]) {
   return cleanedEvents.map((event) => updates.get(event.id) ?? event);
 }
 
+function meetingOccurrenceTiming(meeting: EventCandidate, date: string): EventTiming {
+  if (meeting.timing.kind === "single") {
+    return {
+      kind: "single",
+      date,
+      startTime: meeting.timing.startTime,
+      endTime: meeting.timing.endTime,
+      allDay: meeting.timing.allDay,
+    };
+  }
+
+  const override = meeting.timing.occurrenceOverrides[date];
+  const startTime = override?.startTime ?? meeting.timing.startTime;
+  const endTime = override?.endTime ?? meeting.timing.endTime;
+  return {
+    kind: "single",
+    date,
+    startTime,
+    endTime,
+    allDay: !startTime || !endTime,
+  };
+}
+
+function resolveMeetingTimingRelations(
+  items: AiExtractedEvent[],
+  events: EventCandidate[],
+  meetingEvents: EventCandidate[] | undefined,
+  course: ParsedCourse
+) {
+  if (!meetingEvents?.length) return events;
+
+  return events.flatMap((event, index) => {
+    const item = items[index];
+    const relation = item?.timingRelation;
+    if (!relation || event.timing.kind !== "single" || event.timing.date) return [event];
+
+    const resolved = meetingEvents.flatMap((meeting) => {
+      if (meeting.eventType !== relation.meetingType) return [];
+
+      const dates = datesForMeetingRelation(
+        meeting,
+        relation.windowStartDate,
+        relation.windowEndDate
+      );
+
+      // Multiple occurrences in one window are ambiguous; retain the unresolved event instead.
+      if (dates.length !== 1) return [];
+
+      const date = dates[0];
+      const timing = meetingOccurrenceTiming(meeting, date);
+      const confidence = confidenceFromTiming(timing, item.confidence);
+      const reviewNeeded = reviewNeededForTiming(timing, confidence);
+      const location = event.location || meeting.location;
+      const baseTitle = titleWithoutLocation(event.title, event.location);
+      const sectionOptionIds = [...meeting.sectionOptionIds];
+      const extractedSectionLabels = course.sectionOptions
+        .filter((section) => sectionOptionIds.includes(section.id))
+        .map((section) => section.label);
+
+      return [{
+        ...event,
+        id: buildStableId(
+          [
+            course.id,
+            "ai-meeting-relation",
+            event.eventType,
+            event.label,
+            relation.meetingType,
+            date,
+            timing.kind === "single" ? timing.startTime ?? "" : "",
+            sectionOptionIds.join(","),
+            item.sourceSnippet,
+          ].join(":")
+        ),
+        title: titleWithLocation(baseTitle, location),
+        location,
+        sectionOptionIds,
+        extractedSectionLabels,
+        notes: cleanResolvedDateNotes(event.notes, timing),
+        confidence,
+        reviewNeeded,
+        include: !reviewNeeded,
+        timing,
+      } satisfies EventCandidate];
+    });
+
+    return resolved.length > 0 ? resolved : [event];
+  });
+}
+
 export function mapAiExtractionToEventCandidates(
   extraction: AiExtractionResponse,
   course: ParsedCourse,
@@ -539,5 +676,12 @@ export function mapAiExtractionToEventCandidates(
     };
   });
 
-  return enrichAssignmentMilestonePairs(events);
+  return enrichAssignmentMilestonePairs(
+    resolveMeetingTimingRelations(
+      extraction.events,
+      events,
+      options.meetingEvents,
+      course
+    )
+  );
 }
