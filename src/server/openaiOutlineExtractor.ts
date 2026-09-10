@@ -1007,8 +1007,16 @@ export async function handleOutlineExtractionRequest(request: any, response: any
         const textLimit = Number(
           process.env.OPENAI_OUTLINE_TEXT_LIMIT ?? DEFAULT_OUTLINE_TEXT_LIMIT
         );
+        // Older clients appended this marker after applying their text limit. Allow
+        // that small suffix so the server does not truncate again and skip caching.
+        const clientTruncationAllowance = parsed.outlineText
+          .trimEnd()
+          .endsWith("[Truncated]")
+          ? 16
+          : 0;
+        const serverTextLimit = textLimit + clientTruncationAllowance;
         const outlineText =
-          parsed.outlineText.length > textLimit
+          parsed.outlineText.length > serverTextLimit
             ? parsed.outlineText.slice(0, textLimit)
             : parsed.outlineText;
         const truncationWarnings =

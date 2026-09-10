@@ -3975,9 +3975,14 @@ const AI_COURSE_EVENT_SECTION_PATTERN =
 
 function truncateText(value: string, limit: number) {
   if (value.length <= limit) return value;
-  const truncated = value.slice(0, limit);
+  const marker = "\n[Truncated]";
+  const contentLimit = Math.max(0, limit - marker.length);
+  const truncated = value.slice(0, contentLimit);
   const lastBreak = Math.max(truncated.lastIndexOf("\n\n"), truncated.lastIndexOf("\n"));
-  return `${truncated.slice(0, lastBreak > limit * 0.7 ? lastBreak : limit).trim()}\n[Truncated]`;
+  const content = truncated
+    .slice(0, lastBreak > contentLimit * 0.7 ? lastBreak : contentLimit)
+    .trim();
+  return `${content}${marker}`.slice(0, limit);
 }
 
 function compactAiSection(section: SectionBlock) {
