@@ -257,16 +257,22 @@ function consumeMemoryQuota(
 }
 
 export async function consumeAiExtractionQuota(
-  clientKey: string
+  clientKey: string,
+  perClientDailyLimit?: number
 ): Promise<AiExtractionQuotaResult> {
   if (!isRateLimitEnabled()) {
     return { allowed: true, retryAfterSeconds: 0 };
   }
 
-  const perClientLimit = readPositiveInteger(
-    process.env.AI_EXTRACTION_PER_CLIENT_DAILY_LIMIT,
-    DEFAULT_PER_CLIENT_DAILY_LIMIT
-  );
+  const perClientLimit =
+    typeof perClientDailyLimit === "number" &&
+    Number.isFinite(perClientDailyLimit) &&
+    perClientDailyLimit > 0
+      ? Math.round(perClientDailyLimit)
+      : readPositiveInteger(
+          process.env.AI_EXTRACTION_PER_CLIENT_DAILY_LIMIT,
+          DEFAULT_PER_CLIENT_DAILY_LIMIT
+        );
   const globalLimit = readPositiveInteger(
     process.env.AI_EXTRACTION_GLOBAL_DAILY_LIMIT,
     DEFAULT_GLOBAL_DAILY_LIMIT

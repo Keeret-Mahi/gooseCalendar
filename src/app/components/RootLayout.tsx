@@ -38,26 +38,26 @@ function AdminUnlockModal({
   onUnlock,
 }: {
   onClose: () => void;
-  onUnlock: () => void;
+  onUnlock: (password: string) => Promise<void>;
 }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const configuredPassword =
-    import.meta.env.VITE_GOOSECALENDAR_ADMIN_PASSWORD?.trim() ?? "";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!configuredPassword) {
-      setError("Admin password is not configured.");
-      return;
-    }
-    if (password !== configuredPassword) {
-      setError("Incorrect password.");
-      return;
-    }
-    setPassword("");
+    setIsSubmitting(true);
     setError("");
-    onUnlock();
+    try {
+      await onUnlock(password);
+      setPassword("");
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error ? submitError.message : "Admin login failed."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -124,9 +124,10 @@ function AdminUnlockModal({
           </button>
           <button
             type="submit"
-            className="cursor-pointer rounded-xl bg-[#f2b90d] px-5 py-3 text-sm font-bold text-[#1c180d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.18)] transition-all hover:brightness-[1.03]"
+            disabled={isSubmitting || !password}
+            className="cursor-pointer rounded-xl bg-[#f2b90d] px-5 py-3 text-sm font-bold text-[#1c180d] shadow-[0px_0px_0px_2px_rgba(242,185,13,0.18)] transition-all hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Unlock
+            {isSubmitting ? "Checking..." : "Unlock"}
           </button>
         </div>
       </form>
@@ -140,6 +141,58 @@ export default function RootLayout() {
   const navProps = getNavBarProps(pathname);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [showAdminUnlock, setShowAdminUnlock] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch("/api/admin-session", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const body = (await response.json()) as { authenticated?: unknown };
+        setAdminModeEnabled(body.authenticated === true);
+      })
+      .catch(() => {
+        // Admin mode remains off when the session endpoint is unavailable.
+      });
+    return () => controller.abort();
+  }, [setAdminModeEnabled]);
+
+  const unlockAdmin = async (password: string) => {
+    const response = await fetch("/api/admin-session", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password }),
+    });
+    const body = (await response.json().catch(() => ({}))) as {
+      authenticated?: unknown;
+      error?: unknown;
+    };
+    if (!response.ok || body.authenticated !== true) {
+      throw new Error(
+        typeof body.error === "string" ? body.error : "Admin login failed."
+      );
+    }
+    setAdminModeEnabled(true);
+    setShowAdminUnlock(false);
+  };
+
+  const lockAdmin = async () => {
+    setAdminModeEnabled(false);
+    await fetch("/api/admin-session", {
+      method: "DELETE",
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+    }).catch(() => undefined);
+  };
 
   useEffect(() => {
     if (!showHowItWorks) return;
@@ -190,15 +243,12 @@ export default function RootLayout() {
       {showAdminUnlock && (
         <AdminUnlockModal
           onClose={() => setShowAdminUnlock(false)}
-          onUnlock={() => {
-            setAdminModeEnabled(true);
-            setShowAdminUnlock(false);
-          }}
+          onUnlock={unlockAdmin}
         />
       )}
       {adminModeEnabled && (
         <button
-          onClick={() => setAdminModeEnabled(false)}
+          onClick={() => void lockAdmin()}
           className="fixed bottom-4 left-4 z-[70] cursor-pointer rounded-full border border-[#e8e2ce] bg-white/95 px-4 py-2 font-['Lexend',sans-serif] text-xs font-bold uppercase tracking-[0.12em] text-[#8f6a00] shadow-[0px_10px_30px_-18px_rgba(28,24,13,0.35)] backdrop-blur transition hover:bg-[#fff7df]"
         >
           Admin mode on

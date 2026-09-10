@@ -29,19 +29,21 @@ export interface GoogleEventColorPaletteOption extends PaletteOption {
 
 export const DEFAULT_GOOGLE_EVENT_COLOR_PALETTE_ID = "google-classic";
 
+export const DEFAULT_GOOGLE_EVENT_COLOR_IDS_BY_GROUP: Record<EventGroup, string> = {
+  Lecture: "5",
+  Tutorial: "3",
+  Lab: "9",
+  Assessments: "11",
+  Assignments: "10",
+  "Office Hours": "7",
+  Other: "8",
+};
+
 export const googleEventColorPalettes: GoogleEventColorPaletteOption[] = [
   {
     id: "google-classic",
     name: "Classic",
-    colorIdsByGroup: {
-      Lecture: "5",
-      Tutorial: "3",
-      Lab: "9",
-      Assessments: "11",
-      Assignments: "10",
-      "Office Hours": "7",
-      Other: "8",
-    },
+    colorIdsByGroup: DEFAULT_GOOGLE_EVENT_COLOR_IDS_BY_GROUP,
     colors: ["#f6bf26", "#8e24aa", "#3f51b5", "#d50000", "#0b8043", "#039be5", "#616161"],
   },
   {

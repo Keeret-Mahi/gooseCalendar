@@ -1,3 +1,10 @@
+import {
+  MAX_ADMIN_OUTLINE_FILE_SIZE_BYTES,
+  MAX_ADMIN_OUTLINE_FILE_SIZE_LABEL,
+  MAX_OUTLINE_FILE_SIZE_BYTES,
+  MAX_OUTLINE_FILE_SIZE_LABEL,
+} from "./uploadLimits";
+
 export type OutlineSourceFormat = "html" | "pdf" | "text";
 
 export interface OutlineSource {
@@ -288,7 +295,21 @@ export function isSupportedOutlineFile(file: File) {
   );
 }
 
-export async function readOutlineSource(file: File): Promise<OutlineSource> {
+export async function readOutlineSource(
+  file: File,
+  options: { admin?: boolean } = {}
+): Promise<OutlineSource> {
+  const maxFileSizeBytes = options.admin
+    ? MAX_ADMIN_OUTLINE_FILE_SIZE_BYTES
+    : MAX_OUTLINE_FILE_SIZE_BYTES;
+  const maxFileSizeLabel = options.admin
+    ? MAX_ADMIN_OUTLINE_FILE_SIZE_LABEL
+    : MAX_OUTLINE_FILE_SIZE_LABEL;
+
+  if (file.size > maxFileSizeBytes) {
+    throw new Error(`This file is larger than the ${maxFileSizeLabel} limit.`);
+  }
+
   if (HTML_FILE_EXTENSIONS.test(file.name) || file.type === "text/html") {
     return {
       outlineName: file.name,

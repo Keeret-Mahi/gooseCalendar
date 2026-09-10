@@ -3,15 +3,18 @@ import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { handleOutlineExtractionRequest } from './src/server/openaiOutlineExtractor'
+import { handleAdminSessionRequest } from './src/server/adminSession'
 
 function openAiOutlineExtractorPlugin() {
   return {
     name: 'goosecalendar-openai-outline-extractor',
     configureServer(server: any) {
       server.middlewares.use('/api/extract-outline-events', handleOutlineExtractionRequest)
+      server.middlewares.use('/api/admin-session', handleAdminSessionRequest)
     },
     configurePreviewServer(server: any) {
       server.middlewares.use('/api/extract-outline-events', handleOutlineExtractionRequest)
+      server.middlewares.use('/api/admin-session', handleAdminSessionRequest)
     },
   }
 }
@@ -21,6 +24,7 @@ export default defineConfig(({ mode }) => {
   ;[
     'OPENAI_API_KEY',
     'OPENAI_MODEL',
+    'OPENAI_ADMIN_MODEL',
     'OPENAI_API_BASE_URL',
     'OPENAI_OUTLINE_TEXT_LIMIT',
     'OPENAI_TIMEOUT_MS',
@@ -33,7 +37,9 @@ export default defineConfig(({ mode }) => {
     'AI_EXTRACTION_CACHE_ENABLED',
     'AI_EXTRACTION_RATE_LIMIT_ENABLED',
     'AI_EXTRACTION_PER_CLIENT_DAILY_LIMIT',
+    'AI_EXTRACTION_ADMIN_DAILY_LIMIT',
     'AI_EXTRACTION_GLOBAL_DAILY_LIMIT',
+    'GOOSECALENDAR_ADMIN_PASSWORD',
   ].forEach((key) => {
     if (!process.env[key] && env[key]) {
       process.env[key] = env[key]

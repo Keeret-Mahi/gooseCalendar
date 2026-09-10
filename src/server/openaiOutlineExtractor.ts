@@ -10,8 +10,11 @@ import {
   readAiExtractionCache,
   writeAiExtractionCache,
 } from "./firebaseExtractionCache.js";
+import { isAdminSessionAuthenticated } from "./adminSession.js";
 
 const DEFAULT_MODEL = "gpt-5.5";
+const DEFAULT_ADMIN_MODEL = "gpt-5.6-terra";
+const DEFAULT_ADMIN_DAILY_LIMIT = 100;
 const DEFAULT_OUTLINE_TEXT_LIMIT = 45_000;
 const DEFAULT_OPENAI_TIMEOUT_MS = 90_000;
 const GPT_55_TIMEOUT_MS = 240_000;
@@ -19,7 +22,10 @@ const DEFAULT_OPENAI_MAX_OUTPUT_TOKENS = 6_000;
 const GPT_55_MAX_OUTPUT_TOKENS = 8_000;
 const GPT_55_PRO_MAX_OUTPUT_TOKENS = 12_000;
 const FULL_OUTLINE_MIN_OUTPUT_TOKENS = 16_000;
+const MAX_EXTRACTION_REQUEST_BODY_BYTES = 1 * 1024 * 1024;
 const inFlightExtractions = new Map<string, Promise<ExtractionAttempt>>();
+
+class RequestBodyTooLargeError extends Error {}
 
 type ExtractionAttempt =
   | {
@@ -56,6 +62,12 @@ type OpenAiPricing = {
 };
 
 const OPENAI_MODEL_PRICING: OpenAiPricing[] = [
+  {
+    modelPrefix: "gpt-5.6-terra",
+    inputUsdPerMillion: 2,
+    cachedInputUsdPerMillion: 0.2,
+    outputUsdPerMillion: 12,
+  },
   {
     modelPrefix: "gpt-5.5-pro",
     inputUsdPerMillion: 30,
@@ -279,17 +291,17 @@ function sendJson(response: any, statusCode: number, body: unknown) {
   response.end(JSON.stringify(body));
 }
 
-async function readBody(request: any, limitBytes = 2_000_000) {
+async function readBody(request: any, limitBytes = MAX_EXTRACTION_REQUEST_BODY_BYTES) {
   if (typeof request.body === "string") {
     if (Buffer.byteLength(request.body, "utf8") > limitBytes) {
-      throw new Error("Request body is too large.");
+      throw new RequestBodyTooLargeError("Request body is too large.");
     }
     return request.body;
   }
 
   if (Buffer.isBuffer(request.body)) {
     if (request.body.length > limitBytes) {
-      throw new Error("Request body is too large.");
+      throw new RequestBodyTooLargeError("Request body is too large.");
     }
     return request.body.toString("utf8");
   }
@@ -297,7 +309,7 @@ async function readBody(request: any, limitBytes = 2_000_000) {
   if (typeof request.body === "object" && request.body !== null) {
     const bodyText = JSON.stringify(request.body);
     if (Buffer.byteLength(bodyText, "utf8") > limitBytes) {
-      throw new Error("Request body is too large.");
+      throw new RequestBodyTooLargeError("Request body is too large.");
     }
     return bodyText;
   }
@@ -309,7 +321,7 @@ async function readBody(request: any, limitBytes = 2_000_000) {
     const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
     size += buffer.length;
     if (size > limitBytes) {
-      throw new Error("Request body is too large.");
+      throw new RequestBodyTooLargeError("Request body is too large.");
     }
     chunks.push(buffer);
   }
@@ -515,11 +527,13 @@ function estimateOpenAiCost(model: string, usage: OpenAiUsage | undefined) {
 }
 
 function shouldPreferResponsesApi(model: string) {
-  return model.startsWith("gpt-5.5");
+  return /^gpt-(?:5\.[56]|6)/.test(model);
 }
 
 function defaultTimeoutForModel(model: string) {
-  return model.startsWith("gpt-5.5") ? GPT_55_TIMEOUT_MS : DEFAULT_OPENAI_TIMEOUT_MS;
+  return /^gpt-(?:5\.[56]|6)/.test(model)
+    ? GPT_55_TIMEOUT_MS
+    : DEFAULT_OPENAI_TIMEOUT_MS;
 }
 
 function configuredTimeoutForModel(model: string) {
@@ -533,7 +547,7 @@ function configuredTimeoutForModel(model: string) {
 function defaultMaxOutputTokensForRequest(model: string, request: AiOutlineExtractionRequest) {
   if (request.extractionMode === "fullOutline") return FULL_OUTLINE_MIN_OUTPUT_TOKENS;
   if (model.startsWith("gpt-5.5-pro")) return GPT_55_PRO_MAX_OUTPUT_TOKENS;
-  if (model.startsWith("gpt-5.5")) return GPT_55_MAX_OUTPUT_TOKENS;
+  if (/^gpt-(?:5\.[56]|6)/.test(model)) return GPT_55_MAX_OUTPUT_TOKENS;
   return DEFAULT_OPENAI_MAX_OUTPUT_TOKENS;
 }
 
@@ -714,7 +728,10 @@ async function requestResponses({
   } as const;
 }
 
-async function callOpenAi(request: AiOutlineExtractionRequest) {
+async function callOpenAi(
+  request: AiOutlineExtractionRequest,
+  modelOverride?: string
+) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey || apiKey === "undefined") {
     console.warn("[gooseCalendar] AI extraction skipped: OPENAI_API_KEY is not configured.");
@@ -729,10 +746,10 @@ async function callOpenAi(request: AiOutlineExtractionRequest) {
     };
   }
 
-  const configuredModel =
-    process.env.OPENAI_MODEL && process.env.OPENAI_MODEL !== "undefined"
+  const configuredModel = modelOverride ||
+    (process.env.OPENAI_MODEL && process.env.OPENAI_MODEL !== "undefined"
       ? process.env.OPENAI_MODEL
-      : DEFAULT_MODEL;
+      : DEFAULT_MODEL);
   const model = normalizeOpenAiModelName(configuredModel);
   if (model !== configuredModel) {
     console.info("[gooseCalendar] Normalized OpenAI model name", {
@@ -933,6 +950,18 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       return;
     }
 
+    const adminRequest = isAdminSessionAuthenticated(request);
+    const configuredAdminModel =
+      process.env.OPENAI_ADMIN_MODEL && process.env.OPENAI_ADMIN_MODEL !== "undefined"
+        ? process.env.OPENAI_ADMIN_MODEL
+        : DEFAULT_ADMIN_MODEL;
+    const adminModel = normalizeOpenAiModelName(configuredAdminModel);
+    const configuredAdminDailyLimit = Number(process.env.AI_EXTRACTION_ADMIN_DAILY_LIMIT);
+    const adminDailyLimit =
+      Number.isFinite(configuredAdminDailyLimit) && configuredAdminDailyLimit > 0
+        ? Math.round(configuredAdminDailyLimit)
+        : DEFAULT_ADMIN_DAILY_LIMIT;
+
     console.info("[gooseCalendar] AI extraction proxy received request", {
       courseCode: parsed.courseCode,
       outlineName: parsed.outlineName,
@@ -940,6 +969,7 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       sourceFormat: parsed.sourceFormat,
       inputChars: parsed.outlineText.length,
       hasOutlineHash: Boolean(parsed.outlineHash),
+      adminRequest,
     });
 
     const cached = await readAiExtractionCache(parsed);
@@ -951,17 +981,22 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       return;
     }
 
-    const extractionKey = `${parsed.extractionMode}:${parsed.outlineHash}`;
+    const extractionKey = `${adminRequest ? "admin" : "public"}:${parsed.extractionMode}:${parsed.outlineHash}`;
     let extractionPromise = inFlightExtractions.get(extractionKey);
 
     if (!extractionPromise) {
       extractionPromise = (async (): Promise<ExtractionAttempt> => {
-        const quota = await consumeAiExtractionQuota(buildClientKey(request));
+        const quota = await consumeAiExtractionQuota(
+          `${adminRequest ? "admin" : "visitor"}:${buildClientKey(request)}`,
+          adminRequest ? adminDailyLimit : undefined
+        );
         if (!quota.allowed) {
           const warning =
             quota.reason === "global_daily"
               ? "gooseCalendar has reached today's new-outline processing limit. Please try again tomorrow."
-              : "This browser has reached its limit of 10 new outlines today. Cached outlines can still be processed.";
+              : adminRequest
+                ? `This admin session has reached its limit of ${adminDailyLimit} new outlines today. Cached outlines can still be processed.`
+                : "This browser has reached its limit of 10 new outlines today. Cached outlines can still be processed.";
           return {
             status: "rate_limited",
             retryAfterSeconds: quota.retryAfterSeconds,
@@ -980,10 +1015,13 @@ export async function handleOutlineExtractionRequest(request: any, response: any
           outlineText.length < parsed.outlineText.length
             ? [`Outline text was truncated to ${textLimit} characters before AI extraction.`]
             : [];
-        const result = await callOpenAi({
-          ...parsed,
-          outlineText,
-        });
+        const result = await callOpenAi(
+          {
+            ...parsed,
+            outlineText,
+          },
+          adminRequest ? adminModel : undefined
+        );
         const warnings = [...truncationWarnings, ...result.warnings];
 
         if (result.cacheable && truncationWarnings.length === 0) {
@@ -1035,10 +1073,13 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       warnings: extractionAttempt.warnings,
     });
   } catch (error) {
-    sendJson(response, 400, {
+    const requestBodyTooLarge = error instanceof RequestBodyTooLargeError;
+    sendJson(response, requestBodyTooLarge ? 413 : 400, {
       extraction: EMPTY_AI_EXTRACTION,
       warnings: [
-        error instanceof Error
+        requestBodyTooLarge
+          ? "Outline extraction request exceeds the 1 MB limit."
+          : error instanceof Error
           ? `Outline extraction request failed: ${error.message}`
           : "Outline extraction request failed.",
       ],

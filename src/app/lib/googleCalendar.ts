@@ -764,7 +764,10 @@ function googleEventColorIdForEvent(event: EventCandidate, exportConfig: ExportC
     return normalizeGoogleEventColorId(exportConfig.googleUniformColorId);
   }
 
-  return resolveGoogleEventColorId(event.eventGroup, exportConfig.paletteId);
+  return normalizeGoogleEventColorId(
+    exportConfig.googleEventColorIdsByGroup?.[event.eventGroup] ??
+      resolveGoogleEventColorId(event.eventGroup, exportConfig.paletteId)
+  );
 }
 
 async function upsertEvent(

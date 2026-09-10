@@ -5,7 +5,10 @@ import { RouteGuard } from "./RouteGuard";
 import { useAppContext } from "./AppContext";
 import { FlowFooter } from "./FlowFooter";
 import { trackAnalyticsEvent } from "../lib/analytics";
-import { MAX_OUTLINE_UPLOADS } from "../lib/uploadLimits";
+import {
+  MAX_ADMIN_OUTLINE_UPLOADS,
+  MAX_OUTLINE_UPLOADS,
+} from "../lib/uploadLimits";
 import { courseNeedsSectionChoice } from "../lib/calendar";
 import { normalizeCourseNameCapitalization } from "../lib/courseNames";
 import {
@@ -495,13 +498,24 @@ function CourseCard({
 export default function SelectSectionsPage() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addFiles, uploads, courses, events, selections, updateSelection } = useAppContext();
+  const {
+    addFiles,
+    uploads,
+    courses,
+    events,
+    selections,
+    updateSelection,
+    adminModeEnabled,
+  } = useAppContext();
   const [errorMessage, setErrorMessage] = useState("");
   const [trackedUploadIds, setTrackedUploadIds] = useState<string[]>([]);
   const [showUploadProgress, setShowUploadProgress] = useState(false);
   const [uploadProgressComplete, setUploadProgressComplete] = useState(false);
   const pendingUploadNameKeysRef = useRef<Set<string>>(new Set());
   const uploadDismissTimeoutRef = useRef<number | null>(null);
+  const maxUploadCount = adminModeEnabled
+    ? MAX_ADMIN_OUTLINE_UPLOADS
+    : MAX_OUTLINE_UPLOADS;
 
   const trackedUploads = trackedUploadIds
     .map((id) => uploads.find((upload) => upload.id === id))
@@ -633,9 +647,9 @@ export default function SelectSectionsPage() {
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                disabled={uploads.length >= MAX_OUTLINE_UPLOADS}
+                disabled={uploads.length >= maxUploadCount}
                 className={`mt-1 flex shrink-0 items-center gap-1.5 rounded-lg border px-3.5 py-2 transition-all ${
-                  uploads.length >= MAX_OUTLINE_UPLOADS
+                  uploads.length >= maxUploadCount
                     ? "cursor-not-allowed border-[#e8e2ce] bg-[#f5f2e9] text-[#9ca3af]"
                     : "cursor-pointer border-[#e8e2ce] bg-white text-[#6b7280] hover:border-[#d4c99a] hover:text-[#1c180d]"
                 }`}
@@ -644,7 +658,9 @@ export default function SelectSectionsPage() {
                   <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
                 <span className="font-['Lexend',sans-serif] text-sm font-medium">
-                  {uploads.length >= MAX_OUTLINE_UPLOADS ? "7 file limit reached" : "Add Files"}
+                  {uploads.length >= maxUploadCount
+                    ? `${maxUploadCount} file limit reached`
+                    : "Add Files"}
                 </span>
               </button>
               <input

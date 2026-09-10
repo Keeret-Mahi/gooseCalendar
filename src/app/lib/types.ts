@@ -146,6 +146,7 @@ export interface ExportConfig {
   googleCalendarMode?: GoogleCalendarMode;
   googleEventColorMode?: GoogleEventColorMode;
   googleUniformColorId?: string;
+  googleEventColorIdsByGroup?: Record<EventGroup, string>;
   notificationSettings: Record<EventGroup, ExportNotificationSetting>;
   customNotificationMinutes: Record<EventGroup, number>;
 }

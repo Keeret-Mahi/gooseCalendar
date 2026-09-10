@@ -28,7 +28,10 @@ import {
   getExportValidationIssues,
   validateEventForExport,
 } from "../lib/calendar";
-import { ensurePaletteColorCount } from "../lib/palettes";
+import {
+  DEFAULT_GOOGLE_EVENT_COLOR_IDS_BY_GROUP,
+  ensurePaletteColorCount,
+} from "../lib/palettes";
 import {
   exportEventsToGoogleCalendar,
   isGoogleCalendarConfigured,
@@ -39,8 +42,13 @@ import { trackAnalyticsEvent } from "../lib/analytics";
 import { parseOutlineHtmlWithAi } from "../lib/parser";
 import { isSupportedOutlineFile, readOutlineSource } from "../lib/outlineSource";
 import {
+  MAX_ADMIN_CONCURRENT_OUTLINE_PARSING,
+  MAX_ADMIN_OUTLINE_FILE_SIZE_BYTES,
+  MAX_ADMIN_OUTLINE_FILE_SIZE_LABEL,
+  MAX_ADMIN_OUTLINE_UPLOADS,
   MAX_CONCURRENT_OUTLINE_PARSING,
   MAX_OUTLINE_FILE_SIZE_BYTES,
+  MAX_OUTLINE_FILE_SIZE_LABEL,
   MAX_OUTLINE_UPLOADS,
   type AddOutlineFilesResult,
 } from "../lib/uploadLimits";
@@ -73,6 +81,7 @@ interface AppContextType {
   setGoogleCalendarMode: (mode: GoogleCalendarMode) => void;
   setGoogleEventColorMode: (mode: GoogleEventColorMode) => void;
   setGoogleUniformColorId: (colorId: string) => void;
+  setGoogleEventColorId: (eventGroup: EventGroup, colorId: string) => void;
   setNotificationSetting: (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
@@ -110,6 +119,7 @@ const defaultExportConfig: ExportConfig = {
   googleCalendarMode: "single",
   googleEventColorMode: "eventGroup",
   googleUniformColorId: "5",
+  googleEventColorIdsByGroup: DEFAULT_GOOGLE_EVENT_COLOR_IDS_BY_GROUP,
   notificationSettings: {
     Lecture: "default",
     Tutorial: "default",
@@ -129,17 +139,6 @@ const defaultExportConfig: ExportConfig = {
     Other: 15,
   },
 };
-
-const ADMIN_MODE_STORAGE_KEY = "goosecalendar:admin-mode";
-
-function readStoredAdminMode() {
-  if (typeof window === "undefined") return false;
-  try {
-    return window.localStorage.getItem(ADMIN_MODE_STORAGE_KEY) === "true";
-  } catch {
-    return false;
-  }
-}
 
 function eventGroupForType(eventType: EventType): EventGroup {
   switch (eventType) {
@@ -318,7 +317,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [events, setEvents] = useState<EventCandidate[]>([]);
   const [selections, setSelections] = useState<Record<string, CourseSelection>>({});
   const [exportConfig, setExportConfig] = useState<ExportConfig>(defaultExportConfig);
-  const [adminModeEnabled, setAdminModeEnabledState] = useState(readStoredAdminMode);
+  const [adminModeEnabled, setAdminModeEnabledState] = useState(false);
   const parsingIdsRef = useRef<Set<string>>(new Set());
   const removedUploadIdsRef = useRef<Set<string>>(new Set());
 
@@ -335,6 +334,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         current.googleEventColorMode ?? defaultExportConfig.googleEventColorMode,
       googleUniformColorId:
         current.googleUniformColorId ?? defaultExportConfig.googleUniformColorId,
+      googleEventColorIdsByGroup: {
+        ...DEFAULT_GOOGLE_EVENT_COLOR_IDS_BY_GROUP,
+        ...(current.googleEventColorIdsByGroup ?? {}),
+      },
       notificationSettings: {
         ...defaultExportConfig.notificationSettings,
         ...(current.notificationSettings ?? {}),
@@ -346,23 +349,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
-  const setAdminModeEnabled = (enabled: boolean) => {
-    setAdminModeEnabledState(enabled);
-    if (typeof window === "undefined") return;
-    try {
-      if (enabled) {
-        window.localStorage.setItem(ADMIN_MODE_STORAGE_KEY, "true");
-        return;
-      }
-      window.localStorage.removeItem(ADMIN_MODE_STORAGE_KEY);
-    } catch {
-      // Admin mode still works for the current session if storage is unavailable.
-    }
-  };
-
   useEffect(() => {
+    const concurrentParsingLimit = adminModeEnabled
+      ? MAX_ADMIN_CONCURRENT_OUTLINE_PARSING
+      : MAX_CONCURRENT_OUTLINE_PARSING;
     const availableParsingSlots = Math.max(
-      MAX_CONCURRENT_OUTLINE_PARSING - parsingIdsRef.current.size,
+      concurrentParsingLimit - parsingIdsRef.current.size,
       0
     );
 
@@ -379,7 +371,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           )
         );
 
-        readOutlineSource(upload.file)
+        readOutlineSource(upload.file, { admin: adminModeEnabled })
           .then(async (source) => {
             if (removedUploadIdsRef.current.has(upload.id)) return;
             const result = await parseOutlineHtmlWithAi(source);
@@ -429,14 +421,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
             parsingIdsRef.current.delete(upload.id);
           });
       });
-  }, [uploads]);
+  }, [uploads, adminModeEnabled]);
 
   const addFiles = (newFiles: FileList | File[]) => {
+    const maxUploadCount = adminModeEnabled
+      ? MAX_ADMIN_OUTLINE_UPLOADS
+      : MAX_OUTLINE_UPLOADS;
+    const maxFileSizeBytes = adminModeEnabled
+      ? MAX_ADMIN_OUTLINE_FILE_SIZE_BYTES
+      : MAX_OUTLINE_FILE_SIZE_BYTES;
+    const maxFileSizeLabel = adminModeEnabled
+      ? MAX_ADMIN_OUTLINE_FILE_SIZE_LABEL
+      : MAX_OUTLINE_FILE_SIZE_LABEL;
     const incomingFiles = Array.from(newFiles);
     const uploadKey = (file: File) => `${file.name}:${file.size}:${file.lastModified}`;
     const supportedFiles = incomingFiles.filter(isSupportedOutlineFile);
     const sizeEligibleFiles = supportedFiles.filter(
-      (file) => file.size <= MAX_OUTLINE_FILE_SIZE_BYTES
+      (file) => file.size <= maxFileSizeBytes
     );
     const seenIncomingKeys = new Set<string>();
     const uniqueOutlineFiles = sizeEligibleFiles.filter((file) => {
@@ -449,7 +450,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     let projectedUploadCount = uploads.length;
     const outlineFiles = uniqueOutlineFiles.filter((file) => {
       if (existingKeys.has(uploadKey(file))) return true;
-      if (projectedUploadCount >= MAX_OUTLINE_UPLOADS) return false;
+      if (projectedUploadCount >= maxUploadCount) return false;
       projectedUploadCount += 1;
       return true;
     });
@@ -516,11 +517,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         const messages: string[] = [];
         if (capRejectedCount > 0) {
           messages.push(
-            `You can upload up to ${MAX_OUTLINE_UPLOADS} outlines at a time. Remove an outline before adding another.`
+            `You can upload up to ${maxUploadCount} outlines at a time. Remove an outline before adding another.`
           );
         }
         if (oversizedCount > 0) {
-          messages.push("Files larger than 10 MB were skipped.");
+          messages.push(`Files larger than ${maxFileSizeLabel} were skipped.`);
         }
         if (unsupportedCount > 0) {
           messages.push("Unsupported files were skipped. Use HTML, PDF, or text outlines.");
@@ -685,6 +686,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setExportConfig((current) => ({ ...current, googleUniformColorId }));
   };
 
+  const setGoogleEventColorId = (eventGroup: EventGroup, colorId: string) => {
+    if (!/^(?:[1-9]|10|11)$/.test(colorId)) return;
+    setExportConfig((current) => ({
+      ...current,
+      googleEventColorIdsByGroup: {
+        ...DEFAULT_GOOGLE_EVENT_COLOR_IDS_BY_GROUP,
+        ...(current.googleEventColorIdsByGroup ?? {}),
+        [eventGroup]: colorId,
+      },
+    }));
+  };
+
   const setNotificationSetting = (
     eventGroup: EventGroup,
     notificationSetting: ExportNotificationSetting
@@ -720,7 +733,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const exportToGoogleCalendar = (
     onProgress?: (progress: GoogleCalendarExportProgress) => void
-  ) => exportEventsToGoogleCalendar(courses, events, selections, exportConfig, onProgress);
+  ) =>
+    exportEventsToGoogleCalendar(
+      courses,
+      events,
+      selections,
+      {
+        ...exportConfig,
+        googleCalendarMode: "single",
+        googleEventColorMode: "eventGroup",
+      },
+      onProgress
+    );
 
   const isParsing = uploads.some((upload) => upload.status === "pending" || upload.status === "parsing");
 
@@ -734,7 +758,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         exportConfig,
         isParsing,
         adminModeEnabled,
-        setAdminModeEnabled,
+        setAdminModeEnabled: setAdminModeEnabledState,
         addFiles,
         removeUpload,
         clearFiles,
@@ -748,6 +772,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setGoogleCalendarMode,
         setGoogleEventColorMode,
         setGoogleUniformColorId,
+        setGoogleEventColorId,
         setNotificationSetting,
         setCustomNotificationMinutes,
         exportValidationIssues,

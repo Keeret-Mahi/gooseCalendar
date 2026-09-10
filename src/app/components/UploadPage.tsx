@@ -2,7 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router";
 import { useAppContext } from "./AppContext";
 import { trackAnalyticsEvent } from "../lib/analytics";
-import { MAX_OUTLINE_UPLOADS } from "../lib/uploadLimits";
+import {
+  MAX_ADMIN_OUTLINE_FILE_SIZE_LABEL,
+  MAX_ADMIN_OUTLINE_UPLOADS,
+  MAX_OUTLINE_FILE_SIZE_LABEL,
+  MAX_OUTLINE_UPLOADS,
+} from "../lib/uploadLimits";
 import svgPaths from "../../imports/svg-up87mvwjbr";
 import gooseHomeMark from "../../assets/goosecalendar-home-mark-v2.png";
 
@@ -158,7 +163,7 @@ export default function UploadPage() {
   const { openHowItWorks } = useOutletContext<{ openHowItWorks: () => void }>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { uploads, courses, isParsing, addFiles, removeUpload } = useAppContext();
+  const { uploads, courses, isParsing, adminModeEnabled, addFiles, removeUpload } = useAppContext();
   const [isDragging, setIsDragging] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
@@ -206,16 +211,22 @@ export default function UploadPage() {
   const failedUploads = uploads.filter((upload) => upload.status === "error").length;
   const canContinue = courses.length > 0 && !isParsing;
   const hasOverflow = uploads.length > 4;
+  const maxUploadCount = adminModeEnabled
+    ? MAX_ADMIN_OUTLINE_UPLOADS
+    : MAX_OUTLINE_UPLOADS;
+  const maxFileSizeLabel = adminModeEnabled
+    ? MAX_ADMIN_OUTLINE_FILE_SIZE_LABEL
+    : MAX_OUTLINE_FILE_SIZE_LABEL;
   const helperText = useMemo(() => {
     if (uploads.length === 0) {
-      return `HTML, PDF, or text files · Up to ${MAX_OUTLINE_UPLOADS} files · 10 MB each`;
+      return `HTML, PDF, or text files · Up to ${maxUploadCount} files · ${maxFileSizeLabel} each`;
     }
     if (isParsing) return "Extracting dates, schedules, and assessments from your outlines";
     if (courses.length > 0) {
       return `${courses.length} course${courses.length === 1 ? "" : "s"} parsed and ready for section selection`;
     }
     return "Upload at least one valid outline to continue";
-  }, [courses.length, isParsing, uploads.length]);
+  }, [courses.length, isParsing, maxFileSizeLabel, maxUploadCount, uploads.length]);
 
   const steps = [
     {
@@ -411,17 +422,19 @@ export default function UploadPage() {
                 </div>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={uploads.length >= MAX_OUTLINE_UPLOADS}
+                  disabled={uploads.length >= maxUploadCount}
                   className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 transition-colors ${
-                    uploads.length >= MAX_OUTLINE_UPLOADS
+                    uploads.length >= maxUploadCount
                       ? "cursor-not-allowed bg-[#ece7db]"
                       : "cursor-pointer bg-[rgba(241,200,75,0.15)] hover:bg-[rgba(241,200,75,0.3)]"
                   }`}
                 >
                   <span className={`font-['Inter',sans-serif] text-xs font-semibold ${
-                    uploads.length >= MAX_OUTLINE_UPLOADS ? "text-[#8b8170]" : "text-[#B38F1D]"
+                    uploads.length >= maxUploadCount ? "text-[#8b8170]" : "text-[#B38F1D]"
                   }`}>
-                    {uploads.length >= MAX_OUTLINE_UPLOADS ? "7 file limit reached" : "+ Upload more"}
+                    {uploads.length >= maxUploadCount
+                      ? `${maxUploadCount} file limit reached`
+                      : "+ Upload more"}
                   </span>
                 </button>
               </div>
