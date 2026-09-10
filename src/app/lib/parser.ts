@@ -3966,24 +3966,10 @@ function removeInitialScheduleTable(document: Document) {
   removable?.remove();
 }
 
-const AI_EXTRACTION_TEXT_LIMIT = 45_000;
-const AI_SECTION_TEXT_LIMIT = 18_000;
 const AI_BOILERPLATE_SECTION_PATTERN =
   /\b(?:academic integrity|grievance|discipline|appeals?|mental health|accessability|accessibility|accommodations?|turnitin|territorial acknowledgement|intellectual property|privacy|emergency|student resources|wellness|counselling|policy\s+\d+|institutional-required statements?)\b/i;
 const AI_COURSE_EVENT_SECTION_PATTERN =
   /\b(?:assignments?|assessments?|activities|grading|evaluation|course requirements?|student assessment|deliverables?|deadlines?|due dates?|quizzes?|tests?|midterms?|exams?|final exam|projects?|papers?|reports?|presentations?|participation|discussion posts?|reflections?|office hours?|student hours?|instructional team|instructors?|teaching assistants?|tas?|course schedule|class plan|weekly schedule|tentative schedule|schedule)\b/i;
-
-function truncateText(value: string, limit: number) {
-  if (value.length <= limit) return value;
-  const marker = "\n[Truncated]";
-  const contentLimit = Math.max(0, limit - marker.length);
-  const truncated = value.slice(0, contentLimit);
-  const lastBreak = Math.max(truncated.lastIndexOf("\n\n"), truncated.lastIndexOf("\n"));
-  const content = truncated
-    .slice(0, lastBreak > contentLimit * 0.7 ? lastBreak : contentLimit)
-    .trim();
-  return `${content}${marker}`.slice(0, limit);
-}
 
 function compactAiSection(section: SectionBlock) {
   const title = normalizeWhitespace(section.title);
@@ -4000,7 +3986,7 @@ function compactAiSection(section: SectionBlock) {
   const isBoilerplate = AI_BOILERPLATE_SECTION_PATTERN.test(title);
   if (isBoilerplate && !isCourseEventSection) return "";
 
-  return truncateText([`## ${title}`, text].filter(Boolean).join("\n"), AI_SECTION_TEXT_LIMIT);
+  return [`## ${title}`, text].filter(Boolean).join("\n");
 }
 
 function buildAiExtractionOutlineText(document: Document) {
@@ -4020,7 +4006,7 @@ function buildAiExtractionOutlineText(document: Document) {
           .join("\n\n")
       : fullText;
 
-  return truncateText(sectionText || fullText, AI_EXTRACTION_TEXT_LIMIT);
+  return sectionText || fullText;
 }
 
 function buildAiExtractionRequest(
@@ -4204,7 +4190,7 @@ function buildFullOutlineAiRequest(
     courseName: meta.courseName,
     term: meta.term,
     termYear: meta.termYear,
-    outlineText: truncateText(outlineText, AI_EXTRACTION_TEXT_LIMIT),
+    outlineText,
     extractionMode: "fullOutline",
     sourceFormat: source.format,
   };

@@ -26,7 +26,6 @@ export default defineConfig(({ mode }) => {
     'OPENAI_MODEL',
     'OPENAI_ADMIN_MODEL',
     'OPENAI_API_BASE_URL',
-    'OPENAI_OUTLINE_TEXT_LIMIT',
     'OPENAI_TIMEOUT_MS',
     'OPENAI_MAX_OUTPUT_TOKENS',
     'FIREBASE_PROJECT_ID',

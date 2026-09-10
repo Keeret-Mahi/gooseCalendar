@@ -15,14 +15,14 @@ import { isAdminSessionAuthenticated } from "./adminSession.js";
 const DEFAULT_MODEL = "gpt-5.5";
 const DEFAULT_ADMIN_MODEL = "gpt-5.6-terra";
 const DEFAULT_ADMIN_DAILY_LIMIT = 100;
-const DEFAULT_OUTLINE_TEXT_LIMIT = 45_000;
 const DEFAULT_OPENAI_TIMEOUT_MS = 90_000;
 const GPT_55_TIMEOUT_MS = 240_000;
 const DEFAULT_OPENAI_MAX_OUTPUT_TOKENS = 6_000;
 const GPT_55_MAX_OUTPUT_TOKENS = 8_000;
 const GPT_55_PRO_MAX_OUTPUT_TOKENS = 12_000;
 const FULL_OUTLINE_MIN_OUTPUT_TOKENS = 16_000;
-const MAX_EXTRACTION_REQUEST_BODY_BYTES = 1 * 1024 * 1024;
+const MAX_EXTRACTION_REQUEST_BODY_BYTES = 2 * 1024 * 1024;
+const MAX_ADMIN_EXTRACTION_REQUEST_BODY_BYTES = 12 * 1024 * 1024;
 const inFlightExtractions = new Map<string, Promise<ExtractionAttempt>>();
 
 class RequestBodyTooLargeError extends Error {}
@@ -717,6 +717,7 @@ async function requestResponses({
           schema: AI_EXTRACTION_JSON_SCHEMA,
         },
       },
+      truncation: "disabled",
       max_output_tokens: maxOutputTokens,
     }),
   });
@@ -938,8 +939,13 @@ export async function handleOutlineExtractionRequest(request: any, response: any
     return;
   }
 
+  const adminRequest = isAdminSessionAuthenticated(request);
+  const requestBodyLimit = adminRequest
+    ? MAX_ADMIN_EXTRACTION_REQUEST_BODY_BYTES
+    : MAX_EXTRACTION_REQUEST_BODY_BYTES;
+
   try {
-    const bodyText = await readBody(request);
+    const bodyText = await readBody(request, requestBodyLimit);
     const parsed = validateRequest(JSON.parse(bodyText));
 
     if (!parsed) {
@@ -950,7 +956,6 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       return;
     }
 
-    const adminRequest = isAdminSessionAuthenticated(request);
     const configuredAdminModel =
       process.env.OPENAI_ADMIN_MODEL && process.env.OPENAI_ADMIN_MODEL !== "undefined"
         ? process.env.OPENAI_ADMIN_MODEL
@@ -1004,35 +1009,13 @@ export async function handleOutlineExtractionRequest(request: any, response: any
           };
         }
 
-        const textLimit = Number(
-          process.env.OPENAI_OUTLINE_TEXT_LIMIT ?? DEFAULT_OUTLINE_TEXT_LIMIT
-        );
-        // Older clients appended this marker after applying their text limit. Allow
-        // that small suffix so the server does not truncate again and skip caching.
-        const clientTruncationAllowance = parsed.outlineText
-          .trimEnd()
-          .endsWith("[Truncated]")
-          ? 16
-          : 0;
-        const serverTextLimit = textLimit + clientTruncationAllowance;
-        const outlineText =
-          parsed.outlineText.length > serverTextLimit
-            ? parsed.outlineText.slice(0, textLimit)
-            : parsed.outlineText;
-        const truncationWarnings =
-          outlineText.length < parsed.outlineText.length
-            ? [`Outline text was truncated to ${textLimit} characters before AI extraction.`]
-            : [];
         const result = await callOpenAi(
-          {
-            ...parsed,
-            outlineText,
-          },
+          parsed,
           adminRequest ? adminModel : undefined
         );
-        const warnings = [...truncationWarnings, ...result.warnings];
+        const warnings = result.warnings;
 
-        if (result.cacheable && truncationWarnings.length === 0) {
+        if (result.cacheable) {
           await writeAiExtractionCache({
             request: parsed,
             model: result.model,
@@ -1042,10 +1025,7 @@ export async function handleOutlineExtractionRequest(request: any, response: any
         } else {
           console.info("[gooseCalendar] Skipping AI extraction cache write", {
             courseCode: parsed.courseCode,
-            reason:
-              truncationWarnings.length > 0
-                ? "Outline input was truncated."
-                : "OpenAI result was not cacheable.",
+            reason: "OpenAI result was not cacheable.",
             warnings: warnings.slice(0, 5),
           });
         }
@@ -1086,7 +1066,7 @@ export async function handleOutlineExtractionRequest(request: any, response: any
       extraction: EMPTY_AI_EXTRACTION,
       warnings: [
         requestBodyTooLarge
-          ? "Outline extraction request exceeds the 1 MB limit."
+          ? `Outline extraction request exceeds the ${adminRequest ? 12 : 2} MB limit.`
           : error instanceof Error
           ? `Outline extraction request failed: ${error.message}`
           : "Outline extraction request failed.",
