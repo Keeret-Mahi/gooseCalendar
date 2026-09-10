@@ -12,7 +12,10 @@ import {
 import { extractNonMeetingEventsWithAi } from "./aiExtractionClient";
 import { mapAiExtractionToEventCandidates } from "./aiEventMapper";
 import { normalizeCourseNameCapitalization } from "./courseNames";
-import type { AiOutlineExtractionRequest } from "./aiExtractionSchema";
+import type {
+  AiExtractionResponse,
+  AiOutlineExtractionRequest,
+} from "./aiExtractionSchema";
 import type { OutlineSource } from "./outlineSource";
 import type {
   EventCandidate,
@@ -4190,10 +4193,80 @@ function buildFullOutlineAiRequest(
     courseName: meta.courseName,
     term: meta.term,
     termYear: meta.termYear,
-    outlineText,
+    outlineText: source.format === "pdf" ? "" : outlineText,
     extractionMode: "fullOutline",
     sourceFormat: source.format,
+    ...(source.format === "pdf" && source.pdfBase64
+      ? { pdfBase64: source.pdfBase64 }
+      : {}),
   };
+}
+
+function applyPdfCourseMetadata(meta: OutlineMeta, extraction: AiExtractionResponse) {
+  const extracted = extraction.courseMetadata;
+  if (!extracted) return meta;
+
+  const courseCode = normalizeWhitespace(extracted.courseCode ?? "") || meta.courseCode;
+  const courseName = normalizeCourseNameCapitalization(
+    normalizeWhitespace(extracted.courseName ?? "") || meta.courseName
+  );
+  const term = normalizeWhitespace(extracted.term ?? "") || meta.term;
+  const yearFromTerm = Number(term.match(/(20\d{2})/)?.[1]);
+  const termYear = extracted.termYear ??
+    (Number.isFinite(yearFromTerm) ? yearFromTerm : meta.termYear);
+
+  return {
+    ...meta,
+    courseCode,
+    courseName,
+    term,
+    termYear,
+  };
+}
+
+function addPdfMeetingSectionOptions(course: ParsedCourse, events: EventCandidate[]) {
+  const meetingKinds: Partial<Record<EventType, string>> = {
+    Lecture: "LEC",
+    Tutorial: "TUT",
+    Lab: "LAB",
+  };
+  const kindCounts = new Map<string, number>();
+  const seenKinds = new Set<string>();
+
+  events.forEach((event) => {
+    const kind = meetingKinds[event.eventType];
+    if (!kind || event.timing.kind !== "recurring") return;
+
+    const count = (kindCounts.get(kind) ?? 0) + 1;
+    kindCounts.set(kind, count);
+    const extractedNumber = event.label.match(
+      /\b(?:LEC|Lecture|TUT|Tutorial|LAB|Laboratory)\s*(?:Section\s*)?([A-Z]?\d{1,3}[A-Z]?)/i
+    )?.[1];
+    const number = extractedNumber ?? String(count).padStart(3, "0");
+    const label = `${kind} ${number}`;
+    const optionId = buildStableId(
+      `${course.id}:pdf-section:${kind}:${number}:${event.id}`
+    );
+    const scheduleSummary = [
+      event.timing.byDay.join("/"),
+      [event.timing.startTime, event.timing.endTime].filter(Boolean).join("-"),
+    ].filter(Boolean).join(" ");
+
+    course.sectionOptions.push({
+      id: optionId,
+      kind,
+      number,
+      label,
+      scheduleSummary: scheduleSummary || undefined,
+      location: event.location || undefined,
+      instructorName: event.instructorName,
+      instructorEmail: event.instructorEmail,
+      defaultSelected: !seenKinds.has(kind),
+    });
+    event.sectionOptionIds = [optionId];
+    event.extractedSectionLabels = [label];
+    seenKinds.add(kind);
+  });
 }
 
 function sourceTextForAi(source: OutlineSource) {
@@ -21357,10 +21430,17 @@ export async function parseOutlineHtmlWithAi(
   );
   let aiRequest = buildFullOutlineAiRequest(source, meta, outlineText);
 
+  if (source.format === "pdf" && !source.pdfBase64) {
+    throw new Error("The original PDF data was unavailable for AI extraction.");
+  }
+
   try {
     aiRequest = {
       ...aiRequest,
-      outlineHash: await computeOutlineHash(aiRequest.outlineText),
+      outlineHash:
+        source.format === "pdf" && source.contentHash
+          ? source.contentHash
+          : await computeOutlineHash(aiRequest.outlineText),
     };
   } catch (error) {
     console.warn("[gooseCalendar] AI extraction cache hash could not be computed", {
@@ -21379,12 +21459,27 @@ export async function parseOutlineHtmlWithAi(
 
   try {
     const extraction = await extractNonMeetingEventsWithAi(aiRequest);
+    if (source.format === "pdf") {
+      const resolvedMeta = applyPdfCourseMetadata(parsed.meta, extraction);
+      parsed.meta = resolvedMeta;
+      parsed.course.courseCode = resolvedMeta.courseCode;
+      parsed.course.courseName = resolvedMeta.courseName;
+      parsed.course.term = resolvedMeta.term;
+      parsed.termBounds = computeFallbackTermBounds(
+        [{ id: "source", title: "Outline", elements: [], text: outlineText }],
+        resolvedMeta
+      );
+    }
     extraction.warnings.forEach((warning) => addCourseWarning(parsed.course, warning));
 
     const aiEvents = mapAiExtractionToEventCandidates(extraction, parsed.course, {
       termBounds: parsed.termBounds,
-      outlineText: aiRequest.outlineText,
+      outlineText: source.format === "pdf" ? outlineText : aiRequest.outlineText,
     });
+    if (source.format === "pdf") {
+      addPdfMeetingSectionOptions(parsed.course, aiEvents);
+      parsed.sectionOptionCount = parsed.course.sectionOptions.length;
+    }
     const events = finalizeParserEvents(parsed.course, aiEvents, parsed.meta);
 
     return finalizeOutlineParseResult(parsed, events);

@@ -11,6 +11,8 @@ export interface OutlineSource {
   outlineName: string;
   format: OutlineSourceFormat;
   content: string;
+  pdfBase64?: string;
+  contentHash?: string;
 }
 
 const TEXT_FILE_EXTENSIONS = /\.(?:txt|text|md|markdown|csv)$/i;
@@ -259,8 +261,7 @@ function extractPdfStreams(binary: string) {
   return streams;
 }
 
-export async function extractPdfText(file: File) {
-  const bytes = new Uint8Array(await file.arrayBuffer());
+async function extractPdfTextFromBytes(bytes: Uint8Array) {
   const binary = bytesToBinaryString(bytes);
   const streams = extractPdfStreams(binary);
   const extractedParts: string[] = [];
@@ -283,6 +284,21 @@ export async function extractPdfText(file: File) {
     );
   }
   return text;
+}
+
+export async function extractPdfText(file: File) {
+  return extractPdfTextFromBytes(new Uint8Array(await file.arrayBuffer()));
+}
+
+async function hashBytes(bytes: Uint8Array) {
+  if (!globalThis.crypto?.subtle) {
+    throw new Error("Browser crypto is unavailable.");
+  }
+
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export function isSupportedOutlineFile(file: File) {
@@ -319,10 +335,19 @@ export async function readOutlineSource(
   }
 
   if (PDF_FILE_EXTENSION.test(file.name) || file.type === "application/pdf") {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let extractedText = "";
+    try {
+      extractedText = await extractPdfTextFromBytes(bytes);
+    } catch {
+      // Direct PDF input remains usable for scanned or unusually encoded documents.
+    }
     return {
       outlineName: file.name,
       format: "pdf",
-      content: await extractPdfText(file),
+      content: extractedText,
+      pdfBase64: btoa(bytesToBinaryString(bytes)),
+      contentHash: await hashBytes(bytes),
     };
   }
 

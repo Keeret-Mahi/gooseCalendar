@@ -399,10 +399,15 @@ export async function readAiExtractionCache(
     }
 
     const validation = validateAiExtractionResponse(data.extraction);
-    if (!validation.ok) {
+    const missingPdfMetadata =
+      request.sourceFormat === "pdf" && !validation.data.courseMetadata;
+    if (!validation.ok || missingPdfMetadata) {
       console.warn("[gooseCalendar] AI extraction cache entry is invalid", {
         cacheKey,
-        warnings: validation.warnings,
+        warnings: [
+          ...validation.warnings,
+          ...(missingPdfMetadata ? ["PDF cache entry is missing course metadata."] : []),
+        ],
       });
       return { status: "invalid", cacheKey };
     }
@@ -455,10 +460,15 @@ export async function writeAiExtractionCache(input: CacheWriteInput) {
     }
 
     const validation = validateAiExtractionResponse(input.extraction);
-    if (!validation.ok) {
+    const missingPdfMetadata =
+      input.request.sourceFormat === "pdf" && !validation.data.courseMetadata;
+    if (!validation.ok || missingPdfMetadata) {
       console.warn("[gooseCalendar] Skipping AI extraction cache write: invalid extraction", {
         cacheKey,
-        warnings: validation.warnings,
+        warnings: [
+          ...validation.warnings,
+          ...(missingPdfMetadata ? ["PDF extraction is missing course metadata."] : []),
+        ],
       });
       return;
     }

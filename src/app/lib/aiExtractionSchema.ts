@@ -53,7 +53,15 @@ export interface AiExtractedEvent {
   timing: AiExtractedTiming;
 }
 
+export interface AiExtractedCourseMetadata {
+  courseCode: string | null;
+  courseName: string | null;
+  term: string | null;
+  termYear: number | null;
+}
+
 export interface AiExtractionResponse {
+  courseMetadata?: AiExtractedCourseMetadata;
   events: AiExtractedEvent[];
   warnings: string[];
 }
@@ -68,6 +76,7 @@ export interface AiOutlineExtractionRequest {
   extractionMode: AiExtractionMode;
   sourceFormat: AiOutlineSourceFormat;
   outlineHash?: string;
+  pdfBase64?: string;
 }
 
 const EVENT_TYPES = new Set<AiExtractedEventType>([
@@ -225,6 +234,25 @@ export const AI_EXTRACTION_JSON_SCHEMA = {
       type: "array",
       items: { type: "string" },
     },
+  },
+} as const;
+
+export const AI_PDF_EXTRACTION_JSON_SCHEMA = {
+  ...AI_EXTRACTION_JSON_SCHEMA,
+  required: ["courseMetadata", "events", "warnings"],
+  properties: {
+    courseMetadata: {
+      type: "object",
+      additionalProperties: false,
+      required: ["courseCode", "courseName", "term", "termYear"],
+      properties: {
+        courseCode: { type: ["string", "null"] },
+        courseName: { type: ["string", "null"] },
+        term: { type: ["string", "null"] },
+        termYear: { type: ["integer", "null"] },
+      },
+    },
+    ...AI_EXTRACTION_JSON_SCHEMA.properties,
   },
 } as const;
 
@@ -478,6 +506,44 @@ function validateEvent(value: unknown, index: number, warnings: string[]) {
   } satisfies AiExtractedEvent;
 }
 
+function validateCourseMetadata(value: unknown, warnings: string[]) {
+  if (value === undefined) return undefined;
+  if (!isRecord(value)) {
+    warnings.push("AI course metadata was invalid.");
+    return undefined;
+  }
+
+  const courseCode = nullableStringValue(value.courseCode);
+  const courseName = nullableStringValue(value.courseName);
+  const term = nullableStringValue(value.term);
+  const termYear = value.termYear;
+  const termYearIsValid =
+    termYear === null ||
+    (typeof termYear === "number" && Number.isInteger(termYear) && termYear >= 2000);
+  if (courseCode === undefined) warnings.push("AI courseMetadata.courseCode was invalid.");
+  if (courseName === undefined) warnings.push("AI courseMetadata.courseName was invalid.");
+  if (term === undefined) warnings.push("AI courseMetadata.term was invalid.");
+  if (!termYearIsValid) {
+    warnings.push("AI courseMetadata.termYear was invalid.");
+  }
+
+  if (
+    courseCode === undefined ||
+    courseName === undefined ||
+    term === undefined ||
+    !termYearIsValid
+  ) {
+    return undefined;
+  }
+
+  return {
+    courseCode,
+    courseName,
+    term,
+    termYear: termYear === null ? null : Number(termYear),
+  } satisfies AiExtractedCourseMetadata;
+}
+
 export function validateAiExtractionResponse(value: unknown) {
   const warnings: string[] = [];
 
@@ -511,10 +577,12 @@ export function validateAiExtractionResponse(value: unknown) {
   const events = rawEvents
     .map((event, index) => validateEvent(event, index, warnings))
     .filter((event): event is AiExtractedEvent => Boolean(event));
+  const courseMetadata = validateCourseMetadata(value.courseMetadata, warnings);
 
   return {
     ok: warnings.length === 0,
     data: {
+      ...(courseMetadata ? { courseMetadata } : {}),
       events,
       warnings: Array.isArray(rawWarnings)
         ? rawWarnings

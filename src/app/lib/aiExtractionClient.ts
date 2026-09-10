@@ -118,6 +118,9 @@ export async function extractNonMeetingEventsWithAi(
   );
 
   return {
+    ...(validation.data.courseMetadata
+      ? { courseMetadata: validation.data.courseMetadata }
+      : {}),
     events: validation.data.events,
     warnings: [
       ...responseWarnings,
